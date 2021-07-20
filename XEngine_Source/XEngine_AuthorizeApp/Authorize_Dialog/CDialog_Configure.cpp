@@ -254,8 +254,8 @@ void CDialog_Configure::OnBnClickedButton3()
 void CDialog_Configure::OnBnClickedRadio2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_RadioKeyPass.SetCheck(1);
-	m_RadioKeyDisable.SetCheck(0);
+	m_RadioKeyPass.SetCheck(0);
+	m_RadioKeyDisable.SetCheck(1);
 
 	m_EditPass.EnableWindow(FALSE);
 }
@@ -264,8 +264,8 @@ void CDialog_Configure::OnBnClickedRadio2()
 void CDialog_Configure::OnBnClickedRadio1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_RadioKeyPass.SetCheck(0);
-	m_RadioKeyDisable.SetCheck(1);
+	m_RadioKeyPass.SetCheck(1);
+	m_RadioKeyDisable.SetCheck(0);
 
 	m_EditPass.EnableWindow(TRUE);
 }

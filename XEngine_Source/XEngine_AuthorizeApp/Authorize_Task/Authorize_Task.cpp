@@ -66,7 +66,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(AUTHREG_USERTABLE));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDEL;
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
@@ -76,7 +76,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
 			return FALSE;
 		}
-		if ((st_UserTable.st_UserInfo.nQQNumber != st_UserInfo.nQQNumber) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszEMailAddr, st_UserInfo.tszEMailAddr, _tcslen(st_UserTable.st_UserInfo.tszEMailAddr))))
+		if ((st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszEMailAddr, st_UserInfo.tszEMailAddr, _tcslen(st_UserTable.st_UserInfo.tszEMailAddr))) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszUserPass, st_UserInfo.tszUserPass, _tcslen(st_UserTable.st_UserInfo.tszUserPass))))
 		{
 			pSt_ProtocolHdr->wReserve = 212;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
@@ -91,6 +91,17 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，注销失败,删除信息失败"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
+		//注销需要删除登录用户
+		AuthService_Session_CloseClient(st_UserInfo.tszUserName);
+		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
+		{
+			CString m_StrAddr = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 2);
+			if (0 == _tcsnicmp(lpszClientAddr, m_StrAddr.GetBuffer(), _tcslen(lpszClientAddr)))
+			{
+				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+			}
+		}
+
 		pSt_ProtocolHdr->unPacketSize = 0;
 		XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，注销成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
@@ -160,7 +171,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录失败，没有剩余时间了"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-		if (AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
+		if (!AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
@@ -220,10 +231,10 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(AUTHREG_USERTABLE));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS;
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
@@ -234,7 +245,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			return FALSE;
 		}
 		//安全验证判断
-		if ((st_UserTable.st_UserInfo.nQQNumber != st_UserInfo.nQQNumber) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber))
+		if ((0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber))
 		{
 			pSt_ProtocolHdr->wReserve = 292;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
@@ -355,17 +366,17 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERAUTH st_UserInfo;
+		XENGINE_PROTOCOL_USERREG st_UserInfo;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER;
 		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
-			if (0 == _tcsncmp(st_UserInfo.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass)))
+			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_UserTable.st_UserInfo.nIDNumber))
 			{
 				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息成功"), lpszClientAddr, st_UserInfo.tszUserName);
 			}
@@ -395,7 +406,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER;
 		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_SQLTable))
 		{
-			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_SQLTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (st_UserInfo.nPhoneNumber == st_SQLTable.st_UserInfo.nPhoneNumber) && (st_UserInfo.nIDNumber == st_SQLTable.st_UserInfo.nIDNumber))
+			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_SQLTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_SQLTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_SQLTable.st_UserInfo.nIDNumber))
 			{
 				memcpy(&st_SQLTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERREG));
 				if (AuthService_SQLPacket_UserSet(&st_SQLTable))

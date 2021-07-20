@@ -213,26 +213,6 @@ void CDialog_Serial::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	POSITION pSt_Sition = m_ListSerial.GetFirstSelectedItemPosition();
-	int nItemCount = m_ListSerial.GetNextSelectedItem(pSt_Sition);
-	if (nItemCount < 0)
-	{
-		AfxMessageBox(_T("你没有选择任何充值卡！"));
-		return;
-	}
-	CString m_StrSerial = m_ListSerial.GetItemText(nItemCount, 1);
-	if (!AuthService_SQLPacket_SerialDelete(m_StrSerial.GetBuffer()))
-	{
-		AfxMessageBox(_T("删除失败！"));
-		return;
-	}
-	m_ListSerial.DeleteItem(nItemCount);
-}
-
-
-void CDialog_Serial::OnBnClickedButton4()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	POSITION pSt_Sition = m_ListSerial.GetFirstSelectedItemPosition();
 	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
@@ -246,4 +226,24 @@ void CDialog_Serial::OnBnClickedButton4()
 		return;
 	}
 	AfxMessageBox(_T("复制成功！"));
+}
+
+
+void CDialog_Serial::OnBnClickedButton4()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListSerial.GetFirstSelectedItemPosition();
+	int nItemCount = m_ListSerial.GetNextSelectedItem(pSt_Sition);
+	if (nItemCount < 0)
+	{
+		AfxMessageBox(_T("你没有选择任何充值卡！"));
+		return;
+	}
+	CString m_StrSerial = m_ListSerial.GetItemText(nItemCount, 1);
+	if (!AuthService_SQLPacket_SerialDelete(m_StrSerial.GetBuffer()))
+	{
+		AfxMessageBox(_T("删除失败！"));
+		return;
+	}
+	m_ListSerial.DeleteItem(nItemCount);
 }

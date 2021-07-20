@@ -165,7 +165,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserRegister(AUTHREG_USERTABL
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
         return FALSE;
     }
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, RegData, LeftTime, EmailAddr, HardCode, CardSerialType, QQNumber, IDCard) values('%s','%s',datetime('now', 'localtime'),'0','%s','%s','%d','%lld','%lld')"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nQQNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, RegData, LeftTime, EmailAddr, HardCode, CardSerialType, QQNumber, IDCard) values('%s','%s',datetime('now', 'localtime'),'%s','%s','%s','%d',%lld,%lld)"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nQQNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;

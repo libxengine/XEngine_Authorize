@@ -174,7 +174,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		AfxMessageBox(_T("初始化网络失败！"));
 		return;
 	}
-	if (!HelpComponents_Datas_Init(&xhPacket))
+	if (!HelpComponents_Datas_Init(&xhPacket, 10000, 0, nThreadCount))
 	{
 		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
 		return;
@@ -194,7 +194,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
-		pSt_AuthThread->nPoolIndex = i + 1;
+		pSt_AuthThread->nPoolIndex = i;
 		pSt_AuthThread->lPClass = this;
 		ppSt_ThreadParament[i]->lParam = pSt_AuthThread;
 		ppSt_ThreadParament[i]->fpCall_ThreadsTask = XEngine_AuthService_ThreadClient;
@@ -277,6 +277,9 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 
 	AuthService_Session_Destroy();
 	AuthService_SQLPacket_Destroy();
+
+	m_DlgSerial.m_ListSerial.DeleteAllItems();
+	m_DlgUser.m_ListCtrlOnlineClient.DeleteAllItems();
 }
 
 

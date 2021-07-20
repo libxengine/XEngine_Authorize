@@ -4,13 +4,13 @@
 BOOL __stdcall XEngine_Client_Accept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
-	HelpComponents_Datas_CreateEx(pClass_This->xhPacket, lpszClientAddr);
+	HelpComponents_Datas_CreateEx(xhPacket, lpszClientAddr, 0);
 	return TRUE;
 }
 void __stdcall XEngine_Client_Recv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
-	HelpComponents_Datas_PostEx(pClass_This->xhPacket, lpszClientAddr, lpszRecvMsg, nMsgLen);
+	HelpComponents_Datas_PostEx(xhPacket, lpszClientAddr, lpszRecvMsg, nMsgLen);
 }
 void __stdcall XEngine_Client_Close(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
@@ -43,8 +43,8 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 		}
 		AuthService_Session_CloseClient(tszClientUser);
 	}
-	HelpComponents_Datas_DeleteEx(pClass_This->xhPacket, lpszClientAddr);
-	XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，离开服务器\r\n"), lpszClientAddr, tszClientUser);
+	HelpComponents_Datas_DeleteEx(xhPacket, lpszClientAddr);
+	XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -91,6 +91,6 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			nMsgLen = nSDLen;
 		}
 	}
-	NetCore_TCPXCore_SendEx(xhSocket, lpszClientAddr, tszMsgBuffer, nMsgLen);
+	NetCore_TCPXCore_SendEx(xhSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
 	return TRUE;
 }

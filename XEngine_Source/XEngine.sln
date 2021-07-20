@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_File", "XEngine_Fil
 		XAuth_Protocol.h = XAuth_Protocol.h
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthComponents_Crypto", "XEngine_AuthComponents\AuthComponents_Crypto\AuthComponents_Crypto.vcxproj", "{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Protocol", "AuthorizeModule_Protocol\AuthorizeModule_Protocol.vcxproj", "{6B926D00-DCD2-49E3-86A9-3230C9872E65}"
 EndProject
 Global
@@ -52,14 +50,6 @@ Global
 		{65CB84F8-8DAB-483D-A3C6-AD48FC7ACAEF}.Release|x64.Build.0 = Release|x64
 		{65CB84F8-8DAB-483D-A3C6-AD48FC7ACAEF}.Release|x86.ActiveCfg = Release|Win32
 		{65CB84F8-8DAB-483D-A3C6-AD48FC7ACAEF}.Release|x86.Build.0 = Release|Win32
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Debug|x64.ActiveCfg = Debug|x64
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Debug|x64.Build.0 = Debug|x64
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Debug|x86.ActiveCfg = Debug|Win32
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Debug|x86.Build.0 = Debug|Win32
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Release|x64.ActiveCfg = Release|x64
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Release|x64.Build.0 = Release|x64
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Release|x86.ActiveCfg = Release|Win32
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D}.Release|x86.Build.0 = Release|Win32
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Debug|x64.ActiveCfg = Debug|x64
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Debug|x64.Build.0 = Debug|x64
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Debug|x86.ActiveCfg = Debug|Win32
@@ -75,7 +65,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{84DE72B3-131E-4F30-9E73-152BDCA328EA} = {F79B8560-7E00-4930-A61B-83BE6FB52599}
 		{65CB84F8-8DAB-483D-A3C6-AD48FC7ACAEF} = {F79B8560-7E00-4930-A61B-83BE6FB52599}
-		{7DD346CF-DD94-44AC-8F25-B0522FC51A8D} = {F79B8560-7E00-4930-A61B-83BE6FB52599}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1F1DDE3-8949-41AF-84D6-03CB7CAA03AB}

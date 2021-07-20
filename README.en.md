@@ -1,8 +1,8 @@
 # XEngine_Authorize
 
 #### Description
-c c++网络验证服务器 网络授权服务器
-c c++network Authorize service
+c c++网络验证服务器 网络授权服务器  
+c c++network Authorize service  
 
 #### Software Architecture
 Software architecture description

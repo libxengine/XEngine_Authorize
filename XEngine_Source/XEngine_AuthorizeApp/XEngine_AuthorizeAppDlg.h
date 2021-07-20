@@ -33,7 +33,6 @@ public:
 	CDialog_Serial m_DlgSerial;
 	CDialog_User m_DlgUser;
 public:
-	XNETHANDLE xhPacket;
 	BOOL bThread;
 	int nThreadCount;
 	THREADPOOL_PARAMENT** ppSt_ThreadParament;
