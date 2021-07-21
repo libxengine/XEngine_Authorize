@@ -30,8 +30,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Error.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Define.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/ProcFile_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
@@ -72,5 +72,5 @@ extern XNETHANDLE xhPool;
 #pragma comment(lib,"x86/XEngine_Core/XEngine_ManagePool.lib")
 #pragma comment(lib,"x86/XEngine_Core/XEngine_OPenSsl.lib")
 #pragma comment(lib,"x86/XEngine_HelpComponents/HelpComponents_Packets.lib")
+#pragma comment(lib,"x86/XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"x86/XEngine_SystemSdk/XEngine_SystemApi.lib")
-#pragma comment(lib,"x86/XEngine_AuthorizeReg/XEngine_AuthGenerateSerial.lib")

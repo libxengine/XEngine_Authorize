@@ -1,7 +1,7 @@
 #include "pch.h"
 
 LPCSTR lpszKeyType[] = { "未知类型","分钟卡","天数卡","次数卡","自定义卡" };
-void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64 nOnlineTimer, __int64 nLeftTimer, LPCTSTR lpszLeftDate, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthRegSerialType, LPVOID lParam)
+void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64 nOnlineTimer, __int64 nLeftTimer, LPCTSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_SerialType, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
 	CString m_StrFormat;
@@ -21,7 +21,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 			_i64tot(nLeftTimer, tszTimeLeft, 10);
 
 			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 3, tszTimeONLine);
-			if ((ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE == en_AuthRegSerialType) || (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == en_AuthRegSerialType))
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == en_SerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == en_SerialType))
 			{
 				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 4, tszTimeLeft);
 			}
@@ -29,7 +29,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 			{
 				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 4, lpszLeftDate);
 			}
-			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 5, lpszKeyType[en_AuthRegSerialType]);
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 5, lpszKeyType[en_SerialType]);
 
 			if (nLeftTimer <= 0)
 			{

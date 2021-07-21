@@ -26,8 +26,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Define.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "Session_Define.h"
 #include "Session_Error.h"
@@ -48,10 +48,8 @@ extern DWORD Session_dwErrorCode;
 #ifdef _WINDOWS
 #ifdef _WIN64
 #pragma comment(lib,"x64/XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"x64/XEngine_AuthorizeReg/XEngine_AuthGenerateSerial.lib")
 #else
 #pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"x86/XEngine_AuthorizeReg/XEngine_AuthGenerateSerial.lib")
 #endif // _WIN64
 #else
 

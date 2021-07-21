@@ -38,10 +38,10 @@ public:
     BOOL AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
     BOOL AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
     BOOL AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial);
-    BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_AUTHREG_GENERATESERIALTYPE enVerMode = ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW);
+    BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
     BOOL AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_AuthVer);
 protected:
-    BOOL AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthSerialType, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthUserType);
+    BOOL AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType);
 private:
     BOOL m_bChange;
     XHDATA xhData;                 //数据库句柄

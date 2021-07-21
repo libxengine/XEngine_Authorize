@@ -434,7 +434,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
             //登陆成功的。我们要处理他过期
             switch (stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType)
             {
-            case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE:
+            case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
             {
                 //分钟处理
                 __int64x nLeftTimer = _tcstoi64(stl_MapIterator->second.st_AuthUser.tszLeftTime, NULL, 10);
@@ -458,7 +458,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
                 stl_ListNotify.push_back(st_ProtocolTimer);
             }
             break;
-            case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME:
+            case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
             {
                 //次数处理
                 stl_MapIterator->second.nOnlineTime = nOnlineSpan;

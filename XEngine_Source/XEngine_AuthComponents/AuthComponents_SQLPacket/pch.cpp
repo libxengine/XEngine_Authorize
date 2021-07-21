@@ -89,7 +89,7 @@ extern "C" BOOL AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial)
 {
 	return m_SQLAuth.AuthService_SQLPacket_TryDelete(lpszSerial);
 }
-extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_AUTHREG_GENERATESERIALTYPE enVerMode)
+extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode)
 {
 	return m_SQLAuth.AuthService_SQLPacket_TryClear(nThanValue, enVerMode);
 }

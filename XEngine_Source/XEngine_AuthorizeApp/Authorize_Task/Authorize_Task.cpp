@@ -119,7 +119,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		pClass_This->m_DlgConfig.m_EditTryTime.GetWindowText(m_StrTryTime);
 		//填充写入数据
 		_tcscpy(st_UserTable.tszLeftTime, m_StrTryTime.GetBuffer());
-		st_UserTable.en_AuthRegSerialType = (ENUM_AUTHREG_GENERATESERIALTYPE)pClass_This->m_DlgConfig.m_ComboRegTry.GetCurSel();
+		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboRegTry.GetCurSel();
 		if (AuthService_SQLPacket_UserRegister(&st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
@@ -157,7 +157,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			return FALSE;
 		}
 		//分析充值类型
-		if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW == st_UserTable.en_AuthRegSerialType)
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.en_AuthRegSerialType)
 		{
 			pSt_ProtocolHdr->wReserve = 253;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
@@ -300,7 +300,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			__int64 nTimeSpan = 0;
 			memset(tszEndTime, '\0', sizeof(tszEndTime));
 			//根据方式来计算剩余时间
-			if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == st_AuthVer.enVerMode)
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
 			{
 				nTimeSpan = st_AuthVer.nTryTime;
 			}
@@ -325,7 +325,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				pSt_ProtocolHdr->wReserve = 0;
 				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证成功，已用时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
 
-				if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == st_AuthVer.enVerMode)
+				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
 				{
 					//次数卡需要更新才可以
 					st_AuthVer.nTryTime++;
@@ -339,10 +339,10 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			pClass_This->m_DlgConfig.m_EditAuthTime.GetWindowText(m_StrAuthTime);
 			//填充写入数据
 			st_AuthVer.nTryTime = _ttoi(m_StrAuthTime.GetBuffer());
-			st_AuthVer.enVerMode = (ENUM_AUTHREG_GENERATESERIALTYPE)pClass_This->m_DlgConfig.m_ComboListAuth.GetCurSel();
+			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboListAuth.GetCurSel();
 			BaseLib_OperatorTime_ToStringTimer(st_AuthVer.tszVerData);
 			//看下是否启用了此功能
-			if ((ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
 			{
 				pSt_ProtocolHdr->wReserve = 0x2D2;
 				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_AuthVer.tszVerSerial);

@@ -14,7 +14,7 @@
 //                         导出的回调函数
 //////////////////////////////////////////////////////////////////////////
 //用户在线时间事件回调处理函数，用户名 在线时间 剩余时间（分,天） 注册的卡类型 自定义参数
-typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthRegSerialType, LPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType, LPVOID lParam);
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////

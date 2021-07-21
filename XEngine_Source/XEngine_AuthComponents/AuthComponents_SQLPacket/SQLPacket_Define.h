@@ -265,7 +265,7 @@ extern "C" BOOL AuthService_SQLPacket_TryDelete(LPCSTR lpszSerial);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_AUTHREG_GENERATESERIALTYPE enVerMode = ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW);
+extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
 /********************************************************************
 函数名称：AuthService_SQLPacket_TrySet
 函数功能：设置用户信息函数

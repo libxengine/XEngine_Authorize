@@ -240,7 +240,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserNam
         _tcscpy(pSt_UserInfo->tszHardCode, ppszResult[nFliedValue]);
         //充值卡类型
         nFliedValue++;
-        pSt_UserInfo->en_AuthRegSerialType = (ENUM_AUTHREG_GENERATESERIALTYPE)_ttoi(ppszResult[nFliedValue]);
+        pSt_UserInfo->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //QQ号
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nQQNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
@@ -308,25 +308,25 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
     //分析插入方式
     switch (st_SerialTable.en_AuthRegSerialType)
     {
-    case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE:
+    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
         if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
-    case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY:
+    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
         if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
-    case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME:
+    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
         if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
-    case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM:
+    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
         if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
@@ -366,7 +366,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TI
     TCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if ((ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
+    if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
     {
         //天数卡只有剩余时间没有的时候才需要做处理
         if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -374,7 +374,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TI
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '0' WHERE UserName = '%s'"), pSt_TimeProtocol->tszUserName);
         }
     }
-    if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE == pSt_TimeProtocol->enSerialType)
+    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == pSt_TimeProtocol->enSerialType)
     {
         //分钟卡必须要有在线时间才能计算
         if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -383,7 +383,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TI
         }
         _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%lld' WHERE UserName = '%s'"), pSt_TimeProtocol->nTimeLeft, pSt_TimeProtocol->tszUserName);
     }
-    else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
+    else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
     {
         //次数卡不需要在线时间,直接减去一次就可以了
         _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%lld' WHERE UserName = '%s'"), _ttoi64(pSt_TimeProtocol->tszLeftTime) - 1, pSt_TimeProtocol->tszUserName);
@@ -460,27 +460,27 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialInsert(LPCTSTR lpszSeri
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_SERIALINSERT_EXIST;
         return FALSE;
     }
-    ENUM_AUTHREG_GENERATESERIALTYPE enAuthSerialType;
+    ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enAuthSerialType;
     XENGINE_LIBTIMER st_AuthTimer;
     memset(&st_AuthTimer,'\0',sizeof(st_AuthTimer));
 
-    if (!XEngine_AuthGenerateSerial_GetType(lpszSerialNumber, &enAuthSerialType, &st_AuthTimer))
+    if (!Authorize_Serial_GetType(lpszSerialNumber, &enAuthSerialType, &st_AuthTimer))
     {
         return FALSE;
     }
-    if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE == enAuthSerialType)
+    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == enAuthSerialType)
     {
         _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wMinute, enAuthSerialType);
     }
-    else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY == enAuthSerialType)
+    else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enAuthSerialType)
     {
         _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
     }
-    else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == enAuthSerialType)
+    else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enAuthSerialType)
     {
         _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
     }
-    else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM == enAuthSerialType)
+    else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
     {
         TCHAR tszLeftTime[MAX_PATH];
         memset(tszLeftTime, '\0', MAX_PATH);
@@ -585,7 +585,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQuery(LPCTSTR lpszSeria
         _tcscpy(pSt_SerialTable->tszMaxTime,ppszResult[nFliedValue]);
         //序列卡类型
         nFliedValue++;
-        pSt_SerialTable->en_AuthRegSerialType = (ENUM_AUTHREG_GENERATESERIALTYPE)_ttoi(ppszResult[nFliedValue]);
+        pSt_SerialTable->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttoi(ppszResult[nFliedValue]);
@@ -654,7 +654,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIAL
         _tcscpy((*pppSt_SerialTable)[i]->tszMaxTime,ppszResult[nFliedValue]);
         nFliedValue++;
         //序列卡类型
-        (*pppSt_SerialTable)[i]->en_AuthRegSerialType = (ENUM_AUTHREG_GENERATESERIALTYPE)_ttoi(ppszResult[nFliedValue]);
+        (*pppSt_SerialTable)[i]->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //是否已经使用
         (*pppSt_SerialTable)[i]->bIsUsed = _ttoi(ppszResult[nFliedValue]);
@@ -759,7 +759,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_
     //序列号
     nFliedValue++;
     //试用类型
-    pSt_AuthVer->enVerMode = (ENUM_AUTHREG_GENERATESERIALTYPE)_ttoi(ppszResult[nFliedValue]);
+    pSt_AuthVer->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
     nFliedValue++;
     //试用时间
     pSt_AuthVer->nTryTime = _ttoi(ppszResult[nFliedValue]);
@@ -823,7 +823,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM_AUTHREG_GENERATESERIALTYPE enVerMode /* = ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW */)
+BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -854,7 +854,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM
         _tcscpy(st_AuthVer.tszVerSerial, ppszResult[nFliedValue]);
         nFliedValue++;
         //模式
-        st_AuthVer.enVerMode = (ENUM_AUTHREG_GENERATESERIALTYPE)_ttoi(ppszResult[nFliedValue]);
+        st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //测试时间
         st_AuthVer.nTryTime = _ttoi(ppszResult[nFliedValue]);
@@ -870,7 +870,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM
     for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
     {
         //判断是不是不关心注册的模式直接清理
-        if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW == enVerMode)
+        if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == enVerMode)
         {
             if (nThanValue > stl_ListIterator->nTryTime)
             {
@@ -970,7 +970,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_Au
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthSerialType, ENUM_AUTHREG_GENERATESERIALTYPE en_AuthUserType)
+BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -983,7 +983,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
     if (en_AuthSerialType != en_AuthUserType)
     {
         //如果不等于,需要重写
-        if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_UNKNOW != en_AuthUserType)
+        if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW != en_AuthUserType)
         {
             //判断是否允许改写。
             if (!m_bChange)
@@ -1006,14 +1006,14 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
         //处理卡类型
         switch (en_AuthSerialType)
         {
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
         {
             //如果是分钟卡
             //如果当前的充值卡类型不匹配，那么他以前的充值内容全部都会被删除！
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
         {
             //如果是天数卡
             XENGINE_LIBTIMER st_StartTimer;
@@ -1032,23 +1032,23 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);      //更新用户表的过期时间
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
         {
             //如果是次数卡
             //更新用户表的过期时间
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttoi(lpszCardTime), lpszUserName);
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
         {
             TCHAR tszTime[128];
             XENGINE_LIBTIMER st_AuthTime;
-            ENUM_AUTHREG_GENERATESERIALTYPE en_GeneraterSerialType;
+            ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
 
             memset(tszTime, '\0', sizeof(tszTime));
             memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));
             //获取重置卡类型和时间
-            if (!XEngine_AuthGenerateSerial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
+            if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
             {
                 return FALSE;
             }
@@ -1065,14 +1065,14 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
     {
         switch (en_AuthSerialType)
         {
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
         {
             int nCardTime = _ttoi(lpszCardTime);
             nCardTime += _ttoi(lpszUserTime);              //我们把用户以前的时间也加上
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
         {
             XENGINE_LIBTIMER st_EndTimer;
             XENGINE_LIBTIMER st_AuthTimer;
@@ -1095,7 +1095,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
         {
             //如果是次数卡
             int nCardTime = _ttoi(lpszCardTime);
@@ -1103,17 +1103,17 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserN
             _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
         }
         break;
-        case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
         {
             //自定义卡,无法相加
             TCHAR tszTime[128];
             XENGINE_LIBTIMER st_AuthTime;
-            ENUM_AUTHREG_GENERATESERIALTYPE en_GeneraterSerialType;
+            ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
 
             memset(tszTime, '\0', sizeof(tszTime));
             memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));
             //获取重置卡类型和时间
-            if (!XEngine_AuthGenerateSerial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
+            if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
             {
                 return FALSE;
             }

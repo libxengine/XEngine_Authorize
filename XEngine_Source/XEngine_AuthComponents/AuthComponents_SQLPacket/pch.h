@@ -23,8 +23,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Define.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "SQLPacket_Define.h"
 #include "SQLPacket_Error.h"
@@ -46,11 +46,11 @@ extern DWORD SQLPacket_dwErrorCode;
 #ifdef _WIN64
 #pragma comment(lib,"x64/XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"x64/XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#pragma comment(lib,"x64/XEngine_AuthorizeReg/XEngine_AuthGenerateSerial.lib")
+#pragma comment(lib,"x64/XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #else
 #pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"x86/XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#pragma comment(lib,"x86/XEngine_AuthorizeReg/XEngine_AuthGenerateSerial.lib")
+#pragma comment(lib,"x86/XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #endif // _WIN64
 #else
 

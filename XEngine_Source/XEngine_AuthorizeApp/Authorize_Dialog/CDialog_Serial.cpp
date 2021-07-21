@@ -96,25 +96,25 @@ void CDialog_Serial::SerialManage_Flush()
 		m_ListSerial.SetItemText(i, 2, ppSt_SerialTable[i]->tszMaxTime);
 		switch (ppSt_SerialTable[i]->en_AuthRegSerialType)
 		{
-		case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE:
+		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
 		{
 			LPCTSTR lpszCardName = _T("分钟卡");
 			m_ListSerial.SetItemText(i, 3, lpszCardName);
 		}
 		break;
-		case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY:
+		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
 		{
 			LPCTSTR lpszCardName = _T("天数卡");
 			m_ListSerial.SetItemText(i, 3, lpszCardName);
 		}
 		break;
-		case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME:
+		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
 		{
 			LPCTSTR lpszCardName = _T("次数卡");
 			m_ListSerial.SetItemText(i, 3, lpszCardName);
 		}
 		break;
-		case ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM:
+		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
 		{
 			LPCTSTR lpszCardName = _T("自定义卡");
 			m_ListSerial.SetItemText(i, 3, lpszCardName);
@@ -148,45 +148,25 @@ void CDialog_Serial::OnBnClickedButton2()
 	m_EditHowCard.GetWindowText(m_StrHowCard);
 	m_EditCardTime.GetWindowText(m_StrTimeCard);
 
-	ENUM_AUTHREG_GENERATESERIALTYPE enSerialType = (ENUM_AUTHREG_GENERATESERIALTYPE)(m_ComboSerialType.GetCurSel() + 1);
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)(m_ComboSerialType.GetCurSel() + 1);
 	//生成序列卡
-	if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_MINUTE == enSerialType)
+	if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == enSerialType)
 	{
 		st_AuthTimer.wMinute = _ttoi(m_StrTimeCard.GetBuffer());
-		if (!XEngine_AuthGenerateSerial_Start(lpszUserHdr, _ttoi(m_StrHowCard.GetBuffer()), _ttoi(m_StrCardNumber.GetBuffer()), &st_AuthTimer, enSerialType))
-		{
-			AfxMessageBox(_T("生成失败！"));
-			return;
-		}
 	}
-	else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_DAY == enSerialType)
+	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enSerialType)
 	{
 		st_AuthTimer.wDay = _ttoi(m_StrTimeCard.GetBuffer());
-		if (!XEngine_AuthGenerateSerial_Start(lpszUserHdr, _ttoi(m_StrHowCard.GetBuffer()), _ttoi(m_StrCardNumber.GetBuffer()), &st_AuthTimer, enSerialType))
-		{
-			AfxMessageBox(_T("生成失败！"));
-			return;
-		}
 	}
-	else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_TIME == enSerialType)
+	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enSerialType)
 	{
 		st_AuthTimer.wFlags = _ttoi(m_StrTimeCard.GetBuffer());
-		if (!XEngine_AuthGenerateSerial_Start(lpszUserHdr, _ttoi(m_StrHowCard.GetBuffer()), _ttoi(m_StrCardNumber.GetBuffer()), &st_AuthTimer, enSerialType))
-		{
-			AfxMessageBox(_T("生成失败！"));
-			return;
-		}
 	}
-	else if (ENUM_XENGINE_AUTHREG_GENERATESERIAL_TYPE_CUSTOM == enSerialType)
+	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enSerialType)
 	{
 		if (6 != _stscanf_s(m_StrTimeCard.GetBuffer(), _T("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
 		{
 			AfxMessageBox(_T("自定义日期格式错误"));
-			return;
-		}
-		if (!XEngine_AuthGenerateSerial_Start(lpszUserHdr, _ttoi(m_StrHowCard.GetBuffer()), _ttoi(m_StrCardNumber.GetBuffer()), &st_AuthTimer, enSerialType))
-		{
-			AfxMessageBox(_T("生成失败！"));
 			return;
 		}
 	}
@@ -195,14 +175,18 @@ void CDialog_Serial::OnBnClickedButton2()
 		AfxMessageBox(_T("生成失败！"));
 		return;
 	}
-	//导入序列卡
-	TCHAR tszSerialCard[MAX_PATH];
-	memset(tszSerialCard, '\0', MAX_PATH);
-
-	while (XEngine_AuthGenerateSerial_Get(tszSerialCard))
+	TCHAR** pptszSerialNumber;
+	if (!Authorize_Serial_Creator(&pptszSerialNumber, lpszUserHdr, _ttoi(m_StrHowCard.GetBuffer()), _ttoi(m_StrCardNumber.GetBuffer()), &st_AuthTimer, enSerialType))
 	{
-		AuthService_SQLPacket_SerialInsert(tszSerialCard);
+		AfxMessageBox(_T("生成失败！"));
+		return;
+	}
+	//导入序列卡
+	for (int i = 0; i < _ttoi(m_StrHowCard.GetBuffer()); i++)
+	{
+		TCHAR tszSerialCard[MAX_PATH];
 		memset(tszSerialCard, '\0', MAX_PATH);
+		AuthService_SQLPacket_SerialInsert(pptszSerialNumber[i]);
 	}
 	AfxMessageBox(_T("插入成功"));
 	SerialManage_Flush();
