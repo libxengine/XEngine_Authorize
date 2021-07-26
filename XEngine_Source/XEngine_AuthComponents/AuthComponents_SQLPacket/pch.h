@@ -14,6 +14,7 @@
 #endif
 
 #endif //PCH_H
+#include <string.h>
 #include <list>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>

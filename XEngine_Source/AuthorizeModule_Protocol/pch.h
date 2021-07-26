@@ -14,6 +14,7 @@
 #endif
 
 #endif //PCH_H
+#include <string.h>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>

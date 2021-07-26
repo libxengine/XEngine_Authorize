@@ -14,6 +14,7 @@
 #endif
 
 #endif //PCH_H
+#include <string.h>
 #include <list>
 #include <vector>
 #include <memory>
