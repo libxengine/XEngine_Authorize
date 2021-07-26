@@ -103,8 +103,10 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_BtnStartService.EnableWindow(TRUE);
 	m_BtnStopService.EnableWindow(FALSE);
 
-	int m_nConfigAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, _T("./XEngine_Config/XEngine_Config.ini"));
-	if (m_nConfigAutoStart)
+	LPCTSTR lpszFile = _T("./XEngine_Config/XEngine_Config.ini");
+	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
+	Configure_IniFile_Read(lpszFile, &st_AuthConfig);
+	if (st_AuthConfig.bAutoStart)
 	{
 		OnBnClickedButton1();
 		ShowWindow(SW_HIDE);

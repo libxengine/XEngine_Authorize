@@ -43,6 +43,8 @@ using namespace std;
 #include "../XEngine_AuthComponents/AuthComponents_Session/Session_Error.h"
 #include "../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../AuthorizeModule_Protocol/Protocol_Error.h"
+#include "../AuthorizeModule_Configure/Config_Define.h"
+#include "../AuthorizeModule_Configure/Config_Error.h"
 
 #include "Authorize_Dialog/CDialog_Configure.h"
 #include "Authorize_Dialog/CDialog_Serial.h"
@@ -60,10 +62,12 @@ extern XNETHANDLE xhPool;
 #ifdef _DEBUG
 #pragma comment(lib,"../Debug/AuthComponents_SQLPacket")
 #pragma comment(lib,"../Debug/AuthComponents_Session")
+#pragma comment(lib,"../Debug/AuthorizeModule_Configure")
 #pragma comment(lib,"../Debug/AuthorizeModule_Protocol")
 #else
 #pragma comment(lib,"../Release/AuthComponents_SQLPacket")
 #pragma comment(lib,"../Release/AuthComponents_Session")
+#pragma comment(lib,"../Release/AuthorizeModule_Configure")
 #pragma comment(lib,"../Release/AuthorizeModule_Protocol")
 #endif
 

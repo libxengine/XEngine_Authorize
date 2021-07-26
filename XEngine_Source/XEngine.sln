@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_File", "XEngine_Fil
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Protocol", "AuthorizeModule_Protocol\AuthorizeModule_Protocol.vcxproj", "{6B926D00-DCD2-49E3-86A9-3230C9872E65}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Configure", "AuthorizeModule_Configure\AuthorizeModule_Configure.vcxproj", "{1391B739-713B-4A3A-9233-FEAB92E0566C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -58,6 +60,14 @@ Global
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Release|x64.Build.0 = Release|x64
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Release|x86.ActiveCfg = Release|Win32
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65}.Release|x86.Build.0 = Release|Win32
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Debug|x64.ActiveCfg = Debug|x64
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Debug|x64.Build.0 = Debug|x64
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Debug|x86.ActiveCfg = Debug|Win32
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Debug|x86.Build.0 = Debug|Win32
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Release|x64.ActiveCfg = Release|x64
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Release|x64.Build.0 = Release|x64
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Release|x86.ActiveCfg = Release|Win32
+		{1391B739-713B-4A3A-9233-FEAB92E0566C}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

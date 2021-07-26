@@ -35,6 +35,7 @@ public:
 public:
 	BOOL bThread;
 	int nThreadCount;
+	AUTHORIZE_CONFIGURE st_AuthConfig;
 	THREADPOOL_PARAMENT** ppSt_ThreadParament;
 public:
 	CEdit m_EditLog;
