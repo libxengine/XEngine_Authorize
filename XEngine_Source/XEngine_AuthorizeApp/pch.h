@@ -58,6 +58,7 @@ using namespace std;
 extern XNETHANDLE xhSocket;
 extern XNETHANDLE xhPacket;
 extern XNETHANDLE xhPool;
+extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 #ifdef _DEBUG
 #pragma comment(lib,"../Debug/AuthComponents_SQLPacket")

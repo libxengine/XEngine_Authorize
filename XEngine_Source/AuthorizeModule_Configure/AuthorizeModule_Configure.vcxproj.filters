@@ -48,4 +48,9 @@
       <Filter>源文件\Configure_ini</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="AuthorizeModule_Configure.def">
+      <Filter>源文件</Filter>
+    </None>
+  </ItemGroup>
 </Project>

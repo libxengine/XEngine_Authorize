@@ -60,6 +60,10 @@ BOOL CDialog_Configure::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
+	LPCTSTR lpszFile = _T("./XEngine_Config/XEngine_Config.ini");
+	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
+	Configure_IniFile_Read(lpszFile, &st_AuthConfig);
+
 	AuthorizeService_ReadConfigure();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -67,48 +71,25 @@ BOOL CDialog_Configure::OnInitDialog()
 
 void CDialog_Configure::AuthorizeService_ReadConfigure()
 {
-	LPCTSTR lpszConfigFile = _T("./XEngine_Config/XEngine_Config.ini");
 	CString m_StrConfigPort;               //服务器端口
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
-	int m_nConfigAutoStart;                //自启动
 
-	CString m_StrConfigTryMode;           //验证模式
-	CString m_StrConfigTryTime;           //验证时间
+	CString m_StrConfigTryMode;            //验证模式
+	CString m_StrConfigTryTime;            //验证时间
 	CString m_StrConfigAuthMode;           //验证模式
 	CString m_StrConfigAuthTime;           //验证时间
 
-	BOOL m_bConfigCrypt;
 	CString m_StrConfigCrypt;              //是否启用加密传输 
-
-	CString m_StrConfigSmtpAddr;           //SMTP服务器
-	CString m_StrConfigSmtpFrom;           //回复地址
-	CString m_StrConfigSmtpUser;           //用户名
-	CString m_StrConfigSmtpPass;           //密码
-
-	GetPrivateProfileString(_T("ServiceConfig"), _T("ListenPort"), NULL, m_StrConfigPort.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("ServiceConfig"), _T("ThreadPool"), NULL, m_StrConfigThread.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("ServiceConfig"), _T("UserVerTimed"), NULL, m_StrTimedOut.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	m_nConfigAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, lpszConfigFile);
-
-	GetPrivateProfileString(_T("Verification"), _T("VerTime"), NULL, m_StrConfigAuthTime.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("Verification"), _T("VerMode"), NULL, m_StrConfigAuthMode.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("Verification"), _T("TryTime"), NULL, m_StrConfigTryTime.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("Verification"), _T("TryMode"), NULL, m_StrConfigTryMode.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-
-	m_bConfigCrypt = GetPrivateProfileInt(_T("Crypto"), _T("Enable"), 0, lpszConfigFile);
-	GetPrivateProfileString(_T("Crypto"), _T("Crypto"), NULL, m_StrConfigCrypt.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), NULL, m_StrConfigSmtpAddr.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), NULL, m_StrConfigSmtpFrom.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), NULL, m_StrConfigSmtpUser.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpPass"), NULL, m_StrConfigSmtpPass.GetBuffer(MAX_PATH), MAX_PATH, lpszConfigFile);
-
 	//配置
+	m_StrConfigPort.Format(_T("%d"), st_AuthConfig.nPort);
+	m_StrConfigThread.Format(_T("%d"), st_AuthConfig.nThreads);
+	m_StrTimedOut.Format(_T("%d"), st_AuthConfig.nVerTimeout);
+
 	m_EditServicePort.SetWindowText(m_StrConfigPort);
 	m_EditThreadPool.SetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.SetWindowText(m_StrTimedOut);
-	if (m_nConfigAutoStart)
+	if (st_AuthConfig.bAutoStart)
 	{
 		m_BtnAutoStart.SetCheck(1);
 		m_BtnAutoStop.SetCheck(0);
@@ -119,7 +100,7 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 		m_BtnAutoStop.SetCheck(1);
 	}
 
-	if (m_bConfigCrypt)
+	if (st_AuthConfig.st_Crypto.bEnable)
 	{
 		m_EditPass.EnableWindow(TRUE);
 		m_RadioKeyDisable.SetCheck(FALSE);
@@ -131,29 +112,31 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 		m_RadioKeyDisable.SetCheck(TRUE);
 		m_RadioKeyPass.SetCheck(FALSE);
 	}
+	m_StrConfigCrypt.Format(_T("%d"), st_AuthConfig.st_Crypto.nPassword);
 	m_EditPass.SetWindowText(m_StrConfigCrypt.GetBuffer());
 
+	m_StrConfigTryTime.Format(_T("%d"), st_AuthConfig.st_Verification.nTryTime);
 	m_EditTryTime.SetWindowText(m_StrConfigTryTime);
 	m_ComboRegTry.AddString(_T("不支持"));
 	m_ComboRegTry.AddString(_T("分钟"));
 	m_ComboRegTry.AddString(_T("次数"));
-	m_ComboRegTry.SetCurSel(_ttoi(m_StrConfigAuthMode.GetBuffer()));
+	m_ComboRegTry.SetCurSel(st_AuthConfig.st_Verification.nTryMode);
 
+	m_StrConfigAuthTime.Format(_T("%d"), st_AuthConfig.st_Verification.nVerTime);
 	m_EditAuthTime.SetWindowText(m_StrConfigAuthTime);
 	m_ComboListAuth.AddString(_T("不支持"));
 	m_ComboListAuth.AddString(_T("分钟"));
 	m_ComboListAuth.AddString(_T("天数"));
 	m_ComboListAuth.AddString(_T("次数"));
-	m_ComboListAuth.SetCurSel(_ttoi(m_StrConfigAuthMode.GetBuffer()));
+	m_ComboListAuth.SetCurSel(st_AuthConfig.st_Verification.nVerMode);
 
-	m_EditSmtpAddr.SetWindowText(m_StrConfigSmtpAddr);
-	m_EditFromAddr.SetWindowText(m_StrConfigSmtpFrom);
-	m_EditSmtpUser.SetWindowText(m_StrConfigSmtpUser);
-	m_EditSmtpPass.SetWindowText(m_StrConfigSmtpPass);
+	m_EditSmtpAddr.SetWindowText(st_AuthConfig.st_EMail.tszSmtpAddr);
+	m_EditFromAddr.SetWindowText(st_AuthConfig.st_EMail.tszSmtpFrom);
+	m_EditSmtpUser.SetWindowText(st_AuthConfig.st_EMail.tszSmtpUser);
+	m_EditSmtpPass.SetWindowText(st_AuthConfig.st_EMail.tszSmtpPass);
 }
 void CDialog_Configure::AuthorizeService_WriteConfigure()
 {
-	LPCTSTR lpszConfigFile = _T("./XEngine_Config/XEngine_Config.ini");
 	CString m_StrConfigPort;               //服务器端口
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
@@ -173,58 +156,26 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	m_EditServicePort.GetWindowText(m_StrConfigPort);	
 	m_EditThreadPool.GetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.GetWindowText(m_StrTimedOut);
-	if (BST_CHECKED == m_BtnAutoStart.GetCheck())
-	{
-		WritePrivateProfileString(_T("ServiceConfig"), _T("AutoStart"), _T("1"), lpszConfigFile);
-		if (!SystemApi_Process_AutoStart(_T("XEngine_Auth Service"), _T("XEngineAuth")))
-		{
-			AfxMessageBox(_T("开启自启动失败,可能没有权限,此错误不会影响其他配置！"));
-		}
-	}
-	else
-	{
-		WritePrivateProfileString(_T("ServiceConfig"), _T("AutoStart"), _T("0"), lpszConfigFile);
-		if (!SystemApi_Process_AutoStart(_T("XEngine_Auth Service"), _T("XEngineAuth"), FALSE))
-		{
-			AfxMessageBox(_T("关闭自启动失败,可能没有权限,此错误不会影响其他配置！"));
-		}
-	}
+	st_AuthConfig.nPort = _ttoi(m_StrConfigPort.GetBuffer());
+	st_AuthConfig.nThreads = _ttoi(m_StrConfigThread.GetBuffer());
+	st_AuthConfig.nVerTimeout = _ttoi(m_StrTimedOut.GetBuffer());
+	st_AuthConfig.bAutoStart = m_BtnAutoStart.GetCheck();
 
-	m_StrConfigTryMode.Format(_T("%d"), m_ComboRegTry.GetCurSel());
 	m_EditTryTime.GetWindowText(m_StrConfigTryTime);
-	m_StrConfigAuthMode.Format(_T("%d"), m_ComboListAuth.GetCurSel());
 	m_EditAuthTime.GetWindowText(m_StrConfigAuthTime);
+	st_AuthConfig.st_Verification.nTryMode = m_ComboRegTry.GetCurSel();
+	st_AuthConfig.st_Verification.nVerMode = m_ComboListAuth.GetCurSel();
+	st_AuthConfig.st_Verification.nTryTime = _ttoi(m_StrConfigTryTime.GetBuffer());
+	st_AuthConfig.st_Verification.nVerTime = _ttoi(m_StrConfigAuthTime.GetBuffer());
 
 	m_EditPass.GetWindowText(m_StrConfigCrypt);
+	st_AuthConfig.st_Crypto.bEnable = m_RadioKeyPass.GetCheck();
+	st_AuthConfig.st_Crypto.nPassword = _ttoi(m_StrConfigCrypt.GetBuffer());
 
-	m_EditSmtpAddr.GetWindowText(m_StrConfigSmtpAddr);
-	m_EditFromAddr.GetWindowText(m_StrConfigSmtpFrom);
-	m_EditSmtpUser.GetWindowText(m_StrConfigSmtpUser);
-	m_EditSmtpPass.GetWindowText(m_StrConfigSmtpPass);
-
-	WritePrivateProfileString(_T("ServiceConfig"), _T("ListenPort"), m_StrConfigPort.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("ServiceConfig"), _T("ThreadPool"), m_StrConfigThread.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("ServiceConfig"), _T("UserVerTimed"), m_StrTimedOut.GetBuffer(), lpszConfigFile);
-
-	WritePrivateProfileString(_T("Verification"), _T("TryTime"), m_StrConfigTryTime.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("Verification"), _T("TryMode"), m_StrConfigTryMode.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("Verification"), _T("VerTime"), m_StrConfigAuthTime.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("Verification"), _T("VerMode"), m_StrConfigAuthMode.GetBuffer(), lpszConfigFile);
-
-	if (BST_CHECKED == m_RadioKeyPass.GetCheck())
-	{
-		WritePrivateProfileString(_T("Crypto"), _T("Enable"), _T("1"), lpszConfigFile);
-		WritePrivateProfileString(_T("Crypto"), _T("Pass"), m_StrConfigCrypt.GetBuffer(), lpszConfigFile);
-	}
-	else
-	{
-		WritePrivateProfileString(_T("Crypto"), _T("Enable"), _T("0"), lpszConfigFile);
-	}
-
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), m_StrConfigSmtpAddr.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), m_StrConfigSmtpFrom.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), m_StrConfigSmtpUser.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpPassword"), m_StrConfigSmtpPass.GetBuffer(), lpszConfigFile);
+	m_EditSmtpAddr.GetWindowText(st_AuthConfig.st_EMail.tszSmtpAddr, MAX_PATH);
+	m_EditFromAddr.GetWindowText(st_AuthConfig.st_EMail.tszSmtpFrom, MAX_PATH);
+	m_EditSmtpUser.GetWindowText(st_AuthConfig.st_EMail.tszSmtpUser, MAX_PATH);
+	m_EditSmtpPass.GetWindowText(st_AuthConfig.st_EMail.tszSmtpPass, MAX_PATH);
 }
 
 void CDialog_Configure::OnBnClickedButton1()

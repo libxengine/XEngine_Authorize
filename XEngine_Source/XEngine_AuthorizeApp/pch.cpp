@@ -6,3 +6,4 @@
 XNETHANDLE xhSocket = 0;
 XNETHANDLE xhPacket = 0;
 XNETHANDLE xhPool = 0;
+AUTHORIZE_CONFIGURE st_AuthConfig;

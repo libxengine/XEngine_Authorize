@@ -95,7 +95,7 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgSerial.ShowWindow(FALSE);
 	m_TabCtrl.SetCurSel(0);
 
-	if (!SystemApi_Skin_CreateTrayTip(m_hWnd, _T("血与荣誉网络验证服务"), WINSDK_SKIN_USERMSG_TRAY, IDR_MAINFRAME))
+	if (!SystemApi_Skin_CreateTrayTip(m_hWnd, _T("XEngine网络验证服务"), WINSDK_SKIN_USERMSG_TRAY, IDR_MAINFRAME))
 	{
 		AfxMessageBox(_T("添加托盘失败"));
 		return FALSE;
@@ -103,9 +103,6 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_BtnStartService.EnableWindow(TRUE);
 	m_BtnStopService.EnableWindow(FALSE);
 
-	LPCTSTR lpszFile = _T("./XEngine_Config/XEngine_Config.ini");
-	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
-	Configure_IniFile_Read(lpszFile, &st_AuthConfig);
 	if (st_AuthConfig.bAutoStart)
 	{
 		OnBnClickedButton1();
@@ -265,9 +262,6 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString m_StrThreadPool;
-	m_DlgConfig.m_EditThreadPool.GetWindowText(m_StrThreadPool);
-
 	m_BtnStartService.EnableWindow(TRUE);
 	m_BtnStopService.EnableWindow(FALSE);
 	bThread = FALSE;
@@ -275,7 +269,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	HelpComponents_Datas_Destory(xhPacket);
 	NetCore_TCPXCore_DestroyEx(xhSocket);
 	ManagePool_Thread_NQDestroy(xhPool);
-	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadParament, _ttoi(m_StrThreadPool.GetBuffer()));
+	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadParament, st_AuthConfig.nThreads);
 
 	AuthService_Session_Destroy();
 	AuthService_SQLPacket_Destroy();

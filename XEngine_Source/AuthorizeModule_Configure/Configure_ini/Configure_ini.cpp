@@ -61,7 +61,7 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	pSt_AuthConfig->st_Verification.nTryMode = GetPrivateProfileInt(_T("Verification"), _T("TryMode"), 0, lpszFile);
 
 	pSt_AuthConfig->st_Crypto.bEnable = GetPrivateProfileInt(_T("Crypto"), _T("Enable"), 0, lpszFile);
-	pSt_AuthConfig->st_Crypto.nPassword = GetPrivateProfileInt(_T("Crypto"), _T("Crypto"), 0, lpszFile);
+	pSt_AuthConfig->st_Crypto.nPassword = GetPrivateProfileInt(_T("Crypto"), _T("Pass"), 0, lpszFile);
 
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), NULL, pSt_AuthConfig->st_EMail.tszSmtpAddr, MAX_PATH, lpszFile);
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), NULL, pSt_AuthConfig->st_EMail.tszSmtpFrom, MAX_PATH, lpszFile);
