@@ -50,8 +50,9 @@ BOOL CDialog_Serial::OnInitDialog()
 	m_ListSerial.InsertColumn(0, _T("使用者"), LVCFMT_LEFT, 80);
 	m_ListSerial.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 180);
 	m_ListSerial.InsertColumn(2, _T("使用时间/次数"), LVCFMT_LEFT, 100);
-	m_ListSerial.InsertColumn(4, _T("卡类型"), LVCFMT_LEFT, 80);
-	m_ListSerial.InsertColumn(5, _T("是否使用"), LVCFMT_LEFT, 60);
+	m_ListSerial.InsertColumn(3, _T("卡类型"), LVCFMT_LEFT, 80);
+	m_ListSerial.InsertColumn(4, _T("是否使用"), LVCFMT_LEFT, 60);
+	m_ListSerial.InsertColumn(5, _T("创建日期"), LVCFMT_LEFT, 100);
 	m_ListSerial.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_ComboSerialType.InsertString(0, _T("分钟卡"));
@@ -131,6 +132,7 @@ void CDialog_Serial::SerialManage_Flush()
 		{
 			m_ListSerial.SetItemText(i, 4, _T("否"));
 		}
+		m_ListSerial.SetItemText(i, 5, ppSt_SerialTable[i]->tszCreateTime);
 	}
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 }
