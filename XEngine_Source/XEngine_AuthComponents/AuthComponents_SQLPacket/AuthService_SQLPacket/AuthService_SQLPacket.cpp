@@ -71,19 +71,19 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Init(LPCTSTR lpszSQLFile, BOO
     if (bIsCreate)
     {
         //如果创建成功了，说明需要创建表
-        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,RegData TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,QQNumber integer,IDCard integer)")))
+        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
             return FALSE;
         }
-        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_Serial(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,SerialNumber TEXT,MaxTime TEXT,CardSerialType integer,bIsUsed boolean)")))
+        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_Serial(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,SerialNumber TEXT,MaxTime TEXT,CardSerialType integer,bIsUsed boolean,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
             return FALSE;
         }
-        if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE AuthReg_NetVer(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,VerSerial TEXT NOT NULL,VerMode integer NOT NULL,TryTime integer NOT NULL,RegData TEXT NOT NULL)")))
+        if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE AuthReg_NetVer(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,VerSerial TEXT NOT NULL,VerMode integer NOT NULL,TryTime integer NOT NULL,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
@@ -165,7 +165,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserRegister(AUTHREG_USERTABL
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
         return FALSE;
     }
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, RegData, LeftTime, EmailAddr, HardCode, CardSerialType, QQNumber, IDCard) values('%s','%s',datetime('now', 'localtime'),'%s','%s','%s','%d',%lld,%lld)"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nQQNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
@@ -226,9 +226,6 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserNam
         //密码
         nFliedValue++;
         _tcscpy(pSt_UserInfo->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
-        //注册日期
-        nFliedValue++;
-        _tcscpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
         //过期时间
         nFliedValue++;
         _tcscpy(pSt_UserInfo->tszLeftTime, ppszResult[nFliedValue]);
@@ -243,10 +240,13 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserNam
         pSt_UserInfo->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //QQ号
         nFliedValue++;
-        pSt_UserInfo->st_UserInfo.nQQNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
+        pSt_UserInfo->st_UserInfo.nPhoneNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
         //身份证ID
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nIDNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
+		//注册日期
+		nFliedValue++;
+		_tcscpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -424,7 +424,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pS
     memset(tszSQLStatement, '\0', 1024);
 
 
-    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',QQNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nQQNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->en_AuthRegSerialType, pSt_UserTable->st_UserInfo.tszUserName);
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',PhoneNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->en_AuthRegSerialType, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -470,26 +470,26 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialInsert(LPCTSTR lpszSeri
     }
     if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == enAuthSerialType)
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wMinute, enAuthSerialType);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wMinute, enAuthSerialType);
     }
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enAuthSerialType)
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
     }
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enAuthSerialType)
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d','0')"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
     }
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
     {
         TCHAR tszLeftTime[MAX_PATH];
         memset(tszLeftTime, '\0', MAX_PATH);
         _stprintf_s(tszLeftTime, _T("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%s','%d','0')"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
     }
     else
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s','0','%d','0')"), lpszSerialNumber, enAuthSerialType);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'NOT','%s',0,'%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, enAuthSerialType);
     }
 
     if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
@@ -589,6 +589,9 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQuery(LPCTSTR lpszSeria
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttoi(ppszResult[nFliedValue]);
+		//超时时间
+		nFliedValue++;
+		_tcscpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -659,6 +662,9 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIAL
         //是否已经使用
         (*pppSt_SerialTable)[i]->bIsUsed = _ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
+		//创建时间
+        _tcscpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
     }
     DataBase_SQLite_FreeTable(ppszResult);
     return TRUE;
@@ -701,7 +707,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt
         return FALSE;
     }
     //插入数据库
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_NetVer(VerSerial,VerMode,TryTime,RegData) VALUES('%s',%d,%d,'%s')"), pSt_AuthVer->tszVerSerial, pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime, pSt_AuthVer->tszVerData);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_NetVer(VerSerial,VerMode,TryTime,CreateTime) VALUES('%s',%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVerSerial, pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
@@ -860,7 +866,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM
         st_AuthVer.nTryTime = _ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //注册时间
-        _tcscpy(st_AuthVer.tszVerSerial, ppszResult[nFliedValue]);
+        _tcscpy(st_AuthVer.tszVerData, ppszResult[nFliedValue]);
 
         stl_ListVer.push_back(st_AuthVer);
     }
@@ -924,7 +930,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_Au
     TCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
-    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_NetVer SET VerMode = '%d',TryTime = '%d',RegData = '%s' WHERE VerSerial = '%s'"), pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime, pSt_AuthVer->tszVerData, pSt_AuthVer->tszVerSerial);
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_NetVer SET VerMode = '%d',TryTime = '%d',CreateTime = '%s' WHERE VerSerial = '%s'"), pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime, pSt_AuthVer->tszVerData, pSt_AuthVer->tszVerSerial);
     //更新用户表
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {

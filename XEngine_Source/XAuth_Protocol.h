@@ -36,22 +36,23 @@ typedef struct tag_AuthReg_UserTable
 	XENGINE_PROTOCOL_USERREG st_UserInfo;
 	CHAR tszLeftTime[64];                                                 //剩余日期
 	CHAR tszHardCode[32];                                                 //硬件码
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;                 //充值卡类型
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型
 }AUTHREG_USERTABLE, * LPAUTHREG_USERTABLE;
 //注册序列号表
 typedef struct tag_AuthReg_SerialTable
 {
-	CHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];        //使用者是谁
-	CHAR tszSerialNumber[128];                                           //序列号
-	CHAR tszMaxTime[64];                                                 //使用时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;                 //充值卡类型
+	CHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //使用者是谁
+	CHAR tszSerialNumber[128];                                            //序列号
+	CHAR tszMaxTime[64];                                                  //使用时间
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型
 	BOOL bIsUsed;                                                         //是否已经使用
+	CHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表
 typedef struct tag_AuthReg_NetVer
 {
 	CHAR tszVerSerial[256];                                               //验证序列号
 	CHAR tszVerData[64];                                                  //验证时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode;                            //验证方式
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode;                  //验证方式
 	int nTryTime;                                                         //试用时间
 }AUTHREG_NETVER, * LPAUTHREG_NETVER;
