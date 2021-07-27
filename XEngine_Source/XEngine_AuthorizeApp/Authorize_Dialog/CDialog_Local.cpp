@@ -40,6 +40,7 @@ void CDialog_Local::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT9, m_EditCustomInfo);
 	DDX_Control(pDX, IDC_EDIT10, m_EditPort);
 	DDX_Control(pDX, IDC_IPADDRESS1, m_EditIPAddr);
+	DDX_Control(pDX, IDC_EDIT14, m_EditCreateTime);
 }
 
 
@@ -143,7 +144,8 @@ void CDialog_Local::OnBnClickedButton2()
 	m_ComboRegType.SetCurSel(st_AuthLocal.st_AuthRegInfo.enRegType);
 	m_ComboSerialType.SetCurSel(st_AuthLocal.st_AuthRegInfo.enSerialType);
 	m_EditMachineCode.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszHardware);
-	m_EditRegTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszRegTime);
+	m_EditRegTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszRegisterTime);
+	m_EditCreateTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszCreateTime);
 	m_EditLeftTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszLeftTime);
 	memset(tszTmp, '\0', sizeof(tszTmp));
 	_stprintf(tszTmp, _T("%lld"), st_AuthLocal.st_AuthRegInfo.nHasTime);
@@ -186,7 +188,8 @@ void CDialog_Local::Dialog_Local_GetInfo(XENGINE_AUTHORIZE_LOCAL *pSt_AuthLocal)
 	st_AuthLocal.st_AuthRegInfo.enRegType = (ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE)m_ComboRegType.GetCurSel();
 	st_AuthLocal.st_AuthRegInfo.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboSerialType.GetCurSel();
 	m_EditMachineCode.GetWindowText(st_AuthLocal.st_AuthRegInfo.tszHardware, sizeof(st_AuthLocal.st_AuthRegInfo.tszHardware));
-	m_EditRegTime.GetWindowText(st_AuthLocal.st_AuthRegInfo.tszRegTime, sizeof(st_AuthLocal.st_AuthRegInfo.tszRegTime));
+	m_EditRegTime.GetWindowText(st_AuthLocal.st_AuthRegInfo.tszRegisterTime, sizeof(st_AuthLocal.st_AuthRegInfo.tszRegisterTime));
+	m_EditCreateTime.GetWindowText(st_AuthLocal.st_AuthRegInfo.tszCreateTime, sizeof(st_AuthLocal.st_AuthRegInfo.tszCreateTime));
 	m_EditLeftTime.GetWindowText(st_AuthLocal.st_AuthRegInfo.tszLeftTime, sizeof(st_AuthLocal.st_AuthRegInfo.tszLeftTime));
 	m_EditHaveTime.GetWindowText(m_StrHaveTime);
 	st_AuthLocal.st_AuthRegInfo.nHasTime = _ttoi(m_StrHaveTime.GetBuffer());
@@ -269,5 +272,6 @@ void CDialog_Local::OnEnChangeEdit12()
 	{
 		Authorize_Local_BuildKeyTime(&st_AuthLocal, st_AuthLocal.st_AuthRegInfo.nHasTime);
 	}
+	m_EditRegTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszRegisterTime);
 	m_EditLeftTime.SetWindowText(st_AuthLocal.st_AuthRegInfo.tszLeftTime);
 }

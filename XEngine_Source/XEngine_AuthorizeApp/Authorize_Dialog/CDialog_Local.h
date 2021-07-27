@@ -43,4 +43,5 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnEnChangeEdit12();
 	void Dialog_Local_GetInfo(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal);
+	CEdit m_EditCreateTime;
 };

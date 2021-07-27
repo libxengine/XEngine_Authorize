@@ -60,10 +60,10 @@ make FLAGS=InstallAll Install File
 make FLAGS=CleanAll Clear Complie  
 
 ## Screenshot of the program
-![输入图片说明](https://authorize.xyry.org/1.png "在这里输入图片标题")
-![输入图片说明](https://authorize.xyry.org/2.png "在这里输入图片标题")
-![输入图片说明](https://authorize.xyry.org/3.png "在这里输入图片标题")
-![输入图片说明](https://authorize.xyry.org/4.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
 
 ## Participate in contribution
 

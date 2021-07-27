@@ -61,12 +61,12 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQDEL == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERREG st_UserInfo;
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDEL;
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
@@ -112,7 +112,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		AUTHREG_USERTABLE st_UserTable;
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-		memcpy(&st_UserTable.st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
+		memcpy(&st_UserTable.st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPREGISTER;
 		//Ð´ÊÔÓÃÆÚ
 		CString m_StrTryTime;
@@ -227,14 +227,14 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERREG st_UserInfo;
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS;
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
@@ -365,12 +365,12 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERREG st_UserInfo;
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER;
 		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
@@ -395,19 +395,19 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_SQLTable;
-		XENGINE_PROTOCOL_USERREG st_UserInfo;
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
 		memset(&st_SQLTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERREG));
+		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER;
 		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_SQLTable))
 		{
 			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_SQLTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_SQLTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_SQLTable.st_UserInfo.nIDNumber))
 			{
-				memcpy(&st_SQLTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERREG));
+				memcpy(&st_SQLTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO));
 				if (AuthService_SQLPacket_UserSet(&st_SQLTable))
 				{
 					pSt_ProtocolHdr->wReserve = 0;

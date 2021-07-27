@@ -15,7 +15,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
-#include <XEngine_Include/XEngine_AuthorizeReg/AuthGenerateSerial_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 //g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_AuthorizeReg -lXEngine_BaseLib -lXClient_Socket -lXEngine_AuthRegClient -lpthread -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_AuthorizeReg,--disable-new-dtags
 
@@ -35,7 +35,7 @@ LPCTSTR lpszUser = _T("123123aa");
 LPCTSTR lpszPass = _T("123123");
 LPCTSTR lpszSerial = _T("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
 LPCTSTR lpszEmail = _T("486179@qq.com");
-__int64x nQQNumber = 486179;
+__int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
 
 XHTHREAD AuthClient_Thread()
@@ -208,7 +208,7 @@ int AuthClient_Register()
 	strcpy(st_UserTable.st_UserInfo.tszUserName, lpszUser);
 	strcpy(st_UserTable.st_UserInfo.tszUserPass, lpszPass);
 	strcpy(st_UserTable.st_UserInfo.tszEMailAddr, lpszEmail);
-	st_UserTable.st_UserInfo.nQQNumber = nQQNumber;
+	st_UserTable.st_UserInfo.nPhoneNumber = nPhoneNumber;
 	st_UserTable.st_UserInfo.nIDNumber = nIDNumber;
 	strcpy(st_UserTable.tszHardCode, "2FDWAD02JD2091");
 
@@ -283,17 +283,17 @@ int AuthClient_Login()
 }
 int AuthClient_GetPass()
 {
-	XENGINE_PROTOCOL_USERREG st_UserTable;
+	XENGINE_PROTOCOL_USERINFO st_UserTable;
 	TCHAR tszMsgBuffer[2048];
 
-	memset(&st_UserTable, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+	memset(&st_UserTable, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 	strcpy(st_UserTable.tszUserName, lpszUser);
 	strcpy(st_UserTable.tszEMailAddr, lpszEmail);
 	st_UserTable.nIDNumber = nIDNumber;
 
-	int nMsgLen = sizeof(XENGINE_PROTOCOL_USERREG);
+	int nMsgLen = sizeof(XENGINE_PROTOCOL_USERINFO);
 	AuthRegClient_Protocol_Send((LPCTSTR)&st_UserTable, tszMsgBuffer, &nMsgLen, XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS);
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
 	{
@@ -330,10 +330,10 @@ int AuthClient_GetTime()
 }
 int AuthClient_Delete()
 {
-	XENGINE_PROTOCOL_USERREG st_UserInfo;
+	XENGINE_PROTOCOL_USERINFO st_UserInfo;
 	TCHAR tszMsgBuffer[2048];
 
-	memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERREG));
+	memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 	strcpy(st_UserInfo.tszUserName, lpszUser);
@@ -341,7 +341,7 @@ int AuthClient_Delete()
 	strcpy(st_UserInfo.tszEMailAddr, lpszEmail);
 	st_UserInfo.nIDNumber = nIDNumber;
 
-	int nMsgLen = sizeof(XENGINE_PROTOCOL_USERREG);
+	int nMsgLen = sizeof(XENGINE_PROTOCOL_USERINFO);
 	AuthRegClient_Protocol_Send((LPCTSTR)&st_UserInfo, tszMsgBuffer, &nMsgLen, XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQDEL);
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
 	{

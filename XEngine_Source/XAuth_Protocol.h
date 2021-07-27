@@ -33,7 +33,7 @@ typedef struct
 //用户表
 typedef struct tag_AuthReg_UserTable
 {
-	XENGINE_PROTOCOL_USERREG st_UserInfo;
+	XENGINE_PROTOCOL_USERINFO st_UserInfo;
 	CHAR tszLeftTime[64];                                                 //剩余日期
 	CHAR tszHardCode[32];                                                 //硬件码
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型

@@ -34,6 +34,7 @@
 #define IDC_EDIT9                       1016
 #define IDC_EDIT10                      1017
 #define IDC_RADIO3                      1018
+#define IDC_EDIT14                      1018
 #define IDC_RADIO4                      1019
 #define IDC_LIST1                       1019
 #define IDC_IPADDRESS1                  1021
