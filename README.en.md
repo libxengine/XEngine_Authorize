@@ -19,6 +19,7 @@ feature list:
 7. Support Serical Multie types(Minute card, day card, frequency card, custom card)
 8. Support Try,Support quick verification
 9. Support Retrieve password through email
+10. Support Verification for Local CDKey
 
 ## install
 
@@ -57,6 +58,12 @@ execute command in XEngine_Source path
 make complie  
 make FLAGS=InstallAll Install File  
 make FLAGS=CleanAll Clear Complie  
+
+## Screenshot of the program
+![输入图片说明](https://authorize.xyry.org/1.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/2.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/3.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/4.png "在这里输入图片标题")
 
 ## Participate in contribution
 

@@ -19,6 +19,7 @@ c c++network Authorize service
 7. 序列卡多种类型支持(分钟卡,天数卡,次数卡,自定义卡)
 8. 支持试用,支持快速验证
 9. 支持通过邮件找回密码
+10. 支持本地CDKEY注册验证
 
 ## 安装教程
 
@@ -57,9 +58,10 @@ make FLAGS=InstallAll 安装库程序
 make FLAGS=CleanAll 清理编译  
 
 ## 程序截图
-![输入图片说明](http://authorize.xyry.org/1.png "在这里输入图片标题")
-![输入图片说明](http://authorize.xyry.org/2.png "在这里输入图片标题")
-![输入图片说明](http://authorize.xyry.org/3.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/1.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/2.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/3.png "在这里输入图片标题")
+![输入图片说明](https://authorize.xyry.org/4.png "在这里输入图片标题")
 
 ## 参与贡献
 
