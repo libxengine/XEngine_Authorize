@@ -32,6 +32,7 @@ public:
 	CDialog_Configure m_DlgConfig;
 	CDialog_Serial m_DlgSerial;
 	CDialog_User m_DlgUser;
+	CDialog_Local m_DlgLocal;
 public:
 	BOOL bThread;
 	int nThreadCount;

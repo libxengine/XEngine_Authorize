@@ -74,10 +74,12 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_TabCtrl.InsertItem(0, _T("服务配置"));
 	m_TabCtrl.InsertItem(1, _T("用户管理"));
 	m_TabCtrl.InsertItem(2, _T("序列号管理"));
+	m_TabCtrl.InsertItem(3, _T("本地注册验证"));
 
 	m_DlgConfig.Create(IDD_DIALOG_CONFIG, &m_TabCtrl);
 	m_DlgUser.Create(IDD_DIALOG_USER, &m_TabCtrl);
 	m_DlgSerial.Create(IDD_DIALOG_SERIAL, &m_TabCtrl);
+	m_DlgLocal.Create(IDD_DIALOG_LOCAL, &m_TabCtrl);
 	//调整子对话框在父窗口中的位置 
 	CRect st_Rect;
 	m_TabCtrl.GetClientRect(&st_Rect);
@@ -89,10 +91,12 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgConfig.MoveWindow(&st_Rect);
 	m_DlgUser.MoveWindow(&st_Rect);
 	m_DlgSerial.MoveWindow(&st_Rect);
+	m_DlgLocal.MoveWindow(&st_Rect);
 	//分别设置隐藏和显示 
 	m_DlgConfig.ShowWindow(TRUE);
 	m_DlgUser.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
+	m_DlgLocal.ShowWindow(FALSE);
 	m_TabCtrl.SetCurSel(0);
 
 	if (!SystemApi_Skin_CreateTrayTip(m_hWnd, _T("XEngine网络验证服务"), WINSDK_SKIN_USERMSG_TRAY, IDR_MAINFRAME))
@@ -241,16 +245,24 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(TRUE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgLocal.ShowWindow(FALSE);
 		break;
 	case 1:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(TRUE);
 		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgLocal.ShowWindow(FALSE);
 		break;
 	case 2:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(TRUE);
+		m_DlgLocal.ShowWindow(FALSE);
+	case 3:
+		m_DlgConfig.ShowWindow(FALSE);
+		m_DlgUser.ShowWindow(FALSE);
+		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgLocal.ShowWindow(TRUE);
 	default:
 		break;
 	}

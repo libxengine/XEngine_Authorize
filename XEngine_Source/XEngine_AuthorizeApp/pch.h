@@ -49,6 +49,7 @@ using namespace std;
 #include "Authorize_Dialog/CDialog_Configure.h"
 #include "Authorize_Dialog/CDialog_Serial.h"
 #include "Authorize_Dialog/CDialog_User.h"
+#include "Authorize_Dialog/CDialog_Local.h"
 #include "XEngine_AuthorizeAppDlg.h"
 #include "Authorize_Task/Authorize_Task.h"
 #include "Authorize_Task/Authorize_TaskLog.h"

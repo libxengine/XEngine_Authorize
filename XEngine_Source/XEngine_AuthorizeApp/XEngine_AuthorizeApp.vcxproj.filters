@@ -66,6 +66,9 @@
     <ClInclude Include="Authorize_Task\Authorize_TaskEvent.h">
       <Filter>头文件\Authorize_Task</Filter>
     </ClInclude>
+    <ClInclude Include="Authorize_Dialog\CDialog_Local.h">
+      <Filter>头文件\Authorize_Dialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XEngine_AuthorizeApp.cpp">
@@ -97,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="Authorize_Task\Authorize_TaskEvent.cpp">
       <Filter>源文件\Authorize_Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Dialog\CDialog_Local.cpp">
+      <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -11,12 +11,12 @@ AUTH_CONFIGURE_PATH = ./AuthorizeModule_Configure
 
 AUTH_APP_PATH = ./XEngine_AuthorizeApp
 
-NETENGINE_LIB = libAuthComponents_Session.so libAuthComponents_SQLPacket.so                                          \
+XENGINE = libAuthComponents_Session.so libAuthComponents_SQLPacket.so                                                \
                 libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so                                       \
 		 XEngine_AuthorizeApp.exe 
 
 .PHONY:MakeAll 
-MakeAll:$(NETENGINE_LIB)
+MakeAll:$(XENGINE)
 
 libAuthComponents_Session.so:
 	make -C $(COMPONENTS_SESSION_PATH) $(FLAGS)
