@@ -36,15 +36,15 @@ using namespace std;
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
 
-#include "../XAuth_Protocol.h"
-#include "../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Define.h"
-#include "../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Error.h"
-#include "../XEngine_AuthComponents/AuthComponents_Session/Session_Define.h"
-#include "../XEngine_AuthComponents/AuthComponents_Session/Session_Error.h"
-#include "../AuthorizeModule_Protocol/Protocol_Define.h"
-#include "../AuthorizeModule_Protocol/Protocol_Error.h"
-#include "../AuthorizeModule_Configure/Config_Define.h"
-#include "../AuthorizeModule_Configure/Config_Error.h"
+#include "../../XAuth_Protocol.h"
+#include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Define.h"
+#include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Error.h"
+#include "../../XEngine_AuthComponents/AuthComponents_Session/Session_Define.h"
+#include "../../XEngine_AuthComponents/AuthComponents_Session/Session_Error.h"
+#include "../../AuthorizeModule_Protocol/Protocol_Define.h"
+#include "../../AuthorizeModule_Protocol/Protocol_Error.h"
+#include "../../AuthorizeModule_Configure/Config_Define.h"
+#include "../../AuthorizeModule_Configure/Config_Error.h"
 
 #include "Authorize_Dialog/CDialog_Configure.h"
 #include "Authorize_Dialog/CDialog_Serial.h"
@@ -62,15 +62,15 @@ extern XNETHANDLE xhPool;
 extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 #ifdef _DEBUG
-#pragma comment(lib,"../Debug/AuthComponents_SQLPacket")
-#pragma comment(lib,"../Debug/AuthComponents_Session")
-#pragma comment(lib,"../Debug/AuthorizeModule_Configure")
-#pragma comment(lib,"../Debug/AuthorizeModule_Protocol")
+#pragma comment(lib,"../../Debug/AuthComponents_SQLPacket")
+#pragma comment(lib,"../../Debug/AuthComponents_Session")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Configure")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Protocol")
 #else
-#pragma comment(lib,"../Release/AuthComponents_SQLPacket")
-#pragma comment(lib,"../Release/AuthComponents_Session")
-#pragma comment(lib,"../Release/AuthorizeModule_Configure")
-#pragma comment(lib,"../Release/AuthorizeModule_Protocol")
+#pragma comment(lib,"../../Release/AuthComponents_SQLPacket")
+#pragma comment(lib,"../../Release/AuthComponents_Session")
+#pragma comment(lib,"../../Release/AuthorizeModule_Configure")
+#pragma comment(lib,"../../Release/AuthorizeModule_Protocol")
 #endif
 
 #pragma comment(lib,"x86/XEngine_BaseLib/XEngine_BaseLib.lib")

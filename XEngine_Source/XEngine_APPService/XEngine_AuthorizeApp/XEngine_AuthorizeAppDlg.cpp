@@ -165,9 +165,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	m_DlgConfig.m_EditThreadPool.GetWindowText(m_StrThreads);
 
 	nThreadCount = _ttoi(m_StrThreads.GetBuffer());
-
-	LPCTSTR lpszSQLFile = _T("./XEngine_Database/SQL_User.db");
-	if (!AuthService_SQLPacket_Init(lpszSQLFile))
+	if (!AuthService_SQLPacket_Init(st_AuthConfig.st_XSql.tszSQLite))
 	{
 		AfxMessageBox(_T("初始化数据库失败！"));
 		return;

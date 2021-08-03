@@ -68,6 +68,12 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), NULL, pSt_AuthConfig->st_EMail.tszSmtpUser, MAX_PATH, lpszFile);
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpPass"), NULL, pSt_AuthConfig->st_EMail.tszSmtpPass, MAX_PATH, lpszFile);
 
+	GetPrivateProfileString(_T("XSql"), _T("tszSQLite"), NULL, pSt_AuthConfig->st_XSql.tszSQLite, MAX_PATH, lpszFile);
+
+	pSt_AuthConfig->st_XLog.nLogLeave = GetPrivateProfileInt(_T("XLog"), _T("nLogLeave"), 0, lpszFile);
+	pSt_AuthConfig->st_XLog.nMaxCount = GetPrivateProfileInt(_T("XLog"), _T("nMaxCount"), 0, lpszFile);
+	pSt_AuthConfig->st_XLog.nMaxSize = GetPrivateProfileInt(_T("XLog"), _T("nMaxSize"), 0, lpszFile);
+	GetPrivateProfileString(_T("XLog"), _T("tszLogFile"), NULL, pSt_AuthConfig->st_XLog.tszLogFile, MAX_PATH, lpszFile);
 	return TRUE;
 }
 /********************************************************************

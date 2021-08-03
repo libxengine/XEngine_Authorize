@@ -24,6 +24,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	TCHAR tszClientUser[64];
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
+	NetCore_TCPXCore_CloseForClientEx(xhSocket, lpszClientAddr);
 	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
 		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)

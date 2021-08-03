@@ -19,6 +19,7 @@ typedef struct
 	int nThreads;                                           //启动的线程个数
 	int nVerTimeout;                                        //用户验证超时时间
 	BOOL bAutoStart;                                        //自启动
+	BOOL bDeamon;                                           //守护进程,LINUX
 	struct   
 	{
 		int nVerTime;                                       //验证时间
@@ -38,6 +39,17 @@ typedef struct
 		TCHAR tszSmtpUser[MAX_PATH];                        //用户名
 		TCHAR tszSmtpPass[MAX_PATH];                        //密码
 	}st_EMail;
+	struct
+	{
+		TCHAR tszSQLite[MAX_PATH];
+	}st_XSql;
+	struct
+	{
+		TCHAR tszLogFile[MAX_PATH];
+		int nMaxSize;
+		int nMaxCount;
+		int nLogLeave;
+	}st_XLog;
 }AUTHORIZE_CONFIGURE;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
