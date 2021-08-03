@@ -9,7 +9,7 @@ COMPONENTS_SQLPACKET_PATH = ./XEngine_AuthComponents/AuthComponents_SQLPacket
 AUTH_PROTOCOL_PATH = ./AuthorizeModule_Protocol
 AUTH_CONFIGURE_PATH = ./AuthorizeModule_Configure
 
-AUTH_APP_PATH = ./XEngine_AuthorizeApp
+AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
 XENGINE = libAuthComponents_Session.so libAuthComponents_SQLPacket.so                                                \
                 libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so                                       \

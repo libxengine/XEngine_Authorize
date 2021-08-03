@@ -1,12 +1,11 @@
-#include "pch.h"
+ï»¿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_ThreadClient(LPVOID lParam)
+XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 {
 	XENGINE_THREADINFO* pSt_ThreadInfo = (XENGINE_THREADINFO*)lParam;
-	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)pSt_ThreadInfo->lPClass;
 	int nThreadPos = pSt_ThreadInfo->nPoolIndex + 1;
 
-	while (pClass_This->bThread)
+	while (bIsRun)
 	{
 		if (!HelpComponents_Datas_WaitEventEx(xhPacket, nThreadPos))
 		{
@@ -28,19 +27,21 @@ XHTHREAD CALLBACK XEngine_AuthService_ThreadClient(LPVOID lParam)
 			{
 				continue;
 			}
-			if ((BST_CHECKED == pClass_This->m_DlgConfig.m_RadioKeyPass.GetCheck()) && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
+			if (st_AuthConfig.st_Crypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
 			{
-				CString m_StrPass;
+				TCHAR tszPassword[64];
 				TCHAR tszDeBuffer[2048];
+
+				memset(tszPassword, '\0', sizeof(tszPassword));
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
-				pClass_This->m_DlgConfig.m_EditPass.GetWindowText(m_StrPass);
-				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, m_StrPass.GetBuffer());
-				XEngine_Client_TaskHandle(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, pSt_ThreadInfo->lPClass);
+				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
+				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr);
 			}
 			else
 			{
-				XEngine_Client_TaskHandle(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr, pSt_ThreadInfo->lPClass);
+				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr);
 			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
@@ -48,16 +49,15 @@ XHTHREAD CALLBACK XEngine_AuthService_ThreadClient(LPVOID lParam)
 	return 0;
 }
 
-BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPVOID lParam)
+BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
 {
-	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
-	//ÅĞ¶ÏĞ­ÒéÍ·ºÍÎ²²¿
+	//åˆ¤æ–­åè®®å¤´å’Œå°¾éƒ¨
 	if ((XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER != pSt_ProtocolHdr->wHeader) || (XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL != pSt_ProtocolHdr->wTail) || (ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH != pSt_ProtocolHdr->unOperatorType))
 	{
-		XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬Ğ­Òé´íÎó"), lpszClientAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåè®®é”™è¯¯"), lpszClientAddr);
 		return FALSE;
 	}
-	//ÓÃ»§É¾³ı
+	//ç”¨æˆ·åˆ é™¤
 	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQDEL == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
@@ -72,65 +72,51 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 211;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÓÃ»§²»´æÔÚ"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç”¨æˆ·ä¸å­˜åœ¨"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		if ((st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszEMailAddr, st_UserInfo.tszEMailAddr, _tcslen(st_UserTable.st_UserInfo.tszEMailAddr))) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszUserPass, st_UserInfo.tszUserPass, _tcslen(st_UserTable.st_UserInfo.tszUserPass))))
 		{
 			pSt_ProtocolHdr->wReserve = 212;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬×¢ÏúÊ§°Ü,ÑéÖ¤ĞÅÏ¢´íÎó"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ³¨é”€å¤±è´¥,éªŒè¯ä¿¡æ¯é”™è¯¯"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
-		//´ÓÊı¾İ¿âÉ¾³ıÎÄ¼ş
+		//ä»æ•°æ®åº“åˆ é™¤æ–‡ä»¶
 		if (!AuthService_SQLPacket_UserDelete(st_UserInfo.tszUserName))
 		{
 			pSt_ProtocolHdr->wReserve = 213;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬×¢ÏúÊ§°Ü,É¾³ıĞÅÏ¢Ê§°Ü"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ³¨é”€å¤±è´¥,åˆ é™¤ä¿¡æ¯å¤±è´¥"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
-		//×¢ÏúĞèÒªÉ¾³ıµÇÂ¼ÓÃ»§
-		AuthService_Session_CloseClient(st_UserInfo.tszUserName);
-		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
-		{
-			CString m_StrAddr = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 2);
-			if (0 == _tcsnicmp(lpszClientAddr, m_StrAddr.GetBuffer(), _tcslen(lpszClientAddr)))
-			{
-				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
-			}
-		}
-
 		pSt_ProtocolHdr->unPacketSize = 0;
-		XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬×¢Ïú³É¹¦"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ³¨é”€æˆåŠŸ"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQREGISTER == pSt_ProtocolHdr->unOperatorCode)
 	{
-		//ÓÃ»§×¢²á
+		//ç”¨æˆ·æ³¨å†Œ
 		AUTHREG_USERTABLE st_UserTable;
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		memcpy(&st_UserTable.st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPREGISTER;
-		//Ğ´ÊÔÓÃÆÚ
-		CString m_StrTryTime;
-		pClass_This->m_DlgConfig.m_EditTryTime.GetWindowText(m_StrTryTime);
-		//Ìî³äĞ´ÈëÊı¾İ
-		_tcscpy(st_UserTable.tszLeftTime, m_StrTryTime.GetBuffer());
-		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboRegTry.GetCurSel();
+		//å¡«å……å†™å…¥æ•°æ®
+		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_Verification.nTryTime);
+		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_Verification.nTryMode;
 		if (AuthService_SQLPacket_UserRegister(&st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬×¢²á³É¹¦"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ³¨å†ŒæˆåŠŸ"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 231;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬×¢²áÊ§°Ü£¬ÎŞ·¨¼ÌĞø£¬´íÎó£º%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, SQLPacket_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ³¨å†Œå¤±è´¥ï¼Œæ— æ³•ç»§ç»­ï¼Œé”™è¯¯ï¼š%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -145,58 +131,42 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		if (!AuthService_SQLPacket_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 251;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼Ê§°Ü£¬ÓÃ»§Ãû²»´æÔÚ"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•å¤±è´¥ï¼Œç”¨æˆ·åä¸å­˜åœ¨"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass)))
 		{
 			pSt_ProtocolHdr->wReserve = 252;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼Ê§°Ü£¬ÃÜÂë´íÎó"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•å¤±è´¥ï¼Œå¯†ç é”™è¯¯"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-		//·ÖÎö³äÖµÀàĞÍ
+		//åˆ†æå……å€¼ç±»å‹
 		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.en_AuthRegSerialType)
 		{
 			pSt_ProtocolHdr->wReserve = 253;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼Ê§°Ü£¬¿Í»§¶ËÀàĞÍ´íÎó"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•å¤±è´¥ï¼Œå®¢æˆ·ç«¯ç±»å‹é”™è¯¯"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if ('0' == st_UserTable.tszLeftTime[0])
 		{
 			pSt_ProtocolHdr->wReserve = 254;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼Ê§°Ü£¬Ã»ÓĞÊ£ÓàÊ±¼äÁË"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•å¤±è´¥ï¼Œæ²¡æœ‰å‰©ä½™æ—¶é—´äº†"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if (!AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼Ê§°Ü£¬²åÈë»á»°¹ÜÀíÊ§°Ü,´íÎó:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•å¤±è´¥ï¼Œæ’å…¥ä¼šè¯ç®¡ç†å¤±è´¥,é”™è¯¯:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-
-		TCHAR tszUserId[64];
-		memset(tszUserId, '\0', sizeof(tszUserId));
-		int nItemCount = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount();
-		if (0 == nItemCount)
-		{
-			_stprintf(tszUserId, _T("%d"), nItemCount);
-		}
-		else
-		{
-			_stprintf(tszUserId, _T("%d"), nItemCount + 1);
-		}
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.InsertItem(nItemCount, tszUserId);
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, st_AuthProtocol.tszUserName);
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 2, lpszClientAddr);
-
 		pSt_ProtocolHdr->wReserve = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-		XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬µÇÂ¼³É¹¦"), lpszClientAddr, st_AuthProtocol.tszUserName);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç™»å½•æˆåŠŸ"), lpszClientAddr, st_AuthProtocol.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQPAY == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -213,16 +183,15 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			{
 				AuthService_Session_SetUser(&st_UserInfo);
 			}
-			pClass_This->m_DlgSerial.SerialManage_Flush();
 			pSt_ProtocolHdr->wReserve = 0;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬³äÖµ³É¹¦£¬ĞòÁĞºÅ£º%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œå……å€¼æˆåŠŸï¼Œåºåˆ—å·ï¼š%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 271;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬³äÖµÊ§°Ü£¬ÎŞ·¨¼ÌĞø£¬´íÎó£º%X"), lpszClientAddr, st_UserPay.tszUserName, SQLPacket_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œå……å€¼å¤±è´¥ï¼Œæ— æ³•ç»§ç»­ï¼Œé”™è¯¯ï¼š%X"), lpszClientAddr, st_UserPay.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -240,24 +209,24 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 291;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÕÒ»ØÃÜÂëÊ§°Ü£¬ÓÃ»§²»´æÔÚ"), lpszClientAddr, st_UserInfo.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ‰¾å›å¯†ç å¤±è´¥ï¼Œç”¨æˆ·ä¸å­˜åœ¨"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
-		//°²È«ÑéÖ¤ÅĞ¶Ï
+		//å®‰å…¨éªŒè¯åˆ¤æ–­
 		if ((0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber))
 		{
 			pSt_ProtocolHdr->wReserve = 292;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÕÒ»ØÃÜÂëÊ§°Ü£¬ÑéÖ¤ĞÅÏ¢Ê§°Ü"), lpszClientAddr, st_UserInfo.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ‰¾å›å¯†ç å¤±è´¥ï¼ŒéªŒè¯ä¿¡æ¯å¤±è´¥"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		_tcscpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		_tcscpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
 
 		pSt_ProtocolHdr->wReserve = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
-		XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÕÒ»ØÃÜÂë³É¹¦"), lpszClientAddr, st_UserInfo.tszUserName);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œæ‰¾å›å¯†ç æˆåŠŸ"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -272,19 +241,19 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		if (AuthService_Session_GetTimer(tszUserName, &st_AuthTime))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬»ñÈ¡Ê±¼ä³É¹¦£¬ÀàĞÍ£º%d£¬ÔÚÏßÊ±¼ä£º%ld£¬Ê£ÓàÊ±¼ä£º%ld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè·å–æ—¶é—´æˆåŠŸï¼Œç±»å‹ï¼š%dï¼Œåœ¨çº¿æ—¶é—´ï¼š%ldï¼Œå‰©ä½™æ—¶é—´ï¼š%ld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 0x2B1;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬»ñÈ¡Ê±¼äÊ§°Ü£¬ÎŞ·¨¼ÌĞø£¬´íÎó£º%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè·å–æ—¶é—´å¤±è´¥ï¼Œæ— æ³•ç»§ç»­ï¼Œé”™è¯¯ï¼š%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
 		}
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_NOTIFYMSG == pSt_ProtocolHdr->unOperatorCode)
 	{
-		XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬·¢ËÍÊı¾İ£¬´óĞ¡£º%d£¬ÄÚÈİ£º%s"), lpszClientAddr, pSt_ProtocolHdr->unPacketSize, lpszMsgBuffer);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œå‘é€æ•°æ®ï¼Œå¤§å°ï¼š%dï¼Œå†…å®¹ï¼š%s"), lpszClientAddr, pSt_ProtocolHdr->unPacketSize, lpszMsgBuffer);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQTRYVER == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -297,70 +266,64 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		if (AuthService_SQLPacket_TryQuery(&st_AuthVer))
 		{
 			TCHAR tszEndTime[64];
-			__int64 nTimeSpan = 0;
+			__int64x nTimeSpan = 0;
 			memset(tszEndTime, '\0', sizeof(tszEndTime));
-			//¸ù¾İ·½Ê½À´¼ÆËãÊ£ÓàÊ±¼ä
+			//æ ¹æ®æ–¹å¼æ¥è®¡ç®—å‰©ä½™æ—¶é—´
 			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
 			{
 				nTimeSpan = st_AuthVer.nTryTime;
 			}
 			else
 			{
-				//¼ÆËãÊ±¼ä²î
+				//è®¡ç®—æ—¶é—´å·®
 				BaseLib_OperatorTime_ToStringTimer(tszEndTime);
 				BaseLib_OperatorTimeSpan_GetForStr(st_AuthVer.tszVerData, tszEndTime, &nTimeSpan, 2);
 			}
-
-			CString m_StrAuthTime;
-			pClass_This->m_DlgConfig.m_EditAuthTime.GetWindowText(m_StrAuthTime);
-			//ÊÇ·ñ³¬¹ı
-			if (nTimeSpan > _ttoi(m_StrAuthTime.GetBuffer()))
+			//æ˜¯å¦è¶…è¿‡
+			if (nTimeSpan > st_AuthConfig.st_Verification.nVerTime)
 			{
 				pSt_ProtocolHdr->wReserve = 0x2D1;
 				pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
-				XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ĞòÁĞºÅ£º%s£¬ÁÙÊ±ÑéÖ¤Ê§°Ü£¬´ËĞòÁĞºÅÒÑ¾­ÊÔÓÃµ½ÆÚ"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåºåˆ—å·ï¼š%sï¼Œä¸´æ—¶éªŒè¯å¤±è´¥ï¼Œæ­¤åºåˆ—å·å·²ç»è¯•ç”¨åˆ°æœŸ"), lpszClientAddr, st_AuthVer.tszVerSerial);
 			}
 			else
 			{
 				pSt_ProtocolHdr->wReserve = 0;
-				XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ĞòÁĞºÅ£º%s£¬ÁÙÊ±ÑéÖ¤³É¹¦£¬ÒÑÓÃÊ±¼ä:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
-
 				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
 				{
-					//´ÎÊı¿¨ĞèÒª¸üĞÂ²Å¿ÉÒÔ
+					//æ¬¡æ•°å¡éœ€è¦æ›´æ–°æ‰å¯ä»¥
 					st_AuthVer.nTryTime++;
 					AuthService_SQLPacket_TrySet(&st_AuthVer);
 				}
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåºåˆ—å·ï¼š%sï¼Œä¸´æ—¶éªŒè¯æˆåŠŸï¼Œå·²ç”¨æ—¶é—´:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
 			}
 		}
 		else
 		{
-			CString m_StrAuthTime;
-			pClass_This->m_DlgConfig.m_EditAuthTime.GetWindowText(m_StrAuthTime);
-			//Ìî³äĞ´ÈëÊı¾İ
-			st_AuthVer.nTryTime = _ttoi(m_StrAuthTime.GetBuffer());
-			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboListAuth.GetCurSel();
-			//¿´ÏÂÊÇ·ñÆôÓÃÁË´Ë¹¦ÄÜ
+			//å¡«å……å†™å…¥æ•°æ®
+			st_AuthVer.nTryTime = st_AuthConfig.st_Verification.nVerTime;
+			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_Verification.nVerMode;
+			//çœ‹ä¸‹æ˜¯å¦å¯ç”¨äº†æ­¤åŠŸèƒ½
 			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
 			{
 				pSt_ProtocolHdr->wReserve = 0x2D2;
-				XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ĞòÁĞºÅ£º%s£¬ÁÙÊ±ÑéÖ¤²åÈëÊ§°Ü£¬ÒòÎª·şÎñÆ÷¹Ø±ÕÁË´Ë¹¦ÄÜ"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåºåˆ—å·ï¼š%sï¼Œä¸´æ—¶éªŒè¯æ’å…¥å¤±è´¥ï¼Œå› ä¸ºæœåŠ¡å™¨å…³é—­äº†æ­¤åŠŸèƒ½"), lpszClientAddr, st_AuthVer.tszVerSerial);
 			}
 			else
 			{
 				if (AuthService_SQLPacket_TryInsert(&st_AuthVer))
 				{
-					XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ĞòÁĞºÅ£º%s£¬ÁÙÊ±ÑéÖ¤²åÈë³É¹¦"), lpszClientAddr, st_AuthVer.tszVerSerial);
 					pSt_ProtocolHdr->unPacketSize = 0;
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåºåˆ—å·ï¼š%sï¼Œä¸´æ—¶éªŒè¯æ’å…¥æˆåŠŸ"), lpszClientAddr, st_AuthVer.tszVerSerial);
 				}
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 0x2D3;
-					XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ĞòÁĞºÅ£º%s£¬ÁÙÊ±ÑéÖ¤²åÈëÊ§°Ü£¬ÎŞ·¨¼ÌĞø£¬´íÎó£º%X"), lpszClientAddr, st_AuthVer.tszVerSerial, SQLPacket_GetLastError());
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œåºåˆ—å·ï¼š%sï¼Œä¸´æ—¶éªŒè¯æ’å…¥å¤±è´¥ï¼Œæ— æ³•ç»§ç»­ï¼Œé”™è¯¯ï¼š%X"), lpszClientAddr, st_AuthVer.tszVerSerial, SQLPacket_GetLastError());
 				}
 			}
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -377,20 +340,20 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		{
 			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_UserTable.st_UserInfo.nIDNumber))
 			{
-				XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇó²éÑ¯ÓÃ»§ĞÅÏ¢³É¹¦"), lpszClientAddr, st_UserInfo.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚æŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯æˆåŠŸ"), lpszClientAddr, st_UserInfo.tszUserName);
 			}
 			else
 			{
 				pSt_ProtocolHdr->wReserve = 2100;
-				XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇó²éÑ¯ÓÃ»§ĞÅÏ¢Ê§°Ü,ÃÜÂë´íÎó"), lpszClientAddr, st_UserInfo.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚æŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯å¤±è´¥,å¯†ç é”™è¯¯"), lpszClientAddr, st_UserInfo.tszUserName);
 			}
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 2101;
-			XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇó²éÑ¯ÓÃ»§ĞÅÏ¢Ê§°Ü,ÕÊ»§²»´æÔÚ"), lpszClientAddr, st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚æŸ¥è¯¢ç”¨æˆ·ä¿¡æ¯å¤±è´¥,å¸æˆ·ä¸å­˜åœ¨"), lpszClientAddr, st_UserInfo.tszUserName);
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -411,27 +374,27 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				if (AuthService_SQLPacket_UserSet(&st_SQLTable))
 				{
 					pSt_ProtocolHdr->wReserve = 0;
-					XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇóÉèÖÃÓÃ»§ĞÅÏ¢³É¹¦\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
-					
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚è®¾ç½®ç”¨æˆ·ä¿¡æ¯æˆåŠŸ\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
+
 				}
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 2120;
-					XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇóÉèÖÃÓÃ»§ĞÅÏ¢Ê§°Ü,´íÎó:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚è®¾ç½®ç”¨æˆ·ä¿¡æ¯å¤±è´¥,é”™è¯¯:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
 				}
 			}
 			else
 			{
 				pSt_ProtocolHdr->wReserve = 2121;
-				XEngine_Authorize_LogPrint(_T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇóÉèÖÃÓÃ»§ĞÅÏ¢Ê§°Ü,ĞÅÏ¢²»Æ¥Åä\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚è®¾ç½®ç”¨æˆ·ä¿¡æ¯å¤±è´¥,ä¿¡æ¯ä¸åŒ¹é…\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
 			}
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 2122;
-			XEngine_Authorize_LogPrint(_T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬ÇëÇóÉèÖÃÓÃ»§ĞÅÏ¢Ê§°Ü,´íÎó:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œè¯·æ±‚è®¾ç½®ç”¨æˆ·ä¿¡æ¯å¤±è´¥,é”™è¯¯:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
 	}
 	return TRUE;
 }

@@ -36,7 +36,7 @@ pch.o:pch.cpp
 
 InstallAll:InstallSo
 InstallSo:./libAuthorizeModule_Protocol.so
-	cp ./libAuthorizeModule_Protocol.so ../../../XEngine_Release/libAuthorizeModule_Protocol.so
+	cp ./libAuthorizeModule_Protocol.so ../../XEngine_Release/libAuthorizeModule_Protocol.so
 
 
 
