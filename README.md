@@ -28,11 +28,11 @@ c c++network Authorize service
 XEngine版本需要V7.17或者以上版本    
 
 #### Windows
-直接运行即可.
+直接运行即可,使用XEngine_AuthorizeApp
 
 
 #### Linux
-在控制台运行
+在控制台运行,使用XEngine_AuthorizeService
 
 ## 编译
 

@@ -28,11 +28,11 @@ support system above windows 7sp1 and linux(ubuntu20.04,centos8)
 XEngine need V7.17 or above  
 
 #### Windows
-Just Run it.
+Just Run it.,use XEngine_AuthorizeApp
 
 
 #### Linux
-Run it on the terminal
+Run it on the terminal,use XEngine_AuthorizeService
 
 ## complie
 
