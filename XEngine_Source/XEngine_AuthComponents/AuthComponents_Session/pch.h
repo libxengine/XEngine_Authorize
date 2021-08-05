@@ -46,6 +46,12 @@ using namespace std;
 extern BOOL Session_IsErrorOccur;
 extern DWORD Session_dwErrorCode;
 
+#ifdef _UNICODE
+typedef std::wstring tstring;
+#else
+typedef std::string tstring;
+#endif
+
 #ifdef _WINDOWS
 #ifdef _WIN64
 #pragma comment(lib,"x64/XEngine_BaseLib/XEngine_BaseLib.lib")

@@ -256,11 +256,13 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(TRUE);
 		m_DlgLocal.ShowWindow(FALSE);
+		break;
 	case 3:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgLocal.ShowWindow(TRUE);
+		break;
 	default:
 		break;
 	}

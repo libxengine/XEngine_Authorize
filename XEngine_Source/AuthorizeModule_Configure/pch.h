@@ -14,7 +14,10 @@
 #endif
 
 #endif //PCH_H
+#include <stdio.h>
 #include <string.h>
+#include <time.h>
+#include <errno.h>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>

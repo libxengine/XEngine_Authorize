@@ -21,7 +21,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 			_i64tot(nLeftTimer, tszTimeLeft, 10);
 
 			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 3, tszTimeONLine);
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == en_SerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == en_SerialType))
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == en_AuthRegSerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == en_AuthRegSerialType))
 			{
 				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 4, tszTimeLeft);
 			}
@@ -29,7 +29,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 			{
 				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 4, lpszLeftDate);
 			}
-			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 5, lpszKeyType[en_SerialType]);
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 5, lpszKeyType[en_AuthRegSerialType]);
 
 			if (nLeftTimer <= 0)
 			{

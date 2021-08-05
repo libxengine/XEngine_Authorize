@@ -16,6 +16,7 @@
 #endif //PCH_H
 #include <string.h>
 #include <list>
+#include <string>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
@@ -42,6 +43,12 @@ using namespace std;
 *********************************************************************/
 extern BOOL SQLPacket_IsErrorOccur;
 extern DWORD SQLPacket_dwErrorCode;
+
+#ifdef _UNICODE
+typedef std::wstring tstring;
+#else
+typedef std::string tstring;
+#endif
 
 #ifdef _WINDOWS
 #ifdef _WIN64
