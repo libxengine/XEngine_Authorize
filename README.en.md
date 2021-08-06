@@ -1,37 +1,83 @@
 # XEngine_Authorize
 
-#### Description
-c c++网络验证服务器 网络授权服务器
-c c++network Authorize service
+## Introduction
+c c++网络验证服务器 网络授权服务器  
+c c++network Authorize service  
+the server is network authorize verification service code library,This service mainly provides network authorization verification function.support local and network verification mode  
+This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
-#### Software Architecture
-Software architecture description
+## Software feature
+The purpose of development and implementation based on libXEngine is a cross-platform network storage service  
+This repository has a development and master branch. If you want to use it, please use the master branch  
+feature list:  
+1. use standard private protocol to handle network communication
+2. Support Encrypto communication
+3. Support User Management
+4. Support Serial Management
+5. Support Log Management
+6. Support Configure Management
+7. Support Serical Multie types(Minute card, day card, frequency card, custom card)
+8. Support Try,Support quick verification
+9. Support Retrieve password through email
+10. Support Verification for Local CDKey
 
-#### Installation
+## install
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+#### Requirements
+support system above windows 7sp1 and linux(ubuntu20.04,centos8)  
+XEngine need V7.17 or above  
 
-#### Instructions
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### Contribution
-
-1.  Fork the repository
-2.  Create Feat_xxx branch
-3.  Commit your code
-4.  Create Pull Request
+#### Windows
+Just Run it.,use XEngine_AuthorizeApp
 
 
-#### Gitee Feature
+#### Linux
+Run it on the terminal,use XEngine_AuthorizeService
 
-1.  You can use Readme\_XXX.md to support different languages, such as Readme\_en.md, Readme\_zh.md
-2.  Gitee blog [blog.gitee.com](https://blog.gitee.com)
-3.  Explore open source project [https://gitee.com/explore](https://gitee.com/explore)
-4.  The most valuable open source project [GVP](https://gitee.com/gvp)
-5.  The manual of Gitee [https://gitee.com/help](https://gitee.com/help)
-6.  The most popular members  [https://gitee.com/gitee-stars/](https://gitee.com/gitee-stars/)
+## complie
+
+#### Windows
+use vs2019 x86(debug or release) x64(only release) open and complie  
+You need to configure the environment in the following way, otherwise you may need to set the library directory in the project yourself  
+
+##### XEngine
+XEngine can be download with mine repository,whe you downloaded xengine,you have to add value to you user environment  
+- XEngine_Include header file path
+- XEngine_Library library file path
+
+#### Linux
+Linux use Makefile complie  
+UBUNTU20.04 x64 or CENTOS8 x64  
+
+##### XEngine环境
+you can install xengine env to your system by shell  
+like this:sudo XEngine_RunEnv.sh -i 3
+
+##### Screenshot of the program
+execute command in XEngine_Source path   
+make complie  
+make FLAGS=InstallAll Install File  
+make FLAGS=CleanAll Clear Complie  
+
+## Screenshot of the program
+![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
+
+## Participate in contribution
+
+1.  Fork this code
+2.  Create new Feat_xxx branch
+3.  Submit the code
+4.  New Pull Request
+
+## Authorization instructions
+Use this software must be open source and indicate the source,If you want closed source and commercial,Then need to be authorized by the author.
+
+## Follow us
+If you think this software is helpful to you, please give us a START
+
+## post issues
+
+if you have eny quest.post issues...
