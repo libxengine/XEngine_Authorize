@@ -50,7 +50,8 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARAMENT;
 		return FALSE;
 	}
-	pSt_AuthConfig->nPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("ListenPort"), 0, lpszFile);
+	pSt_AuthConfig->nTCPPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("TCPPort"), 0, lpszFile);
+	pSt_AuthConfig->nWSPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("WSPort"), 0, lpszFile);
 	pSt_AuthConfig->nThreads = GetPrivateProfileInt(_T("ServiceConfig"), _T("ThreadPool"), 0, lpszFile);
 	pSt_AuthConfig->nVerTimeout = GetPrivateProfileInt(_T("ServiceConfig"), _T("UserVerTimed"), 0, lpszFile);
 	pSt_AuthConfig->bAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, lpszFile);
