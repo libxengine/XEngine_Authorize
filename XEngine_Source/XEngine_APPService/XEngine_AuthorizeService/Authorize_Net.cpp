@@ -1,18 +1,49 @@
 ﻿#include "Authorize_Hdr.h"
 //////////////////////////////////////////////////////////////////////////
-BOOL __stdcall XEngine_Client_Accept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+BOOL __stdcall XEngine_Client_TCPAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
-	HelpComponents_Datas_CreateEx(xhPacket, lpszClientAddr, 0);
+	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	return TRUE;
 }
-void __stdcall XEngine_Client_Recv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
+void __stdcall XEngine_Client_TCPRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
 {
-	if (!HelpComponents_Datas_PostEx(xhPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
+	if (!HelpComponents_Datas_PostEx(xhTCPPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
 	}
 }
-void __stdcall XEngine_Client_Close(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+void __stdcall XEngine_Client_TCPClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr);
+}
+BOOL __stdcall XEngine_Client_WSAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
+	return TRUE;
+}
+void __stdcall XEngine_Client_WSRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
+{
+	BOOL bLogin = FALSE;
+	RfcComponents_WSPacket_GetLoginEx(xhWSPacket, lpszClientAddr, &bLogin);
+	if (bLogin)
+	{
+		if (!RfcComponents_WSPacket_PostEx(xhWSPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
+		}
+	}
+	else
+	{
+		int nSDLen = nMsgLen;
+		TCHAR tszHandsBuffer[1024];
+		memset(tszHandsBuffer, '\0', sizeof(tszHandsBuffer));
+
+		RfcComponents_WSConnector_HandShake(lpszRecvMsg, &nSDLen, tszHandsBuffer);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszHandsBuffer, nSDLen);
+		RfcComponents_WSPacket_SetLogin(lpszClientAddr);
+	}
+}
+void __stdcall XEngine_Client_WSClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr);
 }
@@ -33,8 +64,10 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 		}
 		AuthService_Session_CloseClient(tszClientUser);
 	}
-	HelpComponents_Datas_DeleteEx(xhPacket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhSocket, lpszClientAddr);
+	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
+	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
 	return TRUE;
 }
@@ -82,6 +115,6 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			nMsgLen = nSDLen;
 		}
 	}
-	NetCore_TCPXCore_SendEx(xhSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+	NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
 	return TRUE;
 }

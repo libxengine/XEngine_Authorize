@@ -7,7 +7,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 
 	while (bIsRun)
 	{
-		if (!HelpComponents_Datas_WaitEventEx(xhPacket, nThreadPos))
+		if (!HelpComponents_Datas_WaitEventEx(xhTCPPacket, nThreadPos))
 		{
 			continue;
 		}
@@ -20,10 +20,10 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 
 		int nListCount = 0;
 		HELPCOMPONENT_PACKET_CLIENT** ppSt_ListClient;
-		HelpComponents_Datas_GetPoolEx(xhPacket, nThreadPos, &ppSt_ListClient, &nListCount);
+		HelpComponents_Datas_GetPoolEx(xhTCPPacket, nThreadPos, &ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
-			if (!HelpComponents_Datas_GetEx(xhPacket, ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
+			if (!HelpComponents_Datas_GetEx(xhTCPPacket, ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
 			{
 				continue;
 			}
