@@ -73,12 +73,12 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(XEngine_Include);$(IncludePath)</IncludePath>
-    <LibraryPath>$(XEngine_Library);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(XEngine_Include);$(IncludePath)</IncludePath>
-    <LibraryPath>$(XEngine_Library);$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -149,6 +149,7 @@
     <ClCompile Include="Authorize_Task.cpp" />
     <ClCompile Include="Authorize_Net.cpp" />
     <ClCompile Include="Authorize_TCPTask.cpp" />
+    <ClCompile Include="Authorize_WSTask.cpp" />
     <ClCompile Include="XEngine_AuthorizeService.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -157,6 +158,7 @@
     <ClInclude Include="Authorize_Task.h" />
     <ClInclude Include="Authorize_Net.h" />
     <ClInclude Include="Authorize_TCPTask.h" />
+    <ClInclude Include="Authorize_WSTask.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
