@@ -102,7 +102,22 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 		TCHAR tszWSBuffer[4096];
 		memset(tszWSBuffer, '\0', sizeof(tszWSBuffer));
 
-		Protocol_Packet_WSPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Protocol_Packet_WSPktAuth(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH *)lpszMsgBuffer);
+		}
+		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Protocol_Packet_WSPktInfo(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERINFO*)lpszMsgBuffer);
+		}
+		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Protocol_Packet_WSPktTime(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
+		}
+		else
+		{
+			Protocol_Packet_WSPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+		}
 		RfcComponents_WSCodec_EncodeMsg(tszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszWSBuffer, nSDLen);
 	}

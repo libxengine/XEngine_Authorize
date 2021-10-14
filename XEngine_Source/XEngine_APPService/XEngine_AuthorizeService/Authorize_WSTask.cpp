@@ -25,18 +25,23 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 			{
 				continue;
 			}
-			XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen);
+			XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return 0;
 }
 
-BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen)
+BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE enOPCode)
 {
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
+	if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE == enOPCode)
+	{
+		XEngine_CloseClient(lpszClientAddr);
+		return TRUE;
+	}
 	if (!Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("WS客户端：%s，协议错误"), lpszClientAddr);
@@ -48,7 +53,7 @@ BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nM
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		Protocol_Parse_WSUserInfo(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr, &st_UserInfo);
-		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO), &st_ProtocolHdr);
+		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 	}
 	else if ((XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == st_ProtocolHdr.unOperatorCode))
 	{
@@ -56,7 +61,7 @@ BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nM
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		Protocol_Parse_WSUserAuth(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr, &st_UserAuth);
-		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr);
+		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQPAY == st_ProtocolHdr.unOperatorCode)
 	{
@@ -64,11 +69,11 @@ BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nM
 		memset(&st_UserPay, '\0', sizeof(AUTHREG_PROTOCOL_USERPAY));
 
 		Protocol_Parse_WSUserPay(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr, &st_UserPay);
-		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserPay, sizeof(AUTHREG_PROTOCOL_USERPAY), &st_ProtocolHdr);
+		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserPay, sizeof(AUTHREG_PROTOCOL_USERPAY), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 	}
-	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == st_ProtocolHdr.unOperatorCode)
+	else
 	{
-		XEngine_Client_TCPTask(lpszClientAddr, NULL, 0, &st_ProtocolHdr);
+		XEngine_Client_TCPTask(lpszClientAddr, NULL, 0, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 	}
 	return TRUE;
 }
