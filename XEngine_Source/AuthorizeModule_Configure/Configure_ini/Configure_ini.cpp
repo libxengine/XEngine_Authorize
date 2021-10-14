@@ -107,8 +107,11 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	TCHAR tszBuffer[MAX_PATH];
 
 	memset(tszBuffer, '\0', MAX_PATH);
-	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nPort);
-	WritePrivateProfileString(_T("ServiceConfig"), _T("ListenPort"), tszBuffer, lpszFile);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nTCPPort);
+	WritePrivateProfileString(_T("ServiceConfig"), _T("TCPPort"), tszBuffer, lpszFile);
+	memset(tszBuffer, '\0', MAX_PATH);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nWSPort);
+	WritePrivateProfileString(_T("ServiceConfig"), _T("WSPort"), tszBuffer, lpszFile);
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nThreads);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("ThreadPool"), tszBuffer, lpszFile);
