@@ -37,11 +37,11 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 
 				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
 				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
-				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr);
+				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 			else
 			{
-				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr);
+				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
@@ -49,7 +49,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 	return 0;
 }
 
-BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
+BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType)
 {
 	//判断协议头和尾部
 	if ((XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER != pSt_ProtocolHdr->wHeader) || (XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL != pSt_ProtocolHdr->wTail) || (ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH != pSt_ProtocolHdr->unOperatorType))
@@ -72,14 +72,14 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 211;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，用户不存在"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		if ((st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszEMailAddr, st_UserInfo.tszEMailAddr, _tcslen(st_UserTable.st_UserInfo.tszEMailAddr))) || (0 != _tcsncmp(st_UserTable.st_UserInfo.tszUserPass, st_UserInfo.tszUserPass, _tcslen(st_UserTable.st_UserInfo.tszUserPass))))
 		{
 			pSt_ProtocolHdr->wReserve = 212;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，注销失败,验证信息错误"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
@@ -87,12 +87,12 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if (!AuthService_SQLPacket_UserDelete(st_UserInfo.tszUserName))
 		{
 			pSt_ProtocolHdr->wReserve = 213;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，注销失败,删除信息失败"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		pSt_ProtocolHdr->unPacketSize = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，注销成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQREGISTER == pSt_ProtocolHdr->unOperatorCode)
@@ -116,7 +116,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 231;
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -127,18 +127,19 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
 
+		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
 		if (!AuthService_SQLPacket_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 251;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass)))
 		{
 			pSt_ProtocolHdr->wReserve = 252;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
@@ -146,26 +147,26 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.en_AuthRegSerialType)
 		{
 			pSt_ProtocolHdr->wReserve = 253;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if ('0' == st_UserTable.tszLeftTime[0])
 		{
 			pSt_ProtocolHdr->wReserve = 254;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，没有剩余时间了"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		if (!AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
 		pSt_ProtocolHdr->wReserve = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录成功"), lpszClientAddr, st_AuthProtocol.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQPAY == pSt_ProtocolHdr->unOperatorCode)
@@ -191,7 +192,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 271;
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -209,7 +210,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 291;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，找回密码失败，用户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
@@ -217,7 +218,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if ((0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber))
 		{
 			pSt_ProtocolHdr->wReserve = 292;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，找回密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
@@ -225,7 +226,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		_tcscpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
 
 		pSt_ProtocolHdr->wReserve = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == pSt_ProtocolHdr->unOperatorCode)
@@ -241,13 +242,13 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		if (AuthService_Session_GetTimer(tszUserName, &st_AuthTime))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%ld，剩余时间：%ld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
 		}
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 0x2B1;
-			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
 		}
 	}
@@ -323,7 +324,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 				}
 			}
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -353,7 +354,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 2101;
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，请求查询用户信息失败,帐户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -394,7 +395,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 2122;
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
 	}
 	return TRUE;
 }
