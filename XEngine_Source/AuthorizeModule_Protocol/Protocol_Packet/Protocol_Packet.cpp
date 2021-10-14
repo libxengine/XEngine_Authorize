@@ -79,3 +79,48 @@ BOOL CProtocol_Packet::Protocol_Packet_SendPkt(TCHAR* ptszMsgBuffer, int* pInt_M
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Packet_WSPkt
+函数功能：WEBSOCKET通过打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出打好包的数据
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出数据大小
+ 参数.三：pSt_ProtocolHdr
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_WSPkt(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
+	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
+	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
+	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
+	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
+	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}

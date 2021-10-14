@@ -4,3 +4,9 @@ EXPORTS
 	Protocol_GetLastError
 
 	Protocol_Packet_SendPkt
+	Protocol_Packet_WSPkt
+
+	Protocol_Parse_WSHdr
+	Protocol_Parse_WSUserInfo
+	Protocol_Parse_WSUserAuth
+	Protocol_Parse_WSUserPay

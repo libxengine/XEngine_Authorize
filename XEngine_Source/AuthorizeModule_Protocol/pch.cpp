@@ -35,3 +35,26 @@ extern "C" BOOL Protocol_Packet_SendPkt(TCHAR * ptszMsgBuffer, int* pInt_MsgLen,
 {
 	return m_ProtocolPacket.Protocol_Packet_SendPkt(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
 }
+extern "C" BOOL Protocol_Packet_WSPkt(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr)
+{
+	return m_ProtocolPacket.Protocol_Packet_WSPkt(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr);
+}
+/************************************************************************/
+/*                          解析类协议                                  */
+/************************************************************************/
+extern "C" BOOL Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr)
+{
+	return m_ProtocolParse.Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr);
+}
+extern "C" BOOL Protocol_Parse_WSUserInfo(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, XENGINE_PROTOCOL_USERINFO * pSt_UserInfo)
+{
+	return m_ProtocolParse.Protocol_Parse_WSUserInfo(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, pSt_UserInfo);
+}
+extern "C" BOOL Protocol_Parse_WSUserAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+{
+	return m_ProtocolParse.Protocol_Parse_WSUserAuth(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, pSt_UserAuth);
+}
+extern "C" BOOL Protocol_Parse_WSUserPay(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, AUTHREG_PROTOCOL_USERPAY * pSt_UserPay)
+{
+	return m_ProtocolParse.Protocol_Parse_WSUserPay(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, pSt_UserPay);
+}

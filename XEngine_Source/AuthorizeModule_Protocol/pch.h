@@ -16,9 +16,15 @@
 #endif //PCH_H
 #include <string.h>
 #include <errno.h>
+#include <json/json.h>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include "../XAuth_Protocol.h"
 #include "Protocol_Define.h"
 #include "Protocol_Error.h"
 /********************************************************************
