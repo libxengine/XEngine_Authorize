@@ -36,7 +36,8 @@ public:
 public:
 	BOOL bThread;
 	int nThreadCount;
-	THREADPOOL_PARAMENT** ppSt_ThreadParament;
+	THREADPOOL_PARAMENT** ppSt_ThreadTCPParament;
+	THREADPOOL_PARAMENT** ppSt_ThreadWSParament;
 public:
 	CEdit m_EditLog;
 	afx_msg void OnBnClickedButton3();

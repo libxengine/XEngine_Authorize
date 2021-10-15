@@ -37,6 +37,7 @@
 #define IDC_EDIT14                      1018
 #define IDC_RADIO4                      1019
 #define IDC_LIST1                       1019
+#define IDC_EDIT15                      1020
 #define IDC_IPADDRESS1                  1021
 
 // Next default values for new objects

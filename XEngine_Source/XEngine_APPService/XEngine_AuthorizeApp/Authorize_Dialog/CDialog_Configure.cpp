@@ -40,6 +40,7 @@ void CDialog_Configure::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT8, m_EditFromAddr);
 	DDX_Control(pDX, IDC_EDIT9, m_EditSmtpUser);
 	DDX_Control(pDX, IDC_EDIT10, m_EditSmtpPass);
+	DDX_Control(pDX, IDC_EDIT15, m_EditWSPort);
 }
 
 
@@ -71,7 +72,8 @@ BOOL CDialog_Configure::OnInitDialog()
 
 void CDialog_Configure::AuthorizeService_ReadConfigure()
 {
-	CString m_StrConfigPort;               //服务器端口
+	CString m_StrConfigTCPPort;               //服务器端口
+	CString m_StrConfigWSPort;             //WS端口
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
 
@@ -82,11 +84,13 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 
 	CString m_StrConfigCrypt;              //是否启用加密传输 
 	//配置
-	m_StrConfigPort.Format(_T("%d"), st_AuthConfig.nPort);
+	m_StrConfigTCPPort.Format(_T("%d"), st_AuthConfig.nTCPPort);
+	m_StrConfigWSPort.Format(_T("%d"), st_AuthConfig.nWSPort);
 	m_StrConfigThread.Format(_T("%d"), st_AuthConfig.nThreads);
 	m_StrTimedOut.Format(_T("%d"), st_AuthConfig.nVerTimeout);
 
-	m_EditServicePort.SetWindowText(m_StrConfigPort);
+	m_EditServicePort.SetWindowText(m_StrConfigTCPPort);
+	m_EditWSPort.SetWindowText(m_StrConfigWSPort);
 	m_EditThreadPool.SetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.SetWindowText(m_StrTimedOut);
 	if (st_AuthConfig.bAutoStart)
@@ -137,7 +141,8 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 }
 void CDialog_Configure::AuthorizeService_WriteConfigure()
 {
-	CString m_StrConfigPort;               //服务器端口
+	CString m_StrConfigTCPPort;               //服务器端口
+	CString m_StrConfigWSPort;
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
 
@@ -153,10 +158,12 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	CString m_StrConfigSmtpUser;           //用户名
 	CString m_StrConfigSmtpPass;           //密码
 
-	m_EditServicePort.GetWindowText(m_StrConfigPort);	
+	m_EditServicePort.GetWindowText(m_StrConfigTCPPort);
+	m_EditWSPort.GetWindowText(m_StrConfigWSPort);
 	m_EditThreadPool.GetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.GetWindowText(m_StrTimedOut);
-	st_AuthConfig.nPort = _ttoi(m_StrConfigPort.GetBuffer());
+	st_AuthConfig.nTCPPort = _ttoi(m_StrConfigTCPPort.GetBuffer());
+	st_AuthConfig.nWSPort = _ttoi(m_StrConfigWSPort.GetBuffer());
 	st_AuthConfig.nThreads = _ttoi(m_StrConfigThread.GetBuffer());
 	st_AuthConfig.nVerTimeout = _ttoi(m_StrTimedOut.GetBuffer());
 	st_AuthConfig.bAutoStart = m_BtnAutoStart.GetCheck();

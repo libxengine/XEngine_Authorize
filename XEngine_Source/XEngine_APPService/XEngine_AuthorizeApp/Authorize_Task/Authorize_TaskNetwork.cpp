@@ -1,18 +1,45 @@
 #include "pch.h"
-
 //////////////////////////////////////////////////////////////////////////
-BOOL __stdcall XEngine_Client_Accept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+BOOL __stdcall XEngine_Client_TCPAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
-	HelpComponents_Datas_CreateEx(xhPacket, lpszClientAddr, 0);
+	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	return TRUE;
 }
-void __stdcall XEngine_Client_Recv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
+void __stdcall XEngine_Client_TCPRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
-	HelpComponents_Datas_PostEx(xhPacket, lpszClientAddr, lpszRecvMsg, nMsgLen);
+	HelpComponents_Datas_PostEx(xhTCPPacket, lpszClientAddr, lpszRecvMsg, nMsgLen);
 }
-void __stdcall XEngine_Client_Close(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+void __stdcall XEngine_Client_TCPClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, lParam);
+}
+BOOL __stdcall XEngine_Client_WSAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
+	return TRUE;
+}
+void __stdcall XEngine_Client_WSRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
+{
+	BOOL bLogin = FALSE;
+	RfcComponents_WSPacket_GetLoginEx(xhWSPacket, lpszClientAddr, &bLogin);
+	if (bLogin)
+	{
+		RfcComponents_WSPacket_PostEx(xhWSPacket, lpszClientAddr, lpszRecvMsg, nMsgLen);
+	}
+	else
+	{
+		int nSDLen = nMsgLen;
+		TCHAR tszHandsBuffer[1024];
+		memset(tszHandsBuffer, '\0', sizeof(tszHandsBuffer));
+
+		RfcComponents_WSConnector_HandShake(lpszRecvMsg, &nSDLen, tszHandsBuffer);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszHandsBuffer, nSDLen);
+		RfcComponents_WSPacket_SetLoginEx(xhWSPacket, lpszClientAddr);
+	}
+}
+void __stdcall XEngine_Client_WSClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, lParam);
 }
@@ -24,7 +51,6 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	TCHAR tszClientUser[64];
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
-	NetCore_TCPXCore_CloseForClientEx(xhSocket, lpszClientAddr);
 	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
 		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
@@ -44,12 +70,15 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 		}
 		AuthService_Session_CloseClient(tszClientUser);
 	}
-	HelpComponents_Datas_DeleteEx(xhPacket, lpszClientAddr);
+	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
+	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 	XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
-BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPVOID lParam, LPCTSTR lpszMsgBuffer, int nMsgLen)
+BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPVOID lParam, int nNetType, LPCTSTR lpszMsgBuffer, int nMsgLen)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
 
@@ -57,41 +86,68 @@ BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_Pr
 	{
 		CString m_StrPass;
 		pClass_This->m_DlgConfig.m_EditPass.GetWindowText(m_StrPass);
-		XEngine_SendMsg(lpszClientAddr, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen, m_StrPass.GetBuffer());
+		XEngine_SendMsg(lpszClientAddr, pSt_ProtocolHdr, nNetType, lpszMsgBuffer, nMsgLen, m_StrPass.GetBuffer());
 	}
 	else
 	{
-		XEngine_SendMsg(lpszClientAddr, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
+		XEngine_SendMsg(lpszClientAddr, pSt_ProtocolHdr, nNetType, lpszMsgBuffer, nMsgLen);
 	}
 	return TRUE;
 }
-BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPCTSTR lpszMsgBuffer, int nMsgLen, LPCTSTR lpszPass)
+BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType, LPCTSTR lpszMsgBuffer, int nMsgLen, LPCTSTR lpszPass)
 {
 	int nSDLen = 4096;
 	TCHAR tszMsgBuffer[4096];
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-	if (NULL == lpszPass)
+	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
-		Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
-	}
-	else
-	{
-		TCHAR tszEnBuffer[4096];
-		memset(tszEnBuffer, '\0', sizeof(tszEnBuffer));
+		TCHAR tszWSBuffer[4096];
+		memset(tszWSBuffer, '\0', sizeof(tszWSBuffer));
 
-		pSt_ProtocolHdr->wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
-		if (NULL == lpszMsgBuffer)
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS == pSt_ProtocolHdr->unOperatorCode)
 		{
-			Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+			Protocol_Packet_WSPktAuth(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH*)lpszMsgBuffer);
+		}
+		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Protocol_Packet_WSPktInfo(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERINFO*)lpszMsgBuffer);
+		}
+		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Protocol_Packet_WSPktTime(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
 		}
 		else
 		{
-			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)tszEnBuffer, lpszPass);
-			Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
-			nMsgLen = nSDLen;
+			Protocol_Packet_WSPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
 		}
+		RfcComponents_WSCodec_EncodeMsg(tszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszWSBuffer, nSDLen);
 	}
-	NetCore_TCPXCore_SendEx(xhSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+	else
+	{
+		if (NULL == lpszPass)
+		{
+			Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
+		}
+		else
+		{
+			TCHAR tszEnBuffer[4096];
+			memset(tszEnBuffer, '\0', sizeof(tszEnBuffer));
+
+			pSt_ProtocolHdr->wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
+			if (NULL == lpszMsgBuffer)
+			{
+				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+			}
+			else
+			{
+				OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)tszEnBuffer, lpszPass);
+				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
+				nMsgLen = nSDLen;
+			}
+		}
+		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+	}
 	return TRUE;
 }
