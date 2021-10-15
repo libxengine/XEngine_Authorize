@@ -4,7 +4,7 @@ BOOL bIsRun = FALSE;
 XLOG xhLog = NULL;
 XNETHANDLE xhTCPSocket = 0;
 XNETHANDLE xhWSSocket = 0;
-XNETHANDLE xhTCPPacket = 0;
+XHANDLE xhTCPPacket = 0;
 XHANDLE xhWSPacket = NULL;
 XNETHANDLE xhTCPPool = 0;
 XNETHANDLE xhWSPool = 0;
@@ -117,13 +117,13 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话服务成功"));
 
-	if (!HelpComponents_Datas_Init(&xhTCPPacket, 10000, 0, st_AuthConfig.nThreads))
+	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, st_AuthConfig.nThreads);
+	if (NULL == xhTCPPacket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化组包器失败，错误：%lX"), Packets_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,句柄:%llu,任务池个数:%d"), xhTCPPacket, st_AuthConfig.nThreads);
-
 	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, st_AuthConfig.nThreads);
 	if (NULL == xhWSPacket)
 	{
@@ -152,10 +152,9 @@ int main(int argc, char** argv)
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
 	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
-		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
-
-		pSt_AuthThread->nPoolIndex = i;
-		ppSt_ListTCPThread[i]->lParam = pSt_AuthThread;
+		int* pInt_Index = new int;
+		*pInt_Index = i;
+		ppSt_ListTCPThread[i]->lParam = pInt_Index;
 		ppSt_ListTCPThread[i]->fpCall_ThreadsTask = XEngine_AuthService_TCPThread;
 	}
 	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ListTCPThread, st_AuthConfig.nThreads);
@@ -164,10 +163,9 @@ int main(int argc, char** argv)
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListWSThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
 	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
-		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
-
-		pSt_AuthThread->nPoolIndex = i;
-		ppSt_ListWSThread[i]->lParam = pSt_AuthThread;
+		int* pInt_Index = new int;
+		*pInt_Index = i;
+		ppSt_ListWSThread[i]->lParam = pInt_Index;
 		ppSt_ListWSThread[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
 	}
 	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ListWSThread, st_AuthConfig.nThreads);

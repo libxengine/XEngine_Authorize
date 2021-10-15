@@ -49,7 +49,7 @@ extern BOOL bIsRun;
 extern XLOG xhLog;
 extern XNETHANDLE xhTCPSocket;
 extern XNETHANDLE xhWSSocket;
-extern XNETHANDLE xhTCPPacket;
+extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
@@ -57,11 +57,6 @@ extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
-
-typedef struct
-{
-	int nPoolIndex;
-}XENGINE_THREADINFO;
 
 #include "Authorize_Config.h"
 #include "Authorize_Net.h"

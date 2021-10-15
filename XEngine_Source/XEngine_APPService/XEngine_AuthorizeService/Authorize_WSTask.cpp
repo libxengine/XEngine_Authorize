@@ -2,8 +2,8 @@
 
 XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 {
-	XENGINE_THREADINFO* pSt_ThreadInfo = (XENGINE_THREADINFO*)lParam;
-	int nThreadPos = pSt_ThreadInfo->nPoolIndex + 1;
+	int nPoolIndex = *(int*)lParam;
+	int nThreadPos = nPoolIndex + 1;
 
 	while (bIsRun)
 	{
