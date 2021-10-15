@@ -29,6 +29,7 @@ typedef struct
 	__int64x nTimeLeft;                                                   //剩余时间
 	__int64x nTimeONLine;                                                 //在线时间
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
+	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                        
 }AUTHREG_PROTOCOL_TIME, * LPAUTHREG_PROTOCOL_TIME;
 //用户表
 typedef struct tag_AuthReg_UserTable
@@ -37,6 +38,7 @@ typedef struct tag_AuthReg_UserTable
 	CHAR tszLeftTime[64];                                                 //剩余日期
 	CHAR tszHardCode[32];                                                 //硬件码
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型
+	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                                //设备类型
 }AUTHREG_USERTABLE, * LPAUTHREG_USERTABLE;
 //注册序列号表
 typedef struct tag_AuthReg_SerialTable
