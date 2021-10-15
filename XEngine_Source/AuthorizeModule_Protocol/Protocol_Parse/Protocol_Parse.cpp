@@ -311,3 +311,71 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserPay(LPCTSTR lpszMsgBuffer, int nMsgLe
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_WSUserNote
+函数功能：解析用户通告和快速验证协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_ProtocolHdr
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析好的协议头
+ 参数.四：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出解析好的协议内容
+ 参数.五：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：内容大小
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, TCHAR* ptszMsgBuffer, int* pInt_MsgLen)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_ProtocolHdr))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	pSt_ProtocolHdr->wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
+	pSt_ProtocolHdr->wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
+	pSt_ProtocolHdr->unOperatorType = st_JsonRoot["unOperatorType"].asInt();
+	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
+	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
+	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+
+	if (!st_JsonRoot["lpszPayload"].isNull())
+	{
+		*pInt_MsgLen = st_JsonRoot["lpszPayload"].asString().length();
+		_tcscpy(ptszMsgBuffer, st_JsonRoot["lpszPayload"].asCString());
+	}
+	return TRUE;
+}

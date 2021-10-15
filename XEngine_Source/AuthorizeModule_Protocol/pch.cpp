@@ -39,6 +39,22 @@ extern "C" BOOL Protocol_Packet_WSPkt(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, X
 {
 	return m_ProtocolPacket.Protocol_Packet_WSPkt(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr);
 }
+extern "C" BOOL Protocol_Packet_WSPktAuth(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+{
+	return m_ProtocolPacket.Protocol_Packet_WSPktAuth(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, pSt_UserAuth);
+}
+extern "C" BOOL Protocol_Packet_WSPktInfo(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, XENGINE_PROTOCOL_USERINFO * pSt_UserInfo)
+{
+	return m_ProtocolPacket.Protocol_Packet_WSPktInfo(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, pSt_UserInfo);
+}
+extern "C" BOOL Protocol_Packet_WSPktTime(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
+{
+	return m_ProtocolPacket.Protocol_Packet_WSPktTime(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, pSt_ProtocolTime);
+}
+extern "C" BOOL Protocol_Packet_WSPktNote(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, LPCTSTR lpszMsgBuffer, int nMsgLen)
+{
+	return m_ProtocolPacket.Protocol_Packet_WSPktNote(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -57,4 +73,8 @@ extern "C" BOOL Protocol_Parse_WSUserAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XE
 extern "C" BOOL Protocol_Parse_WSUserPay(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, AUTHREG_PROTOCOL_USERPAY * pSt_UserPay)
 {
 	return m_ProtocolParse.Protocol_Parse_WSUserPay(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, pSt_UserPay);
+}
+extern "C" BOOL Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR * pSt_ProtocolHdr, TCHAR * ptszMsgBuffer, int* pInt_MsgLen)
+{
+	return m_ProtocolParse.Protocol_Parse_WSUserNote(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, ptszMsgBuffer, pInt_MsgLen);
 }

@@ -5,8 +5,13 @@ EXPORTS
 
 	Protocol_Packet_SendPkt
 	Protocol_Packet_WSPkt
+	Protocol_Packet_WSPktAuth
+	Protocol_Packet_WSPktInfo
+	Protocol_Packet_WSPktTime
+	Protocol_Packet_WSPktNote
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_WSUserInfo
 	Protocol_Parse_WSUserAuth
 	Protocol_Parse_WSUserPay
+	Protocol_Parse_WSUserNote
