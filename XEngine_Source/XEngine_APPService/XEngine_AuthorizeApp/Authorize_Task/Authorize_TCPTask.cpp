@@ -194,7 +194,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		CString m_StrDeviceType;
 		if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC == st_UserTable.enDeviceType)
 		{
-			m_StrDeviceType.Format(_T("APP"));
+			m_StrDeviceType.Format(_T("TCP"));
 		}
 		else
 		{
