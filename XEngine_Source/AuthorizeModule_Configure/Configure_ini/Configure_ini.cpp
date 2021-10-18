@@ -55,6 +55,7 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	pSt_AuthConfig->nThreads = GetPrivateProfileInt(_T("ServiceConfig"), _T("ThreadPool"), 0, lpszFile);
 	pSt_AuthConfig->nVerTimeout = GetPrivateProfileInt(_T("ServiceConfig"), _T("UserVerTimed"), 0, lpszFile);
 	pSt_AuthConfig->bAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, lpszFile);
+	pSt_AuthConfig->bTimeNotify = GetPrivateProfileInt(_T("ServiceConfig"), _T("TimeNotify"), 0, lpszFile);
 
 	pSt_AuthConfig->st_Verification.nVerTime = GetPrivateProfileInt(_T("Verification"), _T("VerTime"), 0, lpszFile);
 	pSt_AuthConfig->st_Verification.nVerMode = GetPrivateProfileInt(_T("Verification"), _T("VerMode"), 0, lpszFile);
@@ -121,6 +122,9 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->bAutoStart);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("AutoStart"), tszBuffer, lpszFile);
+	memset(tszBuffer, '\0', MAX_PATH);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->bTimeNotify);
+	WritePrivateProfileString(_T("ServiceConfig"), _T("TimeNotify"), tszBuffer, lpszFile);
 
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->st_Verification.nTryTime);

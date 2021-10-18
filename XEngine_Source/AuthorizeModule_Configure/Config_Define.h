@@ -21,6 +21,7 @@ typedef struct
 	int nVerTimeout;                                        //用户验证超时时间
 	BOOL bAutoStart;                                        //自启动
 	BOOL bDeamon;                                           //守护进程,LINUX
+	BOOL bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct   
 	{
 		int nVerTime;                                       //验证时间
