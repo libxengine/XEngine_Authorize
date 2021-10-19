@@ -20,6 +20,7 @@ feature list:
 8. Support Try,Support quick verification
 9. Support Retrieve password through email
 10. Support Verification for Local CDKey
+11. Support app program and html web Authorize
 
 ## install
 

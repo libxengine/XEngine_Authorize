@@ -20,6 +20,7 @@ c c++network Authorize service
 8. 支持试用,支持快速验证
 9. 支持通过邮件找回密码
 10. 支持本地CDKEY注册验证
+11. 支持APP程序和HTML网页授权验证
 
 ## 安装教程
 
