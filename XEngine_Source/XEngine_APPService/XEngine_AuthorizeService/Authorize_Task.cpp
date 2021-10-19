@@ -15,5 +15,10 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("用户:%s,地址:%s,没有剩余时间,已经通知客户单超时\r\n"), lpszUserName, lpszUserAddr);
 		XEngine_Client_TaskSend(lpszUserAddr, &st_ProtocolHdr, enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC ? XENGINE_AUTH_APP_NETTYPE_TCP : XENGINE_AUTH_APP_NETTYPE_WS);
+
+		if (!st_AuthConfig.bTimeNotify)
+		{
+			XEngine_CloseClient(lpszUserAddr);
+		}
 	}
 }

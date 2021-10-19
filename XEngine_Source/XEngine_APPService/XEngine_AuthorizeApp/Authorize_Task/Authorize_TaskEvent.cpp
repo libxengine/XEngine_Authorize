@@ -43,14 +43,17 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 				st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
 				st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
-
 				pClass_This->m_EditLog.GetWindowText(m_StrPntLog);
 				m_StrFmtLog.Format(_T("用户:%s,地址:%s,没有剩余时间,已经通知客户单超时\r\n"), lpszUserName, lpszUserAddr);
 				m_StrPntLog += m_StrFmtLog;
 				pClass_This->m_EditLog.SetWindowText(m_StrPntLog);
 
 				XEngine_Client_TaskSend(lpszUserAddr, &st_ProtocolHdr, lParam, enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC ? XENGINE_AUTH_APP_NETTYPE_TCP : XENGINE_AUTH_APP_NETTYPE_WS);
+				if (!st_AuthConfig.bTimeNotify)
+				{
+					XEngine_CloseClient(lpszUserAddr, lParam);
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+				}
 			}
 		}
 	}
