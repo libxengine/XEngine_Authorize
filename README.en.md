@@ -4,10 +4,11 @@
 c c++网络验证服务器 网络授权服务器  
 c c++network Authorize service  
 the server is network authorize verification service code library,This service mainly provides network authorization verification function.support local and network verification mode  
+network verification support tcp and websocket protocol verification.it is means:support app program and web  
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
 ## Software feature
-The purpose of development and implementation based on libXEngine is a cross-platform network storage service  
+The purpose of development and implementation based on XEngine is a cross-platform network storage service  
 This repository has a development and master branch. If you want to use it, please use the master branch  
 feature list:  
 1. use standard private protocol to handle network communication

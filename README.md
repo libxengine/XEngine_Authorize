@@ -4,10 +4,11 @@
 c c++网络验证服务器 网络授权服务器  
 c c++network Authorize service  
 这是网络授权验证服务器的代码库,这个服务主要提供网络授权验证功能.支持本地和网络两种验证模式  
+网络验证支持TCP和WEBSOCKET协议验证,也就是说,支持APP程序和WEB网页端  
 这是一个跨平台简单高性能网络授权服务器,提供了完整的演示代码  
 
 ## 软件特性
-基于libXEngine开发并实现的一套简洁高性能跨平台网络存储服务  
+基于XEngine开发并实现的一套简洁高性能跨平台网络存储服务  
 本仓库有开发和主分支,如果要使用,请使用master分支下的代码  
 软件特性:  
 1. 采用标准私有协议来处理网络通信
@@ -26,7 +27,7 @@ c c++network Authorize service
 
 #### 版本需求
 支持WINDOWS 7SP1和LINUX(UBUNT20.04,CENTOS8)以上系统  
-XEngine版本需要V7.17或者以上版本    
+XEngine版本需要V7.23或者以上版本    
 
 #### Windows
 直接运行即可,使用XEngine_AuthorizeApp
