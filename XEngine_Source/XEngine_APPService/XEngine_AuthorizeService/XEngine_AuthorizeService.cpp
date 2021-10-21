@@ -123,14 +123,14 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化组包器失败，错误：%lX"), Packets_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,句柄:%llu,任务池个数:%d"), xhTCPPacket, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, st_AuthConfig.nThreads);
 	if (NULL == xhWSPacket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化WebSocket协议管理器失败，错误：%lX"), WSFrame_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket协议管理器成功,句柄:%llu,任务池个数:%d"), xhWSPacket, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket协议管理器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 
 	if (!NetCore_TCPXCore_StartEx(&xhTCPSocket, st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads))
 	{
