@@ -11,12 +11,18 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <tchar.h>
+#include <json/json.h>
+#else
+#ifdef _CENTOS
+#include <json/json.h>
+#else
+#include <jsoncpp/json/json.h>
 #endif
-
+#endif
 #endif //PCH_H
 #include <string.h>
 #include <errno.h>
-#include <json/json.h>
+#include <memory>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>

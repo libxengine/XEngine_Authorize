@@ -4,7 +4,7 @@ UNICODE = 0
 INCLUDE = -I ./
 FILECENTOS = /etc/redhat-release
 LOADBIN = 
-LIB = 
+LIB = -ljsoncpp
 LIBEX = -static-libgcc -lrt -ldl -lpthread
 LOADSO = -Wl,-rpath=
 LIBINCLUDE = Protocol_Packet.o Protocol_Parse.o pch.o
