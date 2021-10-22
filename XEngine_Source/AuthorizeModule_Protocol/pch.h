@@ -11,14 +11,26 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <tchar.h>
+#include <json/json.h>
+#else
+#ifdef _CENTOS
+#include <json/json.h>
+#else
+#include <jsoncpp/json/json.h>
 #endif
-
+#endif
 #endif //PCH_H
 #include <string.h>
 #include <errno.h>
+#include <memory>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include "../XAuth_Protocol.h"
 #include "Protocol_Define.h"
 #include "Protocol_Error.h"
 /********************************************************************

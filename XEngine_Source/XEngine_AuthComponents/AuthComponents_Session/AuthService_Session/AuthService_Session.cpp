@@ -452,6 +452,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);
                 _tcscpy(st_ProtocolTimer.tszUserName, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName);
@@ -468,6 +469,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.st_AuthUser.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);
                 _tcscpy(st_ProtocolTimer.tszUserName, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName);
@@ -497,6 +499,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = nLeftTime;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.st_AuthUser.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);
                 _tcscpy(st_ProtocolTimer.tszUserName, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName);
@@ -511,7 +514,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
             list<AUTHREG_PROTOCOL_TIME>::iterator stl_ListIterator = stl_ListNotify.begin();
             for (; stl_ListIterator != stl_ListNotify.end(); stl_ListIterator++)
             {
-                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, pClass_This->m_lParam);
+                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, stl_ListIterator->enDeviceType, pClass_This->m_lParam);
             }
             stl_ListNotify.clear();        //清理元素
         }

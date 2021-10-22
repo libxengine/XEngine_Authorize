@@ -51,9 +51,6 @@
     <ClInclude Include="Authorize_Task\Authorize_TaskNetwork.h">
       <Filter>头文件\Authorize_Task</Filter>
     </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_Task.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
     <ClInclude Include="Authorize_Dialog\CDialog_Serial.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
@@ -68,6 +65,12 @@
     </ClInclude>
     <ClInclude Include="Authorize_Dialog\CDialog_Local.h">
       <Filter>头文件\Authorize_Dialog</Filter>
+    </ClInclude>
+    <ClInclude Include="Authorize_Task\Authorize_TCPTask.h">
+      <Filter>头文件\Authorize_Task</Filter>
+    </ClInclude>
+    <ClInclude Include="Authorize_Task\Authorize_WSTask.h">
+      <Filter>头文件\Authorize_Task</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,9 +89,6 @@
     <ClCompile Include="Authorize_Task\Authorize_TaskNetwork.cpp">
       <Filter>源文件\Authorize_Task</Filter>
     </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_Task.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
     <ClCompile Include="Authorize_Dialog\CDialog_Serial.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
@@ -103,6 +103,12 @@
     </ClCompile>
     <ClCompile Include="Authorize_Dialog\CDialog_Local.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Task\Authorize_TCPTask.cpp">
+      <Filter>源文件\Authorize_Task</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Task\Authorize_WSTask.cpp">
+      <Filter>源文件\Authorize_Task</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

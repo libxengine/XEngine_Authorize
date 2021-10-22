@@ -49,9 +49,10 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlOnlineClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 60);
 	m_ListCtrlOnlineClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 100);
 	m_ListCtrlOnlineClient.InsertColumn(2, _T("地址"), LVCFMT_LEFT, 110);
-	m_ListCtrlOnlineClient.InsertColumn(3, _T("在线时间(分钟)"), LVCFMT_LEFT, 100);
-	m_ListCtrlOnlineClient.InsertColumn(4, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
-	m_ListCtrlOnlineClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 100);
+	m_ListCtrlOnlineClient.InsertColumn(3, _T("在线时间(分钟)"), LVCFMT_LEFT, 90);
+	m_ListCtrlOnlineClient.InsertColumn(4, _T("剩余时间/过期时间"), LVCFMT_LEFT, 100);
+	m_ListCtrlOnlineClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlOnlineClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -203,7 +204,18 @@ void CDialog_User::OnBnClickedButton4()
 		st_ProtocolHdr.unPacketSize = m_StrMsg.GetLength();
 
 		CString m_StrAddr = m_ListCtrlOnlineClient.GetItemText(nSelect, 2);
-		if (XEngine_SendMsg(m_StrAddr.GetBuffer(), &st_ProtocolHdr, m_StrMsg.GetBuffer(), m_StrMsg.GetLength()))
+		CString m_StrType = m_ListCtrlOnlineClient.GetItemText(nSelect, 6);
+		int nNetType = 0;
+		if (0 == _tcsncmp(m_StrType.GetBuffer(), _T("WEB"), m_StrType.GetLength()))
+		{
+			nNetType = XENGINE_AUTH_APP_NETTYPE_WS;
+		}
+		else
+		{
+			nNetType = XENGINE_AUTH_APP_NETTYPE_TCP;
+		}
+		
+		if (XEngine_SendMsg(m_StrAddr.GetBuffer(), &st_ProtocolHdr, nNetType, m_StrMsg.GetBuffer(), m_StrMsg.GetLength()))
 		{
 			AfxMessageBox(_T("发送消息成功！"));
 		}
@@ -234,7 +246,17 @@ void CDialog_User::OnBnClickedButton5()
 	for (int i = 0; i < m_ListCtrlOnlineClient.GetItemCount(); i++)
 	{
 		CString m_StrAddr = m_ListCtrlOnlineClient.GetItemText(i, 2);
-		XEngine_SendMsg(m_StrAddr.GetBuffer(), &st_ProtocolHdr, m_StrMsg.GetBuffer(), m_StrMsg.GetLength());
+		CString m_StrType = m_ListCtrlOnlineClient.GetItemText(i, 6);
+		int nNetType = 0;
+		if (0 == _tcsncmp(m_StrType.GetBuffer(), _T("WEB"), m_StrType.GetLength()))
+		{
+			nNetType = XENGINE_AUTH_APP_NETTYPE_WS;
+		}
+		else
+		{
+			nNetType = XENGINE_AUTH_APP_NETTYPE_TCP;
+		}
+		XEngine_SendMsg(m_StrAddr.GetBuffer(), &st_ProtocolHdr, nNetType, m_StrMsg.GetBuffer(), m_StrMsg.GetLength());
 	}
 	m_EidtSendMsg.SetWindowText(_T(""));
 	AfxMessageBox(_T("发送消息成功！"));

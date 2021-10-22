@@ -156,11 +156,13 @@ HCURSOR CXEngineAuthorizeAppDlg::OnQueryDragIcon()
 void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString m_StrPort;
+	CString m_StrTCPPort;
+	CString m_StrWSPort;
 	CString m_StrNumber;
 	CString m_StrThreads;
 
-	m_DlgConfig.m_EditServicePort.GetWindowText(m_StrPort);
+	m_DlgConfig.m_EditServicePort.GetWindowText(m_StrTCPPort);
+	m_DlgConfig.m_EditWSPort.GetWindowText(m_StrWSPort);
 	m_DlgConfig.m_EditVerTimedout.GetWindowText(m_StrNumber);
 	m_DlgConfig.m_EditThreadPool.GetWindowText(m_StrThreads);
 
@@ -175,33 +177,59 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		AfxMessageBox(_T("初始化网络失败！"));
 		return;
 	}
-	if (!HelpComponents_Datas_Init(&xhPacket, 10000, 0, nThreadCount))
+	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, nThreadCount);
+	if (NULL == xhTCPPacket)
 	{
 		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
 		return;
 	}
-	if (!NetCore_TCPXCore_StartEx(&xhSocket, _ttoi(m_StrPort.GetBuffer()), 10000, nThreadCount))
+	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, nThreadCount);
+	if (NULL == xhWSPacket)
+	{
+		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
+		return;
+	}
+	if (!NetCore_TCPXCore_StartEx(&xhTCPSocket, _ttoi(m_StrTCPPort.GetBuffer()), 10000, nThreadCount))
 	{
 		CString m_StrEror;
 		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
 		AfxMessageBox(m_StrEror);
 		return;
 	}
-	NetCore_TCPXCore_RegisterCallBackEx(xhSocket, XEngine_Client_Accept, XEngine_Client_Recv, XEngine_Client_Close, this, this, this);
+	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose, this, this, this);
+	if (!NetCore_TCPXCore_StartEx(&xhWSSocket, _ttoi(m_StrWSPort.GetBuffer()), 10000, nThreadCount))
+	{
+		CString m_StrEror;
+		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
+		AfxMessageBox(m_StrEror);
+		return;
+	}
+	NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose, this, this, this);
 
 	bThread = TRUE;
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadTCPParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
 	for (int i = 0; i < nThreadCount; i++)
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
 		pSt_AuthThread->nPoolIndex = i;
 		pSt_AuthThread->lPClass = this;
-		ppSt_ThreadParament[i]->lParam = pSt_AuthThread;
-		ppSt_ThreadParament[i]->fpCall_ThreadsTask = XEngine_AuthService_ThreadClient;
+		ppSt_ThreadTCPParament[i]->lParam = pSt_AuthThread;
+		ppSt_ThreadTCPParament[i]->fpCall_ThreadsTask = XEngine_AuthService_ThreadClient;
 	}
-	ManagePool_Thread_NQCreate(&xhPool, &ppSt_ThreadParament, nThreadCount);
+	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ThreadTCPParament, nThreadCount);
 
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadWSParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < nThreadCount; i++)
+	{
+		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
+
+		pSt_AuthThread->nPoolIndex = i;
+		pSt_AuthThread->lPClass = this;
+		ppSt_ThreadWSParament[i]->lParam = pSt_AuthThread;
+		ppSt_ThreadWSParament[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
+	}
+	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ThreadWSParament, nThreadCount);
 	m_DlgSerial.SerialManage_Flush();
 	m_BtnStartService.EnableWindow(FALSE);
 	m_BtnStopService.EnableWindow(TRUE);
@@ -278,10 +306,15 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	m_BtnStopService.EnableWindow(FALSE);
 	bThread = FALSE;
 
-	HelpComponents_Datas_Destory(xhPacket);
-	NetCore_TCPXCore_DestroyEx(xhSocket);
-	ManagePool_Thread_NQDestroy(xhPool);
-	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadParament, st_AuthConfig.nThreads);
+	HelpComponents_Datas_Destory(xhTCPPacket);
+	RfcComponents_WSPacket_DestoryEx(xhWSPacket);
+	NetCore_TCPXCore_DestroyEx(xhTCPSocket);
+	NetCore_TCPXCore_DestroyEx(xhWSSocket);
+	ManagePool_Thread_NQDestroy(xhTCPPool);
+	ManagePool_Thread_NQDestroy(xhWSPool);
+
+	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
+	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads);
 
 	AuthService_Session_Destroy();
 	AuthService_SQLPacket_Destroy();

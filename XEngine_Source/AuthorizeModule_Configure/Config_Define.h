@@ -15,11 +15,13 @@
 //////////////////////////////////////////////////////////////////////////
 typedef struct  
 {
-	int nPort;                                              //服务器端口
+	int nTCPPort;                                           //TCP端口
+	int nWSPort;                                            //WEBSOCKET端口
 	int nThreads;                                           //启动的线程个数
 	int nVerTimeout;                                        //用户验证超时时间
 	BOOL bAutoStart;                                        //自启动
 	BOOL bDeamon;                                           //守护进程,LINUX
+	BOOL bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct   
 	{
 		int nVerTime;                                       //验证时间

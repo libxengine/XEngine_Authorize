@@ -40,6 +40,8 @@ void CDialog_Configure::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT8, m_EditFromAddr);
 	DDX_Control(pDX, IDC_EDIT9, m_EditSmtpUser);
 	DDX_Control(pDX, IDC_EDIT10, m_EditSmtpPass);
+	DDX_Control(pDX, IDC_EDIT15, m_EditWSPort);
+	DDX_Control(pDX, IDC_CHECK2, m_EditTimeNotift);
 }
 
 
@@ -71,7 +73,8 @@ BOOL CDialog_Configure::OnInitDialog()
 
 void CDialog_Configure::AuthorizeService_ReadConfigure()
 {
-	CString m_StrConfigPort;               //服务器端口
+	CString m_StrConfigTCPPort;            //服务器端口
+	CString m_StrConfigWSPort;             //WS端口
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
 
@@ -82,11 +85,13 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 
 	CString m_StrConfigCrypt;              //是否启用加密传输 
 	//配置
-	m_StrConfigPort.Format(_T("%d"), st_AuthConfig.nPort);
+	m_StrConfigTCPPort.Format(_T("%d"), st_AuthConfig.nTCPPort);
+	m_StrConfigWSPort.Format(_T("%d"), st_AuthConfig.nWSPort);
 	m_StrConfigThread.Format(_T("%d"), st_AuthConfig.nThreads);
 	m_StrTimedOut.Format(_T("%d"), st_AuthConfig.nVerTimeout);
 
-	m_EditServicePort.SetWindowText(m_StrConfigPort);
+	m_EditServicePort.SetWindowText(m_StrConfigTCPPort);
+	m_EditWSPort.SetWindowText(m_StrConfigWSPort);
 	m_EditThreadPool.SetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.SetWindowText(m_StrTimedOut);
 	if (st_AuthConfig.bAutoStart)
@@ -98,6 +103,11 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 	{
 		m_BtnAutoStart.SetCheck(0);
 		m_BtnAutoStop.SetCheck(1);
+	}
+
+	if (st_AuthConfig.bTimeNotify)
+	{
+		m_EditTimeNotift.SetCheck(TRUE);
 	}
 
 	if (st_AuthConfig.st_Crypto.bEnable)
@@ -117,17 +127,17 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 
 	m_StrConfigTryTime.Format(_T("%d"), st_AuthConfig.st_Verification.nTryTime);
 	m_EditTryTime.SetWindowText(m_StrConfigTryTime);
-	m_ComboRegTry.AddString(_T("不支持"));
-	m_ComboRegTry.AddString(_T("分钟"));
-	m_ComboRegTry.AddString(_T("次数"));
+	m_ComboRegTry.InsertString(0, _T("不支持"));
+	m_ComboRegTry.InsertString(1, _T("分钟"));
+	m_ComboRegTry.InsertString(2, _T("次数"));
 	m_ComboRegTry.SetCurSel(st_AuthConfig.st_Verification.nTryMode);
 
 	m_StrConfigAuthTime.Format(_T("%d"), st_AuthConfig.st_Verification.nVerTime);
 	m_EditAuthTime.SetWindowText(m_StrConfigAuthTime);
-	m_ComboListAuth.AddString(_T("不支持"));
-	m_ComboListAuth.AddString(_T("分钟"));
-	m_ComboListAuth.AddString(_T("天数"));
-	m_ComboListAuth.AddString(_T("次数"));
+	m_ComboListAuth.InsertString(0, _T("不支持"));
+	m_ComboListAuth.InsertString(1, _T("分钟"));
+	m_ComboListAuth.InsertString(2, _T("天数"));
+	m_ComboListAuth.InsertString(3, _T("次数"));
 	m_ComboListAuth.SetCurSel(st_AuthConfig.st_Verification.nVerMode);
 
 	m_EditSmtpAddr.SetWindowText(st_AuthConfig.st_EMail.tszSmtpAddr);
@@ -137,7 +147,8 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 }
 void CDialog_Configure::AuthorizeService_WriteConfigure()
 {
-	CString m_StrConfigPort;               //服务器端口
+	CString m_StrConfigTCPPort;               //服务器端口
+	CString m_StrConfigWSPort;
 	CString m_StrConfigThread;             //启动的线程个数
 	CString m_StrTimedOut;                 //用户验证超时时间
 
@@ -153,10 +164,21 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	CString m_StrConfigSmtpUser;           //用户名
 	CString m_StrConfigSmtpPass;           //密码
 
-	m_EditServicePort.GetWindowText(m_StrConfigPort);	
+	if (BST_CHECKED == m_EditTimeNotift.GetCheck())
+	{
+		st_AuthConfig.bTimeNotify = TRUE;
+	}
+	else
+	{
+		st_AuthConfig.bTimeNotify = FALSE;
+	}
+
+	m_EditServicePort.GetWindowText(m_StrConfigTCPPort);
+	m_EditWSPort.GetWindowText(m_StrConfigWSPort);
 	m_EditThreadPool.GetWindowText(m_StrConfigThread);
 	m_EditVerTimedout.GetWindowText(m_StrTimedOut);
-	st_AuthConfig.nPort = _ttoi(m_StrConfigPort.GetBuffer());
+	st_AuthConfig.nTCPPort = _ttoi(m_StrConfigTCPPort.GetBuffer());
+	st_AuthConfig.nWSPort = _ttoi(m_StrConfigWSPort.GetBuffer());
 	st_AuthConfig.nThreads = _ttoi(m_StrConfigThread.GetBuffer());
 	st_AuthConfig.nVerTimeout = _ttoi(m_StrTimedOut.GetBuffer());
 	st_AuthConfig.bAutoStart = m_BtnAutoStart.GetCheck();

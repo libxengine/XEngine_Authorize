@@ -2,9 +2,12 @@
 
 BOOL bIsRun = FALSE;
 XLOG xhLog = NULL;
-XNETHANDLE xhSocket = 0;
-XNETHANDLE xhPacket = 0;
-XNETHANDLE xhPool = 0;
+XNETHANDLE xhTCPSocket = 0;
+XNETHANDLE xhWSSocket = 0;
+XHANDLE xhTCPPacket = 0;
+XHANDLE xhWSPacket = NULL;
+XNETHANDLE xhTCPPool = 0;
+XNETHANDLE xhWSPool = 0;
 AUTHORIZE_CONFIGURE st_AuthConfig;
 
 void ServiceApp_Stop(int signo)
@@ -14,9 +17,12 @@ void ServiceApp_Stop(int signo)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("网络验证服务器退出..."));
 		bIsRun = FALSE;
 
-		HelpComponents_Datas_Destory(xhPacket);
-		NetCore_TCPXCore_DestroyEx(xhSocket);
-		ManagePool_Thread_NQDestroy(xhPool);
+		HelpComponents_Datas_Destory(xhTCPPacket);
+		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
+		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
+		NetCore_TCPXCore_DestroyEx(xhWSSocket);
+		ManagePool_Thread_NQDestroy(xhTCPPool);
+		ManagePool_Thread_NQDestroy(xhWSPool);
 		HelpComponents_XLog_Destroy(xhLog);
 
 		AuthService_Session_Destroy();
@@ -63,7 +69,8 @@ int main(int argc, char** argv)
 #endif
 	bIsRun = TRUE;
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
-	THREADPOOL_PARAMENT** ppSt_ListThread;
+	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
+	THREADPOOL_PARAMENT** ppSt_ListWSThread;
 
 	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
 	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
@@ -110,35 +117,61 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话服务成功"));
 
-	if (!HelpComponents_Datas_Init(&xhPacket, 10000, 0, st_AuthConfig.nThreads))
+	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, st_AuthConfig.nThreads);
+	if (NULL == xhTCPPacket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化组包器失败，错误：%lX"), Packets_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,句柄:%llu,任务池个数:%d"), xhPacket, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
+	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, st_AuthConfig.nThreads);
+	if (NULL == xhWSPacket)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化WebSocket协议管理器失败，错误：%lX"), WSFrame_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket协议管理器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 
-	if (!NetCore_TCPXCore_StartEx(&xhSocket, st_AuthConfig.nPort, 10000, st_AuthConfig.nThreads))
+	if (!NetCore_TCPXCore_StartEx(&xhTCPSocket, st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,句柄:%llu,端口:%d,网络池个数:%d"), xhSocket, st_AuthConfig.nPort, st_AuthConfig.nThreads);
-	NetCore_TCPXCore_RegisterCallBackEx(xhSocket, XEngine_Client_Accept, XEngine_Client_Recv, XEngine_Client_Close);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,句柄:%llu,端口:%d,网络池个数:%d"), xhTCPSocket, st_AuthConfig.nTCPPort, st_AuthConfig.nThreads);
+	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络事件成功"));
+	if (!NetCore_TCPXCore_StartEx(&xhWSSocket, st_AuthConfig.nWSPort, 10000, st_AuthConfig.nThreads))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,句柄:%llu,端口:%d,网络池个数:%d"), xhWSSocket, st_AuthConfig.nWSPort, st_AuthConfig.nThreads);
+	NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络事件成功"));
 
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
 	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
-		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
-
-		pSt_AuthThread->nPoolIndex = i;
-		ppSt_ListThread[i]->lParam = pSt_AuthThread;
-		ppSt_ListThread[i]->fpCall_ThreadsTask = XEngine_AuthService_TCPThread;
+		int* pInt_Index = new int;
+		*pInt_Index = i;
+		ppSt_ListTCPThread[i]->lParam = pInt_Index;
+		ppSt_ListTCPThread[i]->fpCall_ThreadsTask = XEngine_AuthService_TCPThread;
 	}
-	ManagePool_Thread_NQCreate(&xhPool, &ppSt_ListThread, st_AuthConfig.nThreads);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
+	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ListTCPThread, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动TCP任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,当前运行版本：2.2.0.1001。。。"));
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListWSThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
+	{
+		int* pInt_Index = new int;
+		*pInt_Index = i;
+		ppSt_ListWSThread[i]->lParam = pInt_Index;
+		ppSt_ListWSThread[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
+	}
+	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ListWSThread, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
+
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,当前运行版本：2.3.0.1001。。。"));
 	while (bIsRun)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -151,9 +184,12 @@ XENGINE_EXITAPP:
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("网络验证服务器退出..."));
 		bIsRun = FALSE;
 
-		HelpComponents_Datas_Destory(xhPacket);
-		NetCore_TCPXCore_DestroyEx(xhSocket);
-		ManagePool_Thread_NQDestroy(xhPool);
+		HelpComponents_Datas_Destory(xhTCPPacket);
+		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
+		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
+		NetCore_TCPXCore_DestroyEx(xhWSSocket);
+		ManagePool_Thread_NQDestroy(xhTCPPool);
+		ManagePool_Thread_NQDestroy(xhWSPool);
 		HelpComponents_XLog_Destroy(xhLog);
 
 		AuthService_Session_Destroy();

@@ -4,11 +4,10 @@
 #pragma comment(lib,"x86/XEngine_Core/XEngine_OPenSsl")
 #pragma comment(lib,"x86/XEngine_SystemSdk/XEngine_SystemApi")
 #pragma comment(lib,"x86/XEngine_HelpComponents/HelpComponents_Authorize")
-#else
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#endif
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>

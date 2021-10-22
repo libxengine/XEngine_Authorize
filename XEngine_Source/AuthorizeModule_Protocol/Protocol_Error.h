@@ -11,3 +11,4 @@
 //    History:
 *********************************************************************/
 #define XENGINE_AUTHORIZE_PROTOCOL_PARAMENT 0x0010001
+#define XENGINE_AUTHORIZE_PROTOCOL_PARSE 0x0010002
