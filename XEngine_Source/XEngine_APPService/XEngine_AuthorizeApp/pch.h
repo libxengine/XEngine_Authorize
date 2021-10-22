@@ -80,10 +80,17 @@ typedef struct
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol")
 #else
-#pragma comment(lib,"../../Release/AuthComponents_SQLPacket")
-#pragma comment(lib,"../../Release/AuthComponents_Session")
-#pragma comment(lib,"../../Release/AuthorizeModule_Configure")
-#pragma comment(lib,"../../Release/AuthorizeModule_Protocol")
+#ifdef _WIN64
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
+#pragma comment(lib,"../../x64/Release/AuthComponents_Session.lib")
+#pragma comment(lib,"../../x64/Release/AuthComponents_SQLPacket.lib")
+#else
+#pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
+#pragma comment(lib,"../../Release/AuthComponents_Session.lib")
+#pragma comment(lib,"../../Release/AuthComponents_SQLPacket.lib")
+#endif
 #endif
 
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")

@@ -71,7 +71,7 @@ extern AUTHORIZE_CONFIGURE st_AuthConfig;
 #pragma comment(lib,"../../Debug/AuthComponents_Session.lib")
 #pragma comment(lib,"../../Debug/AuthComponents_SQLPacket.lib")
 #else
-#ifdef WIN64
+#ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../x64/Release/AuthComponents_Session.lib")
