@@ -194,6 +194,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Dialog\CDialog_Configure.h" />
+    <ClInclude Include="Authorize_Dialog\CDialog_Info.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_Local.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_Serial.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_User.h" />
@@ -202,7 +203,6 @@
     <ClInclude Include="Authorize_Task\Authorize_TaskNetwork.h" />
     <ClInclude Include="Authorize_Task\Authorize_TCPTask.h" />
     <ClInclude Include="Authorize_Task\Authorize_WSTask.h" />
-    <ClInclude Include="CDialog_Info.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -212,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Authorize_Dialog\CDialog_Configure.cpp" />
+    <ClCompile Include="Authorize_Dialog\CDialog_Info.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_Local.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_Serial.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_User.cpp" />
@@ -220,7 +221,6 @@
     <ClCompile Include="Authorize_Task\Authorize_TaskNetwork.cpp" />
     <ClCompile Include="Authorize_Task\Authorize_TCPTask.cpp" />
     <ClCompile Include="Authorize_Task\Authorize_WSTask.cpp" />
-    <ClCompile Include="CDialog_Info.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
