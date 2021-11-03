@@ -153,7 +153,7 @@ void CDialog_User::OnBnClickedButton3()
 	// TODO: 在此添加控件通知处理程序代码
 	POSITION pSt_Sition = m_ListCtrlOnlineClient.GetFirstSelectedItemPosition();
 	int nSelect = m_ListCtrlOnlineClient.GetNextSelectedItem(pSt_Sition);
-	CString m_StrMsg;
+	
 	if (nSelect < 0)
 	{
 		AfxMessageBox(_T("你没有选择任何用户！"));
@@ -163,16 +163,13 @@ void CDialog_User::OnBnClickedButton3()
 	{
 		return;
 	}
-	m_StrMsg = m_ListCtrlOnlineClient.GetItemText(nSelect, 2);
-
-	if (XEngine_CloseClient(m_StrMsg.GetBuffer(), this))
-	{
-		AfxMessageBox(_T("删除客户成功！"));
-	}
-	else
-	{
-		AfxMessageBox(_T("删除客户失败！"));
-	}
+	CString m_StrUser = m_ListCtrlOnlineClient.GetItemText(nSelect, 1);
+	CString m_StrIPAddr = m_ListCtrlOnlineClient.GetItemText(nSelect, 2);
+	//先关闭
+	XEngine_CloseClient(m_StrIPAddr.GetBuffer(), this);
+	//在删除
+	AuthService_SQLPacket_UserDelete(m_StrUser.GetBuffer());
+	AfxMessageBox(_T("删除客户成功！"));
 }
 
 
