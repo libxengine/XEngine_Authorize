@@ -54,6 +54,8 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlOnlineClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlOnlineClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	hUserWnd = this->m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -139,12 +141,8 @@ void CDialog_User::OnBnClickedButton2()
 		return;
 	}
 	CString m_StrSerial = m_ListCtrlOnlineClient.GetItemText(nItemCount, 4);
-	if (nItemCount <= 0)
-	{
-		AfxMessageBox(_T("你没有选择任何用户！"));
-		return;
-	}
-	AfxMessageBox(_T("暂时不支持！"));
+	CDialog_Info m_DlgInfo;
+	m_DlgInfo.DoModal();
 }
 
 

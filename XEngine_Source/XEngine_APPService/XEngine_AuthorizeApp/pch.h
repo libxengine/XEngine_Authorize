@@ -69,6 +69,8 @@ extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
 extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
+extern HWND hUserWnd;
+
 typedef struct
 {
 	int nPoolIndex;
