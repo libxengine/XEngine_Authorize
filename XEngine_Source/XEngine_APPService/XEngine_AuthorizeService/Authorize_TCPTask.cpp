@@ -167,7 +167,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		}
 		pSt_ProtocolHdr->wReserve = 0;
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录成功"), lpszClientAddr, st_AuthProtocol.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录成功,注册类型:%d,剩余时间:%s"), lpszClientAddr, st_AuthProtocol.tszUserName, st_UserTable.en_AuthRegSerialType, st_UserTable.tszLeftTime);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQPAY == pSt_ProtocolHdr->unOperatorCode)
 	{

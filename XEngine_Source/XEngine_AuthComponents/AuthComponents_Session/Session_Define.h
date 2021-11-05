@@ -64,7 +64,7 @@ extern "C" BOOL AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-extern "C" BOOL AuthService_Session_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr);
+extern "C" BOOL AuthService_Session_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
 /********************************************************************
 函数名称：AuthService_Session_GetTimer
 函数功能：获取客户端时间信息

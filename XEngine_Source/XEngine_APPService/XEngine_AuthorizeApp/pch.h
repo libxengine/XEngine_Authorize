@@ -50,6 +50,7 @@ using namespace std;
 #include "Authorize_Dialog/CDialog_Serial.h"
 #include "Authorize_Dialog/CDialog_User.h"
 #include "Authorize_Dialog/CDialog_Local.h"
+#include "Authorize_Dialog/CDialog_Info.h"
 #include "XEngine_AuthorizeAppDlg.h"
 #include "Authorize_Task/Authorize_TCPTask.h"
 #include "Authorize_Task/Authorize_WSTask.h"
@@ -67,6 +68,8 @@ extern XHANDLE xhWSPacket;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
 extern AUTHORIZE_CONFIGURE st_AuthConfig;
+
+extern HWND hUserWnd;
 
 typedef struct
 {

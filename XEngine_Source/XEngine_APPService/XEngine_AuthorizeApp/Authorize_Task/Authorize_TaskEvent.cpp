@@ -5,8 +5,9 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
 	CString m_StrFormat;
+	int nListCount = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount();
 
-	for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
+	for (int i = 0; i < nListCount; i++)
 	{
 		CString m_StrUser = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 1);
 		if (0 == _tcsncmp(lpszUserName, m_StrUser.GetBuffer(), _tcslen(lpszUserName)))

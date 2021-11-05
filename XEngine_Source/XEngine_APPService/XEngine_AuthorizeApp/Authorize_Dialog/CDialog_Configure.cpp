@@ -211,7 +211,14 @@ void CDialog_Configure::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	LPCTSTR lpszConfigFile = _T("./XEngine_Config/XEngine_Config.ini");
-	CopyFile(lpszConfigFile, _T("./XEngine_Config/XEngine_Config.bak"), FALSE);
+	if (CopyFile(lpszConfigFile, _T("./XEngine_Config/XEngine_Config.bak"), FALSE))
+	{
+		AfxMessageBox(_T("备份成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("备份失败,可能文件不存在"));
+	}
 }
 
 
@@ -220,7 +227,14 @@ void CDialog_Configure::OnBnClickedButton3()
 	// TODO: 在此添加控件通知处理程序代码
 	LPCTSTR lpszConfigFile = _T("./XEngine_Config/XEngine_Config.ini");
 	DeleteFile(lpszConfigFile);
-	CopyFile(_T("./XEngine_Config/XEngine_Config.bak"), lpszConfigFile, FALSE);
+	if (CopyFile(_T("./XEngine_Config/XEngine_Config.bak"), lpszConfigFile, FALSE))
+	{
+		AfxMessageBox(_T("恢复成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("恢复失败,可能文件不存在"));
+	}
 }
 
 

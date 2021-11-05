@@ -10,3 +10,5 @@ XHANDLE xhWSPacket = 0;
 XNETHANDLE xhTCPPool = 0;
 XNETHANDLE xhWSPool = 0;
 AUTHORIZE_CONFIGURE st_AuthConfig;
+
+HWND hUserWnd = NULL;

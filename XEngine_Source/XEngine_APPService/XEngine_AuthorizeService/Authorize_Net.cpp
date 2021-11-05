@@ -54,13 +54,13 @@ void __stdcall XEngine_Client_WSClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LP
 BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 {
 	TCHAR tszClientUser[64];
+	AUTHREG_PROTOCOL_TIME st_TimeProtocol;
+
+	memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
 	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
-		AUTHREG_PROTOCOL_TIME st_TimeProtocol;
-		memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-
 		if (AuthService_Session_GetTimer(tszClientUser, &st_TimeProtocol))
 		{
 			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
@@ -71,7 +71,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_TimeProtocol.nTimeONLine);
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////

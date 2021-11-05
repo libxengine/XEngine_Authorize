@@ -194,6 +194,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Dialog\CDialog_Configure.h" />
+    <ClInclude Include="Authorize_Dialog\CDialog_Info.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_Local.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_Serial.h" />
     <ClInclude Include="Authorize_Dialog\CDialog_User.h" />
@@ -211,6 +212,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Authorize_Dialog\CDialog_Configure.cpp" />
+    <ClCompile Include="Authorize_Dialog\CDialog_Info.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_Local.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_Serial.cpp" />
     <ClCompile Include="Authorize_Dialog\CDialog_User.cpp" />

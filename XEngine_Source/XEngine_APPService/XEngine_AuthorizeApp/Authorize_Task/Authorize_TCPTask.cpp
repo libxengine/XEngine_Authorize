@@ -171,7 +171,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录失败，没有剩余时间了"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
+		st_UserTable.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB == st_AuthProtocol.enDeviceType ? ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB : ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC;
 		if (!AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 255;

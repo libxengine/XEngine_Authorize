@@ -306,6 +306,21 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	m_BtnStopService.EnableWindow(FALSE);
 	bThread = FALSE;
 
+	int nListCount = 0;
+	AUTHREG_USERTABLE** ppSt_ListClient;
+	AuthService_Session_GetClient(&ppSt_ListClient, &nListCount);
+	for (int i = 0; i < nListCount; i++)
+	{
+		AUTHREG_PROTOCOL_TIME st_TimeProtocol;
+		memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+
+		if (AuthService_Session_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
+		{
+			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+		}
+		AuthService_Session_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
+	}
+
 	HelpComponents_Datas_Destory(xhTCPPacket);
 	RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 	NetCore_TCPXCore_DestroyEx(xhTCPSocket);
