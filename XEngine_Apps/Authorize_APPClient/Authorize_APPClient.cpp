@@ -400,7 +400,7 @@ int main()
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
-	int nPort = 5000;
+	int nPort = 5500;
 	LPCTSTR lpszAddr = _T("127.0.0.1");
 
 	if (!XClient_TCPSelect_Create(&m_Socket, lpszAddr, nPort))
