@@ -62,14 +62,14 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	HANDLE hMutex = CreateMutex(NULL, TRUE, _T("XEngine_AuthorizeApp"));
 	if (NULL != hMutex)
 	{
-		if (GetLastError() == ERROR_ALREADY_EXISTS)
+		DWORD dwRet = GetLastError();
+		if (dwRet == ERROR_ALREADY_EXISTS)
 		{
-			AfxMessageBox(_T("程序已经运行!"));
+			AfxMessageBox(_T("程序已经运行,无法继续运行!"));
 			CloseHandle(hMutex);
-			return FALSE;
+			OnCancel();
 		}
 	}
-	CloseHandle(hMutex);
 
 	m_TabCtrl.InsertItem(0, _T("服务配置"));
 	m_TabCtrl.InsertItem(1, _T("用户管理"));
