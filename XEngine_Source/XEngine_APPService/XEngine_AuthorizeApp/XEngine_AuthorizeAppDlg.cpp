@@ -39,8 +39,14 @@ BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CXEngineAuthorizeAppDlg::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CXEngineAuthorizeAppDlg::OnBnClickedButton2)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1)
+	ON_MESSAGE(WINSDK_SKIN_USERMSG_TRAY, OnAddTrayIcon)//添加消息映射
 	ON_BN_CLICKED(IDC_BUTTON4, &CXEngineAuthorizeAppDlg::OnBnClickedButton4)
 	ON_WM_DESTROY()
+	ON_COMMAND(ID_32771, &CXEngineAuthorizeAppDlg::On32771)
+	ON_COMMAND(ID_32772, &CXEngineAuthorizeAppDlg::On32772)
+	ON_COMMAND(ID_32773, &CXEngineAuthorizeAppDlg::On32773)
+	ON_COMMAND(ID_32774, &CXEngineAuthorizeAppDlg::On32774)
+	ON_COMMAND(ID_32775, &CXEngineAuthorizeAppDlg::On32775)
 END_MESSAGE_MAP()
 
 
@@ -345,4 +351,58 @@ void CXEngineAuthorizeAppDlg::OnDestroy()
 	// TODO: 在此处添加消息处理程序代码
 	SystemApi_Skin_CreateTrayTip(m_hWnd, _T("血与荣誉网络验证服务"), WINSDK_SKIN_USERMSG_TRAY, IDR_MAINFRAME, FALSE);
 	WSACleanup();
+}
+LRESULT CXEngineAuthorizeAppDlg::OnAddTrayIcon(WPARAM wParam, LPARAM lParam)
+{
+	if (wParam == IDR_MAINFRAME)
+	{
+		switch (lParam)
+		{
+		case WM_RBUTTONDOWN:
+			CMenu m_Menu;
+			CPoint m_Point;
+			m_Menu.LoadMenu(IDR_MENU1);
+			CMenu* pSubMenu = m_Menu.GetSubMenu(0);
+			GetCursorPos(&m_Point);
+			SetForegroundWindow(); //解决托盘菜单不消失
+			pSubMenu->TrackPopupMenu(TPM_LEFTALIGN, m_Point.x, m_Point.y, this);
+			PostMessage(WM_NULL, 0, 0); //解决托盘菜单不消失
+			break;
+		}
+	}
+	return S_OK;
+}
+
+void CXEngineAuthorizeAppDlg::On32771()
+{
+	// TODO: 在此添加命令处理程序代码
+	ShowWindow(SW_SHOW);
+}
+
+
+void CXEngineAuthorizeAppDlg::On32772()
+{
+	// TODO: 在此添加命令处理程序代码
+	ShowWindow(SW_HIDE);
+}
+
+
+void CXEngineAuthorizeAppDlg::On32773()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnBnClickedButton3();
+}
+
+
+void CXEngineAuthorizeAppDlg::On32774()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnBnClickedButton4();
+}
+
+
+void CXEngineAuthorizeAppDlg::On32775()
+{
+	// TODO: 在此添加命令处理程序代码
+	OnOK();
 }

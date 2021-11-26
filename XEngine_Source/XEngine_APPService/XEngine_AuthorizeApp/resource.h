@@ -9,6 +9,7 @@
 #define IDD_DIALOG_USER                 134
 #define IDD_DIALOG_LOCAL                136
 #define IDD_DIALOG_MODIFY               138
+#define IDR_MENU1                       140
 #define IDC_TAB1                        1000
 #define IDC_EDIT1                       1001
 #define IDC_BUTTON1                     1002
@@ -47,13 +48,18 @@
 #define IDC_CHECK2                      1024
 #define IDC_BUTTON6                     1025
 #define IDC_BUTTON7                     1026
+#define ID_32771                        32771
+#define ID_32772                        32772
+#define ID_32773                        32773
+#define ID_32774                        32774
+#define ID_32775                        32775
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        140
-#define _APS_NEXT_COMMAND_VALUE         32771
+#define _APS_NEXT_RESOURCE_VALUE        141
+#define _APS_NEXT_COMMAND_VALUE         32776
 #define _APS_NEXT_CONTROL_VALUE         1026
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
