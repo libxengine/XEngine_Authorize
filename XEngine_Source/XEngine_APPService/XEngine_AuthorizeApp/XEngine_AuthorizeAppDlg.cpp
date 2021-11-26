@@ -115,8 +115,7 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 
 	if (st_AuthConfig.bAutoStart)
 	{
-		OnBnClickedButton1();
-		ShowWindow(SW_HIDE);
+		OnBnClickedButton3();
 	}
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
