@@ -65,6 +65,7 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	pSt_AuthConfig->st_Crypto.bEnable = GetPrivateProfileInt(_T("Crypto"), _T("Enable"), 0, lpszFile);
 	pSt_AuthConfig->st_Crypto.nPassword = GetPrivateProfileInt(_T("Crypto"), _T("Pass"), 0, lpszFile);
 
+	pSt_AuthConfig->st_EMail.bSmtpEnable = GetPrivateProfileInt(_T("SmtpConfig"), _T("SmtpEnable"), 0, lpszFile);
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), NULL, pSt_AuthConfig->st_EMail.tszSmtpAddr, MAX_PATH, lpszFile);
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), NULL, pSt_AuthConfig->st_EMail.tszSmtpFrom, MAX_PATH, lpszFile);
 	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), NULL, pSt_AuthConfig->st_EMail.tszSmtpUser, MAX_PATH, lpszFile);
@@ -146,6 +147,9 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->st_Crypto.nPassword);
 	WritePrivateProfileString(_T("Crypto"), _T("Pass"), tszBuffer, lpszFile);
 
+	memset(tszBuffer, '\0', MAX_PATH);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->st_EMail.bSmtpEnable);
+	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), tszBuffer, lpszFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), pSt_AuthConfig->st_EMail.tszSmtpAddr, lpszFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), pSt_AuthConfig->st_EMail.tszSmtpFrom, lpszFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), pSt_AuthConfig->st_EMail.tszSmtpUser, lpszFile);

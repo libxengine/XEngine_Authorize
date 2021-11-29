@@ -36,6 +36,7 @@ typedef struct
 	}st_Crypto;
 	struct  
 	{
+		BOOL bSmtpEnable;                                   //是否启用SMTP
 		TCHAR tszSmtpAddr[MAX_PATH];                        //SMTP服务器
 		TCHAR tszSmtpFrom[MAX_PATH];                        //回复地址
 		TCHAR tszSmtpUser[MAX_PATH];                        //用户名
