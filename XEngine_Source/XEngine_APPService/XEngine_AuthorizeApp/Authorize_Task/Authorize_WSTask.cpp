@@ -26,7 +26,21 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 			{
 				continue;
 			}
-			XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode, pSt_ThreadInfo->lPClass);
+			//如果使用加密,客户端只能使用XCrypto 加密
+			if (BST_CHECKED == pClass_This->m_DlgConfig.m_RadioKeyPass.GetCheck())
+			{
+				CString m_StrPass;
+				TCHAR tszDeBuffer[2048];
+				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
+
+				pClass_This->m_DlgConfig.m_EditPass.GetWindowText(m_StrPass);
+				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, m_StrPass.GetBuffer());
+				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode, pSt_ThreadInfo->lPClass);
+			}
+			else
+			{
+				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode, pSt_ThreadInfo->lPClass);
+			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}

@@ -25,7 +25,22 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 			{
 				continue;
 			}
-			XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
+			if (st_AuthConfig.st_Crypto.bEnable)
+			{
+				TCHAR tszPassword[64];
+				TCHAR tszDeBuffer[2048];
+
+				memset(tszPassword, '\0', sizeof(tszPassword));
+				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
+
+				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
+				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode);
+			}
+			else
+			{
+				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
+			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
