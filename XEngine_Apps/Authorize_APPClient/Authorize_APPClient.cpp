@@ -2,6 +2,7 @@
 #include <Windows.h>
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32.lib")
+#pragma comment(lib,"x86//XEngine_Core/XEngine_OPenSsl.lib")
 #pragma comment(lib,"x86//XEngine_Client/XClient_Socket.lib")
 #else
 #include <stdio.h>
@@ -12,9 +13,11 @@
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
+#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
+#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
-#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 //g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_AuthorizeReg -lXEngine_BaseLib -lXClient_Socket -lXEngine_AuthRegClient -lpthread -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_AuthorizeReg,--disable-new-dtags
@@ -29,6 +32,7 @@ BOOL bReadTxt = TRUE;
 BOOL bDelete = TRUE;
 BOOL bTry = TRUE;
 BOOL bTimeOut = TRUE;
+BOOL bEncrypto = TRUE;
 
 SOCKET m_Socket = 0;
 LPCTSTR lpszUser = _T("123123aa");
@@ -42,17 +46,21 @@ XHTHREAD AuthClient_Thread()
 {
 	while (bRun)
 	{
-		int nMsgLen = 2048;
-		TCHAR tszMsgBuffer[2048];
+		int nMsgLen = 0;
+		TCHAR *ptszMsgBuffer;
+		XENGINE_PROTOCOLHDR st_ProtocolHdr;
 
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		if (XClient_TCPSelect_RecvMsg(m_Socket, tszMsgBuffer, &nMsgLen, TRUE))
+		memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
+		if (XClient_TCPSelect_RecvPkt(m_Socket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
 		{
-			XENGINE_PROTOCOLHDR st_ProtocolHdr;
-			memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
-			memcpy(&st_ProtocolHdr, tszMsgBuffer, sizeof(XENGINE_PROTOCOLHDR));
+			TCHAR tszMsgBuffer[4096];
+			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
+			if (nMsgLen > 0)
+			{
+				//只有有后续数据的情况才需要解密
+				OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, lpszPass);
+			}
 			if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDEL == st_ProtocolHdr.unOperatorCode)
 			{
 				bDelete = FALSE;
@@ -103,14 +111,21 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS == st_ProtocolHdr.unOperatorCode)
 			{
+				bPass = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
-					memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-					memcpy(&st_AuthProtocol, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), sizeof(XENGINE_PROTOCOL_USERAUTH));
+					if (0 == st_ProtocolHdr.unPacketSize)
+					{
+						printf(_T("找回密码成功,账号密码已发送到你的邮箱\n"));
+					}
+					else
+					{
+						XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
+						memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+						memcpy(&st_AuthProtocol, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), sizeof(XENGINE_PROTOCOL_USERAUTH));
 
-					bPass = FALSE;
-					printf(_T("找回密码成功,账号:%s,密码:%s\n"), st_AuthProtocol.tszUserName, st_AuthProtocol.tszUserPass);
+						printf(_T("找回密码成功,账号:%s,密码:%s\n"), st_AuthProtocol.tszUserName, st_AuthProtocol.tszUserPass);
+					}
 				}
 				else
 				{
@@ -176,25 +191,45 @@ XHTHREAD AuthClient_Thread()
 	return 0;
 }
 
-BOOL AuthRegClient_Protocol_Send(LPCTSTR lpszMsgBuffer, TCHAR* ptszMsgBuffer, int* pInt_MsgLen, UINT en_AuthProtocol, BYTE byCrypto = 0)
+BOOL AuthRegClient_Protocol_Send(LPCTSTR lpszMsgBuffer, TCHAR* ptszMsgBuffer, int* pInt_MsgLen, UINT en_AuthProtocol)
 {
 	//填充协议
+	TCHAR tszMsgBuffer[4096];
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;                    //协议头
+
+	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
 	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
 	st_ProtocolHdr.unOperatorCode = en_AuthProtocol;
 	st_ProtocolHdr.unPacketSize = *pInt_MsgLen;
-	st_ProtocolHdr.wCrypto = byCrypto;
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-	memcpy(ptszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
-	if (*pInt_MsgLen > 0)
+	if (bEncrypto)
 	{
-		memcpy(ptszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), lpszMsgBuffer, st_ProtocolHdr.unPacketSize);
+		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
+		if (*pInt_MsgLen > 0)
+		{
+			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, (int*)&st_ProtocolHdr.unPacketSize, (UCHAR*)tszMsgBuffer, lpszPass);
+			memcpy(ptszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+			memcpy(ptszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszMsgBuffer, st_ProtocolHdr.unPacketSize);
+		}
+		else
+		{
+			memcpy(ptszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+		}
+		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR) + st_ProtocolHdr.unPacketSize;
 	}
-	*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR) + st_ProtocolHdr.unPacketSize;
+	else
+	{
+		memcpy(ptszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+		if (*pInt_MsgLen > 0)
+		{
+			memcpy(ptszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), lpszMsgBuffer, st_ProtocolHdr.unPacketSize);
+		}
+		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR) + st_ProtocolHdr.unPacketSize;
+	}
 	return TRUE;
 }
 int AuthClient_Register()
@@ -261,14 +296,6 @@ int AuthClient_Login()
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
 
 	int nMsgLen = sizeof(XENGINE_PROTOCOL_USERAUTH);
-
-	/*使用加密发送
-	CHAR tszEnBuffer[2048];
-		memset(tszEnBuffer, '\0', sizeof(tszEnBuffer));
-
-		OPenSsl_XCrypto_Encoder((LPCTSTR)&st_AuthUser, &nMsgLen, (UCHAR*)tszMsgBuffer, "123123");
-		AuthRegClient_Protocol_Send(tszMsgBuffer, tszEnBuffer, &nMsgLen, XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN, 4);
-	*/
 	AuthRegClient_Protocol_Send((LPCTSTR)&st_AuthUser, tszMsgBuffer, &nMsgLen, XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN);
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
 	{
