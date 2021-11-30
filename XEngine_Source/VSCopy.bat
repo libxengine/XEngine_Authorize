@@ -11,6 +11,7 @@ copy /y "%XEngine_Library%\x86\XEngine_HelpComponents\HelpComponents_Authorize.d
 
 copy /y "%XEngine_Library%\x86\XEngine_SystemSdk\XEngine_SystemApi.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_RfcComponents\RfcComponents_WSProtocol.dll" "./"
+copy /y "%XEngine_Library%\x86\XEngine_RfcComponents\RfcComponents_EmailClient.dll" "./"
 
 copy /y "%XEngine_Library%\x86\XEngine_HelpComponents\bson-1.0.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_HelpComponents\mongoc-1.0.dll" "./"
@@ -20,3 +21,4 @@ copy /y "%XEngine_Library%\x86\XEngine_HelpComponents\sqlite3.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_HelpComponents\zlib1.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_LibEx\libcrypto-1_1.dll" "./"
 copy /y "%XEngine_Library%\x86\XEngine_LibEx\libssl-1_1.dll" "./"
+copy /y "%XEngine_Library%\x86\XEngine_LibEx\libcurl.dll" "./"

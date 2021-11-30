@@ -42,6 +42,7 @@ void CDialog_Configure::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT10, m_EditSmtpPass);
 	DDX_Control(pDX, IDC_EDIT15, m_EditWSPort);
 	DDX_Control(pDX, IDC_CHECK2, m_EditTimeNotift);
+	DDX_Control(pDX, IDC_CHECK3, m_CheckEnableEmail);
 }
 
 
@@ -65,7 +66,6 @@ BOOL CDialog_Configure::OnInitDialog()
 	LPCTSTR lpszFile = _T("./XEngine_Config/XEngine_Config.ini");
 	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
 	Configure_IniFile_Read(lpszFile, &st_AuthConfig);
-
 	AuthorizeService_ReadConfigure();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
@@ -122,6 +122,16 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 		m_RadioKeyDisable.SetCheck(TRUE);
 		m_RadioKeyPass.SetCheck(FALSE);
 	}
+
+	if (st_AuthConfig.st_EMail.bSmtpEnable)
+	{
+		m_CheckEnableEmail.SetCheck(1);
+	}
+	else
+	{
+		m_CheckEnableEmail.SetCheck(0);
+	}
+
 	m_StrConfigCrypt.Format(_T("%d"), st_AuthConfig.st_Crypto.nPassword);
 	m_EditPass.SetWindowText(m_StrConfigCrypt.GetBuffer());
 
@@ -219,6 +229,14 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 		WritePrivateProfileString(_T("Crypto"), _T("Enable"), _T("0"), lpszConfigFile);
 	}
 
+	if (BST_CHECKED == m_CheckEnableEmail.GetCheck())
+	{
+		WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), _T("1"), lpszConfigFile);
+	}
+	else
+	{
+		WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), _T("0"), lpszConfigFile);
+	}
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), m_StrConfigSmtpAddr.GetBuffer(), lpszConfigFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), m_StrConfigSmtpFrom.GetBuffer(), lpszConfigFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), m_StrConfigSmtpUser.GetBuffer(), lpszConfigFile);
