@@ -47,6 +47,7 @@
 #define IDC_IPADDRESS1                  1021
 #define IDC_CHECK2                      1024
 #define IDC_BUTTON6                     1025
+#define IDC_CHECK3                      1025
 #define IDC_BUTTON7                     1026
 #define ID_32771                        32771
 #define ID_32772                        32772
