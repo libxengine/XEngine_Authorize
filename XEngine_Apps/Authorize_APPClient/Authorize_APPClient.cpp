@@ -32,7 +32,7 @@ BOOL bReadTxt = TRUE;
 BOOL bDelete = TRUE;
 BOOL bTry = TRUE;
 BOOL bTimeOut = TRUE;
-BOOL bEncrypto = TRUE;
+BOOL bEncrypto = FALSE;
 
 SOCKET m_Socket = 0;
 LPCTSTR lpszUser = _T("123123aa");
@@ -75,9 +75,9 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPREGISTER == st_ProtocolHdr.unOperatorCode)
 			{
+				bRegiser = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					bRegiser = FALSE;
 					printf(_T("注册成功\n"));
 				}
 				else
@@ -87,9 +87,9 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN == st_ProtocolHdr.unOperatorCode)
 			{
+				bLogin = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					bLogin = FALSE;
 					printf(_T("登录成功\n"));
 				}
 				else
@@ -99,9 +99,9 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPPAY == st_ProtocolHdr.unOperatorCode)
 			{
+				bPay = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					bPay = FALSE;
 					printf(_T("充值成功\n"));
 				}
 				else
@@ -134,13 +134,13 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME == st_ProtocolHdr.unOperatorCode)
 			{
+				bLeftTime = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
 					AUTHREG_PROTOCOL_TIME st_AuthTime;
 					memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 					memcpy(&st_AuthTime, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), sizeof(AUTHREG_PROTOCOL_TIME));
 
-					bLeftTime = FALSE;
 					printf(_T("获取剩余时间成功,账号:%s,地址:%s,剩余时间:%lld 分钟,在线时间:%lld,过期日期:%s,类型:%d\n"), st_AuthTime.tszUserName, st_AuthTime.tszUserAddr, st_AuthTime.nTimeLeft, st_AuthTime.nTimeONLine, st_AuthTime.tszLeftTime, st_AuthTime.enSerialType);
 				}
 				else
@@ -150,9 +150,9 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_NOTIFYMSG == st_ProtocolHdr.unOperatorCode)
 			{
+				bReadTxt = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					bReadTxt = FALSE;
 					TCHAR tszMsgInfo[2048];
 					memset(tszMsgInfo, '\0', sizeof(tszMsgInfo));
 					memcpy(tszMsgInfo, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), st_ProtocolHdr.unPacketSize);
@@ -166,9 +166,9 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPTRYVER == st_ProtocolHdr.unOperatorCode)
 			{
+				bTry = FALSE;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					bTry = FALSE;
 					printf(_T("临时验证成功\n"));
 				}
 				else
@@ -420,7 +420,6 @@ int AuthClient_Try()
 	}
 	return 0;
 }
-
 int main()
 {
 #ifdef _WINDOWS
