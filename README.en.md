@@ -58,7 +58,7 @@ make FLAGS=InstallAll Install File
 make FLAGS=CleanAll Clear Complie  
 
 ## test server
-address:app.xyry.org or 159.75.200.173
+address:app.xyry.org or 159.75.200.173  
 port :tcp port 5300,websocket port 5301,Transmission verification password: no encryption
 
 ## Screenshot of the program
