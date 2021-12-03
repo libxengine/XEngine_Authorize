@@ -39,12 +39,7 @@ XEngine版本需要V7.23或者以上版本
 ## 编译
 
 #### Windows
-使用VS2019 x86(debug release)打开并且编译 你需要按照下面的方式配置环境,不然你可能需要自己在项目中设置库目录
-
-##### XEngine环境
-XEngine可以直接下载,下载完毕后添加用户环境变量,需要下面两个  
-- XEngine_Include 头文件目录地址
-- XEngine_Library 库文件目录地址
+使用VS2019 x86(debug release)或者x64(release)打开并且编译 你需要按照下面的方式配置环境,不然你可能需要自己在项目中设置库目录
 
 #### Linux
 Linux使用Makefile编译  
@@ -58,6 +53,15 @@ XEngine可以通过脚本文件安装sudo XEngine_RunEnv.sh -i 3
 make 编译  
 make FLAGS=InstallAll 安装库程序  
 make FLAGS=CleanAll 清理编译  
+
+#### XEngine环境
+安装XEngine可以参考其Readme文档
+GITEE:https://gitee.com/xyry/libxengine
+GITHUB:https://github.com/libxengine/xengine
+
+## 测试服务器
+地址:app.xyry.org 或者 159.75.200.173
+端口:tcp端口 5300,websocket端口 5301,传输验证密码:无加密
 
 ## 程序截图
 ![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
@@ -81,3 +85,8 @@ make FLAGS=CleanAll 清理编译
 ## 提交问题
 
 如果你有问题,可以在issues中提交
+
+## 开发计划
+日志系统升级!  
+解决临时验证过期时间问题!  
+用户权限级别优化!  

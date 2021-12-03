@@ -136,6 +136,13 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
+		if (_tcslen(st_AuthProtocol.tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass))
+		{
+			pSt_ProtocolHdr->wReserve = 252;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			return FALSE;
+		}
 		if (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass)))
 		{
 			pSt_ProtocolHdr->wReserve = 252;
@@ -222,11 +229,34 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，找回密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
-		_tcscpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
-		_tcscpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
+		if (st_AuthConfig.st_EMail.bSmtpEnable)
+		{
+			XNETHANDLE xhEMail;
+			TCHAR tszEMailBuffer[1024];
+			RFCCOMPONENTS_EMAILSMTP st_EmailInfo;
 
-		pSt_ProtocolHdr->wReserve = 0;
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
+			memset(tszEMailBuffer, '\0', sizeof(tszEMailBuffer));
+			memset(&st_EmailInfo, '\0', sizeof(RFCCOMPONENTS_EMAILSMTP));
+
+			_tcscpy(st_EmailInfo.tszServiceAddr, st_AuthConfig.st_EMail.tszSmtpAddr);
+			_tcscpy(st_EmailInfo.tszUserName, st_AuthConfig.st_EMail.tszSmtpUser);
+			_tcscpy(st_EmailInfo.tszPassWord, st_AuthConfig.st_EMail.tszSmtpPass);
+			_tcscpy(st_EmailInfo.tszFromAddr, st_AuthConfig.st_EMail.tszSmtpFrom);
+
+			_stprintf(tszEMailBuffer, _T("你的用户名:%s\r\n你的密码:%s\r\n"), st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.tszUserPass);
+			RfcComponents_EMailClient_SmtpInit(&xhEMail, &st_EmailInfo);
+			RfcComponents_EMailClient_SmtpSend(xhEMail, st_UserTable.st_UserInfo.tszEMailAddr, _T("XEngine授权验证服务-密码找回"), tszEMailBuffer);
+			RfcComponents_EMailClient_SmtpClose(xhEMail);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType);
+		}
+		else
+		{
+			_tcscpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+			_tcscpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
+
+			pSt_ProtocolHdr->wReserve = 0;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_AuthProtocol, sizeof(XENGINE_PROTOCOL_USERAUTH));
+		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == pSt_ProtocolHdr->unOperatorCode)
@@ -354,7 +384,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 2101;
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，请求查询用户信息失败,帐户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_UserTable.st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO));
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, nNetType, (LPCTSTR)&st_UserTable, sizeof(AUTHREG_USERTABLE));
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
 	{

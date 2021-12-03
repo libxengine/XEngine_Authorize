@@ -48,4 +48,5 @@ public:
 	afx_msg void OnBnClickedRadio1();
 	CEdit m_EditWSPort;
 	CButton m_EditTimeNotift;
+	CButton m_CheckEnableEmail;
 };

@@ -42,24 +42,24 @@ Run it on the terminal,use XEngine_AuthorizeService
 use vs2019 x86(debug or release) x64(only release) open and complie  
 You need to configure the environment in the following way, otherwise you may need to set the library directory in the project yourself  
 
-##### XEngine
-XEngine can be download with mine repository,whe you downloaded xengine,you have to add value to you user environment  
-- XEngine_Include header file path
-- XEngine_Library library file path
-
 #### Linux
 Linux use Makefile complie  
 UBUNTU20.04 x64 or CENTOS8 x64  
 
-##### XEngine环境
-you can install xengine env to your system by shell  
-like this:sudo XEngine_RunEnv.sh -i 3
+#### XEngine Env
+install XEngine can be refer to xengine Readme docment
+GITEE:https://gitee.com/xyry/libxengine
+GITHUB:https://github.com/libxengine/xengine
 
 ##### Screenshot of the program
 execute command in XEngine_Source path   
 make complie  
 make FLAGS=InstallAll Install File  
 make FLAGS=CleanAll Clear Complie  
+
+## test server
+address:app.xyry.org or 159.75.200.173
+port :tcp port 5300,websocket port 5301,Transmission verification password: no encryption
 
 ## Screenshot of the program
 ![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")

@@ -27,6 +27,7 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
+	afx_msg LRESULT OnAddTrayIcon(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	CDialog_Configure m_DlgConfig;
@@ -39,6 +40,7 @@ public:
 	THREADPOOL_PARAMENT** ppSt_ThreadTCPParament;
 	THREADPOOL_PARAMENT** ppSt_ThreadWSParament;
 public:
+	BOOL bShow;
 	CEdit m_EditLog;
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton1();
@@ -49,4 +51,9 @@ public:
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnDestroy();
+	afx_msg void On32771();
+	afx_msg void On32772();
+	afx_msg void On32773();
+	afx_msg void On32774();
+	afx_msg void On32775();
 };

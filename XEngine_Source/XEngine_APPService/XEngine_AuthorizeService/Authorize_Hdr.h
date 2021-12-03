@@ -35,6 +35,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/EmailClient_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/EmailClient_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Define.h"
 #include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Error.h"
@@ -92,4 +94,5 @@ extern AUTHORIZE_CONFIGURE st_AuthConfig;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_EmailClient.lib")
 #endif
