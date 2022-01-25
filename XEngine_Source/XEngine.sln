@@ -24,6 +24,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeService", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeApp", "XEngine_APPService\XEngine_AuthorizeApp\XEngine_AuthorizeApp.vcxproj", "{29DCAD3F-A70D-424A-BB5A-E99DAE9EEF16}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_ThirdPart", "XEngine_ThirdPart", "{756EEE5A-D9AE-4857-8F44-C7918F3611A5}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jsoncpp", "XEngine_ThirdPart\jsoncpp\jsoncpp.vcxproj", "{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -80,6 +84,14 @@ Global
 		{29DCAD3F-A70D-424A-BB5A-E99DAE9EEF16}.Release|x64.Build.0 = Release|x64
 		{29DCAD3F-A70D-424A-BB5A-E99DAE9EEF16}.Release|x86.ActiveCfg = Release|Win32
 		{29DCAD3F-A70D-424A-BB5A-E99DAE9EEF16}.Release|x86.Build.0 = Release|Win32
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Debug|x64.ActiveCfg = Debug|x64
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Debug|x64.Build.0 = Debug|x64
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Debug|x86.ActiveCfg = Debug|Win32
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Debug|x86.Build.0 = Debug|Win32
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Release|x64.ActiveCfg = Release|x64
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Release|x64.Build.0 = Release|x64
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Release|x86.ActiveCfg = Release|Win32
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -89,6 +101,7 @@ Global
 		{65CB84F8-8DAB-483D-A3C6-AD48FC7ACAEF} = {F79B8560-7E00-4930-A61B-83BE6FB52599}
 		{A29DFD8D-2818-4BE3-A2DB-07F241B4BFC9} = {2444CB54-6443-47F9-8D93-91237D0D05FB}
 		{29DCAD3F-A70D-424A-BB5A-E99DAE9EEF16} = {2444CB54-6443-47F9-8D93-91237D0D05FB}
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB} = {756EEE5A-D9AE-4857-8F44-C7918F3611A5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E1F1DDE3-8949-41AF-84D6-03CB7CAA03AB}
