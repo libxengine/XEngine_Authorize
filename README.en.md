@@ -27,29 +27,25 @@ feature list:
 
 #### Requirements
 support system above windows 7sp1 and linux(ubuntu20.04,centos8)  
-XEngine need V7.17 or above  
+you must install XEngine,need V7.28 or above  
 
 #### Windows
 Just Run it.,use XEngine_AuthorizeApp
-
 
 #### Linux
 Run it on the terminal,use XEngine_AuthorizeService
 
 ## complie
+install XEngine can be refer to xengine Readme docment  
+GITEE:https://gitee.com/xyry/libxengine  
+GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
-use vs2019 x86(debug or release) x64(only release) open and complie  
-You need to configure the environment in the following way, otherwise you may need to set the library directory in the project yourself  
+use vs2019 x86(debug or release) x64(only release) open and complie
 
 #### Linux
 Linux use Makefile complie  
 UBUNTU20.04 x64 or CENTOS8 x64  
-
-#### XEngine Env
-install XEngine can be refer to xengine Readme docment
-GITEE:https://gitee.com/xyry/libxengine
-GITHUB:https://github.com/libxengine/xengine
 
 ##### Screenshot of the program
 execute command in XEngine_Source path   
