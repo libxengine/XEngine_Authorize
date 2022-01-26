@@ -80,10 +80,17 @@ typedef struct
 }XENGINE_THREADINFO;
 
 #ifdef _DEBUG
+#ifdef _WIN64
+#pragma comment(lib,"../../x64/Debug/AuthComponents_SQLPacket")
+#pragma comment(lib,"../../x64/Debug/AuthComponents_Session")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol")
+#else
 #pragma comment(lib,"../../Debug/AuthComponents_SQLPacket")
 #pragma comment(lib,"../../Debug/AuthComponents_Session")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol")
+#endif
 #else
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")

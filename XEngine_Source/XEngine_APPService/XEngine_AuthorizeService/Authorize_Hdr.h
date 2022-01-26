@@ -68,10 +68,17 @@ extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 #ifdef _WINDOWS
 #ifdef _DEBUG
+#ifdef _WIN64
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure.lib")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol.lib")
+#pragma comment(lib,"../../x64/Debug/AuthComponents_Session.lib")
+#pragma comment(lib,"../../x64/Debug/AuthComponents_SQLPacket.lib")
+#else
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Debug/AuthComponents_Session.lib")
 #pragma comment(lib,"../../Debug/AuthComponents_SQLPacket.lib")
+#endif
 #else
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")

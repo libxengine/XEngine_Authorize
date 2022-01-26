@@ -1,0 +1,1 @@
+appclient just only x86 debug compile

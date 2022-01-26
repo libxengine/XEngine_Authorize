@@ -27,26 +27,25 @@ c c++network Authorize service
 
 #### 版本需求
 支持WINDOWS 7SP1和LINUX(UBUNT20.04,CENTOS8)以上系统  
-XEngine版本需要V7.23或者以上版本    
+必须安装XEngine,版本需要V7.28或者以上版本    
 
 #### Windows
 直接运行即可,使用XEngine_AuthorizeApp
-
 
 #### Linux
 在控制台运行,使用XEngine_AuthorizeService
 
 ## 编译
+安装XEngine可以参考其Readme文档  
+GITEE:https://gitee.com/xyry/libxengine  
+GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
-使用VS2019 x86(debug release)或者x64(release)打开并且编译 你需要按照下面的方式配置环境,不然你可能需要自己在项目中设置库目录
+使用VS2019 x86(debug release)或者x64(release)打开并且编译
 
 #### Linux
 Linux使用Makefile编译  
 UBUNTU20.04 x64或者CENTOS8 x64均可  
-
-##### XEngine环境
-XEngine可以通过脚本文件安装sudo XEngine_RunEnv.sh -i 3
 
 ##### 编译命令
 在XEngine_Source目录下执行命令  
@@ -54,13 +53,8 @@ make 编译
 make FLAGS=InstallAll 安装库程序  
 make FLAGS=CleanAll 清理编译  
 
-#### XEngine环境
-安装XEngine可以参考其Readme文档
-GITEE:https://gitee.com/xyry/libxengine
-GITHUB:https://github.com/libxengine/xengine
-
 ## 测试服务器
-地址:app.xyry.org 或者 159.75.200.173
+地址:app.xyry.org 或者 159.75.200.173  
 端口:tcp端口 5300,websocket端口 5301,传输验证密码:无加密
 
 ## 程序截图
