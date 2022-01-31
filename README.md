@@ -41,7 +41,8 @@ GITEE:https://gitee.com/xyry/libxengine
 GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
-使用VS2019 x86(debug release)或者x64(release)打开并且编译
+使用VS2019 x86(debug release)或者x64(release)打开并且编译  
+请使用git clone下载代码,zip打包下载的代码格式有误,可能会无法编译  
 
 #### Linux
 Linux使用Makefile编译  

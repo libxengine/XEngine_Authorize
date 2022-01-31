@@ -41,7 +41,8 @@ GITEE:https://gitee.com/xyry/libxengine
 GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
-use vs2019 x86(debug or release) x64(only release) open and complie
+use vs2019 x86(debug or release) x64(only release) open and complie  
+Please use git clone to download the code, otherwise it may not compile
 
 #### Linux
 Linux use Makefile complie  
