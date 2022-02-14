@@ -139,7 +139,8 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 	m_EditTryTime.SetWindowText(m_StrConfigTryTime);
 	m_ComboRegTry.InsertString(0, _T("不支持"));
 	m_ComboRegTry.InsertString(1, _T("分钟"));
-	m_ComboRegTry.InsertString(2, _T("次数"));
+	m_ComboRegTry.InsertString(2, _T("天数"));
+	m_ComboRegTry.InsertString(3, _T("次数"));
 	m_ComboRegTry.SetCurSel(st_AuthConfig.st_Verification.nTryMode);
 
 	m_StrConfigAuthTime.Format(_T("%d"), st_AuthConfig.st_Verification.nVerTime);
@@ -242,6 +243,7 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), m_StrConfigSmtpUser.GetBuffer(), lpszConfigFile);
 	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpPass"), m_StrConfigSmtpPass.GetBuffer(), lpszConfigFile);
 
+	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
 	Configure_IniFile_Read(lpszConfigFile, &st_AuthConfig);
 	AuthorizeService_ReadConfigure();
 	AfxMessageBox(_T("保存成功!"));

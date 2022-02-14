@@ -62,20 +62,19 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	WSADATA st_WSAData;
-	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
-
 	HANDLE hMutex = CreateMutex(NULL, TRUE, _T("XEngine_AuthorizeApp"));
 	if (NULL != hMutex)
 	{
 		DWORD dwRet = GetLastError();
 		if (dwRet == ERROR_ALREADY_EXISTS)
 		{
-			AfxMessageBox(_T("程序已经运行,无法继续运行!"));
+			AfxMessageBox(_T("程序已经运行,无法继续!"));
 			CloseHandle(hMutex);
 			OnCancel();
 		}
 	}
+	WSADATA st_WSAData;
+	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 
 	m_TabCtrl.InsertItem(0, _T("服务配置"));
 	m_TabCtrl.InsertItem(1, _T("用户管理"));
