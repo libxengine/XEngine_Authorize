@@ -53,8 +53,6 @@ BOOL CDialog_Info::OnInitDialog()
 	int nItemCount = pWnd->m_ListCtrlOnlineClient.GetNextSelectedItem(pSt_Sition);
 
 	CString m_StrUser = pWnd->m_ListCtrlOnlineClient.GetItemText(nItemCount, 1);
-
-	AUTHREG_USERTABLE st_UserTable;
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 	AuthService_SQLPacket_UserQuery(m_StrUser.GetBuffer(), &st_UserTable);
@@ -86,8 +84,10 @@ BOOL CDialog_Info::OnInitDialog()
 void CDialog_Info::OnBnClickedButton6()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	AUTHREG_USERTABLE st_UserTable;
-	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+	memset(st_UserTable.st_UserInfo.tszUserName, '\0', sizeof(st_UserTable.st_UserInfo.tszUserName));
+	memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
+	memset(st_UserTable.st_UserInfo.tszEMailAddr, '\0', sizeof(st_UserTable.st_UserInfo.tszEMailAddr));
+	memset(st_UserTable.tszLeftTime, '\0', sizeof(st_UserTable.tszLeftTime));
 
 	m_EditUser.GetWindowText(st_UserTable.st_UserInfo.tszUserName, sizeof(st_UserTable.st_UserInfo.tszUserName));
 	m_EditPass.GetWindowText(st_UserTable.st_UserInfo.tszUserPass, sizeof(st_UserTable.st_UserInfo.tszUserPass));
@@ -105,6 +105,7 @@ void CDialog_Info::OnBnClickedButton6()
 	st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboType.GetCurSel();
 	if (AuthService_SQLPacket_UserSet(&st_UserTable))
 	{
+		AuthService_Session_SetUser(&st_UserTable);
 		AfxMessageBox(_T("修改成功"));
 	}
 	else
