@@ -236,8 +236,8 @@ BOOL CProtocol_Packet::Protocol_Packet_WSPktInfo(TCHAR* ptszMsgBuffer, int* pInt
 	st_JsonObject["tszCreateTime"] = pSt_UserInfo->tszCreateTime;
 	st_JsonObject["tszEMailAddr"] = pSt_UserInfo->tszEMailAddr;
 	st_JsonObject["tszLoginTime"] = pSt_UserInfo->tszLoginTime;
-	st_JsonObject["nIDNumber"] = pSt_UserInfo->nIDNumber;
-	st_JsonObject["nPhoneNumber"] = pSt_UserInfo->nPhoneNumber;
+	st_JsonObject["nIDNumber"] = (Json::Value::Int64)pSt_UserInfo->nIDNumber;
+	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)pSt_UserInfo->nPhoneNumber;
 	st_JsonObject["nUserLevel"] = pSt_UserInfo->nUserLevel;
 	st_JsonObject["nUserState"] = pSt_UserInfo->nUserState;
 
@@ -298,8 +298,8 @@ BOOL CProtocol_Packet::Protocol_Packet_WSPktTime(TCHAR* ptszMsgBuffer, int* pInt
 	st_JsonObject["tszUserName"] = pSt_ProtocolTime->tszUserName;
 	st_JsonObject["tszUserAddr"] = pSt_ProtocolTime->tszUserAddr;
 	st_JsonObject["tszLeftTime"] = pSt_ProtocolTime->tszLeftTime;
-	st_JsonObject["nTimeLeft"] = pSt_ProtocolTime->nTimeLeft;
-	st_JsonObject["nTimeONLine"] = pSt_ProtocolTime->nTimeONLine;
+	st_JsonObject["nTimeLeft"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeLeft;
+	st_JsonObject["nTimeONLine"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeONLine;
 	st_JsonObject["enDeviceType"] = pSt_ProtocolTime->enDeviceType;
 	st_JsonObject["enSerialType"] = pSt_ProtocolTime->enSerialType;
 
