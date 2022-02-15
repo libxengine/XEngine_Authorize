@@ -316,7 +316,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		{
 			pSt_ProtocolHdr->wReserve = 0;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
-			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%ld，剩余时间：%ld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%lld，剩余时间：%lld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
 		}
 		else
 		{
