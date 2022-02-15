@@ -41,6 +41,7 @@ void CDialog_Local::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT10, m_EditPort);
 	DDX_Control(pDX, IDC_IPADDRESS1, m_EditIPAddr);
 	DDX_Control(pDX, IDC_EDIT14, m_EditCreateTime);
+	DDX_Control(pDX, IDC_BUTTON3, m_BtnKeySave);
 }
 
 
@@ -79,6 +80,7 @@ BOOL CDialog_Local::OnInitDialog()
 	m_ComboRegType.InsertString(3, _T("正式版"));
 	m_ComboRegType.InsertString(4, _T("无限制版"));
 	m_ComboRegType.SetCurSel(0);
+	m_BtnKeySave.EnableWindow(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -93,6 +95,7 @@ void CDialog_Local::OnBnClickedButton2()
 	XENGINE_AUTHORIZE_LOCAL st_AuthLocal;
 
 	m_EditPass.GetWindowText(m_StrPass);
+	m_BtnKeySave.EnableWindow(FALSE);
 
 	CFileDialog m_FileDlg(TRUE, _T(".CDKey"), NULL, NULL, _T("CDKey文件(*.key)|*.key|所有文件(*.*)|*.*||"));
 	if (IDCANCEL == m_FileDlg.DoModal())
@@ -127,7 +130,7 @@ void CDialog_Local::OnBnClickedButton2()
 	}
 	if (!Authorize_Local_ReadKey(m_StrFile.GetBuffer(), &st_AuthLocal))
 	{
-		AfxMessageBox(_T("读取CDKEY失败"));
+		AfxMessageBox(_T("读取CDKEY失败,可能密码错误或者不是CDKEY"));
 		return;
 	}
 	TCHAR tszTmp[64];
@@ -154,6 +157,7 @@ void CDialog_Local::OnBnClickedButton2()
 	m_EditUser.SetWindowText(st_AuthLocal.st_AuthUserInfo.tszUserName);
 	m_EditContact.SetWindowText(st_AuthLocal.st_AuthUserInfo.tszUserContact);
 	m_EditCustomInfo.SetWindowText(st_AuthLocal.st_AuthUserInfo.tszCustom);
+	m_BtnKeySave.EnableWindow(TRUE);
 }
 
 

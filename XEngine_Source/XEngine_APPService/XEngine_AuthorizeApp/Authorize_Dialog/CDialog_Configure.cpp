@@ -52,6 +52,7 @@ BEGIN_MESSAGE_MAP(CDialog_Configure, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Configure::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_RADIO2, &CDialog_Configure::OnBnClickedRadio2)
 	ON_BN_CLICKED(IDC_RADIO1, &CDialog_Configure::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_CHECK3, &CDialog_Configure::OnBnClickedCheck3)
 END_MESSAGE_MAP()
 
 
@@ -67,6 +68,7 @@ BOOL CDialog_Configure::OnInitDialog()
 	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
 	Configure_IniFile_Read(lpszFile, &st_AuthConfig);
 	AuthorizeService_ReadConfigure();
+	OnBnClickedCheck3();
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -304,4 +306,23 @@ void CDialog_Configure::OnBnClickedRadio1()
 	m_RadioKeyDisable.SetCheck(0);
 
 	m_EditPass.EnableWindow(TRUE);
+}
+
+void CDialog_Configure::OnBnClickedCheck3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (BST_CHECKED == m_CheckEnableEmail.GetCheck())
+	{
+		m_EditSmtpAddr.EnableWindow(TRUE);
+		m_EditSmtpPass.EnableWindow(TRUE);
+		m_EditSmtpUser.EnableWindow(TRUE);
+		m_EditFromAddr.EnableWindow(TRUE);
+	}
+	else
+	{
+		m_EditSmtpAddr.EnableWindow(FALSE);
+		m_EditSmtpPass.EnableWindow(FALSE);
+		m_EditSmtpUser.EnableWindow(FALSE);
+		m_EditFromAddr.EnableWindow(FALSE);
+	}
 }
