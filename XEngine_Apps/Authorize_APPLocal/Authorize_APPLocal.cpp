@@ -26,7 +26,7 @@ LPCTSTR lpszFile = _T("D:\\XEngine_Authorize\\XEngine_Apps\\Debug\\XEngine_Autho
 LPCTSTR lpszFile = _T("XEngine_Authorize.key");
 #endif
 
-//#define _ENCRYPTO
+#define _ENCRYPTO
 
 int main()
 {
@@ -46,7 +46,7 @@ int main()
 	st_AuthLocal.nPort = 5000;
 
 	strcpy(st_AuthLocal.st_AuthAppInfo.tszAppName, "XEngine");
-	strcpy(st_AuthLocal.st_AuthAppInfo.tszAppVer, "7.17.0.1001");
+	strcpy(st_AuthLocal.st_AuthAppInfo.tszAppVer, "7.29.0.1001");
 
 	st_AuthLocal.st_AuthRegInfo.enSerialType = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME;
 	st_AuthLocal.st_AuthRegInfo.enRegType = ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE_TRY;

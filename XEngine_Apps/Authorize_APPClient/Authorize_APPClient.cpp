@@ -56,10 +56,14 @@ XHTHREAD AuthClient_Thread()
 			TCHAR tszMsgBuffer[4096];
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-			if (nMsgLen > 0)
+			if (nMsgLen > 0 && bEncrypto)
 			{
 				//只有有后续数据的情况才需要解密
 				OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, lpszPass);
+			}
+			else
+			{
+				memcpy(tszMsgBuffer, ptszMsgBuffer, nMsgLen);
 			}
 			if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDEL == st_ProtocolHdr.unOperatorCode)
 			{
@@ -122,7 +126,7 @@ XHTHREAD AuthClient_Thread()
 					{
 						XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
 						memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-						memcpy(&st_AuthProtocol, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), sizeof(XENGINE_PROTOCOL_USERAUTH));
+						memcpy(&st_AuthProtocol, tszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 						printf(_T("找回密码成功,账号:%s,密码:%s\n"), st_AuthProtocol.tszUserName, st_AuthProtocol.tszUserPass);
 					}
@@ -139,7 +143,7 @@ XHTHREAD AuthClient_Thread()
 				{
 					AUTHREG_PROTOCOL_TIME st_AuthTime;
 					memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-					memcpy(&st_AuthTime, tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), sizeof(AUTHREG_PROTOCOL_TIME));
+					memcpy(&st_AuthTime, tszMsgBuffer, sizeof(AUTHREG_PROTOCOL_TIME));
 
 					printf(_T("获取剩余时间成功,账号:%s,地址:%s,剩余时间:%lld 分钟,在线时间:%lld,过期日期:%s,类型:%d\n"), st_AuthTime.tszUserName, st_AuthTime.tszUserAddr, st_AuthTime.nTimeLeft, st_AuthTime.nTimeONLine, st_AuthTime.tszLeftTime, st_AuthTime.enSerialType);
 				}
@@ -426,7 +430,7 @@ int main()
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
-	int nPort = 5500;
+	int nPort = 5300;
 	LPCTSTR lpszAddr = _T("127.0.0.1");
 
 	if (!XClient_TCPSelect_Create(&m_Socket, lpszAddr, nPort))
