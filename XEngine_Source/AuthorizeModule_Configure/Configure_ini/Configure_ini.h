@@ -1,13 +1,13 @@
-#pragma once
+ï»¿#pragma once
 /********************************************************************
 //    Created:     2021/07/26  09:53:58
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Configure\Configure_ini\Configure_ini.h
 //    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Configure\Configure_ini
 //    File Base:   Configure_ini
 //    File Ext:    h
-//    Project:     XEngine(ÍøÂçÍ¨ĞÅÒıÇæ)
+//    Project:     XEngine(ç½‘ç»œé€šä¿¡å¼•æ“)
 //    Author:      qyt
-//    Purpose:     ÅäÖÃÎÄ¼şÀà
+//    Purpose:     é…ç½®æ–‡ä»¶ç±»
 //    History:
 *********************************************************************/
 
