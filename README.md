@@ -1,4 +1,7 @@
+[中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
+本仓库有开发和主分支,如果要使用,请使用master分支下的代码  
+请使用git工具下载,比如git clone 或者 TortoiseGit.zip包可能会造成编译失败的问题
 
 ## 介绍
 c c++网络验证服务器 网络授权服务器  
@@ -9,7 +12,6 @@ c c++network Authorize service
 
 ## 软件特性
 基于XEngine开发并实现的一套简洁高性能跨平台网络存储服务  
-本仓库有开发和主分支,如果要使用,请使用master分支下的代码  
 软件特性:  
 1. 采用标准私有协议来处理网络通信
 2. 支持加密通信
@@ -42,7 +44,7 @@ GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
 使用VS2019 x86(debug release)或者x64(release)打开并且编译  
-请使用git clone下载代码,zip打包下载的代码格式有误,可能会无法编译  
+请使用git工具下载代码,zip打包下载的代码格式有误,可能会无法编译  
 
 #### Linux
 Linux使用Makefile编译  

@@ -1,4 +1,7 @@
+[中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
+This repository has a development and master branch. If you want to use it, please use the master branch  
+please use git tool to download,like is git clone or gortoisegit.compile is failed when use download zip packet.
 
 ## Introduction
 c c++网络验证服务器 网络授权服务器  
@@ -9,7 +12,6 @@ This is a cross-platform simple high-performance network authorization server th
 
 ## Software feature
 The purpose of development and implementation based on XEngine is a cross-platform network storage service  
-This repository has a development and master branch. If you want to use it, please use the master branch  
 feature list:  
 1. use standard private protocol to handle network communication
 2. Support Encrypto communication
@@ -42,7 +44,7 @@ GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
 use vs2019 x86(debug or release) x64(only release) open and complie  
-Please use git clone to download the code, otherwise it may not compile
+Please use git tool to download the code, otherwise it may not compile
 
 #### Linux
 Linux use Makefile complie  
