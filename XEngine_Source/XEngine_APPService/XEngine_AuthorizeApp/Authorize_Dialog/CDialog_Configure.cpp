@@ -148,7 +148,7 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 	m_StrConfigAuthTime.Format(_T("%d"), st_AuthConfig.st_Verification.nVerTime);
 	m_EditAuthTime.SetWindowText(m_StrConfigAuthTime);
 	m_ComboListAuth.InsertString(0, _T("不支持"));
-	m_ComboListAuth.InsertString(1, _T("分钟"));
+	m_ComboListAuth.InsertString(1, _T("不支持"));
 	m_ComboListAuth.InsertString(2, _T("天数"));
 	m_ComboListAuth.InsertString(3, _T("次数"));
 	m_ComboListAuth.SetCurSel(st_AuthConfig.st_Verification.nVerMode);

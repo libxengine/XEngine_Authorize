@@ -384,7 +384,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			st_AuthVer.nTryTime = _ttoi(m_StrAuthTime.GetBuffer());
 			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboListAuth.GetCurSel();
 			//看下是否启用了此功能
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
 			{
 				pSt_ProtocolHdr->wReserve = 0x2D2;
 				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_AuthVer.tszVerSerial);
