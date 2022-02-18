@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Protocol_Parse.h"
 /********************************************************************
 //    Created:     2021/07/14  14:27:27
@@ -6,9 +6,9 @@
 //    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Protocol\Protocol_Parse
 //    File Base:   Protocol_Parse
 //    File Ext:    cpp
-//    Project:     XEngine(ÍøÂçÍ¨ÐÅÒýÇæ)
+//    Project:     XEngine(ç½‘ç»œé€šä¿¡å¼•æ“Ž)
 //    Author:      qyt
-//    Purpose:     Ð­Òé½âÎöÀà
+//    Purpose:     åè®®è§£æžç±»
 //    History:
 *********************************************************************/
 CProtocol_Parse::CProtocol_Parse()
@@ -20,30 +20,30 @@ CProtocol_Parse::~CProtocol_Parse()
 
 }
 //////////////////////////////////////////////////////////////////////////
-//                              ¹«ÓÐº¯Êý
+//                              å…¬æœ‰å‡½æ•°
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-º¯ÊýÃû³Æ£ºProtocol_Parse_WSHdr
-º¯Êý¹¦ÄÜ£º»ñÈ¡WEBSOCKETÐ­ÒéÐÅÏ¢Í·
- ²ÎÊý.Ò»£ºlpszMsgBuffer
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ»º³åÇø
- ²ÎÊý.¶þ£ºnMsgLen
-  In/Out£ºIn
-  ÀàÐÍ£ºÕûÊýÐÍ
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ´óÐ¡
- ²ÎÊý.Èý£ºpSt_ProtocolHdr
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÍ·
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šProtocol_Parse_WSHdr
+å‡½æ•°åŠŸèƒ½ï¼šèŽ·å–WEBSOCKETåè®®ä¿¡æ¯å¤´
+ å‚æ•°.ä¸€ï¼šlpszMsgBuffer
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„ç¼“å†²åŒº
+ å‚æ•°.äºŒï¼šnMsgLen
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•´æ•°åž‹
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„å¤§å°
+ å‚æ•°.ä¸‰ï¼špSt_ProtocolHdr
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å¤´
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
 {
@@ -75,32 +75,32 @@ BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, X
 	return TRUE;
 }
 /********************************************************************
-º¯ÊýÃû³Æ£ºProtocol_Parse_WSUserInfo
-º¯Êý¹¦ÄÜ£º»ñÈ¡ÐÅÏ¢½á¹¹Ïà¹ØÐ­ÒéÄÚÈÝ
- ²ÎÊý.Ò»£ºlpszMsgBuffer
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ»º³åÇø
- ²ÎÊý.¶þ£ºnMsgLen
-  In/Out£ºIn
-  ÀàÐÍ£ºÕûÊýÐÍ
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ´óÐ¡
- ²ÎÊý.Èý£ºpSt_ProtocolHdr
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÍ·
- ²ÎÊý.ËÄ£ºpSt_UserInfo
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÄÚÈÝ
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šProtocol_Parse_WSUserInfo
+å‡½æ•°åŠŸèƒ½ï¼šèŽ·å–ä¿¡æ¯ç»“æž„ç›¸å…³åè®®å†…å®¹
+ å‚æ•°.ä¸€ï¼šlpszMsgBuffer
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„ç¼“å†²åŒº
+ å‚æ•°.äºŒï¼šnMsgLen
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•´æ•°åž‹
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„å¤§å°
+ å‚æ•°.ä¸‰ï¼špSt_ProtocolHdr
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å¤´
+ å‚æ•°.å››ï¼špSt_UserInfo
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å†…å®¹
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CProtocol_Parse::Protocol_Parse_WSUserInfo(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
@@ -170,32 +170,32 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserInfo(LPCTSTR lpszMsgBuffer, int nMsgL
 	return TRUE;
 }
 /********************************************************************
-º¯ÊýÃû³Æ£ºProtocol_Parse_WSUserAuth
-º¯Êý¹¦ÄÜ£º»ñÈ¡ÑéÖ¤Ð­ÒéÏà¹ØÄÚÈÝ
- ²ÎÊý.Ò»£ºlpszMsgBuffer
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ»º³åÇø
- ²ÎÊý.¶þ£ºnMsgLen
-  In/Out£ºIn
-  ÀàÐÍ£ºÕûÊýÐÍ
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ´óÐ¡
- ²ÎÊý.Èý£ºpSt_ProtocolHdr
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÍ·
- ²ÎÊý.ËÄ£ºpSt_UserAuth
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÄÚÈÝ
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šProtocol_Parse_WSUserAuth
+å‡½æ•°åŠŸèƒ½ï¼šèŽ·å–éªŒè¯åè®®ç›¸å…³å†…å®¹
+ å‚æ•°.ä¸€ï¼šlpszMsgBuffer
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„ç¼“å†²åŒº
+ å‚æ•°.äºŒï¼šnMsgLen
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•´æ•°åž‹
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„å¤§å°
+ å‚æ•°.ä¸‰ï¼špSt_ProtocolHdr
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å¤´
+ å‚æ•°.å››ï¼špSt_UserAuth
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å†…å®¹
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CProtocol_Parse::Protocol_Parse_WSUserAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
 {
@@ -245,32 +245,32 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserAuth(LPCTSTR lpszMsgBuffer, int nMsgL
 	return TRUE;
 }
 /********************************************************************
-º¯ÊýÃû³Æ£ºProtocol_Parse_WSUserPay
-º¯Êý¹¦ÄÜ£º»ñÈ¡ÓÃ»§Ö§³ÖÏà¹ØÐ­ÒéÄÚÈÝ
- ²ÎÊý.Ò»£ºlpszMsgBuffer
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ»º³åÇø
- ²ÎÊý.¶þ£ºnMsgLen
-  In/Out£ºIn
-  ÀàÐÍ£ºÕûÊýÐÍ
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ´óÐ¡
- ²ÎÊý.Èý£ºpSt_ProtocolHdr
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÍ·
- ²ÎÊý.ËÄ£ºpSt_UserAuth
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÄÚÈÝ
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šProtocol_Parse_WSUserPay
+å‡½æ•°åŠŸèƒ½ï¼šèŽ·å–ç”¨æˆ·æ”¯æŒç›¸å…³åè®®å†…å®¹
+ å‚æ•°.ä¸€ï¼šlpszMsgBuffer
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„ç¼“å†²åŒº
+ å‚æ•°.äºŒï¼šnMsgLen
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•´æ•°åž‹
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„å¤§å°
+ å‚æ•°.ä¸‰ï¼špSt_ProtocolHdr
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å¤´
+ å‚æ•°.å››ï¼špSt_UserAuth
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å†…å®¹
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CProtocol_Parse::Protocol_Parse_WSUserPay(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay)
 {
@@ -312,37 +312,37 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserPay(LPCTSTR lpszMsgBuffer, int nMsgLe
 	return TRUE;
 }
 /********************************************************************
-º¯ÊýÃû³Æ£ºProtocol_Parse_WSUserNote
-º¯Êý¹¦ÄÜ£º½âÎöÓÃ»§Í¨¸æºÍ¿ìËÙÑéÖ¤Ð­Òé
- ²ÎÊý.Ò»£ºlpszMsgBuffer
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ»º³åÇø
- ²ÎÊý.¶þ£ºnMsgLen
-  In/Out£ºIn
-  ÀàÐÍ£ºÕûÊýÐÍ
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÒª½âÎöµÄ´óÐ¡
- ²ÎÊý.Èý£ºpSt_ProtocolHdr
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÍ·
- ²ÎÊý.ËÄ£ºptszMsgBuffer
-  In/Out£ºOut
-  ÀàÐÍ£º×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö½âÎöºÃµÄÐ­ÒéÄÚÈÝ
- ²ÎÊý.Îå£ºpInt_MsgLen
-  In/Out£ºOut
-  ÀàÐÍ£ºÕûÊýÐÍÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÄÚÈÝ´óÐ¡
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šProtocol_Parse_WSUserNote
+å‡½æ•°åŠŸèƒ½ï¼šè§£æžç”¨æˆ·é€šå‘Šå’Œå¿«é€ŸéªŒè¯åè®®
+ å‚æ•°.ä¸€ï¼šlpszMsgBuffer
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„ç¼“å†²åŒº
+ å‚æ•°.äºŒï¼šnMsgLen
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•´æ•°åž‹
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥è¦è§£æžçš„å¤§å°
+ å‚æ•°.ä¸‰ï¼špSt_ProtocolHdr
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å¤´
+ å‚æ•°.å››ï¼šptszMsgBuffer
+  In/Outï¼šOut
+  ç±»åž‹ï¼šå­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè§£æžå¥½çš„åè®®å†…å®¹
+ å‚æ•°.äº”ï¼špInt_MsgLen
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•´æ•°åž‹æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šå†…å®¹å¤§å°
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CProtocol_Parse::Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, TCHAR* ptszMsgBuffer, int* pInt_MsgLen)
 {

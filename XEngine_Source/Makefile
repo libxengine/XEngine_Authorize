@@ -2,6 +2,7 @@ RELEASE = 0
 UNICODE = 0
 
 FLAGS = RELEASE=$(RELEASE)
+THIRD_JSONCPP_PATH = ./XEngine_ThirdPart/jsoncpp
 
 COMPONENTS_SESSION_PATH = ./XEngine_AuthComponents/AuthComponents_Session
 COMPONENTS_SQLPACKET_PATH = ./XEngine_AuthComponents/AuthComponents_SQLPacket
@@ -11,12 +12,16 @@ AUTH_CONFIGURE_PATH = ./AuthorizeModule_Configure
 
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
-XENGINE = libAuthComponents_Session.so libAuthComponents_SQLPacket.so                                                \
-                libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so                                       \
-		 XEngine_AuthorizeApp.exe 
+XENGINE = libjsoncpp.so                                                                                        \
+          libAuthComponents_Session.so libAuthComponents_SQLPacket.so                                          \
+          libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so                                       \
+	   XEngine_AuthorizeApp.exe 
 
 .PHONY:MakeAll 
 MakeAll:$(XENGINE)
+
+libjsoncpp.so:
+	make -C $(THIRD_JSONCPP_PATH) $(FLAGS)
 
 libAuthComponents_Session.so:
 	make -C $(COMPONENTS_SESSION_PATH) $(FLAGS)

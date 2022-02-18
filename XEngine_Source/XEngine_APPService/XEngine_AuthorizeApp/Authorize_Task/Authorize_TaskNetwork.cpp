@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 //////////////////////////////////////////////////////////////////////////
 BOOL __stdcall XEngine_Client_TCPAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
@@ -74,7 +74,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	XEngine_Authorize_LogPrint(lParam, _T("¿Í»§¶Ë£º%s£¬ÓÃ»§Ãû£º%s£¬Àë¿ª·şÎñÆ÷"), lpszClientAddr, tszClientUser);
+	XEngine_Authorize_LogPrint(lParam, _T("å®¢æˆ·ç«¯ï¼š%sï¼Œç”¨æˆ·åï¼š%sï¼Œç¦»å¼€æœåŠ¡å™¨"), lpszClientAddr, tszClientUser);
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -21,6 +21,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	AUTHREG_USERTABLE st_UserTable;
+
 	CEdit m_EditUser;
 	CEdit m_EditPass;
 	CEdit m_EditEMail;

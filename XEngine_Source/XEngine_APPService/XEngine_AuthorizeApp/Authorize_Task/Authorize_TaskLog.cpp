@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 
 #define XLOG_BUFFER_SIZE 16384
 
@@ -24,5 +24,6 @@ BOOL XEngine_Authorize_LogPrint(LPVOID lParam, LPCSTR lpszLog, ...)
 	m_StrLog += tszLogBuffer;
 	m_StrLog += _T("\r\n");
 	pClass_This->m_EditLog.SetWindowText(m_StrLog);
+	pClass_This->m_EditLog.LineScroll(pClass_This->m_EditLog.GetLineCount(), -1);
 	return TRUE;
 }

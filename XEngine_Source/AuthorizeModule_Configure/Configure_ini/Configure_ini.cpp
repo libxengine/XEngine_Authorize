@@ -1,4 +1,4 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 #include "Configure_ini.h"
 /********************************************************************
 //    Created:     2021/07/26  09:59:49
@@ -6,9 +6,9 @@
 //    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Configure\Configure_ini
 //    File Base:   Configure_ini
 //    File Ext:    cpp
-//    Project:     XEngine(ÍøÂçÍ¨ÐÅÒýÇæ)
+//    Project:     XEngine(ç½‘ç»œé€šä¿¡å¼•æ“Ž)
 //    Author:      qyt
-//    Purpose:     ÅäÖÃÎÄ¼þÀà
+//    Purpose:     é…ç½®æ–‡ä»¶ç±»
 //    History:
 *********************************************************************/
 CConfigure_IniFile::CConfigure_IniFile()
@@ -20,25 +20,25 @@ CConfigure_IniFile::~CConfigure_IniFile()
 
 }
 //////////////////////////////////////////////////////////////////////////
-//                              ¹«ÓÐº¯Êý
+//                              å…¬æœ‰å‡½æ•°
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-º¯ÊýÃû³Æ£ºConfigure_IniFile_Read
-º¯Êý¹¦ÄÜ£º¶ÁÈ¡ÅäÖÃÎÄ¼þÐÅÏ¢
- ²ÎÊý.Ò»£ºlpszFile
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÅäÖÃÎÄ¼þÎ»ÖÃ
- ²ÎÊý.¶þ£ºpSt_AuthConfig
-  In/Out£ºOut
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊä³ö¶ÁÈ¡µ½µÄÅäÖÃÐÅÏ¢
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šConfigure_IniFile_Read
+å‡½æ•°åŠŸèƒ½ï¼šè¯»å–é…ç½®æ–‡ä»¶ä¿¡æ¯
+ å‚æ•°.ä¸€ï¼šlpszFile
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥é…ç½®æ–‡ä»¶ä½ç½®
+ å‚æ•°.äºŒï¼špSt_AuthConfig
+  In/Outï¼šOut
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å‡ºè¯»å–åˆ°çš„é…ç½®ä¿¡æ¯
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONFIGURE* pSt_AuthConfig)
 {
@@ -80,22 +80,22 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	return TRUE;
 }
 /********************************************************************
-º¯ÊýÃû³Æ£ºConfigure_IniFile_Write
-º¯Êý¹¦ÄÜ£ºÐ´ÈëÅäÖÃÎÄ¼þÐÅÏ¢
- ²ÎÊý.Ò»£ºlpszFile
-  In/Out£ºIn
-  ÀàÐÍ£º³£Á¿×Ö·ûÖ¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÅäÖÃÎÄ¼þÎ»ÖÃ
- ²ÎÊý.¶þ£ºpSt_AuthConfig
-  In/Out£ºIn
-  ÀàÐÍ£ºÊý¾Ý½á¹¹Ö¸Õë
-  ¿É¿Õ£ºN
-  ÒâË¼£ºÊäÈëÐ´ÈëµÄÅäÖÃÐÅÏ¢
-·µ»ØÖµ
-  ÀàÐÍ£ºÂß¼­ÐÍ
-  ÒâË¼£ºÊÇ·ñ³É¹¦
-±¸×¢£º
+å‡½æ•°åç§°ï¼šConfigure_IniFile_Write
+å‡½æ•°åŠŸèƒ½ï¼šå†™å…¥é…ç½®æ–‡ä»¶ä¿¡æ¯
+ å‚æ•°.ä¸€ï¼šlpszFile
+  In/Outï¼šIn
+  ç±»åž‹ï¼šå¸¸é‡å­—ç¬¦æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥é…ç½®æ–‡ä»¶ä½ç½®
+ å‚æ•°.äºŒï¼špSt_AuthConfig
+  In/Outï¼šIn
+  ç±»åž‹ï¼šæ•°æ®ç»“æž„æŒ‡é’ˆ
+  å¯ç©ºï¼šN
+  æ„æ€ï¼šè¾“å…¥å†™å…¥çš„é…ç½®ä¿¡æ¯
+è¿”å›žå€¼
+  ç±»åž‹ï¼šé€»è¾‘åž‹
+  æ„æ€ï¼šæ˜¯å¦æˆåŠŸ
+å¤‡æ³¨ï¼š
 *********************************************************************/
 BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CONFIGURE* pSt_AuthConfig)
 {

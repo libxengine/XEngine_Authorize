@@ -49,4 +49,5 @@ public:
 	CEdit m_EditWSPort;
 	CButton m_EditTimeNotift;
 	CButton m_CheckEnableEmail;
+	afx_msg void OnBnClickedCheck3();
 };

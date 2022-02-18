@@ -1,4 +1,4 @@
-#include "pch.h"
+﻿#include "pch.h"
 #include "AuthService_Session.h"
 /********************************************************************
 //    Created:     2021/07/14  13:20:34
@@ -446,7 +446,14 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
                 BaseLib_OperatorTimeSpan_CalForStu(&stl_MapIterator->second.st_LibTimer, &st_TimeCal);
                 BaseLib_OperatorTime_ToStringTimer(stl_MapIterator->second.tszLeftTime, &st_TimeCal);
                 //赋值给管理器
-                stl_MapIterator->second.nLeftTime = nLeftTimer - nOnlineSpan;
+                if (nLeftTimer > nOnlineSpan)
+                {
+                    stl_MapIterator->second.nLeftTime = nLeftTimer - nOnlineSpan;
+                }
+                else
+                {
+                    stl_MapIterator->second.nLeftTime = 0;
+                }
                 stl_MapIterator->second.nOnlineTime = nOnlineSpan;
                 //赋值给回调函数
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;

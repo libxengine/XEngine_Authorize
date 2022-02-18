@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #ifdef _WINDOWS
 #include <Windows.h>
 #include <tchar.h>

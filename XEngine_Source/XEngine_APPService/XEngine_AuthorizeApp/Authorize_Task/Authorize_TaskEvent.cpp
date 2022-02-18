@@ -1,6 +1,6 @@
-#include "pch.h"
+ï»¿#include "pch.h"
 
-LPCSTR lpszKeyType[] = { "Î´ÖªÀàÐÍ","·ÖÖÓ¿¨","ÌìÊý¿¨","´ÎÊý¿¨","×Ô¶¨Òå¿¨" };
+LPCSTR lpszKeyType[] = { "æœªçŸ¥ç±»åž‹","åˆ†é’Ÿå¡","å¤©æ•°å¡","æ¬¡æ•°å¡","è‡ªå®šä¹‰å¡" };
 void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, LPVOID lParam)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
@@ -45,7 +45,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 				st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
 				pClass_This->m_EditLog.GetWindowText(m_StrPntLog);
-				m_StrFmtLog.Format(_T("ÓÃ»§:%s,µØÖ·:%s,Ã»ÓÐÊ£ÓàÊ±¼ä,ÒÑ¾­Í¨Öª¿Í»§µ¥³¬Ê±\r\n"), lpszUserName, lpszUserAddr);
+				m_StrFmtLog.Format(_T("ç”¨æˆ·:%s,åœ°å€:%s,æ²¡æœ‰å‰©ä½™æ—¶é—´,å·²ç»é€šçŸ¥å®¢æˆ·å•è¶…æ—¶\r\n"), lpszUserName, lpszUserAddr);
 				m_StrPntLog += m_StrFmtLog;
 				pClass_This->m_EditLog.SetWindowText(m_StrPntLog);
 

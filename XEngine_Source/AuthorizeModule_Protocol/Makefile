@@ -1,12 +1,12 @@
 CC = g++ -Wall -std=c++17 -fPIC
 RELEASE = 0
 UNICODE = 0
-INCLUDE = -I ./
+INCLUDE = -I ./ -I ../XEngine_ThirdPart/jsoncpp
 FILECENTOS = /etc/redhat-release
-LOADBIN = 
+LOADBIN = -L ../XEngine_ThirdPart/jsoncpp
 LIB = -ljsoncpp
 LIBEX = -static-libgcc -lrt -ldl -lpthread
-LOADSO = -Wl,-rpath=
+LOADSO = -Wl,-rpath=./,--disable-new-dtags
 LIBINCLUDE = Protocol_Packet.o Protocol_Parse.o pch.o
 
 ifeq ($(RELEASE),1)
@@ -32,7 +32,7 @@ Protocol_Parse.o:./Protocol_Parse/Protocol_Parse.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./Protocol_Parse/Protocol_Parse.cpp
 	
 pch.o:pch.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) pch.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) pch.cpp
 
 InstallAll:InstallSo
 InstallSo:./libAuthorizeModule_Protocol.so
