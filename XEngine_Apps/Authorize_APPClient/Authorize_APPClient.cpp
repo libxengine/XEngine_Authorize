@@ -395,15 +395,6 @@ int AuthClient_ReadTxt()
 	return 0;
 }
 
-int AuthClient_Timeout()
-{
-	while (bTimeOut)
-	{
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-	return 0;
-}
-
 int AuthClient_Try()
 {
 	TCHAR tszMsgBuffer[2048];
@@ -457,9 +448,6 @@ int main()
 
 	printf("AuthClient_ReadTxt\n");
 	AuthClient_ReadTxt();
-
-	printf("AuthClient_Timeout\n");
-	AuthClient_Timeout();
 
 	printf("AuthClient_Delete\n");
 	AuthClient_Delete();

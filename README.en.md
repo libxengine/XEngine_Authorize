@@ -1,7 +1,6 @@
 [中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
 This repository has a development and master branch. If you want to use it, please use the master branch  
-please use git tool to download,like is git clone or gortoisegit.compile is failed when use download zip packet.
 
 ## Introduction
 c c++网络验证服务器 网络授权服务器  
@@ -43,7 +42,7 @@ GITEE:https://gitee.com/xyry/libxengine
 GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
-use vs2019 x86(debug or release) x64(only release) open and complie  
+use vs open and complie  
 Please use git tool to download the code, otherwise it may not compile
 
 #### Linux
