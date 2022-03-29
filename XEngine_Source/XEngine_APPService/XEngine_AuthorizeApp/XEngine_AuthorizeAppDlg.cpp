@@ -164,7 +164,21 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	CString m_StrWSPort;
 	CString m_StrNumber;
 	CString m_StrThreads;
+	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 
+	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
+
+	st_XLogConfig.XLog_MaxBackupFile = st_AuthConfig.st_XLog.nMaxCount;
+	st_XLogConfig.XLog_MaxSize = st_AuthConfig.st_XLog.nMaxSize;
+	_tcscpy(st_XLogConfig.tszFileName, st_AuthConfig.st_XLog.tszLogFile);
+
+	xhLog = HelpComponents_XLog_Init(HELPCOMPONENTS_XLOG_OUTTYPE_FILE | HELPCOMPONENTS_XLOG_OUTTYPE_STD, &st_XLogConfig);
+	if (NULL == xhLog)
+	{
+		AfxMessageBox(_T("启动服务器失败，启动日志失败！"));
+		return;
+	}
+	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
 	m_DlgConfig.m_EditServicePort.GetWindowText(m_StrTCPPort);
 	m_DlgConfig.m_EditWSPort.GetWindowText(m_StrWSPort);
 	m_DlgConfig.m_EditVerTimedout.GetWindowText(m_StrNumber);
@@ -181,7 +195,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		AfxMessageBox(_T("初始化网络失败！"));
 		return;
 	}
-	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, nThreadCount);
+	xhTCPPacket = HelpComponents_Datas_Init(10000, nThreadCount);
 	if (NULL == xhTCPPacket)
 	{
 		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
@@ -331,6 +345,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	NetCore_TCPXCore_DestroyEx(xhWSSocket);
 	ManagePool_Thread_NQDestroy(xhTCPPool);
 	ManagePool_Thread_NQDestroy(xhWSPool);
+	HelpComponents_XLog_Destroy(xhLog);
 
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads);

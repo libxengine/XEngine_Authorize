@@ -350,7 +350,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			else
 			{
 				//计算时间差
-				BaseLib_OperatorTime_ToStringTimer(tszEndTime);
+				BaseLib_OperatorTime_TimeToStr(tszEndTime);
 				BaseLib_OperatorTimeSpan_GetForStr(st_AuthVer.tszVerData, tszEndTime, &nTimeSpan, 2);
 			}
 

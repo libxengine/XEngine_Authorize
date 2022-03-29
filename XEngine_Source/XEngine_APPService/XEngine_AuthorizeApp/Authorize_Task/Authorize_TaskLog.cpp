@@ -15,6 +15,7 @@ BOOL XEngine_Authorize_LogPrint(LPVOID lParam, LPCSTR lpszLog, ...)
 	vsnprintf(tszLogBuffer, XLOG_BUFFER_SIZE, lpszLog, pArgList);
 	va_end(pArgList);
 
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, tszLogBuffer);
 	pClass_This->m_EditLog.GetWindowText(m_StrLog);
 	if (m_StrLog.GetLength() > 1024000)
 	{
