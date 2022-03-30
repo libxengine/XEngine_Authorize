@@ -37,7 +37,6 @@ BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON3, &CXEngineAuthorizeAppDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON1, &CXEngineAuthorizeAppDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CXEngineAuthorizeAppDlg::OnBnClickedButton2)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1)
 	ON_MESSAGE(WINSDK_SKIN_USERMSG_TRAY, OnAddTrayIcon)//添加消息映射
 	ON_BN_CLICKED(IDC_BUTTON4, &CXEngineAuthorizeAppDlg::OnBnClickedButton4)
@@ -258,25 +257,6 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_EditLog.SetWindowText(_T(""));
-}
-
-
-void CXEngineAuthorizeAppDlg::OnBnClickedButton2()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CFileDialog m_FileDlg(FALSE, _T(".log"), NULL, NULL, _T("Log日志文件(*.log)|*.log|文本文件(*.txt)|(*.txt)||"));//生成一个对话框
-	if (IDCANCEL == m_FileDlg.DoModal())
-	{
-		return;
-	}
-	CString m_StrSaveFile = m_FileDlg.GetPathName();
-	CFile m_File;
-	m_File.Open(m_StrSaveFile.GetBuffer(), CFile::modeCreate | CFile::modeWrite | CFile::modeNoTruncate);
-
-	CString m_StrMsg;
-	m_EditLog.GetWindowText(m_StrMsg);
-	m_File.Write(m_StrMsg.GetBuffer(), m_StrMsg.GetLength());
-	m_File.Close();
 }
 
 
