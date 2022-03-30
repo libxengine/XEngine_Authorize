@@ -44,7 +44,6 @@ public:
 	CEdit m_EditLog;
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton1();
-	afx_msg void OnBnClickedButton2();
 	CButton m_BtnStartService;
 	CButton m_BtnStopService;
 	CTabCtrl m_TabCtrl;

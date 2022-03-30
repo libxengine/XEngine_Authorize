@@ -269,7 +269,7 @@ void CDialog_Local::OnEnChangeEdit12()
 		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
 		m_EditHaveTime.GetWindowText(m_StrHaveTime);
 
-		BaseLib_OperatorTime_StrToStuTime(m_StrHaveTime.GetBuffer(), &st_LibTime);
+		BaseLib_OperatorTime_StrToTime(m_StrHaveTime.GetBuffer(), &st_LibTime);
 		Authorize_Local_BuildKeyTime(&st_AuthLocal, NULL, &st_LibTime);
 	}
 	else

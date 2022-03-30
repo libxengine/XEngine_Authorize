@@ -32,6 +32,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/XLog_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/XLog_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/EmailClient_Define.h>
@@ -63,6 +65,7 @@ using namespace std;
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
 
+extern XLOG xhLog;
 extern XNETHANDLE xhTCPSocket;
 extern XNETHANDLE xhWSSocket;
 extern XHANDLE xhTCPPacket;
@@ -111,6 +114,7 @@ typedef struct
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
+#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_EmailClient.lib")
 #pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi.lib")

@@ -444,7 +444,7 @@ XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
 
                 st_TimeCal.wMinute = (int)nLeftTimer;
                 BaseLib_OperatorTimeSpan_CalForStu(&stl_MapIterator->second.st_LibTimer, &st_TimeCal);
-                BaseLib_OperatorTime_ToStringTimer(stl_MapIterator->second.tszLeftTime, &st_TimeCal);
+                BaseLib_OperatorTime_TimeToStr(stl_MapIterator->second.tszLeftTime, NULL, TRUE, &st_TimeCal);
                 //赋值给管理器
                 if (nLeftTimer > nOnlineSpan)
                 {

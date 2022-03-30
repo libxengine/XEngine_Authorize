@@ -56,6 +56,12 @@ int main()
 
 	strcpy(st_AuthLocal.st_AuthUserInfo.tszUserName, "XEngine");
 	strcpy(st_AuthLocal.st_AuthUserInfo.tszUserContact, "486179@qq.com");
+
+#if XENGINE_VERSION_BIT <= 7310001001
+	//7.30版本必须填充
+	_tcscpy(st_AuthLocal.st_AuthUserInfo.tszCustom, "none");
+	Authorize_Local_BuildKeyTime(&st_AuthLocal, 5);
+#endif
 	//生成完毕后可以交给服务端来对key本地验证进行授权
 	if (!Authorize_Local_WriteKey(lpszFile, &st_AuthLocal))
 	{

@@ -37,7 +37,6 @@ BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_BN_CLICKED(IDC_BUTTON3, &CXEngineAuthorizeAppDlg::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON1, &CXEngineAuthorizeAppDlg::OnBnClickedButton1)
-	ON_BN_CLICKED(IDC_BUTTON2, &CXEngineAuthorizeAppDlg::OnBnClickedButton2)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1)
 	ON_MESSAGE(WINSDK_SKIN_USERMSG_TRAY, OnAddTrayIcon)//添加消息映射
 	ON_BN_CLICKED(IDC_BUTTON4, &CXEngineAuthorizeAppDlg::OnBnClickedButton4)
@@ -164,7 +163,21 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	CString m_StrWSPort;
 	CString m_StrNumber;
 	CString m_StrThreads;
+	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 
+	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
+
+	st_XLogConfig.XLog_MaxBackupFile = st_AuthConfig.st_XLog.nMaxCount;
+	st_XLogConfig.XLog_MaxSize = st_AuthConfig.st_XLog.nMaxSize;
+	_tcscpy(st_XLogConfig.tszFileName, st_AuthConfig.st_XLog.tszLogFile);
+
+	xhLog = HelpComponents_XLog_Init(HELPCOMPONENTS_XLOG_OUTTYPE_FILE | HELPCOMPONENTS_XLOG_OUTTYPE_STD, &st_XLogConfig);
+	if (NULL == xhLog)
+	{
+		AfxMessageBox(_T("启动服务器失败，启动日志失败！"));
+		return;
+	}
+	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
 	m_DlgConfig.m_EditServicePort.GetWindowText(m_StrTCPPort);
 	m_DlgConfig.m_EditWSPort.GetWindowText(m_StrWSPort);
 	m_DlgConfig.m_EditVerTimedout.GetWindowText(m_StrNumber);
@@ -181,7 +194,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		AfxMessageBox(_T("初始化网络失败！"));
 		return;
 	}
-	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, nThreadCount);
+	xhTCPPacket = HelpComponents_Datas_Init(10000, nThreadCount);
 	if (NULL == xhTCPPacket)
 	{
 		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
@@ -244,25 +257,6 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_EditLog.SetWindowText(_T(""));
-}
-
-
-void CXEngineAuthorizeAppDlg::OnBnClickedButton2()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	CFileDialog m_FileDlg(FALSE, _T(".log"), NULL, NULL, _T("Log日志文件(*.log)|*.log|文本文件(*.txt)|(*.txt)||"));//生成一个对话框
-	if (IDCANCEL == m_FileDlg.DoModal())
-	{
-		return;
-	}
-	CString m_StrSaveFile = m_FileDlg.GetPathName();
-	CFile m_File;
-	m_File.Open(m_StrSaveFile.GetBuffer(), CFile::modeCreate | CFile::modeWrite | CFile::modeNoTruncate);
-
-	CString m_StrMsg;
-	m_EditLog.GetWindowText(m_StrMsg);
-	m_File.Write(m_StrMsg.GetBuffer(), m_StrMsg.GetLength());
-	m_File.Close();
 }
 
 
@@ -331,6 +325,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	NetCore_TCPXCore_DestroyEx(xhWSSocket);
 	ManagePool_Thread_NQDestroy(xhTCPPool);
 	ManagePool_Thread_NQDestroy(xhWSPool);
+	HelpComponents_XLog_Destroy(xhLog);
 
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads);

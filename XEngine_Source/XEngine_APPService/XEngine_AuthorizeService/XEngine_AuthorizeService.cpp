@@ -132,7 +132,7 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话服务成功"));
 
-	xhTCPPacket = HelpComponents_Datas_Init(10000, 0, st_AuthConfig.nThreads);
+	xhTCPPacket = HelpComponents_Datas_Init(10000, st_AuthConfig.nThreads);
 	if (NULL == xhTCPPacket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化组包器失败，错误：%lX"), Packets_GetLastError());
