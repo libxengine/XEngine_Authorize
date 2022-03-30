@@ -1,0 +1,121 @@
+XEngine_Authorize V2.6.1.1001
+
+添加:MFC版本日志文件可以被保存了
+修改:匹配XEngineV7.31版本
+删除:保存日志按钮
+
+added:MFC APP log file can be saved
+modify:match xengine v7.31
+delete:save log buttom
+======================================================================================
+XEngine_Authorize V2.6.0.1001
+
+添加：试用天数类型
+修改：分钟试用模式现在不支持了，因为不需要登录，所以没有效果
+修改：日志窗口现在会自动跳转到最新一行了
+修改：代码文件使用UTF8-BOM模式，解决某些编译问题
+优化：按钮禁用启用状态
+修正：某些时候保存配置项不正确的问题
+修正：修改用户数据可能信息丢失
+修正：修改客户信息没有更新的问题
+修正：日志输出的问题
+修正：超时时间为负数的情况
+
+added:try day type
+modify:minute try mode is not support now,because is it not login
+modify:The log window will automatically jump to the last line
+modify:code file encoding use to utf8 with bom
+improved:control enable
+fixed:sometime save configure value is incorrent
+fixed:Modify user data may result in loss of information
+fixed:client info not update after modify user
+fixed:log print is incorrent
+fixed:left time is negative
+======================================================================================
+XEngine_Authorize V2.5.1.1001
+
+添加:windows x64 debug编译
+添加:jsoncpp不在需要vcpkg,现在添加到项目里面了
+添加:验证协议添加到头文件
+
+added:x64 debug build on windows
+added:jsoncpp to vs2019
+added:auth protocol to hdr file
+======================================================================================
+XEngine_Authorize V2.5.0.1001
+
+增加:增加邮件菜单选项,支持显示,隐藏,启动,停止,退出
+增加:smtp启用选项配置
+支持:现在支持发送密码到邮箱了
+修改:websocket现在支持加解密数据了
+修正:密码处理不正确的问题
+修正:启动互斥没有效果的问题
+修正:自动启动没有自动启动服务的问题
+修正:无法保存配置文件的问题
+修正:获取用户信息没有返回正确内容的问题
+
+added:menu of tray for program,support:show hide start stop exist
+added:enable smtp option
+support:send password to email!
+modify:websocket supports encrypted data transmission
+fixed:password handle error
+fixed:Mutex not work
+fixed:start service does not work after set auto start
+fixed:cant save configure information
+fixed:Not responding to get user information
+======================================================================================
+XEngine_Authorize V2.4.0.1001
+
+增加:现在可以修改用户信息了
+修正:删除用户没有效果的问题
+修正:当tcp登录的时候没有设置用户默认设备类型的问题
+修正:当服务直接退出没有更新客户端时间的问题
+修正:配置文件的问题
+修改:当客户端进入或者退出的时候会有日志提示时间信息了
+修改:备份和恢复配置文件有消息提示了
+
+added:modify user information
+fixed:delete user not work
+fixed:use default when tcp login and not set enDeviceType
+fixed:client time not update when app service exited
+fixed:port configure error
+modify:The information time will be output when the client enters and exits
+modify:Now backup and restore configuration files it is have a message tips
+======================================================================================
+XEngine_Authorize V2.3.0.1001
+
+添加:websocket 协议授权支持
+添加:超时通知模式设置
+添加:会话模块增加设备类型
+支持:windows 32和64位编译
+修正:linux编译错误
+修正:获取用户信息没有返回内容的问题
+修改:现在线程参数使用int类型了
+修改:部分协议名称
+
+added:websocket protocol authorize support
+added:timeout notification mode setting
+added:session module callback added enDeviceType
+support:windows build x86 and x64
+fixed:linux build error
+fixed:getuser info not rep information
+modify:thread parament use int not struct
+modify:protocol name
+======================================================================================
+XEngine_Authorize V2.2.0.1001
+
+支持加密通信
+支持用户管理
+支持序列卡管理(分钟卡,天数卡,次数卡,自定义卡)
+支持日志管理
+支持配置管理
+支持试用,支持快速验证
+支持本地CDKEY注册验证
+
+Support:encrypto Communication
+Support:User Management
+Support:Serial Number Management(Minute,Day,number of times,custom)
+Support:Log
+Support:Configure
+Support:Try
+Support:Local CDKey
