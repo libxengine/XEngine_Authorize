@@ -10,7 +10,7 @@ network verification support tcp and websocket protocol verification.it is means
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
 ## Software feature
-The purpose of development and implementation based on XEngine is a cross-platform network storage service  
+A simple and high-performance cross-platform network authentication and authorization server developed and implemented based on XEngine  
 feature list:  
 1. use standard private protocol to handle network communication
 2. Support Encrypto communication
