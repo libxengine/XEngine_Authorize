@@ -126,6 +126,12 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_
     }
     st_Locker.unlock_shared();
 
+    if (0 == *pInt_ListCount)
+    {
+		Session_IsErrorOccur = TRUE;
+		Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETCLIENT_NOTFOUND;
+		return FALSE;
+    }
     return TRUE;
 }
 /********************************************************************
