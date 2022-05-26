@@ -71,7 +71,7 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
     if (bIsCreate)
     {
         //如果创建成功了，说明需要创建表
-        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,CreateTime TEXT NOT NULL)")))
+        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,nUserLevel integer,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
@@ -165,7 +165,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
         return FALSE;
     }
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%d,%lld,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nUserLevel, pSt_UserInfo->st_UserInfo.nIDNumber);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
@@ -244,6 +244,9 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
         //身份证ID
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nIDNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
+		//用户级别 -1表示封禁
+		nFliedValue++;
+		pSt_UserInfo->st_UserInfo.nUserLevel = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
 		//注册日期
 		nFliedValue++;
 		_tcscpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
@@ -337,8 +340,8 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_NOTSUPPORT;
         return FALSE;
     }
-    _stprintf_s(tszSQLStatement,_T("UPDATE AuthReg_Serial SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"),lpszUserName,lpszSerialName);
-    if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_Serial SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"), lpszUserName, lpszSerialName);
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_UPDATAUSEDNAME;
@@ -423,8 +426,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     TCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-
-    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',PhoneNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->en_AuthRegSerialType, pSt_UserTable->st_UserInfo.tszUserName);
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',PhoneNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d',nUserLevel = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->en_AuthRegSerialType, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
