@@ -51,7 +51,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	TCHAR tszClientUser[64];
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
-	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
+	if (Session_Authorize_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
 		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
 		{
@@ -64,11 +64,11 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 		AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 		memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
-		if (AuthService_Session_GetTimer(tszClientUser, &st_TimeProtocol))
+		if (Session_Authorize_GetTimer(tszClientUser, &st_TimeProtocol))
 		{
-			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
-		AuthService_Session_CloseClient(tszClientUser);
+		Session_Authorize_CloseClient(tszClientUser);
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);

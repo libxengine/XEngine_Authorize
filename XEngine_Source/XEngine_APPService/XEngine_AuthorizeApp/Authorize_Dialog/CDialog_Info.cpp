@@ -55,7 +55,7 @@ BOOL CDialog_Info::OnInitDialog()
 	CString m_StrUser = pWnd->m_ListCtrlOnlineClient.GetItemText(nItemCount, 1);
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-	AuthService_SQLPacket_UserQuery(m_StrUser.GetBuffer(), &st_UserTable);
+	Database_SQLite_UserQuery(m_StrUser.GetBuffer(), &st_UserTable);
 
 	m_EditUser.SetWindowText(m_StrUser);
 	m_EditPass.SetWindowText(st_UserTable.st_UserInfo.tszUserPass);
@@ -103,9 +103,9 @@ void CDialog_Info::OnBnClickedButton6()
 	st_UserTable.st_UserInfo.nIDNumber = _ttoi64(m_StrNumber.GetBuffer());
 
 	st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboType.GetCurSel();
-	if (AuthService_SQLPacket_UserSet(&st_UserTable))
+	if (Database_SQLite_UserSet(&st_UserTable))
 	{
-		AuthService_Session_SetUser(&st_UserTable);
+		Session_Authorize_SetUser(&st_UserTable);
 		AfxMessageBox(_T("修改成功"));
 	}
 	else

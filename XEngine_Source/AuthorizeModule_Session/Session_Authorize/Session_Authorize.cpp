@@ -1,28 +1,28 @@
 ﻿#include "pch.h"
-#include "AuthService_Session.h"
+#include "Session_Authorize.h"
 /********************************************************************
-//    Created:     2021/07/14  13:20:34
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session\AuthService_Session\AuthService_Session.cpp
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session\AuthService_Session
-//    File Base:   AuthService_Session
+//    Created:     2022/05/26  11:22:36
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\Session_Authorize\Session_Authorize.cpp
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\Session_Authorize
+//    File Base:   Session_Authorize
 //    File Ext:    cpp
 //    Project:     XEngine(网络通信引擎)
 //    Author:      qyt
 //    Purpose:     会话管理器
 //    History:
 *********************************************************************/
-CAuthService_Session::CAuthService_Session()
+CSession_Authorize::CSession_Authorize()
 {
     bIsRun = FALSE;
 }
-CAuthService_Session::~CAuthService_Session()
+CSession_Authorize::~CSession_Authorize()
 {
 }
 //////////////////////////////////////////////////////////////////////////
 //                     公有函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：AuthService_Session_Init
+函数名称：Session_Authorize_Init
 函数功能：初始化会话
  参数.一：fpCall_AuthEvent
   In/Out：In/Out
@@ -39,7 +39,7 @@ CAuthService_Session::~CAuthService_Session()
   意思：是否初始化成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam /* = NULL */)
+BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -54,7 +54,7 @@ BOOL CAuthService_Session::AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SER
 
     bIsRun = TRUE;
     //创建线程
-    pSTDThread_hActive = make_shared<std::thread>(AuthService_Session_ActiveThread, this);
+    pSTDThread_hActive = make_shared<std::thread>(Session_Authorize_ActiveThread, this);
     if (!pSTDThread_hActive->joinable())
     {
         bIsRun = FALSE;
@@ -65,7 +65,7 @@ BOOL CAuthService_Session::AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SER
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_GetClient
+函数名称：Session_Authorize_GetClient
 函数功能：获取客户端信息
  参数.一：pppSt_ListClient
   In/Out：Out
@@ -87,7 +87,7 @@ BOOL CAuthService_Session::AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SER
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_GetClient(AUTHREG_USERTABLE*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr /* = NULL */)
+BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -129,7 +129,7 @@ BOOL CAuthService_Session::AuthService_Session_GetClient(AUTHREG_USERTABLE*** pp
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_GetTimer
+函数名称：Session_Authorize_GetTimer
 函数功能：获取客户端时间信息
  参数.一：lpszUserName
   In/Out：In
@@ -146,7 +146,7 @@ BOOL CAuthService_Session::AuthService_Session_GetClient(AUTHREG_USERTABLE*** pp
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_GetTimer(LPCTSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime)
+BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -177,7 +177,7 @@ BOOL CAuthService_Session::AuthService_Session_GetTimer(LPCTSTR lpszUserName,AUT
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_GetAddrForUser
+函数名称：Session_Authorize_GetAddrForUser
 函数功能：通过用户名获取对应地址
  参数.一：lpszClientUser
   In/Out：In
@@ -194,7 +194,7 @@ BOOL CAuthService_Session::AuthService_Session_GetTimer(LPCTSTR lpszUserName,AUT
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_GetAddrForUser(LPCTSTR lpszClientUser, TCHAR *ptszClientAddr)
+BOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser, TCHAR *ptszClientAddr)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -219,7 +219,7 @@ BOOL CAuthService_Session::AuthService_Session_GetAddrForUser(LPCTSTR lpszClient
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_GetUserForAddr
+函数名称：Session_Authorize_GetUserForAddr
 函数功能：通过IP地址获取对应用户名
  参数.一：lpszClientAddr
   In/Out：In
@@ -236,7 +236,7 @@ BOOL CAuthService_Session::AuthService_Session_GetAddrForUser(LPCTSTR lpszClient
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser)
+BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -270,7 +270,7 @@ BOOL CAuthService_Session::AuthService_Session_GetUserForAddr(LPCTSTR lpszClient
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_CloseClient
+函数名称：Session_Authorize_CloseClient
 函数功能：移除一个客户端
  参数.一：lpszClientUser
   In/Out：In
@@ -282,7 +282,7 @@ BOOL CAuthService_Session::AuthService_Session_GetUserForAddr(LPCTSTR lpszClient
   意思：是否移除成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_CloseClient(LPCTSTR lpszClientAddr)
+BOOL CSession_Authorize::Session_Authorize_CloseClient(LPCTSTR lpszClientAddr)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -297,14 +297,14 @@ BOOL CAuthService_Session::AuthService_Session_CloseClient(LPCTSTR lpszClientAdd
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_Destroy
+函数名称：Session_Authorize_Destroy
 函数功能：销毁网络服务
 返回值
   类型：逻辑型
   意思：是否销毁成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_Destroy()
+BOOL CSession_Authorize::Session_Authorize_Destroy()
 {
     Session_IsErrorOccur = FALSE;
 
@@ -321,7 +321,7 @@ BOOL CAuthService_Session::AuthService_Session_Destroy()
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_Insert
+函数名称：Session_Authorize_Insert
 函数功能：用户登陆协议分析
  参数.一：lpszClientAddr
   In/Out：In
@@ -338,7 +338,7 @@ BOOL CAuthService_Session::AuthService_Session_Destroy()
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable)
+BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -373,7 +373,7 @@ BOOL CAuthService_Session::AuthService_Session_Insert(LPCTSTR lpszClientAddr, AU
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_Session_SetUser
+函数名称：Session_Authorize_SetUser
 函数功能：设置用户信息
  参数.一：pSt_UserTable
   In/Out：In
@@ -385,7 +385,7 @@ BOOL CAuthService_Session::AuthService_Session_Insert(LPCTSTR lpszClientAddr, AU
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_Session::AuthService_Session_SetUser(AUTHREG_USERTABLE* pSt_UserTable)
+BOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -412,9 +412,9 @@ BOOL CAuthService_Session::AuthService_Session_SetUser(AUTHREG_USERTABLE* pSt_Us
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CAuthService_Session::AuthService_Session_ActiveThread(LPVOID lParam)
+XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
 {
-    CAuthService_Session *pClass_This = (CAuthService_Session *)lParam;
+    CSession_Authorize *pClass_This = (CSession_Authorize *)lParam;
     XENGINE_LIBTIMER st_LibTimer;
     AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
     list<AUTHREG_PROTOCOL_TIME> stl_ListNotify;

@@ -69,7 +69,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDEL;
-		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
+		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 211;
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，用户不存在"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
@@ -84,7 +84,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			return FALSE;
 		}
 		//从数据库删除文件
-		if (!AuthService_SQLPacket_UserDelete(st_UserInfo.tszUserName))
+		if (!Database_SQLite_UserDelete(st_UserInfo.tszUserName))
 		{
 			pSt_ProtocolHdr->wReserve = 213;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
@@ -92,7 +92,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			return FALSE;
 		}
 		//注销需要删除登录用户
-		AuthService_Session_CloseClient(st_UserInfo.tszUserName);
+		Session_Authorize_CloseClient(st_UserInfo.tszUserName);
 		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
 		{
 			CString m_StrAddr = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 2);
@@ -120,7 +120,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		//填充写入数据
 		_tcscpy(st_UserTable.tszLeftTime, m_StrTryTime.GetBuffer());
 		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)pClass_This->m_DlgConfig.m_ComboRegTry.GetCurSel();
-		if (AuthService_SQLPacket_UserRegister(&st_UserTable))
+		if (Database_SQLite_UserRegister(&st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
@@ -128,7 +128,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 231;
-			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, SQLPacket_GetLastError());
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
 	}
@@ -142,7 +142,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
-		if (!AuthService_SQLPacket_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
+		if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 251;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
@@ -180,7 +180,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			return FALSE;
 		}
 		st_UserTable.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB == st_AuthProtocol.enDeviceType ? ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB : ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC;
-		if (!AuthService_Session_Insert(lpszClientAddr, &st_UserTable))
+		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
@@ -224,13 +224,13 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_UserPay, lpszMsgBuffer, sizeof(AUTHREG_PROTOCOL_USERPAY));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPPAY;
-		if (AuthService_SQLPacket_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber))
+		if (Database_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber))
 		{
 			AUTHREG_USERTABLE st_UserInfo;
 			memset(&st_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
-			if (AuthService_SQLPacket_UserQuery(st_UserPay.tszUserName, &st_UserInfo))
+			if (Database_SQLite_UserQuery(st_UserPay.tszUserName, &st_UserInfo))
 			{
-				AuthService_Session_SetUser(&st_UserInfo);
+				Session_Authorize_SetUser(&st_UserInfo);
 			}
 			pClass_This->m_DlgSerial.SerialManage_Flush();
 			pSt_ProtocolHdr->wReserve = 0;
@@ -239,7 +239,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 271;
-			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, SQLPacket_GetLastError());
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, DBModule_GetLastError());
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
 	}
@@ -256,7 +256,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS;
-		if (!AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
+		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 291;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
@@ -311,8 +311,8 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME;
-		AuthService_Session_GetUserForAddr(lpszClientAddr, tszUserName);
-		if (AuthService_Session_GetTimer(tszUserName, &st_AuthTime))
+		Session_Authorize_GetUserForAddr(lpszClientAddr, tszUserName);
+		if (Session_Authorize_GetTimer(tszUserName, &st_AuthTime))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
 			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType, (LPCTSTR)&st_AuthTime, sizeof(AUTHREG_PROTOCOL_TIME));
@@ -337,7 +337,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(st_AuthVer.tszVerSerial, lpszMsgBuffer, pSt_ProtocolHdr->unPacketSize);
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPTRYVER;
-		if (AuthService_SQLPacket_TryQuery(&st_AuthVer))
+		if (Database_SQLite_TryQuery(&st_AuthVer))
 		{
 			TCHAR tszEndTime[64];
 			__int64 nTimeSpan = 0;
@@ -372,7 +372,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				{
 					//次数卡需要更新才可以
 					st_AuthVer.nTryTime++;
-					AuthService_SQLPacket_TrySet(&st_AuthVer);
+					Database_SQLite_TrySet(&st_AuthVer);
 				}
 			}
 		}
@@ -391,7 +391,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			}
 			else
 			{
-				if (AuthService_SQLPacket_TryInsert(&st_AuthVer))
+				if (Database_SQLite_TryInsert(&st_AuthVer))
 				{
 					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_AuthVer.tszVerSerial);
 					pSt_ProtocolHdr->unPacketSize = 0;
@@ -399,7 +399,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 0x2D3;
-					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_AuthVer.tszVerSerial, SQLPacket_GetLastError());
+					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_AuthVer.tszVerSerial, DBModule_GetLastError());
 				}
 			}
 		}
@@ -416,7 +416,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER;
-		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
+		if (Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_UserTable.st_UserInfo.nIDNumber))
 			{
@@ -446,12 +446,12 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER;
-		if (AuthService_SQLPacket_UserQuery(st_UserInfo.tszUserName, &st_SQLTable))
+		if (Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_SQLTable))
 		{
 			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_SQLTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_SQLTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_SQLTable.st_UserInfo.nIDNumber))
 			{
 				memcpy(&st_SQLTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO));
-				if (AuthService_SQLPacket_UserSet(&st_SQLTable))
+				if (Database_SQLite_UserSet(&st_SQLTable))
 				{
 					pSt_ProtocolHdr->wReserve = 0;
 					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息成功\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
@@ -460,7 +460,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 2120;
-					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
+					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, DBModule_GetLastError());
 				}
 			}
 			else
@@ -472,7 +472,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 		else
 		{
 			pSt_ProtocolHdr->wReserve = 2122;
-			XEngine_Authorize_LogPrint(_T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, SQLPacket_GetLastError());
+			XEngine_Authorize_LogPrint(_T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, DBModule_GetLastError());
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
 	}

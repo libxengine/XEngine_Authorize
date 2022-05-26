@@ -1,0 +1,14 @@
+LIBRARY
+
+EXPORTS
+	Session_GetLastError
+
+	Session_Authorize_Init
+	Session_Authorize_GetClient
+	Session_Authorize_GetTimer
+	Session_Authorize_GetAddrForUser
+	Session_Authorize_GetUserForAddr
+	Session_Authorize_CloseClient
+	Session_Authorize_Destroy
+	Session_Authorize_Insert
+	Session_Authorize_SetUser

@@ -1,21 +1,21 @@
 ﻿#include "pch.h"
-#include "AuthService_SQLPacket.h"
+#include "Database_SQLite.h"
 /********************************************************************
-//    Created:     2021/07/14  11:40:37
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket\AuthService_SQLPacket\AuthService_SQLPacket.cpp
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket\AuthService_SQLPacket
-//    File Base:   AuthService_SQLPacket
+//    Created:     2022/05/26  11:01:13
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database\Database_SQLite\Database_SQLite.cpp
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database\Database_SQLite
+//    File Base:   Database_SQLite
 //    File Ext:    cpp
 //    Project:     XEngine(网络通信引擎)
 //    Author:      qyt
 //    Purpose:     数据库管理器
 //    History:
 *********************************************************************/
-CAuthService_SQLPacket::CAuthService_SQLPacket()
+CDatabase_SQLite::CDatabase_SQLite()
 {
     m_bChange = FALSE;
 }
-CAuthService_SQLPacket::~CAuthService_SQLPacket()
+CDatabase_SQLite::~CDatabase_SQLite()
 {
 
 }
@@ -23,7 +23,7 @@ CAuthService_SQLPacket::~CAuthService_SQLPacket()
 //                     公有函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：AuthService_SQLPacket_Init
+函数名称：Database_SQLite_Init
 函数功能：初始化数据库服务
  参数.一：lpszSQLFile
   In/Out：In
@@ -40,7 +40,7 @@ CAuthService_SQLPacket::~CAuthService_SQLPacket()
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Init(LPCTSTR lpszSQLFile, BOOL bIsChange /* = TRUE */)
+BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange /* = TRUE */)
 {
     SQLPacket_IsErrorOccur = FALSE;
     BOOL bIsCreate = FALSE;
@@ -93,14 +93,14 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Init(LPCTSTR lpszSQLFile, BOO
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_Destroy
+函数名称：Database_SQLite_Destroy
 函数功能：销毁数据库服务
 返回值
   类型：逻辑型
   意思：是否销毁成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Destroy()
+BOOL CDatabase_SQLite::Database_SQLite_Destroy()
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -113,7 +113,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Destroy()
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserDelete
+函数名称：Database_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
  参数.一：lpszUserName
   In/Out：In
@@ -125,7 +125,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_Destroy()
   意思：是否删除成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserDelete(LPCTSTR lpszUserName)
+BOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCTSTR lpszUserName)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
@@ -141,7 +141,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserDelete(LPCTSTR lpszUserNa
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserRegister
+函数名称：Database_SQLite_UserRegister
 函数功能：用户注册处理数据库语句函数
  参数.一：pSt_UserInfo
   In/Out：In
@@ -153,13 +153,13 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserDelete(LPCTSTR lpszUserNa
   意思：是否插入成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
+BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement,'\0',1024);
 
-    if (AuthService_SQLPacket_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
+    if (Database_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
@@ -175,7 +175,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserRegister(AUTHREG_USERTABL
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserQuery
+函数名称：Database_SQLite_UserQuery
 函数功能：查询用户相对应的值
  参数.一：lpszUserName
   In/Out：In
@@ -192,7 +192,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserRegister(AUTHREG_USERTABL
   意思：是否查询成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
+BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
@@ -253,7 +253,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserNam
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserPay
+函数名称：Database_SQLite_UserPay
 函数功能：用户充值函数
  参数.一：lpszUserName
   In/Out：In
@@ -270,7 +270,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserQuery(LPCTSTR lpszUserNam
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,LPCTSTR lpszSerialName)
+BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -289,7 +289,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
         return FALSE;
     }
     //查询充值卡是否存在
-    if (!AuthService_SQLPacket_SerialQuery(lpszSerialName,&st_SerialTable))
+    if (!Database_SQLite_SerialQuery(lpszSerialName,&st_SerialTable))
     {
         return FALSE;
     }
@@ -301,7 +301,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
         return FALSE;
     }
     //查询用户信息
-    if (!AuthService_SQLPacket_UserQuery(lpszUserName,&st_UserTable))
+    if (!Database_SQLite_UserQuery(lpszUserName,&st_UserTable))
     {
         return FALSE;
     }
@@ -309,25 +309,25 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
     switch (st_SerialTable.en_AuthRegSerialType)
     {
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
-        if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
-        if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
-        if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
-        if (!AuthService_SQLPacket_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
         {
             return FALSE;
         }
@@ -347,7 +347,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserLeave
+函数名称：Database_SQLite_UserLeave
 函数功能：用户离开处理事件
  参数.一：pSt_TimeProtocol
   In/Out：In
@@ -359,7 +359,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPay(LPCTSTR lpszUserName,
   意思：是否处理成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
+BOOL CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -404,7 +404,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TI
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserSet
+函数名称：Database_SQLite_UserSet
 函数功能：设置用户信息
  参数.一：pSt_UserTable
   In/Out：In
@@ -416,7 +416,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TI
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
+BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -435,7 +435,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pS
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialInsert
+函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber
   In/Out：In
@@ -447,14 +447,14 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pS
   意思：是否插入成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialInsert(LPCTSTR lpszSerialNumber)
+BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     TCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement,'\0',1024);
 
-    if (AuthService_SQLPacket_SerialQuery(lpszSerialNumber))
+    if (Database_SQLite_SerialQuery(lpszSerialNumber))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_SERIALINSERT_EXIST;
@@ -501,7 +501,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialInsert(LPCTSTR lpszSeri
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialDelete
+函数名称：Database_SQLite_SerialDelete
 函数功能：从数据库删除指定序列号
  参数.一：lpszSerialNumber
   In/Out：In
@@ -513,7 +513,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialInsert(LPCTSTR lpszSeri
   意思：是否删除成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialDelete(LPCTSTR lpszSerialNumber)
+BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -530,7 +530,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialDelete(LPCTSTR lpszSeri
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialQuery
+函数名称：Database_SQLite_SerialQuery
 函数功能：查询一个指定的序列号信息
  参数.一：lpszSerialNumber
   In/Out：In
@@ -547,7 +547,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialDelete(LPCTSTR lpszSeri
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
+BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
@@ -598,7 +598,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQuery(LPCTSTR lpszSeria
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialQueryAll
+函数名称：Database_SQLite_SerialQueryAll
 函数功能：查询序列卡表中的所有序列号
  参数.一：pppSt_SerialTable
   In/Out：Out
@@ -615,7 +615,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQuery(LPCTSTR lpszSeria
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount)
+BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount)
 {
     SQLPacket_IsErrorOccur = FALSE;
     
@@ -670,7 +670,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIAL
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryInsert
+函数名称：Database_SQLite_TryInsert
 函数功能：网络使用模式插入一条数据
  参数.一：pSt_AuthVer
   In/Out：In
@@ -682,7 +682,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIAL
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
+BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -700,7 +700,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt
 
     //验证是否存在
     _tcscpy(st_AuthVer.tszVerSerial, pSt_AuthVer->tszVerSerial);
-    if (AuthService_SQLPacket_TryQuery(&st_AuthVer))
+    if (Database_SQLite_TryQuery(&st_AuthVer))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYINSERT_EXIST;
@@ -717,7 +717,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryQuery
+函数名称：Database_SQLite_TryQuery
 函数功能：试用序列号查询函数
  参数.一：pSt_AuthVer
   In/Out：In/Out
@@ -729,7 +729,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
+BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -776,7 +776,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryDelete
+函数名称：Database_SQLite_TryDelete
 函数功能：删除一条指定的试用数据
  参数.一：lpszSerial
   In/Out：In
@@ -788,7 +788,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial)
+BOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCTSTR lpszSerial)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -812,7 +812,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial)
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryClear
+函数名称：Database_SQLite_TryClear
 函数功能：清理函数,自动清理过期数据
  参数.一：nThanValue
   In/Out：In
@@ -829,7 +829,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryDelete(LPCTSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
+BOOL CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -911,7 +911,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM
     return TRUE;
 }
 /********************************************************************
-函数名称：AuthService_SQLPacket_TrySet
+函数名称：Database_SQLite_TrySet
 函数功能：设置用户信息函数
  参数.一：pSt_AuthVer
   In/Out：In
@@ -923,7 +923,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TryClear(int nThanValue, ENUM
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_AuthVer)
+BOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -944,7 +944,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_Au
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserPayTime
+函数名称：Database_SQLite_UserPayTime
 函数功能：日期方式充值方式
  参数.一：lpszUserName
   In/Out：In
@@ -976,7 +976,7 @@ BOOL CAuthService_SQLPacket::AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_Au
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CAuthService_SQLPacket::AuthService_SQLPacket_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
+BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
 {
     SQLPacket_IsErrorOccur = FALSE;
 

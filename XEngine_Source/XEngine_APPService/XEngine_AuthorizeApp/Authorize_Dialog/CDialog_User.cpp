@@ -166,7 +166,7 @@ void CDialog_User::OnBnClickedButton3()
 	//先关闭
 	XEngine_CloseClient(m_StrIPAddr.GetBuffer(), this);
 	//在删除
-	AuthService_SQLPacket_UserDelete(m_StrUser.GetBuffer());
+	Database_SQLite_UserDelete(m_StrUser.GetBuffer());
 	AfxMessageBox(_T("删除客户成功！"));
 }
 

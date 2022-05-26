@@ -184,12 +184,12 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	m_DlgConfig.m_EditThreadPool.GetWindowText(m_StrThreads);
 
 	nThreadCount = _ttoi(m_StrThreads.GetBuffer());
-	if (!AuthService_SQLPacket_Init(st_AuthConfig.st_XSql.tszSQLite))
+	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
 	{
 		AfxMessageBox(_T("初始化数据库失败！"));
 		return;
 	}
-	if (!AuthService_Session_Init(XEngine_TaskEvent_Client, this))
+	if (!Session_Authorize_Init(XEngine_TaskEvent_Client, this))
 	{
 		AfxMessageBox(_T("初始化网络失败！"));
 		return;
@@ -306,17 +306,17 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 
 	int nListCount = 0;
 	AUTHREG_USERTABLE** ppSt_ListClient;
-	AuthService_Session_GetClient(&ppSt_ListClient, &nListCount);
+	Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
 	for (int i = 0; i < nListCount; i++)
 	{
 		AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 		memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
-		if (AuthService_Session_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
+		if (Session_Authorize_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
 		{
-			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
-		AuthService_Session_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
+		Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
 	}
 
 	HelpComponents_Datas_Destory(xhTCPPacket);
@@ -330,8 +330,8 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads);
 
-	AuthService_Session_Destroy();
-	AuthService_SQLPacket_Destroy();
+	Session_Authorize_Destroy();
+	Database_SQLite_Destroy();
 
 	m_DlgSerial.m_ListSerial.DeleteAllItems();
 	m_DlgUser.m_ListCtrlOnlineClient.DeleteAllItems();

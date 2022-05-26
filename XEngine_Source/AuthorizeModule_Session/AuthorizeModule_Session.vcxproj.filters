@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\AuthService_SQLPacket">
-      <UniqueIdentifier>{981c92b7-f85d-46f7-bca9-9900ec72e104}</UniqueIdentifier>
+    <Filter Include="头文件\Session_Authorize">
+      <UniqueIdentifier>{2be445da-b5f4-4b97-84c7-0ebe36e01ce8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\AuthService_SQLPacket">
-      <UniqueIdentifier>{b3b538fe-d943-422e-b188-32ec875e355c}</UniqueIdentifier>
+    <Filter Include="源文件\Session_Authorize">
+      <UniqueIdentifier>{98019e80-6680-48fa-a755-702b5b3aab78}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,14 +27,14 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="AuthService_SQLPacket\AuthService_SQLPacket.h">
-      <Filter>头文件\AuthService_SQLPacket</Filter>
-    </ClInclude>
-    <ClInclude Include="SQLPacket_Define.h">
+    <ClInclude Include="Session_Define.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="SQLPacket_Error.h">
+    <ClInclude Include="Session_Error.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Session_Authorize\Session_Authorize.h">
+      <Filter>头文件\Session_Authorize</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,12 +44,12 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AuthService_SQLPacket\AuthService_SQLPacket.cpp">
-      <Filter>源文件\AuthService_SQLPacket</Filter>
+    <ClCompile Include="Session_Authorize\Session_Authorize.cpp">
+      <Filter>源文件\Session_Authorize</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AuthComponents_SQLPacket.def">
+    <None Include="AuthorizeModule_Session.def">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

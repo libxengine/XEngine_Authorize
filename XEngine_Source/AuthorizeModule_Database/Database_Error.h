@@ -1,9 +1,9 @@
 ﻿#pragma once
 /********************************************************************
-//    Created:     2021/07/14  13:14:57
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket\SQLPacket_Error.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket
-//    File Base:   SQLPacket_Error
+//    Created:     2022/05/26  11:00:50
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database\Database_Error.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database
+//    File Base:   Database_Error
 //    File Ext:    h
 //    Project:     XEngine(网络通信引擎)
 //    Author:      qyt

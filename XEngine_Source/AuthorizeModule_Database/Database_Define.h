@@ -1,9 +1,9 @@
 ﻿#pragma once
 /********************************************************************
-//    Created:     2021/07/14  13:14:43
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket\SQLPacket_Define.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket
-//    File Base:   SQLPacket_Define
+//    Created:     2022/05/26  11:00:43
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database\Database_Define.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database
+//    File Base:   Database_Define
 //    File Ext:    h
 //    Project:     XEngine(网络通信引擎)
 //    Author:      qyt
@@ -13,12 +13,12 @@
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD SQLPacket_GetLastError(int *pInt_SysError = NULL);
+extern "C" DWORD DBModule_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
 /*                         数据库服务导出函数                           */
 /************************************************************************/
 /********************************************************************
-函数名称：AuthService_SQLPacket_Init
+函数名称：Database_SQLite_Init
 函数功能：初始化数据库服务
  参数.一：lpszSQLFile
   In/Out：In
@@ -35,18 +35,18 @@ extern "C" DWORD SQLPacket_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_Init(LPCSTR lpszSQLFile, BOOL bIsChange = TRUE);
+extern "C" BOOL Database_SQLite_Init(LPCSTR lpszSQLFile, BOOL bIsChange = TRUE);
 /********************************************************************
-函数名称：AuthService_SQLPacket_Destroy
+函数名称：Database_SQLite_Destroy
 函数功能：销毁数据库服务
 返回值
   类型：逻辑型
   意思：是否销毁成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_Destroy();
+extern "C" BOOL Database_SQLite_Destroy();
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserDelete
+函数名称：Database_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
  参数.一：lpszUserName
   In/Out：In
@@ -58,9 +58,9 @@ extern "C" BOOL AuthService_SQLPacket_Destroy();
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserDelete(LPCSTR lpszUserName);
+extern "C" BOOL Database_SQLite_UserDelete(LPCSTR lpszUserName);
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserRegister
+函数名称：Database_SQLite_UserRegister
 函数功能：用户注册处理数据库语句函数
  参数.一：pSt_UserInfo
   In/Out：In
@@ -72,9 +72,9 @@ extern "C" BOOL AuthService_SQLPacket_UserDelete(LPCSTR lpszUserName);
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
+extern "C" BOOL Database_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserQuery
+函数名称：Database_SQLite_UserQuery
 函数功能：查询用户相对应的值
  参数.一：lpszUserName
   In/Out：In
@@ -91,9 +91,9 @@ extern "C" BOOL AuthService_SQLPacket_UserRegister(AUTHREG_USERTABLE * pSt_UserI
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserQuery(LPCSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
+extern "C" BOOL Database_SQLite_UserQuery(LPCSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserPay
+函数名称：Database_SQLite_UserPay
 函数功能：用户充值函数
  参数.一：lpszUserName
   In/Out：In
@@ -110,9 +110,9 @@ extern "C" BOOL AuthService_SQLPacket_UserQuery(LPCSTR lpszUserName,AUTHREG_USER
   意思：是否成功充值
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserPay(LPCSTR lpszUserName,LPCSTR lpszSerialName);
+extern "C" BOOL Database_SQLite_UserPay(LPCSTR lpszUserName,LPCSTR lpszSerialName);
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserLeave
+函数名称：Database_SQLite_UserLeave
 函数功能：用户离开处理事件
  参数.一：pSt_TimeProtocol
   In/Out：In
@@ -124,9 +124,9 @@ extern "C" BOOL AuthService_SQLPacket_UserPay(LPCSTR lpszUserName,LPCSTR lpszSer
   意思：是否处理成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtocol);
+extern "C" BOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtocol);
 /********************************************************************
-函数名称：AuthService_SQLPacket_UserSet
+函数名称：Database_SQLite_UserSet
 函数功能：设置用户信息
  参数.一：pSt_UserTable
   In/Out：In
@@ -138,9 +138,9 @@ extern "C" BOOL AuthService_SQLPacket_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_Time
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialInsert
+函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber
   In/Out：In
@@ -152,9 +152,9 @@ extern "C" BOOL AuthService_SQLPacket_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_SerialInsert(LPCSTR lpszSerialNumber);
+extern "C" BOOL Database_SQLite_SerialInsert(LPCSTR lpszSerialNumber);
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialDelete
+函数名称：Database_SQLite_SerialDelete
 函数功能：从数据库删除指定序列号
  参数.一：lpszSerialNumber
   In/Out：In
@@ -166,9 +166,9 @@ extern "C" BOOL AuthService_SQLPacket_SerialInsert(LPCSTR lpszSerialNumber);
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_SerialDelete(LPCSTR lpszSerialNumber);
+extern "C" BOOL Database_SQLite_SerialDelete(LPCSTR lpszSerialNumber);
   /********************************************************************
-函数名称：AuthService_SQLPacket_SerialQuery
+函数名称：Database_SQLite_SerialQuery
 函数功能：查询一个指定的序列号信息
  参数.一：lpszSerialNumber
   In/Out：In
@@ -185,9 +185,9 @@ extern "C" BOOL AuthService_SQLPacket_SerialDelete(LPCSTR lpszSerialNumber);
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_SerialQuery(LPCSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable);
+extern "C" BOOL Database_SQLite_SerialQuery(LPCSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable);
 /********************************************************************
-函数名称：AuthService_SQLPacket_SerialQueryAll
+函数名称：Database_SQLite_SerialQueryAll
 函数功能：查询序列卡表中的所有序列号
  参数.一：pppSt_SerialTable
   In/Out：Out
@@ -204,9 +204,9 @@ extern "C" BOOL AuthService_SQLPacket_SerialQuery(LPCSTR lpszSerialNumber,LPAUTH
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount);
+extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount);
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryInsert
+函数名称：Database_SQLite_TryInsert
 函数功能：网络使用模式插入一条数据
  参数.一：pSt_AuthVer
   In/Out：In
@@ -218,9 +218,9 @@ extern "C" BOOL AuthService_SQLPacket_SerialQueryAll(AUTHREG_SERIALTABLE * **ppp
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" BOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryQuery
+函数名称：Database_SQLite_TryQuery
 函数功能：试用序列号查询函数
  参数.一：pSt_AuthVer
   In/Out：In/Out
@@ -232,9 +232,9 @@ extern "C" BOOL AuthService_SQLPacket_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" BOOL Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryDelete
+函数名称：Database_SQLite_TryDelete
 函数功能：删除一条指定的试用数据
  参数.一：lpszSerial
   In/Out：In
@@ -246,9 +246,9 @@ extern "C" BOOL AuthService_SQLPacket_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TryDelete(LPCSTR lpszSerial);
+extern "C" BOOL Database_SQLite_TryDelete(LPCSTR lpszSerial);
 /********************************************************************
-函数名称：AuthService_SQLPacket_TryClear
+函数名称：Database_SQLite_TryClear
 函数功能：清理函数,自动清理过期数据
  参数.一：nThanValue
   In/Out：In
@@ -265,9 +265,9 @@ extern "C" BOOL AuthService_SQLPacket_TryDelete(LPCSTR lpszSerial);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
+extern "C" BOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
 /********************************************************************
-函数名称：AuthService_SQLPacket_TrySet
+函数名称：Database_SQLite_TrySet
 函数功能：设置用户信息函数
  参数.一：pSt_AuthVer
   In/Out：In
@@ -279,4 +279,4 @@ extern "C" BOOL AuthService_SQLPacket_TryClear(int nThanValue, ENUM_HELPCOMPONEN
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_SQLPacket_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" BOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);

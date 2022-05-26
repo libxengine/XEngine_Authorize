@@ -1,8 +1,8 @@
 ﻿#pragma once
 /********************************************************************
-//    Created:     2021/07/14  13:24:38
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session\Session_Error.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session
+//    Created:     2022/05/26  10:53:29
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\Session_Error.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session
 //    File Base:   Session_Error
 //    File Ext:    h
 //    Project:     XEngine(网络通信引擎)
