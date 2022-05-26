@@ -33,4 +33,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedButton6();
 	afx_msg void OnBnClickedButton7();
+	CComboBox m_ComboLeave;
 };

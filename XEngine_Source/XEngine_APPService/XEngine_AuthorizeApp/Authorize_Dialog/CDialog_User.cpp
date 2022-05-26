@@ -46,13 +46,14 @@ BOOL CDialog_User::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_ListCtrlOnlineClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 60);
-	m_ListCtrlOnlineClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 100);
+	m_ListCtrlOnlineClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
+	m_ListCtrlOnlineClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
 	m_ListCtrlOnlineClient.InsertColumn(2, _T("地址"), LVCFMT_LEFT, 110);
 	m_ListCtrlOnlineClient.InsertColumn(3, _T("在线时间(分钟)"), LVCFMT_LEFT, 90);
 	m_ListCtrlOnlineClient.InsertColumn(4, _T("剩余时间/过期时间"), LVCFMT_LEFT, 100);
 	m_ListCtrlOnlineClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 60);
+	m_ListCtrlOnlineClient.InsertColumn(7, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlOnlineClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	hUserWnd = this->m_hWnd;
