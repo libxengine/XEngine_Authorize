@@ -42,10 +42,10 @@ using namespace std;
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
 #include "../../XAuth_Protocol.h"
-#include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Define.h"
-#include "../../XEngine_AuthComponents/AuthComponents_SQLPacket/SQLPacket_Error.h"
-#include "../../XEngine_AuthComponents/AuthComponents_Session/Session_Define.h"
-#include "../../XEngine_AuthComponents/AuthComponents_Session/Session_Error.h"
+#include "../../AuthorizeModule_Database/Database_Define.h"
+#include "../../AuthorizeModule_Database/Database_Error.h"
+#include "../../AuthorizeModule_Session/Session_Define.h"
+#include "../../AuthorizeModule_Session/Session_Error.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
@@ -84,13 +84,13 @@ typedef struct
 
 #ifdef _DEBUG
 #ifdef _WIN64
-#pragma comment(lib,"../../x64/Debug/AuthComponents_SQLPacket")
-#pragma comment(lib,"../../x64/Debug/AuthComponents_Session")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol")
 #else
-#pragma comment(lib,"../../Debug/AuthComponents_SQLPacket")
-#pragma comment(lib,"../../Debug/AuthComponents_Session")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Database")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Session")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol")
 #endif
@@ -98,13 +98,13 @@ typedef struct
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
-#pragma comment(lib,"../../x64/Release/AuthComponents_Session.lib")
-#pragma comment(lib,"../../x64/Release/AuthComponents_SQLPacket.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
 #else
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
-#pragma comment(lib,"../../Release/AuthComponents_Session.lib")
-#pragma comment(lib,"../../Release/AuthComponents_SQLPacket.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
 #endif
 #endif
 
