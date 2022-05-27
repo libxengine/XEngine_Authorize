@@ -477,6 +477,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_NOTUSER;
 		return FALSE;
 	}
+    *pInt_ListCount = nRow;
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, nRow, sizeof(AUTHREG_USERTABLE));
 	//ID
 	int nFliedValue = nColumn;

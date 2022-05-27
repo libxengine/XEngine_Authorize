@@ -83,20 +83,6 @@ void CDialog_User::Dialog_User_Insert(LPCTSTR lpszClientAddr, LPCTSTR lpszRecvMs
 	m_ListCtrlOnlineClient.SetItemText(nItemCount, 4, _T("0"));
 }
 
-void CDialog_User::Dialog_User_Leave(LPCTSTR lpszClientAddr)
-{
-	CString m_StrAddr;
-	for (int i = 0; i < m_ListCtrlOnlineClient.GetItemCount(); i++)
-	{
-		m_StrAddr = m_ListCtrlOnlineClient.GetItemText(i, 2);
-		if (0 == _tcsncmp(m_StrAddr.GetBuffer(), lpszClientAddr, m_StrAddr.GetLength()))
-		{
-			m_ListCtrlOnlineClient.DeleteItem(i);
-			break;
-		}
-	}
-}
-
 void CDialog_User::Dialog_User_Set(LPCTSTR lpszClientAddr, LPAUTHREG_USERTABLE pSt_UserTable)
 {
 	CString m_StrAddr;
