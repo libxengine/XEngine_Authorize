@@ -164,6 +164,14 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
+		//是否被封禁
+		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
+		{
+			pSt_ProtocolHdr->wReserve = 256;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			return FALSE;
+		}
 		//分析充值类型
 		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.en_AuthRegSerialType)
 		{
@@ -409,72 +417,97 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 	{
 		AUTHREG_USERTABLE st_UserTable;
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
+		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
+
+		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
+		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+		memcpy(&st_UserAuth, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER;
+
+		int nListCount = 0;
+		AUTHREG_USERTABLE** ppSt_ListClient;
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, lpszClientAddr))
+		{
+			pSt_ProtocolHdr->wReserve = 2100;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，获取客户端信息失败,客户端没有登录,无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
+			return FALSE;
+		}
+		
+		if (!Database_SQLite_UserQuery(st_UserAuth.tszUserName, &st_UserTable))
+		{
+			pSt_ProtocolHdr->wReserve = 2101;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息失败,帐户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			return FALSE;
+		}
+		if (ppSt_ListClient[0]->st_UserInfo.nUserLevel <= st_UserTable.st_UserInfo.nUserLevel)
+		{
+			pSt_ProtocolHdr->wReserve = 2102;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，获取客户端信息失败,当前用户权限不足"), lpszClientAddr, ppSt_ListClient[0]->st_UserInfo.tszUserName);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			return FALSE;
+		}
+		XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息成功"), lpszClientAddr, st_UserInfo.tszUserName);
+		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType, (LPCTSTR)&st_UserTable, sizeof(AUTHREG_USERTABLE));
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+	}
+	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
+	{
+		AUTHREG_USERTABLE st_UserTable;
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 
-		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER;
-		if (Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
+		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER;
+
+		int nListCount = 0;
+		AUTHREG_USERTABLE** ppSt_ListClient;
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, lpszClientAddr))
 		{
-			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_UserTable.st_UserInfo.nIDNumber))
-			{
-				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息成功"), lpszClientAddr, st_UserInfo.tszUserName);
-			}
-			else
-			{
-				pSt_ProtocolHdr->wReserve = 2100;
-				XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息失败,密码错误"), lpszClientAddr, st_UserInfo.tszUserName);
-			}
+			pSt_ProtocolHdr->wReserve = 2100;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，设置客户端信息失败,客户端没有登录,无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
+			return FALSE;
 		}
-		else
+		
+		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 2101;
-			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求查询用户信息失败,帐户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息失败,帐户不存在"), lpszClientAddr, ppSt_ListClient[0]->st_UserInfo.tszUserName);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			return FALSE;
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType, (LPCTSTR)&st_UserTable, sizeof(AUTHREG_USERTABLE));
-	}
-	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == pSt_ProtocolHdr->unOperatorCode)
-	{
-		AUTHREG_USERTABLE st_SQLTable;
-		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-
-		memset(&st_SQLTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
-
-		memcpy(&st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
-
-		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER;
-		if (Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_SQLTable))
+		if (ppSt_ListClient[0]->st_UserInfo.nUserLevel <= st_UserTable.st_UserInfo.nUserLevel)
 		{
-			if ((0 == _tcsncmp(st_UserInfo.tszUserPass, st_SQLTable.st_UserInfo.tszUserPass, _tcslen(st_UserInfo.tszUserPass))) && (0 != _tcsnicmp(st_UserInfo.tszEMailAddr, st_SQLTable.st_UserInfo.tszEMailAddr, _tcslen(st_UserInfo.tszEMailAddr))) && (st_UserInfo.nIDNumber == st_SQLTable.st_UserInfo.nIDNumber))
-			{
-				memcpy(&st_SQLTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO));
-				if (Database_SQLite_UserSet(&st_SQLTable))
-				{
-					pSt_ProtocolHdr->wReserve = 0;
-					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息成功\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
-					
-				}
-				else
-				{
-					pSt_ProtocolHdr->wReserve = 2120;
-					XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, DBModule_GetLastError());
-				}
-			}
-			else
-			{
-				pSt_ProtocolHdr->wReserve = 2121;
-				XEngine_Authorize_LogPrint(_T("客户端：%s，用户名：%s，请求设置用户信息失败,信息不匹配\r\n"), lpszClientAddr, st_UserInfo.tszUserName);
-			}
+			pSt_ProtocolHdr->wReserve = 2102;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，设置客户端信息失败,当前用户权限不足"), lpszClientAddr, ppSt_ListClient[0]->st_UserInfo.tszUserName);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			return FALSE;
 		}
-		else
+
+		memcpy(&st_UserTable.st_UserInfo, &st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO));
+		if (!Database_SQLite_UserSet(&st_UserTable))
 		{
-			pSt_ProtocolHdr->wReserve = 2122;
-			XEngine_Authorize_LogPrint(_T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX\r\n"), lpszClientAddr, st_UserInfo.tszUserName, DBModule_GetLastError());
+			pSt_ProtocolHdr->wReserve = 2103;
+			XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息失败,错误:%lX"), lpszClientAddr, ppSt_ListClient[0]->st_UserInfo.tszUserName, DBModule_GetLastError());
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			return FALSE;
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
+		XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，请求设置用户信息成功"), lpszClientAddr, ppSt_ListClient[0]->st_UserInfo.tszUserName);
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return TRUE;
 }

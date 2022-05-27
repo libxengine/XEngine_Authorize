@@ -33,4 +33,5 @@ public:
 	afx_msg void OnBnClickedButton4();
 	CEdit m_EidtSendMsg;
 	afx_msg void OnBnClickedButton5();
+	afx_msg void OnBnClickedCheck1();
 };

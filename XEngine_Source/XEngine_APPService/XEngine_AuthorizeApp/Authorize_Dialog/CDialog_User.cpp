@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_User::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_User::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_CHECK1, &CDialog_User::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -256,4 +257,10 @@ void CDialog_User::OnBnClickedButton5()
 	}
 	m_EidtSendMsg.SetWindowText(_T(""));
 	AfxMessageBox(_T("发送消息成功！"));
+}
+
+
+void CDialog_User::OnBnClickedCheck1()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
