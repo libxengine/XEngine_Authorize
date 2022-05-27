@@ -58,7 +58,14 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 			CString m_StrAddr = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 2);
 			if (0 == _tcsnicmp(lpszClientAddr, m_StrAddr.GetBuffer(), _tcslen(lpszClientAddr)))
 			{
-				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+				if (BST_CHECKED == pClass_This->m_DlgUser.m_CheckAllUser.GetCheck())
+				{
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 7, _T("离线"));
+				}
+				else
+				{
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+				}
 			}
 		}
 		AUTHREG_PROTOCOL_TIME st_TimeProtocol;

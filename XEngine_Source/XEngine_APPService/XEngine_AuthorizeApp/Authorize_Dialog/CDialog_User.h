@@ -34,4 +34,5 @@ public:
 	CEdit m_EidtSendMsg;
 	afx_msg void OnBnClickedButton5();
 	afx_msg void OnBnClickedCheck1();
+	CButton m_CheckAllUser;
 };

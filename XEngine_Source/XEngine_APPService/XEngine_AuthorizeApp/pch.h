@@ -82,6 +82,8 @@ typedef struct
 	LPVOID lPClass;
 }XENGINE_THREADINFO;
 
+extern LPCSTR lpszKeyType[5];
+
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database")

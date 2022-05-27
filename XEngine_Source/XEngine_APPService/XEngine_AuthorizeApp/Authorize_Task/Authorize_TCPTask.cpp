@@ -195,32 +195,50 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-
-		TCHAR tszUserId[64];
-		memset(tszUserId, '\0', sizeof(tszUserId));
-		int nItemCount = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount();
-		if (0 == nItemCount)
+		//是否勾选了所有用户
+		BOOL bFound = FALSE;
+		if (BST_CHECKED == pClass_This->m_DlgUser.m_CheckAllUser.GetCheck())
 		{
-			_stprintf(tszUserId, _T("%d"), nItemCount);
+			for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
+			{
+				CString m_StrUser = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 1);
+				if (0 == _tcsncmp(m_StrUser.GetBuffer(), st_AuthProtocol.tszUserName, m_StrUser.GetLength()))
+				{
+					bFound = TRUE;
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 7, _T("在线"));
+					break;
+				}
+			}
 		}
-		else
+		if (BST_CHECKED != pClass_This->m_DlgUser.m_CheckAllUser.GetCheck() || !bFound)
 		{
-			_stprintf(tszUserId, _T("%d"), nItemCount + 1);
+			TCHAR tszUserId[64];
+			memset(tszUserId, '\0', sizeof(tszUserId));
+			int nItemCount = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount();
+			if (0 == nItemCount)
+			{
+				_stprintf(tszUserId, _T("%d"), nItemCount);
+			}
+			else
+			{
+				_stprintf(tszUserId, _T("%d"), nItemCount + 1);
+			}
+			CString m_StrDeviceType;
+			if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC == st_UserTable.enDeviceType)
+			{
+				m_StrDeviceType.Format(_T("TCP"));
+			}
+			else
+			{
+				m_StrDeviceType.Format(_T("WEB"));
+			}
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.InsertItem(nItemCount, tszUserId);
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, st_AuthProtocol.tszUserName);
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 2, lpszClientAddr);
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 6, m_StrDeviceType.GetBuffer());
+			pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 7, _T("在线"));
 		}
-		CString m_StrDeviceType;
-		if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC == st_UserTable.enDeviceType)
-		{
-			m_StrDeviceType.Format(_T("TCP"));
-		}
-		else
-		{
-			m_StrDeviceType.Format(_T("WEB"));
-		}
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.InsertItem(nItemCount, tszUserId);
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, st_AuthProtocol.tszUserName);
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 2, lpszClientAddr);
-		pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(nItemCount, 6, m_StrDeviceType.GetBuffer());
-
+		
 		pSt_ProtocolHdr->wReserve = 0;
 		XEngine_Client_TaskSend(lpszClientAddr, pSt_ProtocolHdr, lParam, nNetType);
 		XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，登录成功"), lpszClientAddr, st_AuthProtocol.tszUserName);

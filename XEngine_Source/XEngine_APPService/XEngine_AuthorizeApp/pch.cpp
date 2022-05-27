@@ -13,3 +13,4 @@ XNETHANDLE xhWSPool = 0;
 AUTHORIZE_CONFIGURE st_AuthConfig;
 
 HWND hUserWnd = NULL;
+LPCSTR lpszKeyType[5] = { "未知类型","分钟卡","天数卡","次数卡","自定义卡" };
