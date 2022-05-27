@@ -11,6 +11,7 @@ EXPORTS
 	Database_SQLite_UserPay
 	Database_SQLite_UserLeave
 	Database_SQLite_UserSet
+	Database_SQLite_UserList
 	Database_SQLite_SerialInsert
 	Database_SQLite_SerialDelete
 	Database_SQLite_SerialQuery

@@ -140,6 +140,25 @@ extern "C" BOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtoc
 *********************************************************************/
 extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
 /********************************************************************
+函数名称：Database_SQLite_UserList
+函数功能：获取用户列表
+ 参数.一：pppSt_UserInfo
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出用户列表,内存由用户释放
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型
+  可空：N
+  意思：输出列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount);
+/********************************************************************
 函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber

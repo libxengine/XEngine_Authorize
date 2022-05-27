@@ -61,6 +61,10 @@ extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE * pSt_UserTable)
 {
 	return m_SQLAuth.Database_SQLite_UserSet(pSt_UserTable);
 }
+extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE * **pppSt_UserInfo, int* pInt_ListCount)
+{
+	return m_SQLAuth.Database_SQLite_UserList(pppSt_UserInfo, pInt_ListCount);
+}
 extern "C" BOOL Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
 {
 	return m_SQLAuth.Database_SQLite_SerialInsert(lpszSerialNumber);

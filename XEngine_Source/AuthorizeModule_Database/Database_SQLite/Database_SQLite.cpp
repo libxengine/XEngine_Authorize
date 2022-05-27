@@ -437,6 +437,86 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     return TRUE;
 }
 /********************************************************************
+函数名称：Database_SQLite_UserList
+函数功能：获取用户列表
+ 参数.一：pppSt_UserInfo
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出用户列表,内存由用户释放
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型
+  可空：N
+  意思：输出列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	int nRow = 0;
+	int nColumn = 0;
+    char** ppszResult = NULL;
+    TCHAR tszSQLStatement[1024];    //SQL语句
+	memset(tszSQLStatement, '\0', 1024);
+
+	_stprintf_s(tszSQLStatement, _T("SELECT * FROM AuthReg_User"));
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_GETTABLE;
+		return FALSE;
+	}
+	if ((0 == nRow) || (0 == nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_NOTUSER;
+		return FALSE;
+	}
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, nRow, sizeof(AUTHREG_USERTABLE));
+	//ID
+	int nFliedValue = nColumn;
+    for (int i = 0; i < nRow; i++)
+    {
+        nFliedValue++;          //ID
+        //用户名
+        _tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserName, ppszResult[nFliedValue]);
+		//密码
+		nFliedValue++;
+		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
+		//过期时间
+		nFliedValue++;
+		_tcscpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
+		//电子邮件
+		nFliedValue++;
+		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszEMailAddr, ppszResult[nFliedValue]);
+		//硬件码
+		nFliedValue++;
+		_tcscpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
+		//充值卡类型
+		nFliedValue++;
+        (*pppSt_UserInfo)[i]->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
+		//QQ号
+		nFliedValue++;
+        (*pppSt_UserInfo)[i]->st_UserInfo.nPhoneNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
+		//身份证ID
+		nFliedValue++;
+        (*pppSt_UserInfo)[i]->st_UserInfo.nIDNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
+		//用户级别 -1表示封禁
+		nFliedValue++;
+        (*pppSt_UserInfo)[i]->st_UserInfo.nUserLevel = _ttoi(ppszResult[nFliedValue]);
+		//注册日期
+		nFliedValue++;
+		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+    }
+	DataBase_SQLite_FreeTable(ppszResult);
+	return TRUE;
+}
+/********************************************************************
 函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber
