@@ -250,45 +250,62 @@ void CDialog_User::OnBnClickedButton5()
 void CDialog_User::OnBnClickedCheck1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	int nListCount = 0;
-	AUTHREG_USERTABLE** ppSt_UserInfo;
-	Database_SQLite_UserList(&ppSt_UserInfo, &nListCount);
-
-	for (int i = 0; i < nListCount; i++)
+	if (BST_CHECKED == m_CheckAllUser.GetCheck())
 	{
-		BOOL bFound = FALSE;
+		int nListCount = 0;
+		AUTHREG_USERTABLE** ppSt_UserInfo;
+		Database_SQLite_UserList(&ppSt_UserInfo, &nListCount);
+
+		for (int i = 0; i < nListCount; i++)
+		{
+			BOOL bFound = FALSE;
+			for (int j = 0; j < m_ListCtrlOnlineClient.GetItemCount(); j++)
+			{
+				//是否在线
+				CString m_StrUser = m_ListCtrlOnlineClient.GetItemText(j, 1);
+				if (0 == _tcsncmp(m_StrUser.GetBuffer(), ppSt_UserInfo[i]->st_UserInfo.tszUserName, m_StrUser.GetLength()))
+				{
+					bFound = TRUE;
+					break;
+				}
+			}
+			//是否找到
+			if (!bFound)
+			{
+				TCHAR tszTmpBuffer[64];
+				memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
+				int nItemCount = m_ListCtrlOnlineClient.GetItemCount();
+				_stprintf(tszTmpBuffer, _T("%d"), nItemCount);
+				m_ListCtrlOnlineClient.InsertItem(nItemCount, tszTmpBuffer);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, ppSt_UserInfo[i]->st_UserInfo.tszUserName);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 4, ppSt_UserInfo[i]->tszLeftTime);
+
+				memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 5, lpszKeyType[ppSt_UserInfo[i]->en_AuthRegSerialType]);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 7, _T("离线"));
+			}
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_UserInfo, nListCount);
+	}
+	else
+	{
+		int nListCount = m_ListCtrlOnlineClient.GetItemCount();
+		for (int i = nListCount; i != 0; i--)
+		{
+			CString m_StrStatus = m_ListCtrlOnlineClient.GetItemText(i - 1, 7);
+			if (0 == _tcsncmp(m_StrStatus.GetBuffer(), _T("离线"), m_StrStatus.GetLength()))
+			{
+				m_ListCtrlOnlineClient.DeleteItem(i - 1);
+			}
+		}
+		//重置序列号
 		for (int i = 0; i < m_ListCtrlOnlineClient.GetItemCount(); i++)
 		{
-			//是否在线
-			CString m_StrUser = m_ListCtrlOnlineClient.GetItemText(i, 1);
-			if (0 == _tcsncmp(m_StrUser.GetBuffer(), ppSt_UserInfo[i]->st_UserInfo.tszUserName, m_StrUser.GetLength()))
-			{
-				bFound = TRUE;
-				break;
-			}
-		}
-		//是否找到
-		if (!bFound)
-		{
-			TCHAR tszTmpBuffer[64];
-			memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
-			int nItemCount = m_ListCtrlOnlineClient.GetItemCount();
-			if (0 == nItemCount)
-			{
-				_stprintf(tszTmpBuffer, _T("%d"), nItemCount);
-			}
-			else
-			{
-				_stprintf(tszTmpBuffer, _T("%d"), nItemCount + 1);
-			}
-			m_ListCtrlOnlineClient.InsertItem(nItemCount, tszTmpBuffer);
-			m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, ppSt_UserInfo[i]->st_UserInfo.tszUserName);
-			m_ListCtrlOnlineClient.SetItemText(nItemCount, 4, ppSt_UserInfo[i]->tszLeftTime);
+			TCHAR tszID[64];
+			memset(tszID, '\0', sizeof(tszID));
 
-			memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
-			m_ListCtrlOnlineClient.SetItemText(nItemCount, 5, lpszKeyType[ppSt_UserInfo[i]->en_AuthRegSerialType]);
-			m_ListCtrlOnlineClient.SetItemText(nItemCount, 7, _T("离线"));
+			_stprintf(tszID, _T("%d"), i);
+			m_ListCtrlOnlineClient.SetItemText(i, 0, tszID);
 		}
 	}
-	BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_UserInfo, nListCount);
 }

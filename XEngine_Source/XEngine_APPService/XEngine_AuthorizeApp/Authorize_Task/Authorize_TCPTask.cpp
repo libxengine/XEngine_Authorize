@@ -205,6 +205,18 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 				if (0 == _tcsncmp(m_StrUser.GetBuffer(), st_AuthProtocol.tszUserName, m_StrUser.GetLength()))
 				{
 					bFound = TRUE;
+					CString m_StrDeviceType;
+					if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC == st_UserTable.enDeviceType)
+					{
+						m_StrDeviceType.Format(_T("TCP"));
+					}
+					else
+					{
+						m_StrDeviceType.Format(_T("WEB"));
+					}
+
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 2, lpszClientAddr);
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 6, m_StrDeviceType.GetBuffer());
 					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 7, _T("在线"));
 					break;
 				}
@@ -215,14 +227,7 @@ BOOL XEngine_Client_TaskHandle(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, in
 			TCHAR tszUserId[64];
 			memset(tszUserId, '\0', sizeof(tszUserId));
 			int nItemCount = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount();
-			if (0 == nItemCount)
-			{
-				_stprintf(tszUserId, _T("%d"), nItemCount);
-			}
-			else
-			{
-				_stprintf(tszUserId, _T("%d"), nItemCount + 1);
-			}
+			_stprintf(tszUserId, _T("%d"), nItemCount);
 			CString m_StrDeviceType;
 			if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC == st_UserTable.enDeviceType)
 			{
