@@ -513,6 +513,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
 		//注册日期
 		nFliedValue++;
 		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+        nFliedValue++;
     }
 	DataBase_SQLite_FreeTable(ppszResult);
 	return TRUE;
