@@ -13,11 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\AuthService_Session">
-      <UniqueIdentifier>{9c7041ab-4416-406f-9f21-d0af231e664f}</UniqueIdentifier>
+    <Filter Include="头文件\Database_SQLite">
+      <UniqueIdentifier>{bb64f825-b769-444e-b078-90c2727b694f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\AuthService_Session">
-      <UniqueIdentifier>{e8bd85ca-3126-434b-91b0-1f6068652f1c}</UniqueIdentifier>
+    <Filter Include="源文件\Database_SQLite">
+      <UniqueIdentifier>{be64df35-6ef0-4c8c-b95a-444977d7d1c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -27,14 +27,14 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Session_Define.h">
+    <ClInclude Include="Database_SQLite\Database_SQLite.h">
+      <Filter>头文件\Database_SQLite</Filter>
+    </ClInclude>
+    <ClInclude Include="Database_Define.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Session_Error.h">
+    <ClInclude Include="Database_Error.h">
       <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="AuthService_Session\AuthService_Session.h">
-      <Filter>头文件\AuthService_Session</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,12 +44,12 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AuthService_Session\AuthService_Session.cpp">
-      <Filter>源文件\AuthService_Session</Filter>
+    <ClCompile Include="Database_SQLite\Database_SQLite.cpp">
+      <Filter>源文件\Database_SQLite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="AuthComponents_Session.def">
+    <None Include="AuthorizeModule_Database.def">
       <Filter>源文件</Filter>
     </None>
   </ItemGroup>

@@ -22,7 +22,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	void Dialog_User_Insert(LPCTSTR lpszClientAddr, LPCTSTR lpszRecvMsg, int nMsgLen);
-	void Dialog_User_Leave(LPCTSTR lpszClientAddr);
 	void Dialog_User_Set(LPCTSTR lpszClientAddr, LPAUTHREG_USERTABLE pSt_UserTable);
 public:
 	CListCtrl m_ListCtrlOnlineClient;
@@ -33,4 +32,6 @@ public:
 	afx_msg void OnBnClickedButton4();
 	CEdit m_EidtSendMsg;
 	afx_msg void OnBnClickedButton5();
+	afx_msg void OnBnClickedCheck1();
+	CButton m_CheckAllUser;
 };

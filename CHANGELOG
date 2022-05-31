@@ -1,3 +1,21 @@
+XEngine_Authorize V2.7.0.1001
+
+添加:界面程序增加了用户在线和离线状态栏
+添加:过期CDKEY类型
+添加:支持获取所有用户列表
+添加:用户权限支持
+修改:会话和数据库模块使用了新的名称
+修改:用户的设置和获取接口现在支持权限了
+删除:无用的代码
+
+added:The online status of the window can be used correctly
+added:type of expired
+added:get all user list for database
+added:user Permissions
+modify:session and database module to new name
+modify:user get and set support Permissions
+delete:unused code
+======================================================================================
 XEngine_Authorize V2.6.1.1001
 
 添加:MFC版本日志文件可以被保存了

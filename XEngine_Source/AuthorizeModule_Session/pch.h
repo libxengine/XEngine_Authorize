@@ -16,24 +16,26 @@
 #endif //PCH_H
 #include <string.h>
 #include <list>
-#include <string>
+#include <vector>
+#include <memory>
+#include <thread>
+#include <shared_mutex>
+#include <unordered_map>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
-#include "../../XAuth_Protocol.h"
-#include "SQLPacket_Define.h"
-#include "SQLPacket_Error.h"
+#include "../XAuth_Protocol.h"
+#include "Session_Define.h"
+#include "Session_Error.h"
 /********************************************************************
-//    Created:     2021/07/14  11:41:40
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket\pch.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_SQLPacket
+//    Created:     2022/05/26  10:53:07
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\pch.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session
 //    File Base:   pch
 //    File Ext:    h
 //    Project:     XEngine(网络通信引擎)
@@ -41,8 +43,8 @@ using namespace std;
 //    Purpose:     公有头文件
 //    History:
 *********************************************************************/
-extern BOOL SQLPacket_IsErrorOccur;
-extern DWORD SQLPacket_dwErrorCode;
+extern BOOL Session_IsErrorOccur;
+extern DWORD Session_dwErrorCode;
 
 #ifdef _UNICODE
 typedef std::wstring tstring;
@@ -52,6 +54,4 @@ typedef std::string tstring;
 
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #endif

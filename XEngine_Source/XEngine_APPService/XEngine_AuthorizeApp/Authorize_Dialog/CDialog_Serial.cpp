@@ -78,9 +78,9 @@ void CDialog_Serial::SerialManage_Flush()
 {
 	int nListCount = 0;
 	AUTHREG_SERIALTABLE** ppSt_SerialTable;
-	if (!AuthService_SQLPacket_SerialQueryAll(&ppSt_SerialTable, &nListCount))
+	if (!Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount))
 	{
-		if (ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERYALL_NONE == SQLPacket_GetLastError())
+		if (ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERYALL_NONE == DBModule_GetLastError())
 		{
 			return;
 		}
@@ -188,7 +188,7 @@ void CDialog_Serial::OnBnClickedButton2()
 	{
 		TCHAR tszSerialCard[MAX_PATH];
 		memset(tszSerialCard, '\0', MAX_PATH);
-		AuthService_SQLPacket_SerialInsert(pptszSerialNumber[i]);
+		Database_SQLite_SerialInsert(pptszSerialNumber[i]);
 	}
 	AfxMessageBox(_T("插入成功"));
 	SerialManage_Flush();
@@ -226,7 +226,7 @@ void CDialog_Serial::OnBnClickedButton4()
 		return;
 	}
 	CString m_StrSerial = m_ListSerial.GetItemText(nItemCount, 1);
-	if (!AuthService_SQLPacket_SerialDelete(m_StrSerial.GetBuffer()))
+	if (!Database_SQLite_SerialDelete(m_StrSerial.GetBuffer()))
 	{
 		AfxMessageBox(_T("删除失败！"));
 		return;

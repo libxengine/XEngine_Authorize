@@ -19,17 +19,17 @@ void ServiceApp_Stop(int signo)
 
 		int nListCount = 0;
 		AUTHREG_USERTABLE** ppSt_ListClient;
-		AuthService_Session_GetClient(&ppSt_ListClient, &nListCount);
+		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
 			AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 			memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
-			if (AuthService_Session_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
+			if (Session_Authorize_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
 			{
-				AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+				Database_SQLite_UserLeave(&st_TimeProtocol);
 			}
-			AuthService_Session_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
+			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
 		}
 
 		HelpComponents_Datas_Destory(xhTCPPacket);
@@ -40,8 +40,8 @@ void ServiceApp_Stop(int signo)
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		HelpComponents_XLog_Destroy(xhLog);
 
-		AuthService_Session_Destroy();
-		AuthService_SQLPacket_Destroy();
+		Session_Authorize_Destroy();
+		Database_SQLite_Destroy();
 		exit(0);
 	}
 }
@@ -118,14 +118,14 @@ int main(int argc, char** argv)
 	signal(SIGABRT, ServiceApp_Stop);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化服务器信号管理成功"));
 
-	if (!AuthService_SQLPacket_Init(st_AuthConfig.st_XSql.tszSQLite))
+	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化数据库服务失败，错误：%lX"), SQLPacket_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化数据库服务失败，错误：%lX"), DBModule_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.tszSQLite);
 
-	if (!AuthService_Session_Init(XEngine_TaskEvent_Client))
+	if (!Session_Authorize_Init(XEngine_TaskEvent_Client))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化会话服务失败，错误：%lX"), Session_GetLastError());
 		goto XENGINE_EXITAPP;
@@ -186,7 +186,7 @@ int main(int argc, char** argv)
 	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ListWSThread, st_AuthConfig.nThreads);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,当前运行版本：2.3.0.1001。。。"));
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,当前运行版本：2.7.0.1001。。。"));
 	while (bIsRun)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -207,8 +207,8 @@ XENGINE_EXITAPP:
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		HelpComponents_XLog_Destroy(xhLog);
 
-		AuthService_Session_Destroy();
-		AuthService_SQLPacket_Destroy();
+		Session_Authorize_Destroy();
+		Database_SQLite_Destroy();
 		exit(0);
 	}
 #ifdef _WINDOWS

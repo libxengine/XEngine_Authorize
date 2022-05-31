@@ -51,24 +51,31 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	TCHAR tszClientUser[64];
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
-	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
+	if (Session_Authorize_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
 		for (int i = 0; i < pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemCount(); i++)
 		{
 			CString m_StrAddr = pClass_This->m_DlgUser.m_ListCtrlOnlineClient.GetItemText(i, 2);
 			if (0 == _tcsnicmp(lpszClientAddr, m_StrAddr.GetBuffer(), _tcslen(lpszClientAddr)))
 			{
-				pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+				if (BST_CHECKED == pClass_This->m_DlgUser.m_CheckAllUser.GetCheck())
+				{
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.SetItemText(i, 7, _T("离线"));
+				}
+				else
+				{
+					pClass_This->m_DlgUser.m_ListCtrlOnlineClient.DeleteItem(i);
+				}
 			}
 		}
 		AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 		memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
-		if (AuthService_Session_GetTimer(tszClientUser, &st_TimeProtocol))
+		if (Session_Authorize_GetTimer(tszClientUser, &st_TimeProtocol))
 		{
-			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
-		AuthService_Session_CloseClient(tszClientUser);
+		Session_Authorize_CloseClient(tszClientUser);
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);

@@ -59,13 +59,13 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 	memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 	memset(tszClientUser, '\0', sizeof(tszClientUser));
 
-	if (AuthService_Session_GetUserForAddr(lpszClientAddr, tszClientUser))
+	if (Session_Authorize_GetUserForAddr(lpszClientAddr, tszClientUser))
 	{
-		if (AuthService_Session_GetTimer(tszClientUser, &st_TimeProtocol))
+		if (Session_Authorize_GetTimer(tszClientUser, &st_TimeProtocol))
 		{
-			AuthService_SQLPacket_UserLeave(&st_TimeProtocol);
+			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
-		AuthService_Session_CloseClient(tszClientUser);
+		Session_Authorize_CloseClient(tszClientUser);
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);

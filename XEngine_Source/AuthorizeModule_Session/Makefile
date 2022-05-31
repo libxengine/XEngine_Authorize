@@ -7,7 +7,7 @@ LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib
 LIB = -lXEngine_BaseLib 
 LIBEX = -static-libgcc -lrt -ldl -lpthread
 LOADSO = -Wl,-rpath=
-LIBINCLUDE = AuthService_Session.o pch.o
+LIBINCLUDE = Session_Authorize.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -O2
@@ -24,17 +24,17 @@ UNICODE =
 endif
 
 all:$(LIBINCLUDE)
-	$(CC) $(DEBUG) $(LIBINCLUDE) -o libAuthComponents_Session.so -shared -fPIC $(LOADBIN) $(LIB) $(LIBEX) $(LOADSO)
+	$(CC) $(DEBUG) $(LIBINCLUDE) -o libAuthorizeModule_Session.so -shared -fPIC $(LOADBIN) $(LIB) $(LIBEX) $(LOADSO)
 
-AuthService_Session.o:./AuthService_Session/AuthService_Session.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./AuthService_Session/AuthService_Session.cpp
+Session_Authorize.o:./Session_Authorize/Session_Authorize.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./Session_Authorize/Session_Authorize.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) pch.cpp
 
 InstallAll:InstallSo 
-InstallSo:./libAuthComponents_Session.so
-	cp ./libAuthComponents_Session.so ../../../XEngine_Release/libAuthComponents_Session.so
+InstallSo:./libAuthorizeModule_Session.so
+	cp ./libAuthorizeModule_Session.so ../../../XEngine_Release/libAuthorizeModule_Session.so
 
 
 CleanAll:CleanObj CleanMk

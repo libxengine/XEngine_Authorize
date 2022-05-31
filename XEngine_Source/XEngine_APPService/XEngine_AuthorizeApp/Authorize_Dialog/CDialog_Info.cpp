@@ -31,6 +31,7 @@ void CDialog_Info::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT18, m_EditCardID);
 	DDX_Control(pDX, IDC_EDIT19, m_EditLeftTime);
 	DDX_Control(pDX, IDC_COMBO1, m_ComboType);
+	DDX_Control(pDX, IDC_COMBO3, m_ComboLeave);
 }
 
 
@@ -55,7 +56,7 @@ BOOL CDialog_Info::OnInitDialog()
 	CString m_StrUser = pWnd->m_ListCtrlOnlineClient.GetItemText(nItemCount, 1);
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-	AuthService_SQLPacket_UserQuery(m_StrUser.GetBuffer(), &st_UserTable);
+	Database_SQLite_UserQuery(m_StrUser.GetBuffer(), &st_UserTable);
 
 	m_EditUser.SetWindowText(m_StrUser);
 	m_EditPass.SetWindowText(st_UserTable.st_UserInfo.tszUserPass);
@@ -76,6 +77,17 @@ BOOL CDialog_Info::OnInitDialog()
 	m_ComboType.InsertString(3, _T("次数"));
 	m_ComboType.InsertString(4, _T("自定义"));
 	m_ComboType.SetCurSel(st_UserTable.en_AuthRegSerialType);
+
+	TCHAR tszLeave[64];
+	memset(tszLeave, '\0', sizeof(tszLeave));
+	m_ComboLeave.InsertString(0, _T("-1"));
+	m_ComboLeave.InsertString(1, _T("0"));
+	m_ComboLeave.InsertString(2, _T("1"));
+	m_ComboLeave.InsertString(3, _T("2"));
+	m_ComboLeave.InsertString(4, _T("3"));
+	m_ComboLeave.InsertString(5, _T("4"));
+	m_ComboLeave.InsertString(6, _T("5"));
+	m_ComboLeave.SetCurSel(st_UserTable.st_UserInfo.nUserLevel + 1);
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // 异常: OCX 属性页应返回 FALSE
 }
@@ -103,9 +115,10 @@ void CDialog_Info::OnBnClickedButton6()
 	st_UserTable.st_UserInfo.nIDNumber = _ttoi64(m_StrNumber.GetBuffer());
 
 	st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboType.GetCurSel();
-	if (AuthService_SQLPacket_UserSet(&st_UserTable))
+	st_UserTable.st_UserInfo.nUserLevel = m_ComboLeave.GetCurSel() - 1;
+	if (Database_SQLite_UserSet(&st_UserTable))
 	{
-		AuthService_Session_SetUser(&st_UserTable);
+		Session_Authorize_SetUser(&st_UserTable);
 		AfxMessageBox(_T("修改成功"));
 	}
 	else

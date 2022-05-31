@@ -1,8 +1,8 @@
 ﻿#pragma once
 /********************************************************************
-//    Created:     2021/07/14  13:24:33
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session\Session_Define.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\XEngine_AuthComponents\AuthComponents_Session
+//    Created:     2022/05/26  10:53:14
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\Session_Define.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session
 //    File Base:   Session_Define
 //    File Ext:    h
 //    Project:     XEngine(网络通信引擎)
@@ -23,7 +23,7 @@ extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
 /*                         网络服务导出函数                             */
 /************************************************************************/
 /********************************************************************
-函数名称：AuthService_Session_Init
+函数名称：Session_Authorize_Init
 函数功能：初始化会话
  参数.一：fpCall_AuthEvent
   In/Out：In/Out
@@ -40,9 +40,9 @@ extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
   意思：是否初始化成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
+extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
 /********************************************************************
-函数名称：AuthService_Session_GetClient
+函数名称：Session_Authorize_GetClient
 函数功能：获取客户端信息
  参数.一：pppSt_ListClient
   In/Out：Out
@@ -64,9 +64,9 @@ extern "C" BOOL AuthService_Session_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-extern "C" BOOL AuthService_Session_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
+extern "C" BOOL Session_Authorize_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
 /********************************************************************
-函数名称：AuthService_Session_GetTimer
+函数名称：Session_Authorize_GetTimer
 函数功能：获取客户端时间信息
  参数.一：lpszUserName
   In/Out：In
@@ -83,9 +83,9 @@ extern "C" BOOL AuthService_Session_GetClient(AUTHREG_USERTABLE * **pppSt_ListCl
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-extern "C" BOOL AuthService_Session_GetTimer(LPCSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime);
+extern "C" BOOL Session_Authorize_GetTimer(LPCSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime);
 /********************************************************************
-函数名称：AuthService_Session_GetAddrForUser
+函数名称：Session_Authorize_GetAddrForUser
 函数功能：通过用户名获取对应地址
  参数.一：lpszClientUser
   In/Out：In
@@ -102,9 +102,9 @@ extern "C" BOOL AuthService_Session_GetTimer(LPCSTR lpszUserName,AUTHREG_PROTOCO
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_Session_GetAddrForUser(LPCSTR lpszClientUser,CHAR *ptszClientAddr);
+extern "C" BOOL Session_Authorize_GetAddrForUser(LPCSTR lpszClientUser,CHAR *ptszClientAddr);
 /********************************************************************
-函数名称：AuthService_Session_GetUserForAddr
+函数名称：Session_Authorize_GetUserForAddr
 函数功能：通过IP地址获取对应用户名
  参数.一：lpszClientAddr
   In/Out：In
@@ -121,9 +121,9 @@ extern "C" BOOL AuthService_Session_GetAddrForUser(LPCSTR lpszClientUser,CHAR *p
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_Session_GetUserForAddr(LPCSTR lpszClientAddr, CHAR *ptszClientUser);
+extern "C" BOOL Session_Authorize_GetUserForAddr(LPCSTR lpszClientAddr, CHAR *ptszClientUser);
 /********************************************************************
-函数名称：AuthService_Session_CloseClient
+函数名称：Session_Authorize_CloseClient
 函数功能：移除一个客户端
  参数.一：lpszClientUser
   In/Out：In
@@ -135,18 +135,18 @@ extern "C" BOOL AuthService_Session_GetUserForAddr(LPCSTR lpszClientAddr, CHAR *
   意思：是否移除成功
 备注：此函数会自动调用AuthRegService_Sql_UserLeave来处理离开时间
 *********************************************************************/
-extern "C" BOOL AuthService_Session_CloseClient(LPCSTR lpszClientUser);
+extern "C" BOOL Session_Authorize_CloseClient(LPCSTR lpszClientUser);
 /********************************************************************
-函数名称：AuthService_Session_Destroy
+函数名称：Session_Authorize_Destroy
 函数功能：销毁网络服务
 返回值
   类型：逻辑型
   意思：是否销毁成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_Session_Destroy();
+extern "C" BOOL Session_Authorize_Destroy();
 /********************************************************************
-函数名称：AuthService_Session_Insert
+函数名称：Session_Authorize_Insert
 函数功能：用户登陆协议分析
  参数.一：lpszClientAddr
   In/Out：In
@@ -163,9 +163,9 @@ extern "C" BOOL AuthService_Session_Destroy();
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-extern "C" BOOL AuthService_Session_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable);
+extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable);
 /********************************************************************
-函数名称：AuthService_Session_SetUser
+函数名称：Session_Authorize_SetUser
 函数功能：设置用户信息
  参数.一：pSt_UserTable
   In/Out：In
@@ -177,4 +177,4 @@ extern "C" BOOL AuthService_Session_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTA
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthService_Session_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);

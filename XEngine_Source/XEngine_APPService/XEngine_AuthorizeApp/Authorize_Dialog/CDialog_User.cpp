@@ -26,6 +26,7 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_ListCtrlOnlineClient);
 	DDX_Control(pDX, IDC_EDIT1, m_EidtSendMsg);
+	DDX_Control(pDX, IDC_CHECK1, m_CheckAllUser);
 }
 
 
@@ -35,6 +36,7 @@ BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_User::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_User::OnBnClickedButton5)
+	ON_BN_CLICKED(IDC_CHECK1, &CDialog_User::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -46,13 +48,14 @@ BOOL CDialog_User::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_ListCtrlOnlineClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 60);
-	m_ListCtrlOnlineClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 100);
+	m_ListCtrlOnlineClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
+	m_ListCtrlOnlineClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
 	m_ListCtrlOnlineClient.InsertColumn(2, _T("地址"), LVCFMT_LEFT, 110);
 	m_ListCtrlOnlineClient.InsertColumn(3, _T("在线时间(分钟)"), LVCFMT_LEFT, 90);
 	m_ListCtrlOnlineClient.InsertColumn(4, _T("剩余时间/过期时间"), LVCFMT_LEFT, 100);
 	m_ListCtrlOnlineClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlOnlineClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 60);
+	m_ListCtrlOnlineClient.InsertColumn(7, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlOnlineClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	hUserWnd = this->m_hWnd;
@@ -78,20 +81,6 @@ void CDialog_User::Dialog_User_Insert(LPCTSTR lpszClientAddr, LPCTSTR lpszRecvMs
 	m_ListCtrlOnlineClient.SetItemText(nItemCount, 2, lpszClientAddr);
 	m_ListCtrlOnlineClient.SetItemText(nItemCount, 3, st_UserTable.tszLeftTime);
 	m_ListCtrlOnlineClient.SetItemText(nItemCount, 4, _T("0"));
-}
-
-void CDialog_User::Dialog_User_Leave(LPCTSTR lpszClientAddr)
-{
-	CString m_StrAddr;
-	for (int i = 0; i < m_ListCtrlOnlineClient.GetItemCount(); i++)
-	{
-		m_StrAddr = m_ListCtrlOnlineClient.GetItemText(i, 2);
-		if (0 == _tcsncmp(m_StrAddr.GetBuffer(), lpszClientAddr, m_StrAddr.GetLength()))
-		{
-			m_ListCtrlOnlineClient.DeleteItem(i);
-			break;
-		}
-	}
 }
 
 void CDialog_User::Dialog_User_Set(LPCTSTR lpszClientAddr, LPAUTHREG_USERTABLE pSt_UserTable)
@@ -166,7 +155,7 @@ void CDialog_User::OnBnClickedButton3()
 	//先关闭
 	XEngine_CloseClient(m_StrIPAddr.GetBuffer(), this);
 	//在删除
-	AuthService_SQLPacket_UserDelete(m_StrUser.GetBuffer());
+	Database_SQLite_UserDelete(m_StrUser.GetBuffer());
 	AfxMessageBox(_T("删除客户成功！"));
 }
 
@@ -255,4 +244,68 @@ void CDialog_User::OnBnClickedButton5()
 	}
 	m_EidtSendMsg.SetWindowText(_T(""));
 	AfxMessageBox(_T("发送消息成功！"));
+}
+
+
+void CDialog_User::OnBnClickedCheck1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (BST_CHECKED == m_CheckAllUser.GetCheck())
+	{
+		int nListCount = 0;
+		AUTHREG_USERTABLE** ppSt_UserInfo;
+		Database_SQLite_UserList(&ppSt_UserInfo, &nListCount);
+
+		for (int i = 0; i < nListCount; i++)
+		{
+			BOOL bFound = FALSE;
+			for (int j = 0; j < m_ListCtrlOnlineClient.GetItemCount(); j++)
+			{
+				//是否在线
+				CString m_StrUser = m_ListCtrlOnlineClient.GetItemText(j, 1);
+				if (0 == _tcsncmp(m_StrUser.GetBuffer(), ppSt_UserInfo[i]->st_UserInfo.tszUserName, m_StrUser.GetLength()))
+				{
+					bFound = TRUE;
+					break;
+				}
+			}
+			//是否找到
+			if (!bFound)
+			{
+				TCHAR tszTmpBuffer[64];
+				memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
+				int nItemCount = m_ListCtrlOnlineClient.GetItemCount();
+				_stprintf(tszTmpBuffer, _T("%d"), nItemCount);
+				m_ListCtrlOnlineClient.InsertItem(nItemCount, tszTmpBuffer);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 1, ppSt_UserInfo[i]->st_UserInfo.tszUserName);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 4, ppSt_UserInfo[i]->tszLeftTime);
+
+				memset(tszTmpBuffer, '\0', sizeof(tszTmpBuffer));
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 5, lpszKeyType[ppSt_UserInfo[i]->en_AuthRegSerialType]);
+				m_ListCtrlOnlineClient.SetItemText(nItemCount, 7, _T("离线"));
+			}
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_UserInfo, nListCount);
+	}
+	else
+	{
+		int nListCount = m_ListCtrlOnlineClient.GetItemCount();
+		for (int i = nListCount; i != 0; i--)
+		{
+			CString m_StrStatus = m_ListCtrlOnlineClient.GetItemText(i - 1, 7);
+			if (0 == _tcsncmp(m_StrStatus.GetBuffer(), _T("离线"), m_StrStatus.GetLength()))
+			{
+				m_ListCtrlOnlineClient.DeleteItem(i - 1);
+			}
+		}
+		//重置序列号
+		for (int i = 0; i < m_ListCtrlOnlineClient.GetItemCount(); i++)
+		{
+			TCHAR tszID[64];
+			memset(tszID, '\0', sizeof(tszID));
+
+			_stprintf(tszID, _T("%d"), i);
+			m_ListCtrlOnlineClient.SetItemText(i, 0, tszID);
+		}
+	}
 }
