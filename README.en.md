@@ -23,6 +23,7 @@ feature list:
 9. Support Retrieve password through email
 10. Support Verification for Local CDKey
 11. Support app program and html web Authorize
+12. Support Accesss Control
 
 ## install
 
@@ -43,7 +44,6 @@ GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
 use vs open and complie  
-Please use git tool to download the code, otherwise it may not compile
 
 #### Linux
 Linux use Makefile complie  

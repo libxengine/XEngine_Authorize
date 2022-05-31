@@ -23,6 +23,7 @@ c c++network Authorize service
 9. 支持通过邮件找回密码
 10. 支持本地CDKEY注册验证
 11. 支持APP程序和HTML网页授权验证
+12. 支持权限控制
 
 ## 安装教程
 
@@ -43,7 +44,6 @@ GITHUB:https://github.com/libxengine/xengine
 
 #### Windows
 使用VS打开并且编译  
-请使用git工具下载代码,zip打包下载的代码格式有误,可能会无法编译  
 
 #### Linux
 Linux使用Makefile编译  
@@ -82,11 +82,11 @@ make FLAGS=CleanAll 清理编译
 
 如果你有问题,可以在issues中提交
 
-## 开发计划
-账号封禁  
+## 开发计划 
 生成会话TOKEN分布式鉴权  
-用户权限级别优化!  
 mysql支持  
 支持管理接口，用于网页版本  
 支持第三方用户密码验证  
 支持用户和硬件绑定同时验证  
+支持自定义序列号插入导入  
+统计用户所有在线时间  
