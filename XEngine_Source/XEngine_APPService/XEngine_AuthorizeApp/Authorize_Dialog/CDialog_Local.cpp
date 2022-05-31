@@ -79,6 +79,7 @@ BOOL CDialog_Local::OnInitDialog()
 	m_ComboRegType.InsertString(2, _T("试用"));
 	m_ComboRegType.InsertString(3, _T("正式版"));
 	m_ComboRegType.InsertString(4, _T("无限制版"));
+	m_ComboRegType.InsertString(5, _T("过期版本"));
 	m_ComboRegType.SetCurSel(0);
 	m_BtnKeySave.EnableWindow(FALSE);
 	return TRUE;  // return TRUE unless you set the focus to a control
