@@ -34,7 +34,7 @@ pch.o:pch.cpp
 
 InstallAll:InstallSo 
 InstallSo:./libAuthorizeModule_Session.so
-	cp ./libAuthorizeModule_Session.so ../../../XEngine_Release/libAuthorizeModule_Session.so
+	cp ./libAuthorizeModule_Session.so ../../XEngine_Release/libAuthorizeModule_Session.so
 
 
 CleanAll:CleanObj CleanMk
