@@ -1,3 +1,11 @@
+XEngine_Authorize V2.7.1.1001
+
+修正:读取CDKEY失败的问题
+删除:无用的代码
+
+fixed:read cdkey is incorrent
+delete:unused code
+======================================================================================
 XEngine_Authorize V2.7.0.1001
 
 添加:界面程序增加了用户在线和离线状态栏

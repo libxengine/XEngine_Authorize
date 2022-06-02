@@ -64,6 +64,7 @@ port :tcp port 5300,websocket port 5301,Transmission verification password: no e
 ![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
 
 ## Participate in contribution
 
