@@ -91,9 +91,9 @@ void CDialog_Local::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CString m_StrPass;
-	UCHAR tszEnBuffer[2048];
-	TCHAR tszDeBuffer[2048];
 	XENGINE_AUTHORIZE_LOCAL st_AuthLocal;
+
+	memset(&st_AuthLocal, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
 	m_EditPass.GetWindowText(m_StrPass);
 	m_BtnKeySave.EnableWindow(FALSE);
@@ -106,12 +106,14 @@ void CDialog_Local::OnBnClickedButton2()
 	CString m_StrFile = m_FileDlg.GetPathName();
 	m_EditKeyFile.SetWindowText(m_StrFile);
 
-	memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
-	memset(tszEnBuffer, '\0', sizeof(tszEnBuffer));
-	memset(&st_AuthLocal, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
-
 	if (!m_StrPass.IsEmpty())
 	{
+		UCHAR tszEnBuffer[2048];
+		TCHAR tszDeBuffer[2048];
+
+		memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
+		memset(tszEnBuffer, '\0', sizeof(tszEnBuffer));
+
 		FILE* pSt_File = fopen(m_StrFile.GetBuffer(), "rb");
 		if (NULL == pSt_File)
 		{

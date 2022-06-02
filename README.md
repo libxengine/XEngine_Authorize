@@ -64,6 +64,7 @@ make FLAGS=CleanAll 清理编译
 ![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
 
 ## 参与贡献
 
