@@ -1,6 +1,7 @@
 [中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
 本仓库有开发和主分支,如果要使用,请使用master分支下的代码  
+只要仓库不是在暂停状态,那么就会有人一直维护和开发,请放心使用  
 
 ## 介绍
 c c++网络验证服务器 网络授权服务器  
@@ -85,6 +86,7 @@ make FLAGS=CleanAll 清理编译
 
 ## 开发计划 
 生成会话TOKEN分布式鉴权  
+支持OAuth验证  
 mysql支持  
 支持管理接口，用于网页版本  
 支持第三方用户密码验证  

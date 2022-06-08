@@ -1,6 +1,7 @@
 [中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
 This repository has a development and master branch. If you want to use it, please use the master branch  
+As long as the repository is not in a suspended state, someone will maintain and develop it all the time, please use it with confidence  
 
 ## Introduction
 c c++网络验证服务器 网络授权服务器  
