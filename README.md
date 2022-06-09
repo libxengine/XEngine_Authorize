@@ -85,6 +85,7 @@ make FLAGS=CleanAll 清理编译
 如果你有问题,可以在issues中提交
 
 ## 开发计划 
+mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
 生成会话TOKEN分布式鉴权  
 支持OAuth验证  
 mysql支持  
