@@ -42,6 +42,10 @@ c c++network Authorize service
 安装XEngine可以参考其Readme文档  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
+#### 快速部署
+git clone https://gitee.com/xyry/libxengine.git 或者 git clone https://github.com/libxengine/xengine.git  
+window执行XEngine_WINEnv.bat 脚本.  
+Linux或者mac执行:sudo ./XEngine_LINEnv.sh -i 3 脚本  
 
 #### Windows
 使用VS打开并且编译  
