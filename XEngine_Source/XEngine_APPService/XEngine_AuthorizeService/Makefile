@@ -1,20 +1,34 @@
-CC = g++ -Wall
+CC = g++ -Wall -std=c++17
+SHAREFLAG = -shared
+SHAREDLL = so
 RELEASE = 0
 UNICODE = 0  
 LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_HelpComponents -L /usr/local/lib/XEngine_Release/XEngine_RfcComponents -L /usr/local/lib/XEngine_Release/XEngine_SystemSdk   \
           -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../XEngine_ThirdPart/jsoncpp
 LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_EmailClient -lXEngine_ProcFile -lXEngine_SystemApi  \
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -ljsoncpp
-LIBEX = -static-libgcc -ldl -lrt -lpthread
+LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
 LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o XEngine_AuthorizeService.o
+
+ifeq ($(OS),Windows_NT)
+else
+	ifeq ($(shell uname),Darwin)
+		SHAREDLL = dylib
+		SHAREFLAG = -dynamiclib
+		LOADSO = 
+	else
+		SHAREDLL = so
+		SHAREFLAG = -shared
+	endif
+endif
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -O2 
 DEBUG = 
 else
-FLAGS = -c -lc_p
-DEBUG = -g -pg 
+FLAGS = -c
+DEBUG = -g
 endif
 
 ifeq ($(UNICODE),1)
