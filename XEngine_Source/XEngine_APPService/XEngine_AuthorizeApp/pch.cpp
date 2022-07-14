@@ -4,8 +4,8 @@
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
 XLOG xhLog = NULL;
-XNETHANDLE xhTCPSocket = 0;
-XNETHANDLE xhWSSocket = 0;
+XHANDLE xhTCPSocket = 0;
+XHANDLE xhWSSocket = 0;
 XHANDLE xhTCPPacket = 0;
 XHANDLE xhWSPacket = 0;
 XNETHANDLE xhTCPPool = 0;
