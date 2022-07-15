@@ -1,3 +1,11 @@
+XEngine_Authorize V2.7.2.1001
+
+修改:makefile现在支持macos了
+更新:支持xengine v7.38版本了
+
+modify:makefile support macos now
+update:match xengine v7.38
+======================================================================================
 XEngine_Authorize V2.7.1.1001
 
 修正:读取CDKEY失败的问题

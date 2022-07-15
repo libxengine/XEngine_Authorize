@@ -49,8 +49,8 @@ using namespace std;
 
 extern BOOL bIsRun;
 extern XLOG xhLog;
-extern XNETHANDLE xhTCPSocket;
-extern XNETHANDLE xhWSSocket;
+extern XHANDLE xhTCPSocket;
+extern XHANDLE xhWSSocket;
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XNETHANDLE xhTCPPool;

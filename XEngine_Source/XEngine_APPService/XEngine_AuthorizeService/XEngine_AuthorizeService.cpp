@@ -2,8 +2,8 @@
 
 BOOL bIsRun = FALSE;
 XLOG xhLog = NULL;
-XNETHANDLE xhTCPSocket = 0;
-XNETHANDLE xhWSSocket = 0;
+XHANDLE xhTCPSocket = 0;
+XHANDLE xhWSSocket = 0;
 XHANDLE xhTCPPacket = 0;
 XHANDLE xhWSPacket = NULL;
 XNETHANDLE xhTCPPool = 0;
@@ -147,7 +147,8 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket协议管理器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 
-	if (!NetCore_TCPXCore_StartEx(&xhTCPSocket, st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads))
+	xhTCPSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads);
+	if (NULL == xhTCPSocket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 		goto XENGINE_EXITAPP;
@@ -155,7 +156,9 @@ int main(int argc, char** argv)
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,句柄:%llu,端口:%d,网络池个数:%d"), xhTCPSocket, st_AuthConfig.nTCPPort, st_AuthConfig.nThreads);
 	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络事件成功"));
-	if (!NetCore_TCPXCore_StartEx(&xhWSSocket, st_AuthConfig.nWSPort, 10000, st_AuthConfig.nThreads))
+
+	xhWSSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nWSPort, 10000, st_AuthConfig.nThreads);
+	if (NULL == xhWSSocket)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 		goto XENGINE_EXITAPP;

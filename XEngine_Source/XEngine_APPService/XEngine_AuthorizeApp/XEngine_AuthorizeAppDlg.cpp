@@ -206,7 +206,9 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
 		return;
 	}
-	if (!NetCore_TCPXCore_StartEx(&xhTCPSocket, _ttoi(m_StrTCPPort.GetBuffer()), 10000, nThreadCount))
+
+	xhTCPSocket = NetCore_TCPXCore_StartEx(_ttoi(m_StrTCPPort.GetBuffer()), 10000, nThreadCount);
+	if (NULL == xhTCPSocket)
 	{
 		CString m_StrEror;
 		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
@@ -214,7 +216,9 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		return;
 	}
 	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose, this, this, this);
-	if (!NetCore_TCPXCore_StartEx(&xhWSSocket, _ttoi(m_StrWSPort.GetBuffer()), 10000, nThreadCount))
+
+	xhWSSocket = NetCore_TCPXCore_StartEx(_ttoi(m_StrWSPort.GetBuffer()), 10000, nThreadCount);
+	if (NULL == xhWSSocket)
 	{
 		CString m_StrEror;
 		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());

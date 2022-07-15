@@ -1,6 +1,7 @@
 [中文](README.md) ||  [English](README.en.md)  
 # XEngine_Authorize
 This repository has a development and master branch. If you want to use it, please use the master branch  
+As long as the repository is not in a suspended state, someone will maintain and develop it all the time, please use it with confidence  
 
 ## Introduction
 c c++网络验证服务器 网络授权服务器  
@@ -27,29 +28,30 @@ feature list:
 
 ## install
 
-#### Requirements
-support system above windows 7sp1 and linux(ubuntu20.04,centos8)  
-you must install XEngine,need V7.28 or above  
-
-#### Windows
-Just Run it.,use XEngine_AuthorizeApp
-
-#### Linux
-Run it on the terminal,use XEngine_AuthorizeService
-
-## complie
-install XEngine can be refer to xengine Readme docment  
+#### XEngine Evn
+you must install XEngine,need V7.38 or above,install XEngine can be refer to xengine Readme docment  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
 
+##### fast to deployment 
+git clone https://gitee.com/xyry/libxengine.git or git clone https://github.com/libxengine/xengine.git  
+window Exection XEngine_WINEnv.bat   
+Linux Exection:sudo ./XEngine_LINEnv.sh -i 3  
+Macos Exection:./XEngine_LINEnv.sh -i 3
+
 #### Windows
-use vs open and complie  
+use vs open and compile,suport windows 7sp1 and above  
+Just Run it,use XEngine_AuthorizeApp
 
 #### Linux
-Linux use Makefile complie  
-UBUNTU20.04 x64 or CENTOS8 x64  
+use makefile compile,UBUNTU20.04 x64 or CENTOS8 x64  
+Run it on the terminal,use XEngine_AuthorizeService
 
-##### Screenshot of the program
+#### Macos
+use makefile compile,mac 12 and above  
+Run it on the terminal,use XEngine_AuthorizeService
+
+##### compile command
 execute command in XEngine_Source path   
 make complie  
 make FLAGS=InstallAll Install File  
