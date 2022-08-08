@@ -77,6 +77,8 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	pSt_AuthConfig->st_XLog.nMaxCount = GetPrivateProfileInt(_T("XLog"), _T("nMaxCount"), 0, lpszFile);
 	pSt_AuthConfig->st_XLog.nMaxSize = GetPrivateProfileInt(_T("XLog"), _T("nMaxSize"), 0, lpszFile);
 	GetPrivateProfileString(_T("XLog"), _T("tszLogFile"), NULL, pSt_AuthConfig->st_XLog.tszLogFile, MAX_PATH, lpszFile);
+
+	GetPrivateProfileString(_T("XVer"), _T("Version"), NULL, pSt_AuthConfig->st_XVer.tszVersion, MAX_PATH, lpszFile);
 	return TRUE;
 }
 /********************************************************************

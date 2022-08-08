@@ -189,7 +189,7 @@ int main(int argc, char** argv)
 	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ListWSThread, st_AuthConfig.nThreads);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,当前运行版本：2.7.0.1001。。。"));
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,XEngien版本:%s,当前运行版本：%s。。。"), BaseLib_OperatorVer_XGetStr(), st_AuthConfig.st_XVer.tszVersion);
 	while (TRUE)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));

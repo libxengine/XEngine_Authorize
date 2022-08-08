@@ -44,7 +44,7 @@ typedef struct
 	}st_EMail;
 	struct
 	{
-		TCHAR tszSQLite[MAX_PATH];
+		TCHAR tszSQLite[MAX_PATH];                          
 	}st_XSql;
 	struct
 	{
@@ -53,6 +53,10 @@ typedef struct
 		int nMaxCount;
 		int nLogLeave;
 	}st_XLog;
+	struct  
+	{
+		TCHAR tszVersion[MAX_PATH];
+	}st_XVer;
 }AUTHORIZE_CONFIGURE;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
