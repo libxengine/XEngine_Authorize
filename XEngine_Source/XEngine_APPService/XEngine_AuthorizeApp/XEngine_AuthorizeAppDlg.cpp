@@ -228,8 +228,8 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动WEBSOCKET验证网络服务成功！"));
 
 	bThread = TRUE;
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadTCPParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
-	for (int i = 0; i < nThreadCount; i++)
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
@@ -238,10 +238,10 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		ppSt_ThreadTCPParament[i]->lParam = pSt_AuthThread;
 		ppSt_ThreadTCPParament[i]->fpCall_ThreadsTask = XEngine_AuthService_ThreadClient;
 	}
-	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ThreadTCPParament, nThreadCount);
+	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
 
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadWSParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
-	for (int i = 0; i < nThreadCount; i++)
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
@@ -250,7 +250,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		ppSt_ThreadWSParament[i]->lParam = pSt_AuthThread;
 		ppSt_ThreadWSParament[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
 	}
-	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ThreadWSParament, nThreadCount);
+	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ThreadWSParament, st_AuthConfig.nThreads);
 	m_DlgSerial.SerialManage_Flush();
 	m_BtnStartService.EnableWindow(FALSE);
 	m_BtnStopService.EnableWindow(TRUE);
