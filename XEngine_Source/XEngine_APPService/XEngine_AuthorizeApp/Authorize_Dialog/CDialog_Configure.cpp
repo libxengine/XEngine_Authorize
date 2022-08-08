@@ -36,13 +36,9 @@ void CDialog_Configure::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO2, m_RadioKeyDisable);
 	DDX_Control(pDX, IDC_EDIT4, m_EditTryTime);
 	DDX_Control(pDX, IDC_EDIT6, m_EditAuthTime);
-	DDX_Control(pDX, IDC_EDIT7, m_EditSmtpAddr);
-	DDX_Control(pDX, IDC_EDIT8, m_EditFromAddr);
-	DDX_Control(pDX, IDC_EDIT9, m_EditSmtpUser);
-	DDX_Control(pDX, IDC_EDIT10, m_EditSmtpPass);
 	DDX_Control(pDX, IDC_EDIT15, m_EditWSPort);
 	DDX_Control(pDX, IDC_CHECK2, m_EditTimeNotift);
-	DDX_Control(pDX, IDC_CHECK3, m_CheckEnableEmail);
+	DDX_Control(pDX, IDC_CHECK3, m_CheckVerification);
 }
 
 
@@ -125,15 +121,6 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 		m_RadioKeyPass.SetCheck(FALSE);
 	}
 
-	if (st_AuthConfig.st_EMail.bSmtpEnable)
-	{
-		m_CheckEnableEmail.SetCheck(1);
-	}
-	else
-	{
-		m_CheckEnableEmail.SetCheck(0);
-	}
-
 	m_StrConfigCrypt.Format(_T("%d"), st_AuthConfig.st_Crypto.nPassword);
 	m_EditPass.SetWindowText(m_StrConfigCrypt.GetBuffer());
 
@@ -152,11 +139,6 @@ void CDialog_Configure::AuthorizeService_ReadConfigure()
 	m_ComboListAuth.InsertString(2, _T("天数"));
 	m_ComboListAuth.InsertString(3, _T("次数"));
 	m_ComboListAuth.SetCurSel(st_AuthConfig.st_Verification.nVerMode);
-
-	m_EditSmtpAddr.SetWindowText(st_AuthConfig.st_EMail.tszSmtpAddr);
-	m_EditFromAddr.SetWindowText(st_AuthConfig.st_EMail.tszSmtpFrom);
-	m_EditSmtpUser.SetWindowText(st_AuthConfig.st_EMail.tszSmtpUser);
-	m_EditSmtpPass.SetWindowText(st_AuthConfig.st_EMail.tszSmtpPass);
 }
 void CDialog_Configure::AuthorizeService_WriteConfigure()
 {
@@ -173,11 +155,6 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 
 	CString m_StrConfigCrypt;              //是否启用加密传输       
 
-	CString m_StrConfigSmtpAddr;           //SMTP服务器
-	CString m_StrConfigSmtpFrom;           //SMTP回复地址
-	CString m_StrConfigSmtpUser;           //用户名
-	CString m_StrConfigSmtpPass;           //密码
-
 	m_EditServicePort.GetWindowText(m_StrConfigTCPPort);
 	m_EditWSPort.GetWindowText(m_StrConfigWSPort);
 	m_EditThreadPool.GetWindowText(m_StrConfigThread);
@@ -189,11 +166,6 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	m_StrConfigAuthMode.Format(_T("%d"), m_ComboListAuth.GetCurSel());
 	
 	m_EditPass.GetWindowText(m_StrConfigCrypt);
-
-	m_EditSmtpAddr.GetWindowText(m_StrConfigSmtpAddr);
-	m_EditFromAddr.GetWindowText(m_StrConfigSmtpFrom);
-	m_EditSmtpUser.GetWindowText(m_StrConfigSmtpUser);
-	m_EditSmtpPass.GetWindowText(m_StrConfigSmtpPass);
 
 	WritePrivateProfileString(_T("ServiceConfig"), _T("TCPPort"), m_StrConfigTCPPort.GetBuffer(), lpszConfigFile);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("WSPort"), m_StrConfigWSPort.GetBuffer(), lpszConfigFile);
@@ -232,7 +204,7 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 		WritePrivateProfileString(_T("Crypto"), _T("Enable"), _T("0"), lpszConfigFile);
 	}
 
-	if (BST_CHECKED == m_CheckEnableEmail.GetCheck())
+	if (BST_CHECKED == m_CheckVerification.GetCheck())
 	{
 		WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), _T("1"), lpszConfigFile);
 	}
@@ -240,10 +212,6 @@ void CDialog_Configure::AuthorizeService_WriteConfigure()
 	{
 		WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), _T("0"), lpszConfigFile);
 	}
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), m_StrConfigSmtpAddr.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), m_StrConfigSmtpFrom.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), m_StrConfigSmtpUser.GetBuffer(), lpszConfigFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpPass"), m_StrConfigSmtpPass.GetBuffer(), lpszConfigFile);
 
 	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
 	Configure_IniFile_Read(lpszConfigFile, &st_AuthConfig);
@@ -311,18 +279,10 @@ void CDialog_Configure::OnBnClickedRadio1()
 void CDialog_Configure::OnBnClickedCheck3()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (BST_CHECKED == m_CheckEnableEmail.GetCheck())
+	if (BST_CHECKED == m_CheckVerification.GetCheck())
 	{
-		m_EditSmtpAddr.EnableWindow(TRUE);
-		m_EditSmtpPass.EnableWindow(TRUE);
-		m_EditSmtpUser.EnableWindow(TRUE);
-		m_EditFromAddr.EnableWindow(TRUE);
 	}
 	else
 	{
-		m_EditSmtpAddr.EnableWindow(FALSE);
-		m_EditSmtpPass.EnableWindow(FALSE);
-		m_EditSmtpUser.EnableWindow(FALSE);
-		m_EditFromAddr.EnableWindow(FALSE);
 	}
 }

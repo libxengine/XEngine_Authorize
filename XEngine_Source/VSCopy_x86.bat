@@ -11,7 +11,6 @@ copy /y "%XEngine_Lib32%\XEngine_HelpComponents\HelpComponents_Authorize.dll" ".
 
 copy /y "%XEngine_Lib32%\XEngine_SystemSdk\XEngine_SystemApi.dll" "./"
 copy /y "%XEngine_Lib32%\XEngine_RfcComponents\RfcComponents_WSProtocol.dll" "./"
-copy /y "%XEngine_Lib32%\XEngine_RfcComponents\RfcComponents_EmailClient.dll" "./"
 
 copy /y "%XEngine_Lib32%\XEngine_HelpComponents\bson-1.0.dll" "./"
 copy /y "%XEngine_Lib32%\XEngine_HelpComponents\mongoc-1.0.dll" "./"

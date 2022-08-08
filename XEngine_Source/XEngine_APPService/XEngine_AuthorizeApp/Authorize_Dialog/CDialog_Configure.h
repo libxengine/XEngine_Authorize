@@ -37,10 +37,6 @@ public:
 	CButton m_RadioKeyDisable;
 	CEdit m_EditTryTime;
 	CEdit m_EditAuthTime;
-	CEdit m_EditSmtpAddr;
-	CEdit m_EditFromAddr;
-	CEdit m_EditSmtpUser;
-	CEdit m_EditSmtpPass;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
@@ -48,6 +44,6 @@ public:
 	afx_msg void OnBnClickedRadio1();
 	CEdit m_EditWSPort;
 	CButton m_EditTimeNotift;
-	CButton m_CheckEnableEmail;
+	CButton m_CheckVerification;
 	afx_msg void OnBnClickedCheck3();
 };

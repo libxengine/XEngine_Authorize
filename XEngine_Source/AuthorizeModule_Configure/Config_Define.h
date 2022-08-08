@@ -34,14 +34,6 @@ typedef struct
 		BOOL bEnable;                                       //是否启用加密传输 
 		int nPassword;                                      //密码
 	}st_Crypto;
-	struct  
-	{
-		BOOL bSmtpEnable;                                   //是否启用SMTP
-		TCHAR tszSmtpAddr[MAX_PATH];                        //SMTP服务器
-		TCHAR tszSmtpFrom[MAX_PATH];                        //回复地址
-		TCHAR tszSmtpUser[MAX_PATH];                        //用户名
-		TCHAR tszSmtpPass[MAX_PATH];                        //密码
-	}st_EMail;
 	struct
 	{
 		TCHAR tszSQLite[MAX_PATH];                          

@@ -36,8 +36,6 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/XLog_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
-#include <XEngine_Include/XEngine_RfcComponents/EmailClient_Define.h>
-#include <XEngine_Include/XEngine_RfcComponents/EmailClient_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/ProcFile_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
@@ -118,5 +116,4 @@ extern LPCSTR lpszKeyType[5];
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
-#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_EmailClient.lib")
 #pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi.lib")
