@@ -33,6 +33,9 @@
     <ClCompile Include="Authorize_WSTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Authorize_HttpTask.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -51,6 +54,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Authorize_WSTask.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Authorize_HttpTask.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

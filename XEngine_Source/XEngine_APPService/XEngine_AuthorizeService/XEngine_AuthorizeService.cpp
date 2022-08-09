@@ -2,12 +2,15 @@
 
 BOOL bIsRun = FALSE;
 XLOG xhLog = NULL;
-XHANDLE xhTCPSocket = 0;
-XHANDLE xhWSSocket = 0;
-XHANDLE xhTCPPacket = 0;
+XHANDLE xhTCPSocket = NULL;
+XHANDLE xhWSSocket = NULL;
+XHANDLE xhHttpSocket = NULL;
+XHANDLE xhTCPPacket = NULL;
 XHANDLE xhWSPacket = NULL;
+XHANDLE xhHttpPacket = NULL;
 XNETHANDLE xhTCPPool = 0;
 XNETHANDLE xhWSPool = 0;
+XNETHANDLE xhHttpPool = 0;
 AUTHORIZE_CONFIGURE st_AuthConfig;
 
 void ServiceApp_Stop(int signo)
@@ -34,12 +37,17 @@ void ServiceApp_Stop(int signo)
 
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
+		RfcComponents_HttpServer_DestroyEx(xhHttpPacket);
+
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
+		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
-		HelpComponents_XLog_Destroy(xhLog);
+		ManagePool_Thread_NQDestroy(xhHttpPool);
 
+		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Database_SQLite_Destroy();
 		exit(0);
@@ -86,6 +94,9 @@ int main(int argc, char** argv)
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
+	THREADPOOL_PARAMENT** ppSt_ListHttpThread;
+	LPCTSTR lpszHTTPMime = _T("./XEngine_Config/HttpMime.types");
+	LPCTSTR lpszHTTPCode = _T("./XEngine_Config/HttpCode.types");
 
 	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
 	memset(&st_AuthConfig, '\0', sizeof(AUTHORIZE_CONFIGURE));
@@ -105,8 +116,8 @@ int main(int argc, char** argv)
 		goto XENGINE_EXITAPP;
 	}
 	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
-
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化日志系统成功,日志文件:%s"), st_AuthConfig.st_XLog.tszLogFile);
+
 	if (st_AuthConfig.bDeamon)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，使用守护进程启动服务..."));
@@ -135,37 +146,54 @@ int main(int argc, char** argv)
 	xhTCPPacket = HelpComponents_Datas_Init(10000, st_AuthConfig.nThreads);
 	if (NULL == xhTCPPacket)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化组包器失败，错误：%lX"), Packets_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化TCP组包器失败，错误：%lX"), Packets_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化TCP组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, st_AuthConfig.nThreads);
 	if (NULL == xhWSPacket)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化WebSocket协议管理器失败，错误：%lX"), WSFrame_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化WebSocket组包器失败，错误：%lX"), WSFrame_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket协议管理器成功,任务池个数:%d"), st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WebSocket组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
+	xhHttpPacket = RfcComponents_HttpServer_InitEx(lpszHTTPCode, lpszHTTPMime, st_AuthConfig.nThreads);
+	if (NULL == xhHttpPacket)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化HTTP组包器失败，错误：%lX"), HttpServer_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP组包器成功,任务池个数:%d"), st_AuthConfig.nThreads);
 
 	xhTCPSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads);
 	if (NULL == xhTCPSocket)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动TCP验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nTCPPort, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化TCP验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nTCPPort, st_AuthConfig.nThreads);
 	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络事件成功"));
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化TCP验证网络事件成功"));
 
 	xhWSSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nWSPort, 10000, st_AuthConfig.nThreads);
 	if (NULL == xhWSSocket)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动验证网络服务失败，错误：%lX"), NetCore_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动WEBSOCKET验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nWSPort, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WEBSOCKET验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nWSPort, st_AuthConfig.nThreads);
 	NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化验证网络事件成功"));
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WEBSOCKET验证网络事件成功"));
+
+	xhHttpSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nHttpPort, 10000, st_AuthConfig.nThreads);
+	if (NULL == xhHttpSocket)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动HTTP管理网络服务失败，错误：%lX"), NetCore_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP管理网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nHttpPort, st_AuthConfig.nThreads);
+	NetCore_TCPXCore_RegisterCallBackEx(xhHttpSocket, XEngine_Client_HttpAccept, XEngine_Client_HttpRecv, XEngine_Client_HttpClose);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP管理网络事件成功"));
 
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
 	for (int i = 0; i < st_AuthConfig.nThreads; i++)
@@ -189,6 +217,17 @@ int main(int argc, char** argv)
 	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ListWSThread, st_AuthConfig.nThreads);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
 
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListHttpThread, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
+	{
+		int* pInt_Index = new int;
+		*pInt_Index = i;
+		ppSt_ListHttpThread[i]->lParam = pInt_Index;
+		ppSt_ListHttpThread[i]->fpCall_ThreadsTask = XEngine_AuthService_HttpThread;
+	}
+	ManagePool_Thread_NQCreate(&xhHttpPool, &ppSt_ListHttpThread, st_AuthConfig.nThreads);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动HTTP任务线程池成功,线程个数:%d"), st_AuthConfig.nThreads);
+
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,XEngien版本:%s,当前运行版本：%s。。。"), BaseLib_OperatorVer_XGetStr(), st_AuthConfig.st_XVer.tszVersion);
 	while (TRUE)
 	{
@@ -204,12 +243,17 @@ XENGINE_EXITAPP:
 
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
+		RfcComponents_HttpServer_DestroyEx(xhHttpPacket);
+
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
+		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
-		HelpComponents_XLog_Destroy(xhLog);
+		ManagePool_Thread_NQDestroy(xhHttpPool);
 
+		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Database_SQLite_Destroy();
 		exit(0);

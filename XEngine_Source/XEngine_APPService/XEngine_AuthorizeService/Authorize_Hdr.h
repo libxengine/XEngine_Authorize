@@ -35,6 +35,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Database/Database_Define.h"
 #include "../../AuthorizeModule_Database/Database_Error.h"
@@ -49,20 +51,25 @@ extern BOOL bIsRun;
 extern XLOG xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
+extern XHANDLE xhHttpSocket;
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
+extern XHANDLE xhHttpPacket;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
+extern XNETHANDLE xhHttpPool;
 extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
+#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
 
 #include "Authorize_Config.h"
 #include "Authorize_Net.h"
 #include "Authorize_Task.h"
 #include "Authorize_TCPTask.h"
 #include "Authorize_WSTask.h"
+#include "Authorize_HttpTask.h"
 
 #ifdef _WINDOWS
 #ifdef _DEBUG
@@ -99,4 +106,5 @@ extern AUTHORIZE_CONFIGURE st_AuthConfig;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
 #endif

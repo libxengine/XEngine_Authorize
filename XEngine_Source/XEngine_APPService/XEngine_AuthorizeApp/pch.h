@@ -36,6 +36,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/XLog_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/ProcFile_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
@@ -62,14 +64,18 @@ using namespace std;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
+#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
 
 extern XLOG xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
+extern XHANDLE xhHttpSocket;
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
+extern XHANDLE xhHttpPacket;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
+extern XNETHANDLE xhHttpPool;
 extern AUTHORIZE_CONFIGURE st_AuthConfig;
 
 extern HWND hUserWnd;
@@ -116,4 +122,5 @@ extern LPCSTR lpszKeyType[5];
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
 #pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi.lib")

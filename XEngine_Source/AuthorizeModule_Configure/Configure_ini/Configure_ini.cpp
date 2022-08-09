@@ -52,6 +52,7 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	}
 	pSt_AuthConfig->nTCPPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("TCPPort"), 0, lpszFile);
 	pSt_AuthConfig->nWSPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("WSPort"), 0, lpszFile);
+	pSt_AuthConfig->nHttpPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("HttpPort"), 0, lpszFile);
 	pSt_AuthConfig->nThreads = GetPrivateProfileInt(_T("ServiceConfig"), _T("ThreadPool"), 0, lpszFile);
 	pSt_AuthConfig->nVerTimeout = GetPrivateProfileInt(_T("ServiceConfig"), _T("UserVerTimed"), 0, lpszFile);
 	pSt_AuthConfig->bAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, lpszFile);
@@ -110,6 +111,9 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nWSPort);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("WSPort"), tszBuffer, lpszFile);
+	memset(tszBuffer, '\0', MAX_PATH);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nHttpPort);
+	WritePrivateProfileString(_T("ServiceConfig"), _T("HttpPort"), tszBuffer, lpszFile);
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nThreads);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("ThreadPool"), tszBuffer, lpszFile);

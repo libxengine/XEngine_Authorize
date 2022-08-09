@@ -17,6 +17,7 @@ typedef struct
 {
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
+	int nHttpPort;                                          //HTTP管理端口
 	int nThreads;                                           //启动的线程个数
 	int nVerTimeout;                                        //用户验证超时时间
 	BOOL bAutoStart;                                        //自启动
@@ -35,8 +36,8 @@ typedef struct
 		int nPassword;                                      //密码
 	}st_Crypto;
 	struct
-	{
-		TCHAR tszSQLite[MAX_PATH];                          
+	{ 
+		TCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
 	}st_XSql;
 	struct
 	{
