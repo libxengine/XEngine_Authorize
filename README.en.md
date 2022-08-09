@@ -8,6 +8,7 @@ c c++网络验证服务器 网络授权服务器
 c c++network Authorize service  
 the server is network authorize verification service code library,This service mainly provides network authorization verification function.support local and network verification mode  
 network verification support tcp and websocket protocol verification.it is means:support app program and web  
+first open source C/C++ network authentication server, supporting various languages ​​and platforms for network authentication and authorization
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
 ## Software feature

@@ -2,7 +2,7 @@
 
 #define XLOG_BUFFER_SIZE 16384
 
-BOOL XEngine_Authorize_LogPrint(LPVOID lParam, LPCSTR lpszLog, ...)
+BOOL XEngine_Authorize_LogPrint(LPVOID lParam, int nLeave, LPCSTR lpszLog, ...)
 {
 	CXEngineAuthorizeAppDlg* pClass_This = (CXEngineAuthorizeAppDlg*)lParam;
 	CString m_StrLog;
@@ -15,7 +15,7 @@ BOOL XEngine_Authorize_LogPrint(LPVOID lParam, LPCSTR lpszLog, ...)
 	vsnprintf(tszLogBuffer, XLOG_BUFFER_SIZE, lpszLog, pArgList);
 	va_end(pArgList);
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, tszLogBuffer);
+	XLOG_PRINT(xhLog, nLeave, tszLogBuffer);
 	pClass_This->m_EditLog.GetWindowText(m_StrLog);
 	if (m_StrLog.GetLength() > 1024000)
 	{

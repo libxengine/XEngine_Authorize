@@ -17,6 +17,7 @@ void __stdcall XEngine_Client_TCPClose(LPCTSTR lpszClientAddr, SOCKET hSocket, L
 {
 	XEngine_CloseClient(lpszClientAddr);
 }
+//////////////////////////////////////////////////////////////////////////
 BOOL __stdcall XEngine_Client_WSAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
@@ -47,6 +48,24 @@ void __stdcall XEngine_Client_WSRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPC
 	}
 }
 void __stdcall XEngine_Client_WSClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr);
+}
+//////////////////////////////////////////////////////////////////////////
+BOOL __stdcall XEngine_Client_HttpAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
+{
+	RfcComponents_HttpServer_CreateClientEx(xhHttpPacket, lpszClientAddr, 0);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，进入服务器"), lpszClientAddr);
+	return TRUE;
+}
+void __stdcall XEngine_Client_HttpRecv(LPCTSTR lpszClientAddr, SOCKET hSocket, LPCTSTR lpszRecvMsg, int nMsgLen, LPVOID lParam)
+{
+	if (!RfcComponents_HttpServer_InserQueueEx(xhHttpPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
+	}
+}
+void __stdcall XEngine_Client_HttpClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr);
 }
@@ -121,7 +140,7 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 		RfcComponents_WSCodec_EncodeMsg(tszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszWSBuffer, nSDLen);
 	}
-	else
+	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
 	{
 		if (NULL == lpszPass)
 		{
@@ -144,6 +163,21 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			}
 		}
 		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+	}
+	else
+	{
+		int nSDLen = 2048;
+		TCHAR tszSDBuffer[2048];
+		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
+
+		memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
+		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
+
+		st_HDRParam.nHttpCode = 200;
+		st_HDRParam.bIsClose = TRUE;
+
+		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszSDBuffer, nSDLen);
 	}
 	return TRUE;
 }

@@ -81,7 +81,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr, LPVOID lParam)
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	XEngine_Authorize_LogPrint(lParam, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
+	XEngine_Authorize_LogPrint(lParam, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器"), lpszClientAddr, tszClientUser);
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////

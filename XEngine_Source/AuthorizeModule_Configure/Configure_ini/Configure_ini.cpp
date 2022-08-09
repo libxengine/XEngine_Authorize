@@ -52,6 +52,7 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	}
 	pSt_AuthConfig->nTCPPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("TCPPort"), 0, lpszFile);
 	pSt_AuthConfig->nWSPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("WSPort"), 0, lpszFile);
+	pSt_AuthConfig->nHttpPort = GetPrivateProfileInt(_T("ServiceConfig"), _T("HttpPort"), 0, lpszFile);
 	pSt_AuthConfig->nThreads = GetPrivateProfileInt(_T("ServiceConfig"), _T("ThreadPool"), 0, lpszFile);
 	pSt_AuthConfig->nVerTimeout = GetPrivateProfileInt(_T("ServiceConfig"), _T("UserVerTimed"), 0, lpszFile);
 	pSt_AuthConfig->bAutoStart = GetPrivateProfileInt(_T("ServiceConfig"), _T("AutoStart"), 0, lpszFile);
@@ -65,18 +66,14 @@ BOOL CConfigure_IniFile::Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONF
 	pSt_AuthConfig->st_Crypto.bEnable = GetPrivateProfileInt(_T("Crypto"), _T("Enable"), 0, lpszFile);
 	pSt_AuthConfig->st_Crypto.nPassword = GetPrivateProfileInt(_T("Crypto"), _T("Pass"), 0, lpszFile);
 
-	pSt_AuthConfig->st_EMail.bSmtpEnable = GetPrivateProfileInt(_T("SmtpConfig"), _T("SmtpEnable"), 0, lpszFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), NULL, pSt_AuthConfig->st_EMail.tszSmtpAddr, MAX_PATH, lpszFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), NULL, pSt_AuthConfig->st_EMail.tszSmtpFrom, MAX_PATH, lpszFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), NULL, pSt_AuthConfig->st_EMail.tszSmtpUser, MAX_PATH, lpszFile);
-	GetPrivateProfileString(_T("SmtpConfig"), _T("SmtpPass"), NULL, pSt_AuthConfig->st_EMail.tszSmtpPass, MAX_PATH, lpszFile);
-
 	GetPrivateProfileString(_T("XSql"), _T("tszSQLite"), NULL, pSt_AuthConfig->st_XSql.tszSQLite, MAX_PATH, lpszFile);
 
 	pSt_AuthConfig->st_XLog.nLogLeave = GetPrivateProfileInt(_T("XLog"), _T("nLogLeave"), 0, lpszFile);
 	pSt_AuthConfig->st_XLog.nMaxCount = GetPrivateProfileInt(_T("XLog"), _T("nMaxCount"), 0, lpszFile);
 	pSt_AuthConfig->st_XLog.nMaxSize = GetPrivateProfileInt(_T("XLog"), _T("nMaxSize"), 0, lpszFile);
 	GetPrivateProfileString(_T("XLog"), _T("tszLogFile"), NULL, pSt_AuthConfig->st_XLog.tszLogFile, MAX_PATH, lpszFile);
+
+	GetPrivateProfileString(_T("XVer"), _T("Version"), NULL, pSt_AuthConfig->st_XVer.tszVersion, MAX_PATH, lpszFile);
 	return TRUE;
 }
 /********************************************************************
@@ -115,6 +112,9 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nWSPort);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("WSPort"), tszBuffer, lpszFile);
 	memset(tszBuffer, '\0', MAX_PATH);
+	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nHttpPort);
+	WritePrivateProfileString(_T("ServiceConfig"), _T("HttpPort"), tszBuffer, lpszFile);
+	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->nThreads);
 	WritePrivateProfileString(_T("ServiceConfig"), _T("ThreadPool"), tszBuffer, lpszFile);
 	memset(tszBuffer, '\0', MAX_PATH);
@@ -146,14 +146,6 @@ BOOL CConfigure_IniFile::Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CON
 	memset(tszBuffer, '\0', MAX_PATH);
 	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->st_Crypto.nPassword);
 	WritePrivateProfileString(_T("Crypto"), _T("Pass"), tszBuffer, lpszFile);
-
-	memset(tszBuffer, '\0', MAX_PATH);
-	_stprintf(tszBuffer, _T("%d"), pSt_AuthConfig->st_EMail.bSmtpEnable);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpEnable"), tszBuffer, lpszFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpService"), pSt_AuthConfig->st_EMail.tszSmtpAddr, lpszFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpFromAddr"), pSt_AuthConfig->st_EMail.tszSmtpFrom, lpszFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpUser"), pSt_AuthConfig->st_EMail.tszSmtpUser, lpszFile);
-	WritePrivateProfileString(_T("SmtpConfig"), _T("SmtpPassword"), pSt_AuthConfig->st_EMail.tszSmtpPass, lpszFile);
 
 	return TRUE;
 }

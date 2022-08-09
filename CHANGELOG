@@ -1,3 +1,19 @@
+XEngine_Authorize V2.8.0.1001
+
+增加:为配置增加版本号
+优化:启动和停止的日志记录
+修改:日志打印支持日志级别
+修正:打印日志句柄不正确的问题
+修正:某些时候退出崩溃的问题
+删除:电子邮件找回密码功能
+
+added:version for configure
+improved:start and stop log
+modify:log support log-leave
+fixed:handle log printf is incorrent
+fixed:sometime is crashed when program exit
+delete:email get back password
+======================================================================================
 XEngine_Authorize V2.7.2.1001
 
 修改:makefile现在支持macos了

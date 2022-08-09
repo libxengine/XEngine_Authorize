@@ -151,6 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Authorize_Config.cpp" />
+    <ClCompile Include="Authorize_HttpTask.cpp" />
     <ClCompile Include="Authorize_Task.cpp" />
     <ClCompile Include="Authorize_Net.cpp" />
     <ClCompile Include="Authorize_TCPTask.cpp" />
@@ -160,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h" />
     <ClInclude Include="Authorize_Hdr.h" />
+    <ClInclude Include="Authorize_HttpTask.h" />
     <ClInclude Include="Authorize_Task.h" />
     <ClInclude Include="Authorize_Net.h" />
     <ClInclude Include="Authorize_TCPTask.h" />

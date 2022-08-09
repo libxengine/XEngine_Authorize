@@ -102,10 +102,30 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgSerial.ShowWindow(FALSE);
 	m_DlgLocal.ShowWindow(FALSE);
 	m_TabCtrl.SetCurSel(0);
+	//设置窗口标题
+	CString m_StrVersion;
+	m_StrVersion.Format(_T("XEngine 网络授权验证服务器V%s"), st_AuthConfig.st_XVer.tszVersion);
+	SetWindowText(m_StrVersion);
+
+	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
+	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
+
+	st_XLogConfig.XLog_MaxBackupFile = st_AuthConfig.st_XLog.nMaxCount;
+	st_XLogConfig.XLog_MaxSize = st_AuthConfig.st_XLog.nMaxSize;
+	_tcscpy(st_XLogConfig.tszFileName, st_AuthConfig.st_XLog.tszLogFile);
+
+	xhLog = HelpComponents_XLog_Init(HELPCOMPONENTS_XLOG_OUTTYPE_FILE | HELPCOMPONENTS_XLOG_OUTTYPE_STD, &st_XLogConfig);
+	if (NULL == xhLog)
+	{
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，启动日志系统失败！"));
+		return FALSE;
+	}
+	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动日志系统成功！"));
 
 	if (!SystemApi_Skin_CreateTrayTip(m_hWnd, _T("XEngine网络验证服务"), WINSDK_SKIN_USERMSG_TRAY, IDR_MAINFRAME))
 	{
-		AfxMessageBox(_T("添加托盘失败"));
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("添加托盘失败"));
 		return FALSE;
 	}
 	m_BtnStartService.EnableWindow(TRUE);
@@ -159,77 +179,57 @@ HCURSOR CXEngineAuthorizeAppDlg::OnQueryDragIcon()
 void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	CString m_StrTCPPort;
-	CString m_StrWSPort;
-	CString m_StrNumber;
-	CString m_StrThreads;
-	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
-
-	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
-
-	st_XLogConfig.XLog_MaxBackupFile = st_AuthConfig.st_XLog.nMaxCount;
-	st_XLogConfig.XLog_MaxSize = st_AuthConfig.st_XLog.nMaxSize;
-	_tcscpy(st_XLogConfig.tszFileName, st_AuthConfig.st_XLog.tszLogFile);
-
-	xhLog = HelpComponents_XLog_Init(HELPCOMPONENTS_XLOG_OUTTYPE_FILE | HELPCOMPONENTS_XLOG_OUTTYPE_STD, &st_XLogConfig);
-	if (NULL == xhLog)
-	{
-		AfxMessageBox(_T("启动服务器失败，启动日志失败！"));
-		return;
-	}
-	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
-	m_DlgConfig.m_EditServicePort.GetWindowText(m_StrTCPPort);
-	m_DlgConfig.m_EditWSPort.GetWindowText(m_StrWSPort);
-	m_DlgConfig.m_EditVerTimedout.GetWindowText(m_StrNumber);
-	m_DlgConfig.m_EditThreadPool.GetWindowText(m_StrThreads);
-
-	nThreadCount = _ttoi(m_StrThreads.GetBuffer());
 	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
 	{
-		AfxMessageBox(_T("初始化数据库失败！"));
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，初始化数据库失败！"));
 		return;
 	}
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动数据库服务成功！"));
+
 	if (!Session_Authorize_Init(XEngine_TaskEvent_Client, this))
 	{
-		AfxMessageBox(_T("初始化网络失败！"));
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中,启动会话服务失败！"));
 		return;
 	}
-	xhTCPPacket = HelpComponents_Datas_Init(10000, nThreadCount);
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动数据库服务成功！"));
+
+	xhTCPPacket = HelpComponents_Datas_Init(10000, st_AuthConfig.nThreads);
 	if (NULL == xhTCPPacket)
 	{
-		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，初始化TCP包管理器失败"));
 		return;
 	}
-	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, nThreadCount);
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，初始化TCP包管理器成功！"));
+
+	xhWSPacket = RfcComponents_WSPacket_InitEx(10000, TRUE, st_AuthConfig.nThreads);
 	if (NULL == xhWSPacket)
 	{
-		AfxMessageBox(_T("启动服务器失败，初始化包管理器失败"));
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，初始化WEBSOCKET包管理器失败"));
 		return;
 	}
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，初始化WEBSOCKET包管理器成功！"));
 
-	xhTCPSocket = NetCore_TCPXCore_StartEx(_ttoi(m_StrTCPPort.GetBuffer()), 10000, nThreadCount);
+	xhTCPSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nTCPPort, 10000, st_AuthConfig.nThreads);
 	if (NULL == xhTCPSocket)
 	{
-		CString m_StrEror;
-		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
-		AfxMessageBox(m_StrEror);
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，启动TCP验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
 		return;
 	}
 	NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose, this, this, this);
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动TCP验证网络服务成功！"));
 
-	xhWSSocket = NetCore_TCPXCore_StartEx(_ttoi(m_StrWSPort.GetBuffer()), 10000, nThreadCount);
+	xhWSSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nWSPort, 10000, st_AuthConfig.nThreads);
 	if (NULL == xhWSSocket)
 	{
-		CString m_StrEror;
-		m_StrEror.Format(_T("启动服务器失败，启动验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
-		AfxMessageBox(m_StrEror);
+		XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务器中，启动WEBSOCKET验证网络服务失败:%lX %d"), NetCore_GetLastError(), WSAGetLastError());
 		return;
 	}
 	NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose, this, this, this);
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务器中，启动WEBSOCKET验证网络服务成功！"));
 
 	bThread = TRUE;
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadTCPParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
-	for (int i = 0; i < nThreadCount; i++)
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadTCPParament, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
@@ -238,10 +238,10 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		ppSt_ThreadTCPParament[i]->lParam = pSt_AuthThread;
 		ppSt_ThreadTCPParament[i]->fpCall_ThreadsTask = XEngine_AuthService_ThreadClient;
 	}
-	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ThreadTCPParament, nThreadCount);
+	ManagePool_Thread_NQCreate(&xhTCPPool, &ppSt_ThreadTCPParament, st_AuthConfig.nThreads);
 
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadWSParament, nThreadCount, sizeof(THREADPOOL_PARAMENT));
-	for (int i = 0; i < nThreadCount; i++)
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ThreadWSParament, st_AuthConfig.nThreads, sizeof(THREADPOOL_PARAMENT));
+	for (int i = 0; i < st_AuthConfig.nThreads; i++)
 	{
 		XENGINE_THREADINFO* pSt_AuthThread = new XENGINE_THREADINFO;
 
@@ -250,7 +250,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton3()
 		ppSt_ThreadWSParament[i]->lParam = pSt_AuthThread;
 		ppSt_ThreadWSParament[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
 	}
-	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ThreadWSParament, nThreadCount);
+	ManagePool_Thread_NQCreate(&xhWSPool, &ppSt_ThreadWSParament, st_AuthConfig.nThreads);
 	m_DlgSerial.SerialManage_Flush();
 	m_BtnStartService.EnableWindow(FALSE);
 	m_BtnStopService.EnableWindow(TRUE);
@@ -307,6 +307,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton4()
 	m_BtnStartService.EnableWindow(TRUE);
 	m_BtnStopService.EnableWindow(FALSE);
 	bThread = FALSE;
+	XEngine_Authorize_LogPrint(this, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("服务器关闭！"));
 
 	int nListCount = 0;
 	AUTHREG_USERTABLE** ppSt_ListClient;

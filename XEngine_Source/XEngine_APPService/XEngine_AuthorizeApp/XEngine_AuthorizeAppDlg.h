@@ -36,7 +36,6 @@ public:
 	CDialog_Local m_DlgLocal;
 public:
 	BOOL bThread;
-	int nThreadCount;
 	THREADPOOL_PARAMENT** ppSt_ThreadTCPParament;
 	THREADPOOL_PARAMENT** ppSt_ThreadWSParament;
 public:
