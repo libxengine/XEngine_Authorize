@@ -62,7 +62,7 @@ BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nM
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("WS客户端：%s，协议错误"), lpszClientAddr);
 		return FALSE;
 	}
-	if ((XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQDEL == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQREGISTER == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER == st_ProtocolHdr.unOperatorCode))
+	if ((XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQDEL == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQREGISTER == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETPASS == st_ProtocolHdr.unOperatorCode))
 	{
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
@@ -70,7 +70,7 @@ BOOL XEngine_Client_WSTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nM
 		Protocol_Parse_WSUserInfo(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr, &st_UserInfo);
 		XEngine_Client_TCPTask(lpszClientAddr, (LPCTSTR)&st_UserInfo, sizeof(XENGINE_PROTOCOL_USERINFO), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 	}
-	else if ((XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode) || (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER == st_ProtocolHdr.unOperatorCode))
+	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
 	{
 		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
