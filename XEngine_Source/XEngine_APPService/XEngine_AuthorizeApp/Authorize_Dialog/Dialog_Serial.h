@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "afxdialogex.h"
 
 
 // CDialog_Serial 对话框
@@ -20,16 +21,4 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
-public:
-	void SerialManage_Flush();
-public:
-	CListCtrl m_ListSerial;
-	CComboBox m_ComboSerialType;
-	CComboBox m_ComboNumber;
-	CEdit m_EditHowCard;
-	CEdit m_EditCardTime;
-	virtual BOOL OnInitDialog();
-	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton4();
 };

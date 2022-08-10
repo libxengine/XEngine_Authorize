@@ -37,7 +37,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 {
 	int nSDLen = 2048;
 	TCHAR tszSDBuffer[2048];
-	LPCTSTR lpszMethodGet = _T("GET");
+	LPCTSTR lpszMethodGet = _T("POST");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 

@@ -3,6 +3,8 @@
 //
 
 #pragma once
+
+
 // CXEngineAuthorizeAppDlg 对话框
 class CXEngineAuthorizeAppDlg : public CDialogEx
 {
@@ -27,31 +29,12 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg HCURSOR OnQueryDragIcon();
-	afx_msg LRESULT OnAddTrayIcon(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
-	CDialog_Configure m_DlgConfig;
-	CDialog_Serial m_DlgSerial;
+	CDialog_Config m_DlgConfig;
 	CDialog_User m_DlgUser;
-	CDialog_Local m_DlgLocal;
+	CDialog_Serial m_DlgSerial;
 public:
-	BOOL bThread;
-	THREADPOOL_PARAMENT** ppSt_ThreadTCPParament;
-	THREADPOOL_PARAMENT** ppSt_ThreadWSParament;
-public:
-	BOOL bShow;
-	CEdit m_EditLog;
-	afx_msg void OnBnClickedButton3();
-	afx_msg void OnBnClickedButton1();
-	CButton m_BtnStartService;
-	CButton m_BtnStopService;
-	CTabCtrl m_TabCtrl;
+	CTabCtrl m_TabWindows;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
-	afx_msg void OnBnClickedButton4();
-	afx_msg void OnDestroy();
-	afx_msg void On32771();
-	afx_msg void On32772();
-	afx_msg void On32773();
-	afx_msg void On32774();
-	afx_msg void On32775();
 };
