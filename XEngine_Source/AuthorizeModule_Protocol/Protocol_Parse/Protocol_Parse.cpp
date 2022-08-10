@@ -379,3 +379,175 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgL
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseUser
+函数功能：解析用户信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_UserInfo
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserInfo))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonProtocol = st_JsonRoot["st_UserInfo"];
+	if (!st_JsonProtocol["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_UserInfo->tszUserName, st_JsonProtocol["tszUserName"].asCString());
+	}
+	if (!st_JsonProtocol["tszUserPass"].isNull())
+	{
+		_tcscpy(pSt_UserInfo->tszUserPass, st_JsonProtocol["tszUserPass"].asCString());
+	}
+	if (!st_JsonProtocol["tszEMailAddr"].isNull())
+	{
+		_tcscpy(pSt_UserInfo->tszEMailAddr, st_JsonProtocol["tszEMailAddr"].asCString());
+	}
+	if (!st_JsonProtocol["tszLoginTime"].isNull())
+	{
+		_tcscpy(pSt_UserInfo->tszLoginTime, st_JsonProtocol["tszLoginTime"].asCString());
+	}
+	if (!st_JsonProtocol["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_UserInfo->tszCreateTime, st_JsonProtocol["tszCreateTime"].asCString());
+	}
+	if (!st_JsonProtocol["nPhoneNumber"].isNull())
+	{
+		pSt_UserInfo->nPhoneNumber = st_JsonProtocol["nPhoneNumber"].asInt64();
+	}
+	if (!st_JsonProtocol["nIDNumber"].isNull())
+	{
+		pSt_UserInfo->nIDNumber = st_JsonProtocol["nIDNumber"].asInt64();
+	}
+	if (!st_JsonProtocol["nUserLeave"].isNull())
+	{
+		pSt_UserInfo->nUserLevel = st_JsonProtocol["nUserLevel"].asInt();
+	}
+	if (!st_JsonProtocol["nUserState"].isNull())
+	{
+		pSt_UserInfo->nUserState = st_JsonProtocol["nUserState"].asInt();
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseUser
+函数功能：解析用户表信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_UserTable
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserTable))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_UserTable = st_JsonRoot["st_UserTable"];
+	Json::Value st_UserInfo = st_UserTable["st_UserInfo"];
+
+	pSt_UserTable->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enAuthRegSerialType"].asInt();
+	pSt_UserTable->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_UserTable["enDeviceType"].asInt();
+	_tcscpy(pSt_UserTable->tszHardCode, st_UserTable["tszHardCode"].asCString());
+	_tcscpy(pSt_UserTable->tszLeftTime, st_UserTable["tszLeftTime"].asCString());
+	if (!st_UserInfo["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_UserTable->st_UserInfo.tszUserName, st_UserInfo["tszUserName"].asCString());
+	}
+	if (!st_UserInfo["tszUserPass"].isNull())
+	{
+		_tcscpy(pSt_UserTable->st_UserInfo.tszUserPass, st_UserInfo["tszUserPass"].asCString());
+	}
+	if (!st_UserInfo["tszEMailAddr"].isNull())
+	{
+		_tcscpy(pSt_UserTable->st_UserInfo.tszEMailAddr, st_UserInfo["tszEMailAddr"].asCString());
+	}
+	if (!st_UserInfo["tszLoginTime"].isNull())
+	{
+		_tcscpy(pSt_UserTable->st_UserInfo.tszLoginTime, st_UserInfo["tszLoginTime"].asCString());
+	}
+	if (!st_UserInfo["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_UserTable->st_UserInfo.tszCreateTime, st_UserInfo["tszCreateTime"].asCString());
+	}
+	if (!st_UserInfo["nPhoneNumber"].isNull())
+	{
+		pSt_UserTable->st_UserInfo.nPhoneNumber = st_UserInfo["nPhoneNumber"].asInt64();
+	}
+	if (!st_UserInfo["nIDNumber"].isNull())
+	{
+		pSt_UserTable->st_UserInfo.nIDNumber = st_UserInfo["nIDNumber"].asInt64();
+	}
+	if (!st_UserInfo["nUserLeave"].isNull())
+	{
+		pSt_UserTable->st_UserInfo.nUserLevel = st_UserInfo["nUserLevel"].asInt();
+	}
+	if (!st_UserInfo["nUserState"].isNull())
+	{
+		pSt_UserTable->st_UserInfo.nUserState = st_UserInfo["nUserState"].asInt();
+	}
+	return TRUE;
+}
