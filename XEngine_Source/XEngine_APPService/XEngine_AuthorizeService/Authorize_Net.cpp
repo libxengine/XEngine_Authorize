@@ -72,6 +72,14 @@ void __stdcall XEngine_Client_HttpClose(LPCTSTR lpszClientAddr, SOCKET hSocket, 
 //////////////////////////////////////////////////////////////////////////
 BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 {
+	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
+	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
+	RfcComponents_HttpServer_CloseClinetEx(xhHttpPacket, lpszClientAddr);
+
+	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+
 	TCHAR tszClientUser[64];
 	AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 
@@ -85,15 +93,12 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
 		Session_Authorize_CloseClient(tszClientUser);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_TimeProtocol.nTimeONLine);
 	}
-	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
-	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
-	RfcComponents_HttpServer_CloseClinetEx(xhHttpPacket, lpszClientAddr);
-
-	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_TimeProtocol.nTimeONLine);
+	else
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，离开服务器"), lpszClientAddr);
+	}
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -162,6 +167,16 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			}
 		}
 		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+	}
+	else
+	{
+		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
+		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
+
+		st_HDRParam.nHttpCode = 200;
+		st_HDRParam.bIsClose = TRUE;
+		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, tszMsgBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
 	}
 	return TRUE;
 }

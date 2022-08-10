@@ -63,6 +63,7 @@ extern XENGINE_SERVICECONFIG st_AuthConfig;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
+#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
 
 #include "Authorize_Config.h"
 #include "Authorize_Net.h"
