@@ -27,7 +27,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 			{
 				continue;
 			}
-			if (st_AuthConfig.st_Crypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
+			if (st_AuthConfig.st_XCrypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
 			{
 				TCHAR tszPassword[64];
 				TCHAR tszDeBuffer[2048];
@@ -35,7 +35,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 				memset(tszPassword, '\0', sizeof(tszPassword));
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
-				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
+				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_XCrypto.nPassword);
 				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
 				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
@@ -104,8 +104,8 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		memcpy(&st_UserTable.st_UserInfo, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERINFO));
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPREGISTER;
 		//填充写入数据
-		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_Verification.nTryTime);
-		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_Verification.nTryMode;
+		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_XVerification.nTryTime);
+		st_UserTable.en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
 		if (Database_SQLite_UserRegister(&st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 0;
@@ -296,7 +296,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 				BaseLib_OperatorTimeSpan_GetForStr(st_AuthVer.tszVerData, tszEndTime, &nTimeSpan, 2);
 			}
 			//是否超过
-			if (nTimeSpan > st_AuthConfig.st_Verification.nVerTime)
+			if (nTimeSpan > st_AuthConfig.st_XVerification.nVerTime)
 			{
 				pSt_ProtocolHdr->wReserve = 0x2D1;
 				pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
@@ -317,8 +317,8 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		else
 		{
 			//填充写入数据
-			st_AuthVer.nTryTime = st_AuthConfig.st_Verification.nVerTime;
-			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_Verification.nVerMode;
+			st_AuthVer.nTryTime = st_AuthConfig.st_XVerification.nVerTime;
+			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能
 			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
 			{

@@ -25,7 +25,7 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 			{
 				continue;
 			}
-			if (st_AuthConfig.st_Crypto.bEnable)
+			if (st_AuthConfig.st_XCrypto.bEnable)
 			{
 				TCHAR tszPassword[64];
 				TCHAR tszDeBuffer[2048];
@@ -33,7 +33,7 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(LPVOID lParam)
 				memset(tszPassword, '\0', sizeof(tszPassword));
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
-				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
+				_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_XCrypto.nPassword);
 				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
 				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode);
 			}

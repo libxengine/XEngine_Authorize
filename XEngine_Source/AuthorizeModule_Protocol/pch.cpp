@@ -55,6 +55,10 @@ extern "C" BOOL Protocol_Packet_WSPktNote(TCHAR * ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_WSPktNote(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
 }
+extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE * **pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE * **pppSt_OffClient, int nOffCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpClientList(ptszMsgBuffer, pInt_MsgLen, pppSt_OnClient, nOnCount, pppSt_OffClient, nOffCount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/

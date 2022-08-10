@@ -13,10 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Configure_ini">
+    <Filter Include="头文件\ModuleConfigure_Json">
       <UniqueIdentifier>{6ac124f6-fb66-4122-a556-46df6d6f6926}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\Configure_ini">
+    <Filter Include="源文件\ModuleConfigure_Json">
       <UniqueIdentifier>{53e7588d-c345-417f-af2d-ea28d15f48fd}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -27,14 +27,14 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Configure_ini\Configure_ini.h">
-      <Filter>头文件\Configure_ini</Filter>
-    </ClInclude>
     <ClInclude Include="Config_Define.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Config_Error.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleConfigure_Json\ModuleConfigure_Json.h">
+      <Filter>头文件\ModuleConfigure_Json</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,8 +44,8 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Configure_ini\Configure_ini.cpp">
-      <Filter>源文件\Configure_ini</Filter>
+    <ClCompile Include="ModuleConfigure_Json\ModuleConfigure_Json.cpp">
+      <Filter>源文件\ModuleConfigure_Json</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

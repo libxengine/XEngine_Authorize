@@ -196,6 +196,45 @@ extern "C" BOOL Protocol_Packet_WSPktTime(TCHAR* ptszMsgBuffer, int* pInt_MsgLen
 备注：
 *********************************************************************/
 extern "C" BOOL Protocol_Packet_WSPktNote(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPCTSTR lpszMsgBuffer, int nMsgLen);
+/********************************************************************
+函数名称：Protocol_Packet_HttpClientList
+函数功能：HTTP客户端列表包装函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_OnClient
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的在线列表
+ 参数.四：nOnCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入在线列表个数
+ 参数.五：pppSt_OffClient
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的离线列表
+ 参数.六：nOffCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入离线列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/

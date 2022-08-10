@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Configure_ini/Configure_ini.h"
+#include "ModuleConfigure_Json/ModuleConfigure_Json.h"
 /********************************************************************
 //    Created:     2021/07/26  10:20:03
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Configure\pch.cpp
@@ -14,7 +14,7 @@
 BOOL Config_IsErrorOccur = FALSE;
 DWORD Config_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
-CConfigure_IniFile m_Config;
+CModuleConfigure_Json m_Config;
 //////////////////////////////////////////////////////////////////////////
 //                      导出函数
 //////////////////////////////////////////////////////////////////////////
@@ -29,11 +29,7 @@ extern "C" DWORD Config_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                              配置文件导出函数                        */
 /************************************************************************/
-extern "C" BOOL Configure_IniFile_Read(LPCTSTR lpszFile, AUTHORIZE_CONFIGURE * pSt_AuthConfig)
+extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig)
 {
-	return m_Config.Configure_IniFile_Read(lpszFile, pSt_AuthConfig);
-}
-extern "C" BOOL Configure_IniFile_Write(LPCTSTR lpszFile, AUTHORIZE_CONFIGURE * pSt_AuthConfig)
-{
-	return m_Config.Configure_IniFile_Write(lpszFile, pSt_AuthConfig);
+	return m_Config.ModuleConfigure_Json_File(lpszConfigFile, pSt_ServerConfig);
 }
