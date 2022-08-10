@@ -109,6 +109,8 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 				return FALSE;
 			}
 			XEngine_CloseClient(tszClientAddr);
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求剔除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
 		}
 		else if (0 == _tcsnicmp(lpszAPIModify, tszAPIName, _tcslen(lpszAPIModify)))
@@ -125,6 +127,8 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 				return FALSE;
 			}
 			Session_Authorize_SetUser(&st_UserTable);
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求修改用户信息:%s 成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 		}
 		else if (0 == _tcsnicmp(lpszAPIDelete, tszAPIName, _tcslen(lpszAPIDelete)))
@@ -134,17 +138,46 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 
 			Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 			Database_SQLite_UserDelete(st_UserInfo.tszUserName);
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求删除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszAPIVerSerial, tszAPIVer, _tcslen(lpszAPIVerSerial)))
 	{
 		LPCTSTR lpszAPIList = _T("list");
-		LPCTSTR lpszAPIModify = _T("insert");
+		LPCTSTR lpszAPIInsert = _T("insert");
 		LPCTSTR lpszAPIDelete = _T("delete");
 
 		if (0 == _tcsnicmp(lpszAPIList, tszAPIName, _tcslen(lpszAPIList)))
 		{
+			int nListCount = 0;
+			AUTHREG_SERIALTABLE** ppSt_SerialTable;
+			Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount);
+			Protocol_Packet_HttpSerialList(tszSDBuffer, &nSDLen, &ppSt_SerialTable, nListCount);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求序列号列表成功,个数:%d"), lpszClientAddr, nListCount);
+		}
+		else if (0 == _tcsnicmp(lpszAPIInsert, tszAPIName, _tcslen(lpszAPIInsert)))
+		{
+			AUTHREG_SERIALTABLE st_SerialTable;
+			memset(&st_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
 
+			Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &st_SerialTable);
+			Database_SQLite_SerialInsert(st_SerialTable.tszSerialNumber);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求插入序列号:%s 成功"), lpszClientAddr, st_SerialTable.tszSerialNumber);
+		}
+		else if (0 == _tcsnicmp(lpszAPIDelete, tszAPIName, _tcslen(lpszAPIDelete)))
+		{
+			AUTHREG_SERIALTABLE st_SerialTable;
+			memset(&st_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
+
+			Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &st_SerialTable);
+			Database_SQLite_SerialDelete(st_SerialTable.tszSerialNumber);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求删除序列号:%s 成功"), lpszClientAddr, st_SerialTable.tszSerialNumber);
 		}
 	}
 	return TRUE;

@@ -509,7 +509,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	Json::Value st_UserTable = st_JsonRoot["st_UserTable"];
 	Json::Value st_UserInfo = st_UserTable["st_UserInfo"];
 
-	pSt_UserTable->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enAuthRegSerialType"].asInt();
+	pSt_UserTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
 	pSt_UserTable->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_UserTable["enDeviceType"].asInt();
 	_tcscpy(pSt_UserTable->tszHardCode, st_UserTable["tszHardCode"].asCString());
 	_tcscpy(pSt_UserTable->tszLeftTime, st_UserTable["tszLeftTime"].asCString());
@@ -549,5 +549,78 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	{
 		pSt_UserTable->st_UserInfo.nUserState = st_UserInfo["nUserState"].asInt();
 	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseSerial
+函数功能：解析HTTP序列号
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_SerialTable
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE* pSt_SerialTable)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_SerialTable))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_UserTable = st_JsonRoot["st_SerialTable"];
+
+	if (!st_UserTable["bIsUsed"].isNull())
+	{
+		pSt_SerialTable->bIsUsed = st_UserTable["bIsUsed"].asBool();
+	}
+	if (!st_UserTable["enSerialType"].isNull())
+	{
+		pSt_SerialTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
+	}
+	if (!st_UserTable["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_SerialTable->tszCreateTime, st_UserTable["tszCreateTime"].asCString());
+	}
+	if (!st_UserTable["tszMaxTime"].isNull())
+	{
+		_tcscpy(pSt_SerialTable->tszMaxTime, st_UserTable["tszMaxTime"].asCString());
+	}
+	if (!st_UserTable["tszSerialNumber"].isNull())
+	{
+		_tcscpy(pSt_SerialTable->tszSerialNumber, st_UserTable["tszSerialNumber"].asCString());
+	}
+	if (!st_UserTable["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_SerialTable->tszUserName, st_UserTable["tszUserName"].asCString());
+	}
+
 	return TRUE;
 }

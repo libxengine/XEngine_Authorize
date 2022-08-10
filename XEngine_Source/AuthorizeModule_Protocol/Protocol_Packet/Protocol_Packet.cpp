@@ -494,7 +494,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 
 		st_JsonObject["tszLeftTime"] = (*pppSt_OnClient)[i]->tszLeftTime;
 		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->tszHardCode;
-		st_JsonObject["en_AuthRegSerialType"] = (*pppSt_OnClient)[i]->en_AuthRegSerialType;
+		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->enDeviceType;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
@@ -530,12 +530,72 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 
 		st_JsonObject["tszLeftTime"] = (*pppSt_OffClient)[i]->tszLeftTime;
 		st_JsonObject["tszHardCode"] = (*pppSt_OffClient)[i]->tszHardCode;
-		st_JsonObject["en_AuthRegSerialType"] = (*pppSt_OffClient)[i]->en_AuthRegSerialType;
+		st_JsonObject["enSerialType"] = (*pppSt_OffClient)[i]->enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OffClient)[i]->enDeviceType;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
 
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["Array"] = st_JsonArray;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpSerialList
+函数功能：HTTP序列号打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_SerialList
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的序列号列表
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["tszUserName"] = (*pppSt_SerialList)[i]->tszUserName;
+		st_JsonObject["tszSerialNumber"] = (*pppSt_SerialList)[i]->tszSerialNumber;
+		st_JsonObject["tszMaxTime"] = (*pppSt_SerialList)[i]->tszMaxTime;
+		st_JsonObject["enSerialType"] = (*pppSt_SerialList)[i]->enSerialType;
+		st_JsonObject["bIsUsed"] = (*pppSt_SerialList)[i]->bIsUsed;
+		st_JsonObject["tszCreateTime"] = (*pppSt_SerialList)[i]->tszCreateTime;
+		st_JsonArray.append(st_JsonObject);
+	}
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
 	st_JsonRoot["Array"] = st_JsonArray;
