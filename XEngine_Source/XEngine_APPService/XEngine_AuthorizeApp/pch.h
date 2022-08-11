@@ -21,12 +21,14 @@
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
+#include "Authorize_Dialog/Dialog_Modify.h"
 
+extern HWND hUserWnd;
 extern HWND hConfigWnd;
 extern LPCSTR lpszStuType[2];
 extern LPCSTR lpszKeyType[5];
 extern LPCSTR lpszDevType[9];
-extern LPCSTR lpszLelType[6];
+extern LPCSTR lpszLelType[7];
 
 #ifdef _DEBUG
 #ifdef _WIN64

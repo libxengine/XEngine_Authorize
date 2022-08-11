@@ -186,6 +186,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Dialog\Dialog_Config.h" />
+    <ClInclude Include="Authorize_Dialog\Dialog_Modify.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Serial.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_User.h" />
     <ClInclude Include="framework.h" />
@@ -197,6 +198,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Authorize_Dialog\Dialog_Config.cpp" />
+    <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Serial.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_User.cpp" />
     <ClCompile Include="pch.cpp">

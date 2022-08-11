@@ -69,12 +69,30 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 	}
 	if (0 == _tcsnicmp(lpszAPIVerClient, tszAPIVer, _tcslen(lpszAPIVerClient)))
 	{
+		LPCTSTR lpszAPIGet = _T("get");
 		LPCTSTR lpszAPIList = _T("list");
 		LPCTSTR lpszAPIClose = _T("close");
 		LPCTSTR lpszAPIModify = _T("modify");
 		LPCTSTR lpszAPIDelete = _T("delete");
-		//枚举文件
-		if (0 == _tcsnicmp(lpszAPIList, tszAPIName, _tcslen(lpszAPIList)))
+		
+		if (0 == _tcsnicmp(lpszAPIGet, tszAPIName, _tcslen(lpszAPIGet)))
+		{
+			AUTHREG_USERTABLE st_UserTable;
+			memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+			
+			Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserTable.st_UserInfo);
+			if (!Database_SQLite_UserQuery(st_UserTable.st_UserInfo.tszUserName, &st_UserTable))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
+				XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求用户:%s 信息失败,错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
+				return FALSE;
+			}
+			Protocol_Packet_HttpClientInfo(tszSDBuffer, &nSDLen, &st_UserTable);
+			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求客户端:%s 信息成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
+		}
+		else if (0 == _tcsnicmp(lpszAPIList, tszAPIName, _tcslen(lpszAPIList)))
 		{
 			//得到在线用户
 			int nOnCount = 0;
@@ -133,10 +151,16 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		}
 		else if (0 == _tcsnicmp(lpszAPIDelete, tszAPIName, _tcslen(lpszAPIDelete)))
 		{
+			TCHAR tszClientAddr[128];
 			XENGINE_PROTOCOL_USERINFO st_UserInfo;
+
+			memset(tszClientAddr, '\0', sizeof(tszClientAddr));
 			memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
 			Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+			
+			Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr);
+			XEngine_CloseClient(tszClientAddr);
 			Database_SQLite_UserDelete(st_UserInfo.tszUserName);
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 			XEngine_Client_TaskSend(lpszClientAddr, NULL, XENGINE_AUTH_APP_NETTYPE_HTTP, tszSDBuffer, nSDLen);

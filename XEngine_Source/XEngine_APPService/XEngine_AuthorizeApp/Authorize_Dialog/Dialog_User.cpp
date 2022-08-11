@@ -30,6 +30,9 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_User::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_User::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_User::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
 END_MESSAGE_MAP()
 
 
@@ -51,6 +54,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(7, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
+	hUserWnd = m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -81,6 +85,7 @@ void CDialog_User::OnBnClickedButton1()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
+		AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
 		return;
 	}
 	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)
@@ -95,7 +100,7 @@ void CDialog_User::OnBnClickedButton1()
 
 		m_ListCtrlClient.SetItemText(i, 0, tszIndex);
 		m_ListCtrlClient.SetItemText(i, 1, st_JsonObject["tszUserName"].asCString());
-		m_ListCtrlClient.SetItemText(i, 2, lpszLelType[st_JsonObject["nUserLevel"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 2, lpszLelType[st_JsonObject["nUserLevel"].asInt() + 1]);
 
 		if (1 == st_JsonObject["nUserState"].asInt())
 		{
@@ -114,4 +119,129 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.SetItemText(i, 7, lpszStuType[st_JsonObject["nUserState"].asInt()]);
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+}
+
+
+void CDialog_User::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListCtrlClient.GetFirstSelectedItemPosition();
+	int nSelect = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
+	if (nSelect < 0)
+	{
+		AfxMessageBox(_T("你没有选择任何客户！"));
+		return;
+	}
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrUser = m_ListCtrlClient.GetItemText(nSelect, 1);
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/close"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+
+	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+	st_JsonRoot["st_UserInfo"] = st_JsonObject;
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	//查看返回值是否正确
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+		return;
+	}
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("关闭客户端成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("关闭客户端失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	//剔除客户需要刷新客户列表
+	OnBnClickedButton1();
+}
+
+
+void CDialog_User::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListCtrlClient.GetFirstSelectedItemPosition();
+	int nSelect = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
+	if (nSelect < 0)
+	{
+		AfxMessageBox(_T("你没有选择任何客户！"));
+		return;
+	}
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrUser = m_ListCtrlClient.GetItemText(nSelect, 1);
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+
+	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+	st_JsonRoot["st_UserInfo"] = st_JsonObject;
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	//查看返回值是否正确
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+		return;
+	}
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("删除客户端成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("删除客户端失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	//需要刷新客户列表
+	OnBnClickedButton1();
+}
+
+
+void CDialog_User::OnBnClickedButton4()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListCtrlClient.GetFirstSelectedItemPosition();
+	int nItemCount = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
+	if (nItemCount < 0)
+	{
+		AfxMessageBox(_T("你没有选择任何用户！"));
+		return;
+	}
+	CDialog_Modify m_DlgModify;
+	m_DlgModify.DoModal();
 }

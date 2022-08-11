@@ -10,6 +10,7 @@ EXPORTS
 	Protocol_Packet_WSPktTime
 	Protocol_Packet_WSPktNote
 	Protocol_Packet_HttpComm
+	Protocol_Packet_HttpClientInfo
 	Protocol_Packet_HttpClientList
 	Protocol_Packet_HttpSerialList
 
