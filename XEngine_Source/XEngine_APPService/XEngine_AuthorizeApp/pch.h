@@ -18,6 +18,9 @@
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include "../../XAuth_Protocol.h"
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"

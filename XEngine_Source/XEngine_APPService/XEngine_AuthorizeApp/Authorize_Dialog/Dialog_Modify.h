@@ -33,4 +33,5 @@ public:
 	CComboBox m_ComboLeave;
 	afx_msg void OnBnClickedButton2();
 	CEdit m_EditHardCode;
+	CEdit m_EditCreateTime;
 };

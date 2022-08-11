@@ -33,6 +33,7 @@ void CDialog_Modify::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO1, m_ComboSerial);
 	DDX_Control(pDX, IDC_COMBO2, m_ComboLeave);
 	DDX_Control(pDX, IDC_EDIT7, m_EditHardCode);
+	DDX_Control(pDX, IDC_EDIT8, m_EditCreateTime);
 }
 
 
@@ -90,6 +91,7 @@ BOOL CDialog_Modify::OnInitDialog()
 	m_EditUser.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserName"].asCString());
 	m_EditPass.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString());
 	m_EditEMail.SetWindowText(st_JsonObject["st_UserInfo"]["tszEMailAddr"].asCString());
+	m_EditCreateTime.SetWindowText(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString());
 
 	CString m_StrNumber;
 	m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nIDNumber"].asUInt64());
@@ -121,4 +123,75 @@ BOOL CDialog_Modify::OnInitDialog()
 void CDialog_Modify::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	AUTHREG_USERTABLE st_UserTable;
+	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+
+	m_EditUser.GetWindowText(st_UserTable.st_UserInfo.tszUserName, sizeof(st_UserTable.st_UserInfo.tszUserName));
+	m_EditPass.GetWindowText(st_UserTable.st_UserInfo.tszUserPass, sizeof(st_UserTable.st_UserInfo.tszUserPass));
+	m_EditEMail.GetWindowText(st_UserTable.st_UserInfo.tszEMailAddr, sizeof(st_UserTable.st_UserInfo.tszEMailAddr));
+	m_EditCreateTime.GetWindowText(st_UserTable.st_UserInfo.tszCreateTime, sizeof(st_UserTable.st_UserInfo.tszCreateTime));
+	m_EditHardCode.GetWindowText(st_UserTable.tszHardCode, sizeof(st_UserTable.tszHardCode));
+
+	CString m_StrNumber;
+	m_EditPhone.GetWindowText(m_StrNumber);
+	st_UserTable.st_UserInfo.nPhoneNumber = _ttoi64(m_StrNumber.GetBuffer());
+	m_StrNumber.ReleaseBuffer();
+	m_EditCardID.GetWindowText(m_StrNumber);
+	st_UserTable.st_UserInfo.nIDNumber = _ttoi64(m_StrNumber.GetBuffer());
+
+	m_EditLeftTime.GetWindowText(st_UserTable.tszLeftTime, sizeof(st_UserTable.tszLeftTime));
+	st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboSerial.GetCurSel();
+	st_UserTable.st_UserInfo.nUserLevel = m_ComboLeave.GetCurSel() - 1;
+
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonTable;
+	Json::Value st_JsonUser;
+
+	st_JsonUser["tszUserName"] = st_UserTable.st_UserInfo.tszUserName;
+	st_JsonUser["tszUserPass"] = st_UserTable.st_UserInfo.tszUserPass;
+	st_JsonUser["tszEMailAddr"] = st_UserTable.st_UserInfo.tszEMailAddr;
+	st_JsonUser["tszCreateTime"] = st_UserTable.st_UserInfo.tszCreateTime;
+	st_JsonUser["nPhoneNumber"] = st_UserTable.st_UserInfo.nPhoneNumber;
+	st_JsonUser["nIDNumber"] = st_UserTable.st_UserInfo.nIDNumber;
+	st_JsonUser["nUserLevel"] = st_UserTable.st_UserInfo.nUserLevel;
+	st_JsonTable["tszLeftTime"] = st_UserTable.tszLeftTime;
+	st_JsonTable["tszHardCode"] = st_UserTable.tszHardCode;
+	st_JsonTable["enSerialType"] = st_UserTable.enSerialType;
+	st_JsonTable["st_UserInfo"] = st_JsonUser;
+	st_JsonRoot["st_UserTable"] = st_JsonTable;
+
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	//组合请求URL
+	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+		return;
+	}
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("修改客户端成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("修改客户端失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+
+	OnOK();
 }

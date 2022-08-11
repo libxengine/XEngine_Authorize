@@ -159,7 +159,7 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserInfo(LPCTSTR lpszMsgBuffer, int nMsgL
 	{
 		pSt_UserInfo->nIDNumber = st_JsonProtocol["nIDNumber"].asInt64();
 	}
-	if (!st_JsonProtocol["nUserLeave"].isNull())
+	if (!st_JsonProtocol["nUserLevel"].isNull())
 	{
 		pSt_UserInfo->nUserLevel = st_JsonProtocol["nUserLevel"].asInt();
 	}
@@ -452,7 +452,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nM
 	{
 		pSt_UserInfo->nIDNumber = st_JsonProtocol["nIDNumber"].asInt64();
 	}
-	if (!st_JsonProtocol["nUserLeave"].isNull())
+	if (!st_JsonProtocol["nUserLevel"].isNull())
 	{
 		pSt_UserInfo->nUserLevel = st_JsonProtocol["nUserLevel"].asInt();
 	}
@@ -541,7 +541,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	{
 		pSt_UserTable->st_UserInfo.nIDNumber = st_UserInfo["nIDNumber"].asInt64();
 	}
-	if (!st_UserInfo["nUserLeave"].isNull())
+	if (!st_UserInfo["nUserLevel"].isNull())
 	{
 		pSt_UserTable->st_UserInfo.nUserLevel = st_UserInfo["nUserLevel"].asInt();
 	}

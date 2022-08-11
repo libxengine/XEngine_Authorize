@@ -426,7 +426,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     TCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',PhoneNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d',nUserLevel = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszUserName);
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
