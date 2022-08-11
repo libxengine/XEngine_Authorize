@@ -120,9 +120,14 @@ BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_Pr
 }
 BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType, LPCTSTR lpszMsgBuffer, int nMsgLen, LPCTSTR lpszPass)
 {
-	int nSDLen = 4096;
-	TCHAR tszMsgBuffer[4096];
-	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+	int nSDLen = XENGINE_AUTH_MAX_BUFFER;
+	TCHAR *ptszMsgBuffer = (TCHAR *)malloc(XENGINE_AUTH_MAX_BUFFER);
+	if (NULL == ptszMsgBuffer)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
+		return FALSE;
+	}
+	memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
@@ -131,24 +136,24 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS == pSt_ProtocolHdr->unOperatorCode)
 		{
-			Protocol_Packet_WSPktAuth(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH *)lpszMsgBuffer);
+			Protocol_Packet_WSPktAuth(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH *)lpszMsgBuffer);
 		}
 		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME == pSt_ProtocolHdr->unOperatorCode)
 		{
-			Protocol_Packet_WSPktTime(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
+			Protocol_Packet_WSPktTime(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
 		}
 		else
 		{
-			Protocol_Packet_WSPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+			Protocol_Packet_WSPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
 		}
-		RfcComponents_WSCodec_EncodeMsg(tszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		RfcComponents_WSCodec_EncodeMsg(ptszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszWSBuffer, nSDLen);
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
 	{
 		if (NULL == lpszPass)
 		{
-			Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
+			Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
 		}
 		else
 		{
@@ -158,15 +163,15 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			pSt_ProtocolHdr->wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
 			if (NULL == lpszMsgBuffer)
 			{
-				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+				Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
 			}
 			else
 			{
 				OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)tszEnBuffer, lpszPass);
-				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
+				Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
 			}
 		}
-		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, ptszMsgBuffer, nSDLen);
 	}
 	else
 	{
@@ -175,8 +180,10 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = TRUE;
-		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, tszMsgBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
-		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nSDLen);
 	}
+	free(ptszMsgBuffer);
+	ptszMsgBuffer = NULL;
 	return TRUE;
 }

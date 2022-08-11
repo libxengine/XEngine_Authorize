@@ -27,4 +27,7 @@ public:
 	CComboBox m_ComboSerialType;
 	CComboBox m_ComboNumber;
 	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
+	CEdit m_EditSerialCount;
+	CEdit m_EditHasTime;
 };

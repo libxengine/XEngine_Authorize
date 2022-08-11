@@ -41,7 +41,8 @@
 extern BOOL Protocol_IsErrorOccur;
 extern DWORD Protocol_dwErrorCode;
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
+#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib,"../x64/Debug/jsoncpp")

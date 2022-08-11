@@ -27,11 +27,14 @@ void CDialog_Serial::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_ListSerial);
 	DDX_Control(pDX, IDC_COMBO1, m_ComboSerialType);
 	DDX_Control(pDX, IDC_COMBO2, m_ComboNumber);
+	DDX_Control(pDX, IDC_EDIT1, m_EditSerialCount);
+	DDX_Control(pDX, IDC_EDIT2, m_EditHasTime);
 }
 
 
 BEGIN_MESSAGE_MAP(CDialog_Serial, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_Serial::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Serial::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -122,4 +125,60 @@ void CDialog_Serial::OnBnClickedButton1()
 		m_ListSerial.SetItemText(i, 5, st_JsonArray["tszCreateTime"].asCString());
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+}
+
+
+void CDialog_Serial::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	TCHAR tszUrlAddr[MAX_PATH];
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+
+	CString m_StrHasTime;
+	CString m_StrSerialCount;
+	CString m_StrNumberCount;
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+
+	m_EditHasTime.GetWindowText(m_StrHasTime);
+	m_EditSerialCount.GetWindowText(m_StrSerialCount);
+	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
+
+	st_JsonObject["enSerialType"] = m_ComboSerialType.GetCurSel();
+	st_JsonObject["nNumberCount"] = _ttoi(m_StrNumberCount.GetBuffer());
+	st_JsonObject["nSerialCount"] = _ttoi(m_StrSerialCount.GetBuffer());
+	st_JsonObject["tszHasTime"] = m_StrHasTime.GetBuffer();
+	st_JsonRoot["st_SerialInfo"] = st_JsonObject;
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("解析接口数据错误,无法继续"));
+		return;
+	}
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("插入序列号成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("插入序列号失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	//刷新
+	OnBnClickedButton1();
 }

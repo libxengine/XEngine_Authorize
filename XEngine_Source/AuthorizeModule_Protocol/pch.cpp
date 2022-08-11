@@ -102,7 +102,11 @@ extern "C" BOOL Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int nMsgLen
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, pSt_UserTable);
 }
-extern "C" BOOL Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE * pSt_SerialTable)
+extern "C" BOOL Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount)
 {
-	return m_ProtocolParse.Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, pSt_SerialTable);
+	return m_ProtocolParse.Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, pppSt_SerialTable, pInt_ListCount);
+}
+extern "C" BOOL Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, TCHAR * ptszHasTime)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, penSerialType, pInt_NumberCount, pInt_SerialCount, ptszHasTime);
 }

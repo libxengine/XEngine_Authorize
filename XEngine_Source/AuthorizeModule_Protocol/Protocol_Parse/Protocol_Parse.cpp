@@ -553,7 +553,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSerial
-函数功能：解析HTTP序列号
+函数功能：解析HTTP序列号信息
  参数.一：lpszMsgBuffer
   In/Out：In
   类型：常量字符指针
@@ -564,21 +564,26 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
   类型：整数型
   可空：N
   意思：输入要解析的大小
- 参数.三：pSt_SerialTable
+ 参数.三：pppSt_SerialTable
   In/Out：Out
-  类型：数据结构指针
+  类型：三级指针
   可空：N
-  意思：输出解析的数据
+  意思：输出数据列表
+ 参数.四：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出列表个数
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE* pSt_SerialTable)
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
-	if ((NULL == lpszMsgBuffer) || (NULL == pSt_SerialTable))
+	if ((NULL == lpszMsgBuffer) || (NULL == pppSt_SerialTable))
 	{
 		Protocol_IsErrorOccur = TRUE;
 		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
@@ -595,32 +600,101 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int 
 		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
 		return FALSE;
 	}
-	Json::Value st_UserTable = st_JsonRoot["st_SerialTable"];
+	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, st_JsonRoot["Array"].size(), sizeof(AUTHREG_SERIALTABLE));
+	Json::Value st_JsonArray = st_JsonRoot["Array"];
+	for (unsigned int i = 0; i < st_JsonArray.size(); i++)
+	{
+		if (!st_JsonArray[i]["bIsUsed"].isNull())
+		{
+			(*pppSt_SerialTable)[i]->bIsUsed = st_JsonArray[i]["bIsUsed"].asBool();
+		}
+		if (!st_JsonArray[i]["enSerialType"].isNull())
+		{
+			(*pppSt_SerialTable)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonArray[i]["enSerialType"].asInt();
+		}
+		if (!st_JsonArray[i]["tszCreateTime"].isNull())
+		{
+			_tcscpy((*pppSt_SerialTable)[i]->tszCreateTime, st_JsonArray[i]["tszCreateTime"].asCString());
+		}
+		if (!st_JsonArray[i]["tszMaxTime"].isNull())
+		{
+			_tcscpy((*pppSt_SerialTable)[i]->tszMaxTime, st_JsonArray[i]["tszMaxTime"].asCString());
+		}
+		if (!st_JsonArray[i]["tszSerialNumber"].isNull())
+		{
+			_tcscpy((*pppSt_SerialTable)[i]->tszSerialNumber, st_JsonArray[i]["tszSerialNumber"].asCString());
+		}
+		if (!st_JsonArray[i]["tszUserName"].isNull())
+		{
+			_tcscpy((*pppSt_SerialTable)[i]->tszUserName, st_JsonArray[i]["tszUserName"].asCString());
+		}
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseSerial2
+函数功能：解析HTTP序列号
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：penSerialType
+  In/Out：Out
+  类型：枚举型指针
+  可空：N
+  意思：导出序列卡类型
+ 参数.四：pInt_NumberCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出序列卡长度
+ 参数.五：pInt_SerialCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出序列卡个数
+ 参数.六：ptszHasTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出拥有时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, TCHAR* ptszHasTime)
+{
+	Protocol_IsErrorOccur = FALSE;
 
-	if (!st_UserTable["bIsUsed"].isNull())
+	if ((NULL == lpszMsgBuffer) || (NULL == penSerialType))
 	{
-		pSt_SerialTable->bIsUsed = st_UserTable["bIsUsed"].asBool();
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
 	}
-	if (!st_UserTable["enSerialType"].isNull())
-	{
-		pSt_SerialTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
-	}
-	if (!st_UserTable["tszCreateTime"].isNull())
-	{
-		_tcscpy(pSt_SerialTable->tszCreateTime, st_UserTable["tszCreateTime"].asCString());
-	}
-	if (!st_UserTable["tszMaxTime"].isNull())
-	{
-		_tcscpy(pSt_SerialTable->tszMaxTime, st_UserTable["tszMaxTime"].asCString());
-	}
-	if (!st_UserTable["tszSerialNumber"].isNull())
-	{
-		_tcscpy(pSt_SerialTable->tszSerialNumber, st_UserTable["tszSerialNumber"].asCString());
-	}
-	if (!st_UserTable["tszUserName"].isNull())
-	{
-		_tcscpy(pSt_SerialTable->tszUserName, st_UserTable["tszUserName"].asCString());
-	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
 
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];
+
+	*penSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonObject["enSerialType"].asInt();
+	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
+	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
+	_tcscpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
 	return TRUE;
 }
