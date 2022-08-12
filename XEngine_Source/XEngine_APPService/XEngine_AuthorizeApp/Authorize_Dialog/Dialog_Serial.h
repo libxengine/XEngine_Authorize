@@ -30,4 +30,6 @@ public:
 	afx_msg void OnBnClickedButton2();
 	CEdit m_EditSerialCount;
 	CEdit m_EditHasTime;
+	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton3();
 };

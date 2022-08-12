@@ -35,6 +35,8 @@ void CDialog_Serial::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDialog_Serial, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_Serial::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Serial::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_Serial::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Serial::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -181,4 +183,88 @@ void CDialog_Serial::OnBnClickedButton2()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//刷新
 	OnBnClickedButton1();
+}
+
+
+void CDialog_Serial::OnBnClickedButton4()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListSerial.GetFirstSelectedItemPosition();
+	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
+	if (nSelect < 0)
+	{
+		AfxMessageBox(_T("你没有选择任何客户！"));
+		return;
+	}
+	CString m_StrSerial = m_ListSerial.GetItemText(nSelect, 1);
+
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	TCHAR tszUrlAddr[MAX_PATH];
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+
+	CString m_StrHasTime;
+	CString m_StrSerialCount;
+	CString m_StrNumberCount;
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+	Json::Value st_JsonObject;
+
+	m_EditHasTime.GetWindowText(m_StrHasTime);
+	m_EditSerialCount.GetWindowText(m_StrSerialCount);
+	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
+
+	st_JsonObject["tszSerialNumber"] = m_StrSerial.GetBuffer();
+	st_JsonArray.append(st_JsonObject);
+	st_JsonRoot["Array"] = st_JsonArray;
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("解析接口数据错误,无法继续"));
+		return;
+	}
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("删除序列号成功"));
+	}
+	else
+	{
+		AfxMessageBox(_T("删除序列号失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	//刷新
+	OnBnClickedButton1();
+}
+
+
+void CDialog_Serial::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListSerial.GetFirstSelectedItemPosition();
+	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
+	if (nSelect < 0)
+	{
+		AfxMessageBox(_T("你没有选择序列号！"));
+		return;
+	}
+	CString m_Str = m_ListSerial.GetItemText(nSelect, 1);
+	if (!NetCore_PIPClipBoard_Set(m_Str.GetBuffer(), m_Str.GetLength()))
+	{
+		AfxMessageBox(_T("复制失败！"));
+		return;
+	}
+	AfxMessageBox(_T("复制成功！"));
 }

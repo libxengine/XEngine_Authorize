@@ -16,6 +16,8 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_Core/NetCore_Define.h>
+#include <XEngine_Include/XEngine_Core/NetCore_Error.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
@@ -47,4 +49,5 @@ extern LPCSTR lpszLelType[7];
 #endif
 #endif
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
+#pragma comment(lib,"XEngine_Core/XEngine_Core.lib")
 #pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp.lib")

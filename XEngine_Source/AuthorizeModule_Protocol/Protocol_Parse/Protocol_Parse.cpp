@@ -600,6 +600,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int 
 		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
 		return FALSE;
 	}
+	*pInt_ListCount = st_JsonRoot["Array"].size();
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, st_JsonRoot["Array"].size(), sizeof(AUTHREG_SERIALTABLE));
 	Json::Value st_JsonArray = st_JsonRoot["Array"];
 	for (unsigned int i = 0; i < st_JsonArray.size(); i++)
