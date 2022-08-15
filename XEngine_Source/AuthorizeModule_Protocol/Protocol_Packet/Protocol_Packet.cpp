@@ -470,8 +470,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
 	st_JsonUser["tszEMailAddr"] = pSt_UserTable->st_UserInfo.tszEMailAddr;
 	st_JsonUser["tszLoginTime"] = pSt_UserTable->st_UserInfo.tszLoginTime;
 	st_JsonUser["tszCreateTime"] = pSt_UserTable->st_UserInfo.tszCreateTime;
-	st_JsonUser["nPhoneNumber"] = pSt_UserTable->st_UserInfo.nPhoneNumber;
-	st_JsonUser["nIDNumber"] = pSt_UserTable->st_UserInfo.nIDNumber;
+	st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)pSt_UserTable->st_UserInfo.nPhoneNumber;
+	st_JsonUser["nIDNumber"] = (Json::Value::UInt64)pSt_UserTable->st_UserInfo.nIDNumber;
 	st_JsonUser["nUserLevel"] = pSt_UserTable->st_UserInfo.nUserLevel;
 	st_JsonUser["nUserState"] = 0;
 
@@ -550,8 +550,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserInfo.tszEMailAddr;
 		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszLoginTime;
 		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszCreateTime;
-		st_JsonUser["nPhoneNumber"] = (*pppSt_OnClient)[i]->st_UserInfo.nPhoneNumber;
-		st_JsonUser["nIDNumber"] = (*pppSt_OnClient)[i]->st_UserInfo.nIDNumber;
+		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nPhoneNumber;
+		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserInfo.nUserLevel;
 		st_JsonUser["nUserState"] = 1;
 
@@ -586,8 +586,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		st_JsonUser["tszEMailAddr"] = (*pppSt_OffClient)[i]->st_UserInfo.tszEMailAddr;
 		st_JsonUser["tszLoginTime"] = (*pppSt_OffClient)[i]->st_UserInfo.tszLoginTime;
 		st_JsonUser["tszCreateTime"] = (*pppSt_OffClient)[i]->st_UserInfo.tszCreateTime;
-		st_JsonUser["nPhoneNumber"] = (*pppSt_OffClient)[i]->st_UserInfo.nPhoneNumber;
-		st_JsonUser["nIDNumber"] = (*pppSt_OffClient)[i]->st_UserInfo.nIDNumber;
+		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nPhoneNumber;
+		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OffClient)[i]->st_UserInfo.nUserLevel;
 		st_JsonUser["nUserState"] = 0;
 

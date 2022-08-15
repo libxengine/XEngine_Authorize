@@ -5,11 +5,11 @@ RELEASE = 0
 UNICODE = 0  
 LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_HelpComponents -L /usr/local/lib/XEngine_Release/XEngine_RfcComponents -L /usr/local/lib/XEngine_Release/XEngine_SystemSdk   \
           -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../XEngine_ThirdPart/jsoncpp
-LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_EmailClient -lXEngine_ProcFile -lXEngine_SystemApi  \
+LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_HttpServer -lXEngine_ProcFile -lXEngine_SystemApi  \
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -ljsoncpp
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
-LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o XEngine_AuthorizeService.o
+LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o
 
 ifeq ($(OS),Windows_NT)
 else
@@ -50,6 +50,8 @@ Authorize_TCPTask.o:./Authorize_TCPTask.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./Authorize_TCPTask.cpp
 Authorize_WSTask.o:./Authorize_WSTask.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./Authorize_WSTask.cpp
+Authorize_HttpTask.o:./Authorize_HttpTask.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./Authorize_HttpTask.cpp
 
 XEngine_AuthorizeService.o:./XEngine_AuthorizeService.cpp             
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./XEngine_AuthorizeService.cpp   
