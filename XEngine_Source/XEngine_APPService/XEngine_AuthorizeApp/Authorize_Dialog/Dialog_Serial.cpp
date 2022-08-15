@@ -261,7 +261,7 @@ void CDialog_Serial::OnBnClickedButton3()
 		return;
 	}
 	CString m_Str = m_ListSerial.GetItemText(nSelect, 1);
-	if (!NetCore_PIPClipBoard_Set(m_Str.GetBuffer(), m_Str.GetLength()))
+	if (!AuthHelp_ClipBoard_Set(m_Str.GetBuffer(), m_Str.GetLength()))
 	{
 		AfxMessageBox(_T("复制失败！"));
 		return;

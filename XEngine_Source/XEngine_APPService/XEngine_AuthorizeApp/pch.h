@@ -16,13 +16,13 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_Core/NetCore_Define.h>
-#include <XEngine_Include/XEngine_Core/NetCore_Error.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Define.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
@@ -38,16 +38,20 @@ extern LPCSTR lpszLelType[7];
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Debug/jsoncpp")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help")
 #else
 #pragma comment(lib,"../../Debug/jsoncpp")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Help")
 #endif
 #else
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/jsoncpp")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Help")
 #else
 #pragma comment(lib,"../../Release/jsoncpp")
+#pragma comment(lib,"../../Release/AuthorizeModule_Help")
 #endif
 #endif
+
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_Core.lib")
 #pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp.lib")

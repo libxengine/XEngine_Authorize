@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeService", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeApp", "XEngine_APPService\XEngine_AuthorizeApp\XEngine_AuthorizeApp.vcxproj", "{51DCBDC7-50CB-4A44-B10B-FCF90309914D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Help", "AuthorizeModule_Help\AuthorizeModule_Help.vcxproj", "{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -90,6 +92,14 @@ Global
 		{51DCBDC7-50CB-4A44-B10B-FCF90309914D}.Release|x64.Build.0 = Release|x64
 		{51DCBDC7-50CB-4A44-B10B-FCF90309914D}.Release|x86.ActiveCfg = Release|Win32
 		{51DCBDC7-50CB-4A44-B10B-FCF90309914D}.Release|x86.Build.0 = Release|Win32
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Debug|x64.ActiveCfg = Debug|x64
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Debug|x64.Build.0 = Debug|x64
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Debug|x86.ActiveCfg = Debug|Win32
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Debug|x86.Build.0 = Debug|Win32
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Release|x64.ActiveCfg = Release|x64
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Release|x64.Build.0 = Release|x64
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Release|x86.ActiveCfg = Release|Win32
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -30,6 +30,8 @@ void CDialog_Config::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(CDialog_Config, CDialogEx)
+	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_Config::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Config::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -47,4 +49,16 @@ BOOL CDialog_Config::OnInitDialog()
 	hConfigWnd = m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
+}
+
+
+void CDialog_Config::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CDialog_Config::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
 }
