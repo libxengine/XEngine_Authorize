@@ -106,13 +106,13 @@ BOOL CDialog_Modify::OnInitDialog()
 
 	for (int i = 0; i < 5; i++)
 	{
-		m_ComboSerial.InsertString(i, lpszKeyType[i]);
+		m_ComboSerial.InsertString(i, lpszXSerialType[i]);
 	}
 	m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
 
 	for (int i = 0; i < 7; i++)
 	{
-		m_ComboLeave.InsertString(i, lpszLelType[i]);
+		m_ComboLeave.InsertString(i, lpszXLevelType[i]);
 	}
 	m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
 	return TRUE;  // return TRUE unless you set the focus to a control

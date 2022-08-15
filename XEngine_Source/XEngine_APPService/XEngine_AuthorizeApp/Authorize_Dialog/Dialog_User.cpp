@@ -100,7 +100,7 @@ void CDialog_User::OnBnClickedButton1()
 
 		m_ListCtrlClient.SetItemText(i, 0, tszIndex);
 		m_ListCtrlClient.SetItemText(i, 1, st_JsonObject["tszUserName"].asCString());
-		m_ListCtrlClient.SetItemText(i, 2, lpszLelType[st_JsonObject["nUserLevel"].asInt() + 1]);
+		m_ListCtrlClient.SetItemText(i, 2, lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]);
 
 		if (1 == st_JsonObject["nUserState"].asInt())
 		{
@@ -114,8 +114,8 @@ void CDialog_User::OnBnClickedButton1()
 			m_ListCtrlClient.SetItemText(i, 3, tszTimeStr);
 		}
 		m_ListCtrlClient.SetItemText(i, 4, st_JsonArray["tszLeftTime"].asCString());
-		m_ListCtrlClient.SetItemText(i, 5, lpszKeyType[st_JsonArray["enSerialType"].asInt()]);
-		m_ListCtrlClient.SetItemText(i, 6, lpszDevType[st_JsonArray["enDeviceType"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 5, lpszXSerialType[st_JsonArray["enSerialType"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 6, lpszXDevType[st_JsonArray["enDeviceType"].asInt()]);
 		m_ListCtrlClient.SetItemText(i, 7, lpszStuType[st_JsonObject["nUserState"].asInt()]);
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);

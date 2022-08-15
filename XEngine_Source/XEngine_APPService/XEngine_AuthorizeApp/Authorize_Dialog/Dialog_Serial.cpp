@@ -58,7 +58,7 @@ BOOL CDialog_Serial::OnInitDialog()
 
 	for (int i = 0; i < 4; i++)
 	{
-		m_ComboSerialType.InsertString(i, lpszKeyType[i]);
+		m_ComboSerialType.InsertString(i, lpszXSerialType[i]);
 	}
 
 	m_ComboNumber.InsertString(0, _T("4"));
@@ -115,7 +115,7 @@ void CDialog_Serial::OnBnClickedButton1()
 		m_ListSerial.SetItemText(i, 0, st_JsonArray["tszUserName"].asCString());
 		m_ListSerial.SetItemText(i, 1, st_JsonArray["tszSerialNumber"].asCString());
 		m_ListSerial.SetItemText(i, 2, st_JsonArray["tszMaxTime"].asCString());
-		m_ListSerial.SetItemText(i, 3, lpszKeyType[st_JsonArray["enSerialType"].asInt()]);
+		m_ListSerial.SetItemText(i, 3, lpszXSerialType[st_JsonArray["enSerialType"].asInt()]);
 		if (st_JsonArray["bIsUsed"].asBool())
 		{
 			m_ListSerial.SetItemText(i, 4, "已使用");

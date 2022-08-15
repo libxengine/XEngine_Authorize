@@ -31,9 +31,11 @@
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
 extern LPCSTR lpszStuType[2];
-extern LPCSTR lpszKeyType[5];
-extern LPCSTR lpszDevType[9];
-extern LPCSTR lpszLelType[7];
+#if XENGINE_VERSION_BIT < 7390001001
+extern LPCSTR lpszXSerialType[5];
+extern LPCSTR lpszXDevType[9];
+extern LPCSTR lpszXLevelType[7];
+#endif
 
 #ifdef _DEBUG
 #ifdef _WIN64
