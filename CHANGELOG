@@ -1,3 +1,31 @@
+XEngine_Authorize V3.0.0.1001PT
+
+添加:帮助模块
+添加:http的用户删除,获取,关闭,修改接口
+添加:http公用回复协议
+添加:HTTP增加获取用户统计
+添加:HTTP序列号列表和插入,删除协议支持
+添加:刷新客户端列表接口
+修改:使用AuthorizeModule_Help模块的剪贴板拷贝函数
+修改:重写管理服务
+修改:序列类型名称
+修改:客户端离开日志
+修改:配置文件ini改为json
+删除:获取和设置用户协议
+
+added:help module
+added:get close delete modify user info for http
+added:http comm reply for http
+added:get client count for http
+added:serial list and insert and delete protocols support for http
+added:flush client list
+modify:ClipBoard copy module to AuthorizeModule_Help
+modify:rewrite manage server
+modify:serial type name
+modify:client leave log print
+modify:configure ini to json
+delete:getuser and setuser protocols
+======================================================================================
 XEngine_Authorize V2.8.0.1001
 
 增加:为配置增加版本号

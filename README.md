@@ -23,9 +23,9 @@ c c++network Authorize service
 7. 序列卡多种类型支持(分钟卡,天数卡,次数卡,自定义卡)
 8. 支持试用,支持快速验证
 9. 支持通过邮件找回密码
-10. 支持本地CDKEY注册验证
-11. 支持APP程序和HTML网页授权验证
-12. 支持权限控制
+10. 支持APP程序和HTML网页授权验证
+11. 支持权限控制
+12. 支持HTTP管理接口,可以自己写前端实现网络验证管理界面
 
 ## 安装教程
 
@@ -42,7 +42,8 @@ macos执行:./XEngine_LINEnv.sh -i 3
 
 #### Windows
 使用VS打开并且编译,支持WINDOWS 7SP1以上系统  
-直接运行即可,使用XEngine_AuthorizeApp
+直接运行即可,使用XEngine_AuthorizeService  
+XEngine_AuthorizeApp为PC端管理工具
 
 #### Linux
 Linux使用Makefile编译,UBUNTU20.04 x64或者CENTOS8 x64  
@@ -92,7 +93,7 @@ mfc转qt界面库(我们需要会Qt的人员加入一起开发)
 生成会话TOKEN分布式鉴权  
 支持OAuth验证  
 mysql支持  
-支持管理接口，用于网页版本  
+列表数据分割,用于大型服务器  
 支持第三方用户密码验证  
 支持用户和硬件绑定同时验证  
 支持自定义序列号插入导入  
