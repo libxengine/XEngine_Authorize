@@ -72,6 +72,14 @@ void __stdcall XEngine_Client_HttpClose(LPCTSTR lpszClientAddr, SOCKET hSocket, 
 //////////////////////////////////////////////////////////////////////////
 BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 {
+	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
+	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
+	RfcComponents_HttpServer_CloseClinetEx(xhHttpPacket, lpszClientAddr);
+
+	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
+	NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+
 	TCHAR tszClientUser[64];
 	AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 
@@ -85,23 +93,23 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			Database_SQLite_UserLeave(&st_TimeProtocol);
 		}
 		Session_Authorize_CloseClient(tszClientUser);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_TimeProtocol.nTimeONLine);
 	}
-	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
-	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_TimeProtocol.nTimeONLine);
+	else
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，离开服务器"), lpszClientAddr);
+	}
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType, LPCTSTR lpszMsgBuffer, int nMsgLen)
 {
-	if (st_AuthConfig.st_Crypto.bEnable)
+	if (st_AuthConfig.st_XCrypto.bEnable)
 	{
 		TCHAR tszPassword[64];
 		memset(tszPassword, '\0', sizeof(tszPassword));
 
-		_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_Crypto.nPassword);
+		_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_XCrypto.nPassword);
 		XEngine_SendMsg(lpszClientAddr, pSt_ProtocolHdr, nNetType, lpszMsgBuffer, nMsgLen, tszPassword);
 	}
 	else
@@ -112,9 +120,14 @@ BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_Pr
 }
 BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType, LPCTSTR lpszMsgBuffer, int nMsgLen, LPCTSTR lpszPass)
 {
-	int nSDLen = 4096;
-	TCHAR tszMsgBuffer[4096];
-	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+	int nSDLen = XENGINE_AUTH_MAX_BUFFER;
+	TCHAR *ptszMsgBuffer = (TCHAR *)malloc(XENGINE_AUTH_MAX_BUFFER);
+	if (NULL == ptszMsgBuffer)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
+		return FALSE;
+	}
+	memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
@@ -123,28 +136,24 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETPASS == pSt_ProtocolHdr->unOperatorCode)
 		{
-			Protocol_Packet_WSPktAuth(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH *)lpszMsgBuffer);
-		}
-		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER == pSt_ProtocolHdr->unOperatorCode)
-		{
-			Protocol_Packet_WSPktInfo(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERINFO*)lpszMsgBuffer);
+			Protocol_Packet_WSPktAuth(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (XENGINE_PROTOCOL_USERAUTH *)lpszMsgBuffer);
 		}
 		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME == pSt_ProtocolHdr->unOperatorCode)
 		{
-			Protocol_Packet_WSPktTime(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
+			Protocol_Packet_WSPktTime(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, (AUTHREG_PROTOCOL_TIME*)lpszMsgBuffer);
 		}
 		else
 		{
-			Protocol_Packet_WSPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+			Protocol_Packet_WSPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
 		}
-		RfcComponents_WSCodec_EncodeMsg(tszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		RfcComponents_WSCodec_EncodeMsg(ptszMsgBuffer, tszWSBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszWSBuffer, nSDLen);
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
 	{
 		if (NULL == lpszPass)
 		{
-			Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
+			Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, lpszMsgBuffer, nMsgLen);
 		}
 		else
 		{
@@ -154,30 +163,27 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, XENGINE_PROTOCOLHDR* pSt_ProtocolHd
 			pSt_ProtocolHdr->wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
 			if (NULL == lpszMsgBuffer)
 			{
-				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
+				Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr);
 			}
 			else
 			{
 				OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)tszEnBuffer, lpszPass);
-				Protocol_Packet_SendPkt(tszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
+				Protocol_Packet_SendPkt(ptszMsgBuffer, &nSDLen, pSt_ProtocolHdr, tszEnBuffer, nMsgLen);
 			}
 		}
-		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, tszMsgBuffer, nSDLen);
+		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, ptszMsgBuffer, nSDLen);
 	}
 	else
 	{
-		int nSDLen = 2048;
-		TCHAR tszSDBuffer[2048];
 		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
-
-		memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = TRUE;
-
-		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
-		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszSDBuffer, nSDLen);
+		RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nSDLen);
 	}
+	free(ptszMsgBuffer);
+	ptszMsgBuffer = NULL;
 	return TRUE;
 }

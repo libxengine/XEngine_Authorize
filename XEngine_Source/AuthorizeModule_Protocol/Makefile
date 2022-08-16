@@ -5,8 +5,8 @@ RELEASE = 0
 UNICODE = 0
 INCLUDE = -I ./ -I ../XEngine_ThirdPart/jsoncpp
 FILECENTOS = /etc/redhat-release
-LOADBIN = -L ../XEngine_ThirdPart/jsoncpp
-LIB = -ljsoncpp
+LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L ../XEngine_ThirdPart/jsoncpp
+LIB = -lXEngine_BaseLib -ljsoncpp
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
 LIBINCLUDE = Protocol_Packet.o Protocol_Parse.o pch.o

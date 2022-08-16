@@ -12,16 +12,16 @@
 #include "framework.h"
 #include <tchar.h>
 #endif
-
 #endif //PCH_H
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <errno.h>
+#include <list>
+#include <string>
+#include <json/json.h>
+using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
-#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
-#include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include "Config_Define.h"
 #include "Config_Error.h"
 /********************************************************************
@@ -38,6 +38,18 @@
 extern BOOL Config_IsErrorOccur;
 extern DWORD Config_dwErrorCode;
 
-#ifdef _WINDOWS
-#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
+#ifdef _MSC_BUILD
+#ifdef _DEBUG
+#ifdef _WIN64
+#pragma comment(lib,"../x64/Debug/jsoncpp")
+#else
+#pragma comment(lib,"../Debug/jsoncpp")
+#endif
+#else
+#ifdef _WIN64
+#pragma comment(lib,"../x64/Release/jsoncpp")
+#else
+#pragma comment(lib,"../Release/jsoncpp")
+#endif
+#endif
 #endif

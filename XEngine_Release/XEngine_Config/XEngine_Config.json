@@ -1,0 +1,50 @@
+{
+    "nTCPPort":5300,
+    "nWSPort":5301,
+    "nHTTPPort":5302,
+    "bDeamon":false,
+    "nTimeNotify":true,
+    "XMax":{
+        "nMaxClient":10000,
+        "nMaxQueue":10000,
+        "nIOThread":2,
+        "nTCPThread":2,
+        "nWSThread":2,
+        "nHTTPThread":2
+    },
+    "XVerification":{
+        "nUserTimeout":30,
+        "nVerTime":5,
+        "nVerMode":1,
+        "nTryTime":5,
+        "nTryMode":1
+    },
+    "XCrypto":{
+        "bEnable":false,
+        "nPass":123123
+    },
+    "XSQL":{
+        "tszSQLFile":"./XEngine_DataBase/SQL_User.db"
+    },
+    "XLog":{
+        "tszLogFile":"./XEngine_XLog/XEngine_Authorize.log",
+        "MaxSize":1024000,
+        "MaxCount":10,
+        "LogLeave":32
+    },
+    "XVer":[
+        "V3.0.0.1001 Build20220816",
+        "V2.8.0.1001 Build20220809",
+        "V2.7.2.1001 Build20220715",
+        "V2.7.1.1001 Build20220602",
+        "V2.7.0.1001 Build20220531",
+        "V2.6.1.1001 Build20220330",
+        "V2.6.0.1001 Build20220218",
+        "V2.5.1.1001 Build20220126",
+        "V2.5.0.1001 Build20211203",
+        "V2.4.0.1001 Build20211105",
+        "V2.3.0.1001 Build20211022",
+        "V2.2.0.1001 Build20210806",
+        "V1.0.0.1001 Build20210501"
+    ]
+}

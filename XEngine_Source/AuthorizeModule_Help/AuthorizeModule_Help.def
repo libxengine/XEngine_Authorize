@@ -1,0 +1,8 @@
+LIBRARY
+
+EXPORTS
+	AuthHelp_GetLastError
+
+	AuthHelp_ClipBoard_Set
+	AuthHelp_ClipBoard_Get
+	AuthHelp_ClipBoard_Clear

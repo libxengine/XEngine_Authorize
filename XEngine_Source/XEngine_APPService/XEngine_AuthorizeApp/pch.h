@@ -11,116 +11,49 @@
 #include "framework.h"
 
 #endif //PCH_H
-
-
-#define WINSDK_SKIN_USERMSG_TRAY (WM_USER + 10012)
-#include <io.h>
-#include <list>
-
-using namespace std;
+#include <json/json.h>
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_Core/NetCore_Define.h>
-#include <XEngine_Include/XEngine_Core/NetCore_Error.h>
-#include <XEngine_Include/XEngine_Core/ManagePool_Define.h>
-#include <XEngine_Include/XEngine_Core/ManagePool_Error.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Packets_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Packets_Error.h>
+#include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
+#include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/XLog_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/XLog_Error.h>
-#include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
-#include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
-#include <XEngine_Include/XEngine_SystemSdk/ProcFile_Define.h>
-#include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
-#include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
 #include "../../XAuth_Protocol.h"
-#include "../../AuthorizeModule_Database/Database_Define.h"
-#include "../../AuthorizeModule_Database/Database_Error.h"
-#include "../../AuthorizeModule_Session/Session_Define.h"
-#include "../../AuthorizeModule_Session/Session_Error.h"
-#include "../../AuthorizeModule_Protocol/Protocol_Define.h"
-#include "../../AuthorizeModule_Protocol/Protocol_Error.h"
-#include "../../AuthorizeModule_Configure/Config_Define.h"
-#include "../../AuthorizeModule_Configure/Config_Error.h"
-#include "Authorize_Dialog/CDialog_Configure.h"
-#include "Authorize_Dialog/CDialog_Serial.h"
-#include "Authorize_Dialog/CDialog_User.h"
-#include "Authorize_Dialog/CDialog_Local.h"
-#include "Authorize_Dialog/CDialog_Info.h"
-#include "XEngine_AuthorizeAppDlg.h"
-#include "Authorize_Task/Authorize_TCPTask.h"
-#include "Authorize_Task/Authorize_WSTask.h"
-#include "Authorize_Task/Authorize_TaskLog.h"
-#include "Authorize_Task/Authorize_TaskNetwork.h"
-#include "Authorize_Task/Authorize_TaskEvent.h"
-
-#define XENGINE_AUTH_APP_NETTYPE_TCP 0
-#define XENGINE_AUTH_APP_NETTYPE_WS 1
-#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
-
-extern XLOG xhLog;
-extern XHANDLE xhTCPSocket;
-extern XHANDLE xhWSSocket;
-extern XHANDLE xhHttpSocket;
-extern XHANDLE xhTCPPacket;
-extern XHANDLE xhWSPacket;
-extern XHANDLE xhHttpPacket;
-extern XNETHANDLE xhTCPPool;
-extern XNETHANDLE xhWSPool;
-extern XNETHANDLE xhHttpPool;
-extern AUTHORIZE_CONFIGURE st_AuthConfig;
+#include "../../AuthorizeModule_Help/AuthHelp_Define.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Error.h"
+#include "Authorize_Dialog/Dialog_Config.h"
+#include "Authorize_Dialog/Dialog_User.h"
+#include "Authorize_Dialog/Dialog_Serial.h"
+#include "Authorize_Dialog/Dialog_Modify.h"
 
 extern HWND hUserWnd;
-
-typedef struct
-{
-	int nPoolIndex;
-	LPVOID lPClass;
-}XENGINE_THREADINFO;
-
-extern LPCSTR lpszKeyType[5];
+extern HWND hConfigWnd;
+extern LPCSTR lpszStuType[2];
+#if XENGINE_VERSION_BIT < 7390001001
+extern LPCSTR lpszXSerialType[5];
+extern LPCSTR lpszXDevType[9];
+extern LPCSTR lpszXLevelType[7];
+#endif
 
 #ifdef _DEBUG
 #ifdef _WIN64
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database")
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session")
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure")
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol")
+#pragma comment(lib,"../../x64/Debug/jsoncpp")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help")
 #else
-#pragma comment(lib,"../../Debug/AuthorizeModule_Database")
-#pragma comment(lib,"../../Debug/AuthorizeModule_Session")
-#pragma comment(lib,"../../Debug/AuthorizeModule_Configure")
-#pragma comment(lib,"../../Debug/AuthorizeModule_Protocol")
+#pragma comment(lib,"../../Debug/jsoncpp")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Help")
 #endif
 #else
 #ifdef _WIN64
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_Configure.lib")
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../x64/Release/jsoncpp")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Help")
 #else
-#pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
-#pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
-#pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
-#pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../Release/jsoncpp")
+#pragma comment(lib,"../../Release/AuthorizeModule_Help")
 #endif
 #endif
 
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_Core.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_ManagePool.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_OPenSsl.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
-#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
-#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
-#pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi.lib")
+#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp.lib")

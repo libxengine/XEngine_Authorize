@@ -3,14 +3,11 @@
 #include "pch.h"
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
-XLOG xhLog = NULL;
-XHANDLE xhTCPSocket = 0;
-XHANDLE xhWSSocket = 0;
-XHANDLE xhTCPPacket = 0;
-XHANDLE xhWSPacket = 0;
-XNETHANDLE xhTCPPool = 0;
-XNETHANDLE xhWSPool = 0;
-AUTHORIZE_CONFIGURE st_AuthConfig;
-
 HWND hUserWnd = NULL;
-LPCSTR lpszKeyType[5] = { "未知类型","分钟卡","天数卡","次数卡","自定义卡" };
+HWND hConfigWnd = NULL;
+LPCSTR lpszStuType[2] = { "离线","在线" };
+#if XENGINE_VERSION_BIT < 7390001001
+LPCSTR lpszXSerialType[5] = { "未知类型","分钟卡","天数卡","次数卡","自定义卡" };
+LPCSTR lpszXDevType[9] = { "未知","PC端","URFACE","安卓","IPAD","IOS","WEB","嵌入式","其他" };
+LPCSTR lpszXLevelType[7] = { "封禁","管理员","维护员","2","3","4","5" };
+#endif

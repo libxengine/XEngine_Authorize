@@ -173,7 +173,7 @@ BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG
     }
     pSt_AuthTime->nTimeLeft = stl_MapIterator->second.nLeftTime;
     pSt_AuthTime->nTimeONLine = stl_MapIterator->second.nOnlineTime;
-    pSt_AuthTime->enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+    pSt_AuthTime->enSerialType = stl_MapIterator->second.st_AuthUser.enSerialType;
 
     _tcscpy(pSt_AuthTime->tszUserName, lpszUserName);
     _tcscpy(pSt_AuthTime->tszLeftTime, stl_MapIterator->second.tszLeftTime);
@@ -438,7 +438,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
             //用户登录了多少分钟
             BaseLib_OperatorTimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_MINUTE);
             //登陆成功的。我们要处理他过期
-            switch (stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType)
+            switch (stl_MapIterator->second.st_AuthUser.enSerialType)
             {
             case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
             {
@@ -464,7 +464,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
                 //赋值给回调函数
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
-                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);
@@ -481,7 +481,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
                 //次数处理不做任何时间操作
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
-                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.st_AuthUser.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);
@@ -511,7 +511,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
 
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = nLeftTime;
-                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.en_AuthRegSerialType;
+                st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_AuthUser.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_AuthUser.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.st_AuthUser.tszLeftTime);
                 _tcscpy(st_ProtocolTimer.tszUserAddr, stl_MapIterator->second.tszClientAddr);

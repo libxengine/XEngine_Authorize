@@ -23,9 +23,9 @@ feature list:
 7. Support Serical Multie types(Minute card, day card, frequency card, custom card)
 8. Support Try,Support quick verification
 9. Support Retrieve password through email
-10. Support Verification for Local CDKey
-11. Support app program and html web Authorize
-12. Support Accesss Control
+10. Support app program and html web Authorize
+11. Support Accesss Control
+12. support http management api function,you can write web page to implement network authorize management interface by self
 
 ## install
 
@@ -42,7 +42,8 @@ Macos Exection:./XEngine_LINEnv.sh -i 3
 
 #### Windows
 use vs open and compile,suport windows 7sp1 and above  
-Just Run it,use XEngine_AuthorizeApp
+Just Run it,use XEngine_AuthorizeService  
+XEngine_AuthorizeApp is pc management tools
 
 #### Linux
 use makefile compile,UBUNTU20.04 x64 or CENTOS8 x64  

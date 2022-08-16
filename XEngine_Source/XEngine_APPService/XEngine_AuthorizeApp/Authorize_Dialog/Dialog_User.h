@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "afxdialogex.h"
 
 
 // CDialog_User 对话框
@@ -21,17 +22,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	void Dialog_User_Insert(LPCTSTR lpszClientAddr, LPCTSTR lpszRecvMsg, int nMsgLen);
-	void Dialog_User_Set(LPCTSTR lpszClientAddr, LPAUTHREG_USERTABLE pSt_UserTable);
-public:
-	CListCtrl m_ListCtrlOnlineClient;
 	virtual BOOL OnInitDialog();
+	CListCtrl m_ListCtrlClient;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
-	CEdit m_EidtSendMsg;
-	afx_msg void OnBnClickedButton5();
-	afx_msg void OnBnClickedCheck1();
-	CButton m_CheckAllUser;
 };

@@ -9,9 +9,17 @@ EXPORTS
 	Protocol_Packet_WSPktInfo
 	Protocol_Packet_WSPktTime
 	Protocol_Packet_WSPktNote
+	Protocol_Packet_HttpComm
+	Protocol_Packet_HttpClientInfo
+	Protocol_Packet_HttpClientList
+	Protocol_Packet_HttpSerialList
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_WSUserInfo
 	Protocol_Parse_WSUserAuth
 	Protocol_Parse_WSUserPay
 	Protocol_Parse_WSUserNote
+	Protocol_Parse_HttpParseUser
+	Protocol_Parse_HttpParseTable
+	Protocol_Parse_HttpParseSerial
+	Protocol_Parse_HttpParseSerial2

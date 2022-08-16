@@ -3,13 +3,13 @@ SHAREFLAG = -shared
 SHAREDLL = so
 RELEASE = 0
 UNICODE = 0
-INCLUDE = -I ./
+INCLUDE = -I ./ -I ../XEngine_ThirdPart/jsoncpp
 FILECENTOS = /etc/redhat-release
-LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib
-LIB = -lXEngine_BaseLib 
+LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L ../XEngine_ThirdPart/jsoncpp
+LIB = -lXEngine_BaseLib -ljsoncpp
 LIBEX = -ldl -lpthread
-LOADSO = -Wl,-rpath=
-LIBINCLUDE = Configure_ini.o pch.o
+LOADSO = -Wl,-rpath=./,--disable-new-dtags
+LIBINCLUDE = ModuleConfigure_Json.o pch.o
 
 ifeq ($(OS),Windows_NT)
 	SHAREFLAG = 0
@@ -41,11 +41,11 @@ endif
 all:$(LIBINCLUDE)
 	$(CC) $(DEBUG) $(LIBINCLUDE) -o libAuthorizeModule_Configure.$(SHAREDLL) $(SHAREFLAG) -fPIC $(LOADBIN) $(LIB) $(LIBEX) $(LOADSO)
 
-Configure_ini.o:./Configure_ini/Configure_ini.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./Configure_ini/Configure_ini.cpp
+ModuleConfigure_Json.o:./ModuleConfigure_Json/ModuleConfigure_Json.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./ModuleConfigure_Json/ModuleConfigure_Json.cpp
 	
 pch.o:pch.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) pch.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) pch.cpp
 
 InstallAll:InstallSo
 InstallSo:./libAuthorizeModule_Configure.$(SHAREDLL)

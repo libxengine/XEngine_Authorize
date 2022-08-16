@@ -3,5 +3,4 @@ LIBRARY
 EXPORTS
 	Config_GetLastError
 
-	Configure_IniFile_Read
-	Configure_IniFile_Write
+	ModuleConfigure_Json_File

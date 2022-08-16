@@ -14,16 +14,10 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="头文件\Authorize_Dialog">
-      <UniqueIdentifier>{ab0d008f-3879-4761-b815-ff47eddd113d}</UniqueIdentifier>
+      <UniqueIdentifier>{1de3f734-1dc7-4180-bb78-b75a27c55e42}</UniqueIdentifier>
     </Filter>
     <Filter Include="源文件\Authorize_Dialog">
-      <UniqueIdentifier>{3e0685fd-2319-4a3a-a8c3-e91a30a0f80f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="头文件\Authorize_Task">
-      <UniqueIdentifier>{06956eea-cfd3-4433-844b-3f27c761daa1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="源文件\Authorize_Task">
-      <UniqueIdentifier>{11110c09-15a0-4483-9f97-c097a8843404}</UniqueIdentifier>
+      <UniqueIdentifier>{2e171454-cfc6-43e4-8b9c-5374177f26b5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,34 +39,16 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Authorize_Dialog\CDialog_Configure.h">
+    <ClInclude Include="Authorize_Dialog\Dialog_User.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_TaskNetwork.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Dialog\CDialog_Serial.h">
+    <ClInclude Include="Authorize_Dialog\Dialog_Config.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Authorize_Dialog\CDialog_User.h">
+    <ClInclude Include="Authorize_Dialog\Dialog_Serial.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_TaskLog.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_TaskEvent.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Dialog\CDialog_Local.h">
-      <Filter>头文件\Authorize_Dialog</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_TCPTask.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Task\Authorize_WSTask.h">
-      <Filter>头文件\Authorize_Task</Filter>
-    </ClInclude>
-    <ClInclude Include="Authorize_Dialog\CDialog_Info.h">
+    <ClInclude Include="Authorize_Dialog\Dialog_Modify.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
   </ItemGroup>
@@ -86,34 +62,16 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Authorize_Dialog\CDialog_Configure.cpp">
+    <ClCompile Include="Authorize_Dialog\Dialog_Config.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_TaskNetwork.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Dialog\CDialog_Serial.cpp">
+    <ClCompile Include="Authorize_Dialog\Dialog_Serial.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Authorize_Dialog\CDialog_User.cpp">
+    <ClCompile Include="Authorize_Dialog\Dialog_User.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_TaskLog.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_TaskEvent.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Dialog\CDialog_Local.cpp">
-      <Filter>源文件\Authorize_Dialog</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_TCPTask.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Task\Authorize_WSTask.cpp">
-      <Filter>源文件\Authorize_Task</Filter>
-    </ClCompile>
-    <ClCompile Include="Authorize_Dialog\CDialog_Info.cpp">
+    <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
   </ItemGroup>

@@ -28,10 +28,6 @@
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME 0x200C
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQTRYVER 0x200D       //临时验证协议请求
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPTRYVER 0x200E
-#define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETUSER 0x2010      //获取用户信息请求协议
-#define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETUSER 0x2011
-#define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQSETUSER 0x2012      //设置用户信息请求协议
-#define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPSETUSER 0x2013
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_NOTIFYMSG 0x2FF0       //数据
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT 0x2FFF        //通知客户端时间到期
 //////////////////////////////////////////////////////////////////////////
@@ -60,7 +56,7 @@ typedef struct tag_AuthReg_UserTable
 	XENGINE_PROTOCOL_USERINFO st_UserInfo;
 	CHAR tszLeftTime[64];                                                 //剩余日期
 	CHAR tszHardCode[32];                                                 //硬件码
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;               //充值卡类型
 	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                                //设备类型
 }AUTHREG_USERTABLE, * LPAUTHREG_USERTABLE;
 //注册序列号表
@@ -69,7 +65,7 @@ typedef struct tag_AuthReg_SerialTable
 	CHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //使用者是谁
 	CHAR tszSerialNumber[128];                                            //序列号
 	CHAR tszMaxTime[64];                                                  //使用时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthRegSerialType;       //充值卡类型
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;               //充值卡类型
 	BOOL bIsUsed;                                                         //是否已经使用
 	CHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;

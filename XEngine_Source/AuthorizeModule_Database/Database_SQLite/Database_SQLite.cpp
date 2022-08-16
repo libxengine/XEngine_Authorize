@@ -165,7 +165,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
         return FALSE;
     }
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,5,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->en_AuthRegSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,5,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
@@ -237,7 +237,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
         _tcscpy(pSt_UserInfo->tszHardCode, ppszResult[nFliedValue]);
         //充值卡类型
         nFliedValue++;
-        pSt_UserInfo->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
+        pSt_UserInfo->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //QQ号
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nPhoneNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
@@ -309,28 +309,28 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
         return FALSE;
     }
     //分析插入方式
-    switch (st_SerialTable.en_AuthRegSerialType)
+    switch (st_SerialTable.enSerialType)
     {
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return FALSE;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.en_AuthRegSerialType, st_UserTable.en_AuthRegSerialType))
+        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return FALSE;
         }
@@ -426,7 +426,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     TCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',EmailAddr = '%s',PhoneNumber = '%lld',IDCard = '%lld',LeftTime = '%s',CardSerialType = '%d',nUserLevel = '%d' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->tszLeftTime, pSt_UserTable->en_AuthRegSerialType, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszUserName);
+    _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -500,7 +500,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
 		_tcscpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
 		//充值卡类型
 		nFliedValue++;
-        (*pppSt_UserInfo)[i]->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
+        (*pppSt_UserInfo)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
 		//QQ号
 		nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nPhoneNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
@@ -669,7 +669,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAU
         _tcscpy(pSt_SerialTable->tszMaxTime,ppszResult[nFliedValue]);
         //序列卡类型
         nFliedValue++;
-        pSt_SerialTable->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
+        pSt_SerialTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttoi(ppszResult[nFliedValue]);
@@ -741,7 +741,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***ppp
         _tcscpy((*pppSt_SerialTable)[i]->tszMaxTime,ppszResult[nFliedValue]);
         nFliedValue++;
         //序列卡类型
-        (*pppSt_SerialTable)[i]->en_AuthRegSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
+        (*pppSt_SerialTable)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //是否已经使用
         (*pppSt_SerialTable)[i]->bIsUsed = _ttoi(ppszResult[nFliedValue]);

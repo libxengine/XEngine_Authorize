@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "afxdialogex.h"
 
 
 // CDialog_Serial 对话框
@@ -21,15 +22,14 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	void SerialManage_Flush();
-public:
+	virtual BOOL OnInitDialog();
 	CListCtrl m_ListSerial;
 	CComboBox m_ComboSerialType;
 	CComboBox m_ComboNumber;
-	CEdit m_EditHowCard;
-	CEdit m_EditCardTime;
-	virtual BOOL OnInitDialog();
+	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
-	afx_msg void OnBnClickedButton3();
+	CEdit m_EditSerialCount;
+	CEdit m_EditHasTime;
 	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton3();
 };
