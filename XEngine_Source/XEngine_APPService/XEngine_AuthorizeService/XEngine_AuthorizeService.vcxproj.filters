@@ -45,6 +45,12 @@
     <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_User.cpp">
       <Filter>源文件\AuthorizeHTTP_User</Filter>
     </ClCompile>
+    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Client.cpp">
+      <Filter>源文件\AuthorizeHTTP_User</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Serial.cpp">
+      <Filter>源文件\AuthorizeHTTP_User</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -69,6 +75,12 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_User.h">
+      <Filter>头文件\AuthorizeHTTP_User</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Client.h">
+      <Filter>头文件\AuthorizeHTTP_User</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Serial.h">
       <Filter>头文件\AuthorizeHTTP_User</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen)
+BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
 	TCHAR tszSDBuffer[4096];
