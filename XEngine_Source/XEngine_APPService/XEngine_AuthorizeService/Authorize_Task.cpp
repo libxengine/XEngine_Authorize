@@ -5,7 +5,11 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 {
 	if (nLeftTimer <= 0)
 	{
+		int nMsgLen = 0;
+		TCHAR tszMsgBuffer[1024];
 		XENGINE_PROTOCOLHDR st_ProtocolHdr;
+
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 		memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
 		st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
@@ -13,12 +17,13 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
 		st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("用户:%s,地址:%s,没有剩余时间,已经通知客户单超时\r\n"), lpszUserName, lpszUserAddr);
-		XEngine_Client_TaskSend(lpszUserAddr, &st_ProtocolHdr, enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC ? XENGINE_AUTH_APP_NETTYPE_TCP : XENGINE_AUTH_APP_NETTYPE_WS);
+		Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, enDeviceType);
+		XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC ? XENGINE_AUTH_APP_NETTYPE_TCP : XENGINE_AUTH_APP_NETTYPE_WS);
 
 		if (!st_AuthConfig.bTimeNotify)
 		{
 			XEngine_CloseClient(lpszUserAddr);
 		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("用户:%s,地址:%s,没有剩余时间,已经通知客户单超时"), lpszUserName, lpszUserAddr);
 	}
 }
