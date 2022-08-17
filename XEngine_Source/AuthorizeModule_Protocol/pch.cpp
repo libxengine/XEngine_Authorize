@@ -59,6 +59,14 @@ extern "C" BOOL Protocol_Packet_HttpComm(TCHAR * ptszMsgBuffer, int* pInt_MsgLen
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpComm(ptszMsgBuffer, pInt_MsgLen, nCode, lpszMsgBuffer);
 }
+extern "C" BOOL Protocol_Packet_HttpUserPass(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth);
+}
+extern "C" BOOL Protocol_Packet_HttpUserTime(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpUserTime(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolTime);
+}
 extern "C" BOOL Protocol_Packet_HttpClientInfo(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE * pSt_UserTable)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpClientInfo(ptszMsgBuffer, pInt_MsgLen, pSt_UserTable);
@@ -94,9 +102,17 @@ extern "C" BOOL Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgLen, XE
 {
 	return m_ProtocolParse.Protocol_Parse_WSUserNote(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr, ptszMsgBuffer, pInt_MsgLen);
 }
+extern "C" BOOL Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, pSt_UserAuth);
+}
 extern "C" BOOL Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO * pSt_UserInfo)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, pSt_UserInfo);
+}
+extern "C" BOOL Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY * pSt_UserPay)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, pSt_UserPay);
 }
 extern "C" BOOL Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE * pSt_UserTable)
 {

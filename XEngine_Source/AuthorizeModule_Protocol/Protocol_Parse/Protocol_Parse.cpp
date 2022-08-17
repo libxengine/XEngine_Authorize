@@ -380,6 +380,70 @@ BOOL CProtocol_Parse::Protocol_Parse_WSUserNote(LPCTSTR lpszMsgBuffer, int nMsgL
 	return TRUE;
 }
 /********************************************************************
+函数名称：Protocol_Parse_HttpParseAuth
+函数功能：用户验证解析协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_UserAuth
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserAuth))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonProtocol = st_JsonRoot["st_UserAuth"];
+
+	if (!st_JsonProtocol["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_UserAuth->tszUserName, st_JsonProtocol["tszUserName"].asCString());
+	}
+	if (!st_JsonProtocol["tszUserPass"].isNull())
+	{
+		_tcscpy(pSt_UserAuth->tszUserPass, st_JsonProtocol["tszUserPass"].asCString());
+	}
+	if (!st_JsonProtocol["enClientType"].isNull())
+	{
+		pSt_UserAuth->enClientType = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["enClientType"].asInt();
+	}
+	if (!st_JsonProtocol["enDeviceType"].isNull())
+	{
+		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	return TRUE;
+}
+/********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户信息
  参数.一：lpszMsgBuffer
@@ -463,7 +527,63 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nM
 	return TRUE;
 }
 /********************************************************************
-函数名称：Protocol_Parse_HttpParseUser
+函数名称：Protocol_Parse_HttpParsePay
+函数功能：解析用户表信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_UserPay
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserPay))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonProtocol = st_JsonRoot["st_UserPay"];
+
+	if (!st_JsonProtocol["tszSerialNumber"].isNull())
+	{
+		_tcscpy(pSt_UserPay->tszSerialNumber, st_JsonProtocol["tszSerialNumber"].asCString());
+	}
+	if (!st_JsonProtocol["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_UserPay->tszUserName, st_JsonProtocol["tszUserName"].asCString());
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseTable
 函数功能：解析用户表信息
  参数.一：lpszMsgBuffer
   In/Out：In
