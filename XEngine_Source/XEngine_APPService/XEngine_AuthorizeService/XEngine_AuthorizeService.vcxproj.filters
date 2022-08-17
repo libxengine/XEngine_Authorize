@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\AuthorizeHTTP_User">
+      <UniqueIdentifier>{231f0180-8395-4f8f-a44d-07adc15d00c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthorizeHTTP_User">
+      <UniqueIdentifier>{a1457b48-ef98-424b-abc3-662a362b1805}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XEngine_AuthorizeService.cpp">
@@ -36,6 +42,9 @@
     <ClCompile Include="Authorize_HttpTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_User.cpp">
+      <Filter>源文件\AuthorizeHTTP_User</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -58,6 +67,9 @@
     </ClInclude>
     <ClInclude Include="Authorize_HttpTask.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_User.h">
+      <Filter>头文件\AuthorizeHTTP_User</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
