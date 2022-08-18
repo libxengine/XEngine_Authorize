@@ -6,7 +6,6 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 	TCHAR tszSDBuffer[4096];
 	LPCTSTR lpszAPIDelete = _T("delete");
 	LPCTSTR lpszAPIRegister = _T("register");
-	LPCTSTR lpszAPILogin = _T("login");
 	LPCTSTR lpszAPIPay = _T("pay");
 	LPCTSTR lpszAPIPass = _T("pass");
 	LPCTSTR lpszAPITime = _T("time");
@@ -52,58 +51,6 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
-	}
-	else if (0 == _tcsnicmp(lpszAPIName, lpszAPILogin, _tcslen(lpszAPIName)))
-	{
-		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
-
-		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-
-		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_AuthProtocol);
-
-		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
-		if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
-		}
-		if ((_tcslen(st_AuthProtocol.tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass))))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
-		}
-		//是否被封禁
-		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User has been banned");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
-		}
-		//分析充值类型
-		if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user pay is timeout");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，没有剩余时间了"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
-		}
-		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "service internal error");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName, Session_GetLastError());
-			return FALSE;
-		}
-		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录成功,注册类型:%d,剩余时间:%s"), lpszClientAddr, st_AuthProtocol.tszUserName, st_UserTable.enSerialType, st_UserTable.tszLeftTime);
 	}
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPIPay, _tcslen(lpszAPIName)))
 	{
