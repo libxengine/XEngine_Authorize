@@ -78,6 +78,10 @@ extern "C" BOOL Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMsgLen, 
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, pSt_UserPay);
 }
+extern "C" BOOL Protocol_Parse_HttpParseTry(LPCTSTR lpszMsgBuffer, int nMsgLen, TCHAR * ptszSerial)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, ptszSerial);
+}
 extern "C" BOOL Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE * pSt_UserTable)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, pSt_UserTable);

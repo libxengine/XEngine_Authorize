@@ -186,7 +186,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		AUTHREG_NETVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_NETVER));
 
-		memcpy(st_AuthVer.tszVerSerial, lpszMsgBuffer, nMsgLen);
+		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, st_AuthVer.tszVerSerial);
 		if (Database_SQLite_TryQuery(&st_AuthVer))
 		{
 			TCHAR tszEndTime[64];
@@ -228,8 +228,8 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 			//填充写入数据
 			st_AuthVer.nTryTime = st_AuthConfig.st_XVerification.nVerTime;
 			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
-			//看下是否启用了此功能
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
+			//看下是否启用了此功能,不支持分钟,因为不登录
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

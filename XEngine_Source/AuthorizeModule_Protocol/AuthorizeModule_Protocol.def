@@ -15,6 +15,7 @@ EXPORTS
 	Protocol_Parse_HttpParseAuth
 	Protocol_Parse_HttpParseUser
 	Protocol_Parse_HttpParsePay
+	Protocol_Parse_HttpParseTry
 	Protocol_Parse_HttpParseTable
 	Protocol_Parse_HttpParseSerial
 	Protocol_Parse_HttpParseSerial2
