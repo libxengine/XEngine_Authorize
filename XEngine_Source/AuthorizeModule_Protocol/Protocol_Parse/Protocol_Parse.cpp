@@ -324,10 +324,23 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	Json::Value st_UserTable = st_JsonRoot["st_UserTable"];
 	Json::Value st_UserInfo = st_UserTable["st_UserInfo"];
 
-	pSt_UserTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
-	pSt_UserTable->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_UserTable["enDeviceType"].asInt();
-	_tcscpy(pSt_UserTable->tszHardCode, st_UserTable["tszHardCode"].asCString());
-	_tcscpy(pSt_UserTable->tszLeftTime, st_UserTable["tszLeftTime"].asCString());
+	if (!st_UserTable["enSerialType"].isNull())
+	{
+		pSt_UserTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
+	}
+	if (!st_UserTable["enDeviceType"].isNull())
+	{
+		pSt_UserTable->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_UserTable["enDeviceType"].asInt();
+	}
+	if (!st_UserTable["tszHardCode"].isNull())
+	{
+		_tcscpy(pSt_UserTable->tszHardCode, st_UserTable["tszHardCode"].asCString());
+	}
+	if (!st_UserTable["tszLeftTime"].isNull())
+	{
+		_tcscpy(pSt_UserTable->tszLeftTime, st_UserTable["tszLeftTime"].asCString());
+	}
+	
 	if (!st_UserInfo["tszUserName"].isNull())
 	{
 		_tcscpy(pSt_UserTable->st_UserInfo.tszUserName, st_UserInfo["tszUserName"].asCString());
