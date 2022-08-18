@@ -9,7 +9,8 @@ LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool 
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -ljsoncpp
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
-LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o
+LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
+             AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o
 
 ifeq ($(OS),Windows_NT)
 else
@@ -52,6 +53,13 @@ Authorize_WSTask.o:./Authorize_WSTask.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./Authorize_WSTask.cpp
 Authorize_HttpTask.o:./Authorize_HttpTask.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./Authorize_HttpTask.cpp
+
+AuthorizeHTTP_Client.o:./AuthorizeHTTP/AuthorizeHTTP_Client.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP/AuthorizeHTTP_Client.cpp
+AuthorizeHTTP_Serial.o:./AuthorizeHTTP/AuthorizeHTTP_Serial.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP/AuthorizeHTTP_Serial.cpp
+AuthorizeHTTP_User.o:./AuthorizeHTTP/AuthorizeHTTP_User.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP/AuthorizeHTTP_User.cpp
 
 XEngine_AuthorizeService.o:./XEngine_AuthorizeService.cpp             
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./XEngine_AuthorizeService.cpp   

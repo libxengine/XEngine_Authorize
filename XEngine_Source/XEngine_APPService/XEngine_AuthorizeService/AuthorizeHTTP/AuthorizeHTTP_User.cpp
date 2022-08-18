@@ -4,6 +4,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 {
 	int nSDLen = 4096;
 	TCHAR tszSDBuffer[4096];
+	LPCTSTR lpszAPIDelete = _T("delete");
 	LPCTSTR lpszAPIRegister = _T("register");
 	LPCTSTR lpszAPILogin = _T("login");
 	LPCTSTR lpszAPIPay = _T("pay");
@@ -12,13 +13,31 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 	LPCTSTR lpszAPITry = _T("try");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-	if (0 == _tcsnicmp(lpszAPIName, lpszAPIRegister, _tcslen(lpszAPIName)))
+
+	if (0 == _tcsnicmp(lpszAPIName, lpszAPIDelete, _tcslen(lpszAPIName)))
+	{
+		TCHAR tszClientAddr[128];
+		XENGINE_PROTOCOL_USERINFO st_UserInfo;
+
+		memset(tszClientAddr, '\0', sizeof(tszClientAddr));
+		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
+
+		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+
+		Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr);
+		XEngine_CloseClient(tszClientAddr);
+		Database_SQLite_UserDelete(st_UserInfo.tszUserName);
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求删除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
+	}
+	else if (0 == _tcsnicmp(lpszAPIName, lpszAPIRegister, _tcslen(lpszAPIName)))
 	{
 		//用户注册
 		AUTHREG_USERTABLE st_UserTable;
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserTable.st_UserInfo);
+		Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, &st_UserTable);
 		//填充写入数据
 		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_XVerification.nTryTime);
 		st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
@@ -119,7 +138,6 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
-
 		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");

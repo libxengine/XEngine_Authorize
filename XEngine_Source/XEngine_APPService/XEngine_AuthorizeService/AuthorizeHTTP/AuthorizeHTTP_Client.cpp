@@ -8,7 +8,6 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	LPCTSTR lpszAPIList = _T("list");
 	LPCTSTR lpszAPIClose = _T("close");
 	LPCTSTR lpszAPIModify = _T("modify");
-	LPCTSTR lpszAPIDelete = _T("delete");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
@@ -93,23 +92,6 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求修改用户信息:%s 成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
-	}
-	else if (0 == _tcsnicmp(lpszAPIDelete, lpszAPIName, _tcslen(lpszAPIDelete)))
-	{
-		TCHAR tszClientAddr[128];
-		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-
-		memset(tszClientAddr, '\0', sizeof(tszClientAddr));
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
-
-		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
-
-		Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr);
-		XEngine_CloseClient(tszClientAddr);
-		Database_SQLite_UserDelete(st_UserInfo.tszUserName);
-		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求删除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	return TRUE;
 }
