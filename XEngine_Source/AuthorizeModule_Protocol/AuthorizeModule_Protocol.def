@@ -10,6 +10,7 @@ EXPORTS
 	Protocol_Packet_HttpClientInfo
 	Protocol_Packet_HttpClientList
 	Protocol_Packet_HttpSerialList
+	Protocol_Packet_HttpToken
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_HttpParseAuth

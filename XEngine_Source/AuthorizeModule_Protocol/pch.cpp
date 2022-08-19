@@ -59,6 +59,10 @@ extern "C" BOOL Protocol_Packet_HttpSerialList(TCHAR * ptszMsgBuffer, int* pInt_
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpSerialList(ptszMsgBuffer, pInt_MsgLen, pppSt_SerialList, nListCount);
 }
+extern "C" BOOL Protocol_Packet_HttpToken(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
