@@ -14,13 +14,14 @@
 //                         导出的回调函数
 //////////////////////////////////////////////////////////////////////////
 //用户在线时间事件回调处理函数，用户名 在线时间 剩余时间（分,天） 注册的卡类型 自定义参数
-typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, LPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, LPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS)(XNETHANDLE xhToken, LPVOID lParam);
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
 extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
-/*                         网络服务导出函数                             */
+/*                         网络验证导出函数                             */
 /************************************************************************/
 /********************************************************************
 函数名称：Session_Authorize_Init
@@ -40,7 +41,7 @@ extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
   意思：是否初始化成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
+extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
 /********************************************************************
 函数名称：Session_Authorize_GetClient
 函数功能：获取客户端信息
@@ -178,3 +179,72 @@ extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABL
 备注：
 *********************************************************************/
 extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
+/************************************************************************/
+/*                         TOKEN会话导出函数                            */
+/************************************************************************/
+/********************************************************************
+函数名称：Session_Token_Init
+函数功能：初始化会话
+ 参数.一：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：超时时间,单位秒
+ 参数.二：fpCall_AuthEvent
+  In/Out：In/Out
+  类型：回调函数
+  可空：N
+  意思：TOKEN登录的客户端连接超时回调
+ 参数.三：lParam
+  In/Out：In/Out
+  类型：无类型指针
+  可空：Y
+  意思：回调函数自定义参数
+返回值
+  类型：逻辑型
+  意思：是否初始化成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam = NULL);
+/********************************************************************
+函数名称：Session_Token_Destroy
+函数功能：销毁服务
+返回值
+  类型：逻辑型
+  意思：是否销毁成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_Destroy();
+/********************************************************************
+函数名称：Session_Authorize_Insert
+函数功能：用户登陆协议分析
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+ 参数.二：pSt_UserTable
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：用户信息表
+返回值
+  类型：逻辑型
+  意思：是否允许登陆
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable);
+/********************************************************************
+函数名称：Session_Token_Delete
+函数功能：移除一个客户端
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+返回值
+  类型：逻辑型
+  意思：是否移除成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken);

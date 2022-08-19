@@ -12,3 +12,8 @@ EXPORTS
 	Session_Authorize_Destroy
 	Session_Authorize_Insert
 	Session_Authorize_SetUser
+
+	Session_Token_Init
+	Session_Token_Destroy
+	Session_Token_Insert
+	Session_Token_Delete

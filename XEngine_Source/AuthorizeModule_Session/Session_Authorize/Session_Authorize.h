@@ -26,7 +26,7 @@ public:
     CSession_Authorize();
     ~CSession_Authorize();
 public:
-    BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
+    BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
     BOOL Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr = NULL);
     BOOL Session_Authorize_GetTimer(LPCTSTR lpszUserName, AUTHREG_PROTOCOL_TIME* pSt_AuthTime);
     BOOL Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser,TCHAR *ptszClientAddr);
@@ -43,7 +43,7 @@ private:
     shared_ptr<std::thread> pSTDThread_hActive;                 //时间计算器线程句柄
 private:
     LPVOID m_lParam;
-    CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS lpCall_AuthregEvents;
+    CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS lpCall_AuthregEvents;
 private:
     shared_mutex st_Locker;
 private:

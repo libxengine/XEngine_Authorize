@@ -39,7 +39,7 @@ CSession_Authorize::~CSession_Authorize()
   意思：是否初始化成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam /* = NULL */)
+BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 

@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "Session_Authorize/Session_Authorize.h"
+#include "Session_Token/Session_Token.h"
 /********************************************************************
 //    Created:     2022/05/26  10:53:58
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Session\pch.cpp
@@ -15,6 +16,7 @@ BOOL Session_IsErrorOccur = FALSE;
 DWORD Session_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CSession_Authorize m_Session;
+CSession_Token m_SessionToken;
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
@@ -29,7 +31,7 @@ extern "C" DWORD Session_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                         网络服务导出函数                             */
 /************************************************************************/
-extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent, LPVOID lParam)
+extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent, LPVOID lParam)
 {
 	return m_Session.Session_Authorize_Init(fpCall_AuthEvent, lParam);
 }
@@ -64,4 +66,23 @@ extern "C" BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTAB
 extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE * pSt_UserTable)
 {
 	return m_Session.Session_Authorize_SetUser(pSt_UserTable);
+}
+/************************************************************************/
+/*                         TOKEN会话导出函数                            */
+/************************************************************************/
+extern "C" BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam)
+{
+	return m_SessionToken.Session_Token_Init(nTimeout, fpCall_AuthEvent, lParam);
+}
+extern "C" BOOL Session_Token_Destroy()
+{
+	return m_SessionToken.Session_Token_Destroy();
+}
+extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE * pSt_UserTable)
+{
+	return m_SessionToken.Session_Token_Insert(xhToken, pSt_UserTable);
+}
+extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken)
+{
+	return m_SessionToken.Session_Token_Delete(xhToken);
 }

@@ -164,6 +164,7 @@
     <ClInclude Include="Session_Authorize\Session_Authorize.h" />
     <ClInclude Include="Session_Define.h" />
     <ClInclude Include="Session_Error.h" />
+    <ClInclude Include="Session_Token\Session_Token.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -174,6 +175,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Session_Authorize\Session_Authorize.cpp" />
+    <ClCompile Include="Session_Token\Session_Token.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="AuthorizeModule_Session.def" />

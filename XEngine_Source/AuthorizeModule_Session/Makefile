@@ -9,7 +9,7 @@ LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib
 LIB = -lXEngine_BaseLib 
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=
-LIBINCLUDE = Session_Authorize.o pch.o
+LIBINCLUDE = Session_Authorize.o Session_Token.o pch.o
 
 ifeq ($(OS),Windows_NT)
 else
@@ -42,6 +42,8 @@ all:$(LIBINCLUDE)
 
 Session_Authorize.o:./Session_Authorize/Session_Authorize.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./Session_Authorize/Session_Authorize.cpp
+Session_Token.o:./Session_Token/Session_Token.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(INCLUDE) ./Session_Token/Session_Token.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) pch.cpp
