@@ -52,7 +52,7 @@ BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, X
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_ProtocolHdr))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -63,7 +63,7 @@ BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, X
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	pSt_ProtocolHdr->wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
@@ -72,6 +72,59 @@ BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, X
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseToken
+函数功能：解析TOKEN
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pxhToken
+  In/Out：Out
+  类型：句柄
+  可空：N
+  意思：输出解析到的TOKEN值
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCTSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pxhToken))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	if (st_JsonRoot["xhToken"].isNull())
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	*pxhToken = st_JsonRoot["xhToken"].asUInt64();
 	return TRUE;
 }
 /********************************************************************
@@ -104,7 +157,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nM
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserAuth))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -115,7 +168,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nM
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserAuth"];
@@ -168,7 +221,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nM
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserInfo))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -179,7 +232,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nM
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserInfo"];
@@ -251,7 +304,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMs
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserPay))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -262,7 +315,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMs
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserPay"];
@@ -307,7 +360,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCTSTR lpszMsgBuffer, int nMs
 	if ((NULL == lpszMsgBuffer) || (NULL == ptszSerial))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -318,7 +371,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCTSTR lpszMsgBuffer, int nMs
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
@@ -359,7 +412,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserTable))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -370,7 +423,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_UserTable = st_JsonRoot["st_UserTable"];
@@ -466,7 +519,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int 
 	if ((NULL == lpszMsgBuffer) || (NULL == pppSt_SerialTable))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -477,7 +530,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int 
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	*pInt_ListCount = st_JsonRoot["Array"].size();
@@ -557,7 +610,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int
 	if ((NULL == lpszMsgBuffer) || (NULL == penSerialType))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -568,7 +621,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARSE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];

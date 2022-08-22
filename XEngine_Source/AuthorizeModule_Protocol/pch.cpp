@@ -70,6 +70,10 @@ extern "C" BOOL Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE
 {
 	return m_ProtocolParse.Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, pSt_ProtocolHdr);
 }
+extern "C" BOOL Protocol_Parse_HttpParseToken(LPCTSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE * pxhToken)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, pxhToken);
+}
 extern "C" BOOL Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, pSt_UserAuth);

@@ -57,7 +57,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_M
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	if (0 == enDeviceType)
@@ -115,7 +115,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -165,7 +165,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* p
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -214,7 +214,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* p
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -264,7 +264,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -342,7 +342,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -450,7 +450,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -510,7 +510,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;

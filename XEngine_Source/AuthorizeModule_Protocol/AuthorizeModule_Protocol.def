@@ -13,6 +13,7 @@ EXPORTS
 	Protocol_Packet_HttpToken
 
 	Protocol_Parse_WSHdr
+	Protocol_Parse_HttpParseToken
 	Protocol_Parse_HttpParseAuth
 	Protocol_Parse_HttpParseUser
 	Protocol_Parse_HttpParsePay

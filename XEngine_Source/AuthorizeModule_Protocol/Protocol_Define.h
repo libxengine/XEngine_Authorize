@@ -272,6 +272,30 @@ extern "C" BOOL Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt_MsgLen
 *********************************************************************/
 extern "C" BOOL Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr);
 /********************************************************************
+函数名称：Protocol_Parse_HttpParseToken
+函数功能：解析TOKEN
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pxhToken
+  In/Out：Out
+  类型：句柄
+  可空：N
+  意思：输出解析到的TOKEN值
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Protocol_Parse_HttpParseToken(LPCTSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken);
+/********************************************************************
 函数名称：Protocol_Parse_HttpParseAuth
 函数功能：用户验证解析协议
  参数.一：lpszMsgBuffer

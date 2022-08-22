@@ -34,7 +34,6 @@ void ServiceApp_Stop(int signo)
 			}
 			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
 		}
-
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		RfcComponents_HttpServer_DestroyEx(xhHttpPacket);
@@ -49,6 +48,7 @@ void ServiceApp_Stop(int signo)
 
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
+		Session_Token_Destroy();
 		Database_SQLite_Destroy();
 		exit(0);
 	}
@@ -138,11 +138,17 @@ int main(int argc, char** argv)
 
 	if (!Session_Authorize_Init(XEngine_TaskEvent_Client))
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化会话服务失败，错误：%lX"), Session_GetLastError());
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化会话客户端服务失败，错误：%lX"), Session_GetLastError());
 		goto XENGINE_EXITAPP;
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话服务成功"));
-
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话客户端服务成功"));
+	if (!Session_Token_Init(st_AuthConfig.st_XVerification.nTokenTimeout, XEngine_TaskEvent_Token))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化会话TOKEN服务失败，错误：%lX"), Session_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话TOKEN服务成功"));
+	
 	xhTCPPacket = HelpComponents_Datas_Init(st_AuthConfig.st_XMax.nMaxQueue, st_AuthConfig.st_XMax.nTCPThread);
 	if (NULL == xhTCPPacket)
 	{
@@ -256,6 +262,7 @@ XENGINE_EXITAPP:
 
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
+		Session_Token_Destroy();
 		Database_SQLite_Destroy();
 		exit(0);
 	}

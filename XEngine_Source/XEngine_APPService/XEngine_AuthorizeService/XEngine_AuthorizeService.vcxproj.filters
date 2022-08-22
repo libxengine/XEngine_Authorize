@@ -13,10 +13,10 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\AuthorizeHTTP_User">
+    <Filter Include="头文件\AuthorizeHTTP">
       <UniqueIdentifier>{231f0180-8395-4f8f-a44d-07adc15d00c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\AuthorizeHTTP_User">
+    <Filter Include="源文件\AuthorizeHTTP">
       <UniqueIdentifier>{a1457b48-ef98-424b-abc3-662a362b1805}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -43,13 +43,13 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_User.cpp">
-      <Filter>源文件\AuthorizeHTTP_User</Filter>
+      <Filter>源文件\AuthorizeHTTP</Filter>
     </ClCompile>
     <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Client.cpp">
-      <Filter>源文件\AuthorizeHTTP_User</Filter>
+      <Filter>源文件\AuthorizeHTTP</Filter>
     </ClCompile>
     <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Serial.cpp">
-      <Filter>源文件\AuthorizeHTTP_User</Filter>
+      <Filter>源文件\AuthorizeHTTP</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -75,13 +75,13 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_User.h">
-      <Filter>头文件\AuthorizeHTTP_User</Filter>
+      <Filter>头文件\AuthorizeHTTP</Filter>
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Client.h">
-      <Filter>头文件\AuthorizeHTTP_User</Filter>
+      <Filter>头文件\AuthorizeHTTP</Filter>
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Serial.h">
-      <Filter>头文件\AuthorizeHTTP_User</Filter>
+      <Filter>头文件\AuthorizeHTTP</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
