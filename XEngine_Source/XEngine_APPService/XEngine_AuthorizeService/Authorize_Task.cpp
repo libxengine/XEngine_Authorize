@@ -1,6 +1,5 @@
 ﻿#include "Authorize_Hdr.h"
 
-LPCSTR lpszKeyType[] = { "未知类型","分钟卡","天数卡","次数卡","自定义卡" };
 void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, LPVOID lParam)
 {
 	if (nLeftTimer <= 0)
@@ -24,6 +23,11 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		{
 			XEngine_CloseClient(lpszUserAddr);
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("用户:%s,地址:%s,没有剩余时间,已经通知客户单超时"), lpszUserName, lpszUserAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,没有剩余时间,已经通知客户单超时"), lpszUserName, lpszUserAddr);
 	}
+}
+void __stdcall XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
+{
+	Session_Token_Delete(xhToken);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("Token:%lld,已经超时,被移除服务器"), xhToken);
 }

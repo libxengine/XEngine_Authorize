@@ -47,6 +47,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		TCHAR tszAPIType[64];
 		TCHAR tszAPIVer[64];
 		TCHAR tszAPIName[64];
+		XNETHANDLE xhToken = 0;
 		LPCTSTR lpszAPIType = _T("auth");
 		LPCTSTR lpszAPIVerClient = _T("client");
 		LPCTSTR lpszAPIVerSerial = _T("serial");
@@ -64,6 +65,15 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 不支持"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return FALSE;
 		}
+		//验证权限
+		if (!Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request url is incorrent");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 不支持"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+			return FALSE;
+		}
+
 		if (0 == _tcsnicmp(lpszAPIVerClient, tszAPIVer, _tcslen(lpszAPIVerClient)))
 		{
 			XEngine_AuthorizeHTTP_Client(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
@@ -119,25 +129,30 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，用户名不存在"), lpszClientAddr);
 				return FALSE;
 			}
 			if ((_tcslen(tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(tszUserPass))))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，密码错误"), lpszClientAddr);
 				return FALSE;
 			}
 			//权限必须足够
 			if (0 != st_UserTable.st_UserInfo.nUserLevel)
 			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User has been banned");
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User permission error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，客户端已被封禁"), lpszClientAddr);
 				return FALSE;
 			}
-
+			XNETHANDLE xhToken = 0;
+			BaseLib_OperatorHandle_Create(&xhToken);
+			Session_Token_Insert(xhToken, &st_UserTable);
+			Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求登录获得TOKEN:%lld 成功"), lpszClientAddr, xhToken);
 		}
 	}
 	else
