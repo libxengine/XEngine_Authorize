@@ -17,3 +17,5 @@ EXPORTS
 	Session_Token_Destroy
 	Session_Token_Insert
 	Session_Token_Delete
+	Session_Token_UPDate
+	Session_Token_Get

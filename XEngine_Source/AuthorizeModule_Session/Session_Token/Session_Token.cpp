@@ -51,7 +51,7 @@ BOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE
     if (NULL == fpCall_AuthEvent)
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INIT_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     m_nTimeout = nTimeout;
@@ -65,7 +65,7 @@ BOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE
     {
         bIsRun = FALSE;
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INIT_CREATETHREAD;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_CREATETHREAD;
         return FALSE;
     }
     return TRUE;
@@ -119,7 +119,7 @@ BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
     if (NULL == pSt_UserTable)
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INSERT_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     AUTHSESSION_TOKENCLIENT st_TokenClient;
@@ -159,6 +159,91 @@ BOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
     }
     st_Locker.unlock();
     return TRUE;
+}
+/********************************************************************
+函数名称：Session_Token_UPDate
+函数功能：更新一个客户端的TOKEN时间
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+ 参数.二：lpszUser
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.三：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：密码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass)
+{
+	Session_IsErrorOccur = FALSE;
+
+	st_Locker.lock_shared();
+	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
+	if (stl_MapIterator == stl_MapToken.end())
+	{
+        Session_IsErrorOccur = TRUE;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
+        st_Locker.unlock_shared();
+        return FALSE;
+	}
+    if ((0 != _tcsncmp(lpszUser, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName, _tcslen(lpszUser))) || (0 != _tcsncmp(lpszPass, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserPass, _tcslen(lpszPass))))
+    {
+		Session_IsErrorOccur = TRUE;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_VER;
+		st_Locker.unlock_shared();
+		return FALSE;
+    }
+    BaseLib_OperatorTime_GetSysTime(&stl_MapIterator->second.st_LibTimer);
+	st_Locker.unlock_shared();
+	return TRUE;
+}
+/********************************************************************
+函数名称：Session_Token_Get
+函数功能：获取客户端信息
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+ 参数.二：pSt_UserTable
+  In/Out：Out
+  类型：数据结构指针
+  可空：Y
+  意思：输出TOKEN对应的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable /* = NULL */)
+{
+	Session_IsErrorOccur = FALSE;
+
+	st_Locker.lock_shared();
+	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
+	if (stl_MapIterator == stl_MapToken.end())
+	{
+		Session_IsErrorOccur = TRUE;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
+		st_Locker.unlock_shared();
+		return FALSE;
+	}
+    if (NULL != pSt_UserTable)
+    {
+        *pSt_UserTable = stl_MapIterator->second.st_AuthUser;
+    }
+	st_Locker.unlock_shared();
+	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数

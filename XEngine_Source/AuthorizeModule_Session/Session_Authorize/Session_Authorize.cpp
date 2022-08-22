@@ -46,7 +46,7 @@ BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSI
     if (NULL == fpCall_AuthEvent)
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INIT_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     m_lParam = lParam;
@@ -59,7 +59,7 @@ BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSI
     {
         bIsRun = FALSE;
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INIT_CREATETHREAD;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_CREATETHREAD;
         return FALSE;
     }
     return TRUE;
@@ -94,7 +94,7 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_
     if ((NULL == pppSt_ListClient) || (NULL == pInt_ListCount))
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETCLIENT_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     st_Locker.lock_shared();
@@ -115,7 +115,7 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_
         if (stl_MapIterator == stl_MapNetClient.cend())
         {
             Session_IsErrorOccur = TRUE;
-            Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETCLIENT_NOTFOUND;
+            Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
             st_Locker.unlock_shared();
             return FALSE;
         }
@@ -129,7 +129,7 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_
     if (0 == *pInt_ListCount)
     {
 		Session_IsErrorOccur = TRUE;
-		Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETCLIENT_NOTFOUND;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
 		return FALSE;
     }
     return TRUE;
@@ -159,7 +159,7 @@ BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG
     if ((NULL == lpszUserName) || (NULL == pSt_AuthTime))
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETTIME_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     st_Locker.lock_shared();
@@ -167,7 +167,7 @@ BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG
     if (stl_MapIterator == stl_MapNetClient.end())
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETTIME_NOTFOUND;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
         return FALSE;
     }
@@ -207,7 +207,7 @@ BOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser
     if ((NULL == lpszClientUser) || (NULL == ptszClientAddr))
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETADDR_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     st_Locker.lock_shared();
@@ -215,7 +215,7 @@ BOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser
     if (stl_MapIterator == stl_MapNetClient.end())
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETADDR_NOTFOUND;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
         return FALSE;
     }
@@ -249,7 +249,7 @@ BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr
     if ((NULL == lpszClientAddr) || (NULL == ptszClientUser))
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETUSER_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     BOOL bIsFound = FALSE;
@@ -266,7 +266,7 @@ BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr
     if (!bIsFound)
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_GETUSER_NOTFOUND;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
         return FALSE;
     }
@@ -351,7 +351,7 @@ BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHRE
     if ((NULL == lpszClientAddr) || (NULL == pSt_UserTable))
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INSERT_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     //验证是否登陆
@@ -360,7 +360,7 @@ BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHRE
     if (stl_MapIterator != stl_MapNetClient.end())
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_INSERT_ISLOGIN;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_ISLOGIN;
         st_Locker.unlock_shared();
         return FALSE;
     }
@@ -398,7 +398,7 @@ BOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTa
     if (NULL == pSt_UserTable)
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_SETUSER_PARAMENT;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
     //验证是否登陆
@@ -407,7 +407,7 @@ BOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTa
     if (stl_MapIterator == stl_MapNetClient.end())
     {
         Session_IsErrorOccur = TRUE;
-        Session_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SESSION_SETUSER_NOTFOUND;
+        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
         return FALSE;
     }

@@ -248,3 +248,46 @@ extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_
 备注：
 *********************************************************************/
 extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken);
+/********************************************************************
+函数名称：Session_Token_UPDate
+函数功能：更新一个客户端的TOKEN时间
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+ 参数.二：lpszUser
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.三：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：密码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass);
+/********************************************************************
+函数名称：Session_Token_Get
+函数功能：获取客户端信息
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：要操作的客户端
+ 参数.二：pSt_UserTable
+  In/Out：Out
+  类型：数据结构指针
+  可空：Y
+  意思：输出TOKEN对应的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
