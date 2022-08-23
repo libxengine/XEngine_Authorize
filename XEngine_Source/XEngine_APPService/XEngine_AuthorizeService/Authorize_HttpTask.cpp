@@ -66,7 +66,8 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			return FALSE;
 		}
 		//验证权限
-		if (!Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken))
+		Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken)
+		if (!Session_Token_Get(xhToken))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request url is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
