@@ -59,11 +59,14 @@ BOOL CDialog_Modify::OnInitDialog()
 
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
+	CString m_StrToken;
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pConfigWnd->m_EditToken.GetWindowText(m_StrToken);
+
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
@@ -73,6 +76,8 @@ BOOL CDialog_Modify::OnInitDialog()
 
 	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+
 	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	
 	st_JsonObject.clear();
@@ -146,6 +151,17 @@ void CDialog_Modify::OnBnClickedButton2()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonTable;
 	Json::Value st_JsonUser;
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrToken;
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	//组合请求URL
+	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pConfigWnd->m_EditToken.GetWindowText(m_StrToken);
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 
 	st_JsonUser["tszUserName"] = st_UserTable.st_UserInfo.tszUserName;
 	st_JsonUser["tszUserPass"] = st_UserTable.st_UserInfo.tszUserPass;
@@ -159,16 +175,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	st_JsonTable["enSerialType"] = st_UserTable.enSerialType;
 	st_JsonTable["st_UserInfo"] = st_JsonUser;
 	st_JsonRoot["st_UserTable"] = st_JsonTable;
-
-	CString m_StrIPAddr;
-	CString m_StrIPPort;
-	TCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
-	//组合请求URL
-	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
-	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
-	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;

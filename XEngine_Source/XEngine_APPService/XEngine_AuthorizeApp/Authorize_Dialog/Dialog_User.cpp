@@ -66,9 +66,11 @@ void CDialog_User::OnBnClickedButton1()
 	m_ListCtrlClient.DeleteAllItems();
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
+	CString m_StrToken;
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -76,11 +78,14 @@ void CDialog_User::OnBnClickedButton1()
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/list"), m_StrIPAddr.GetBuffer(),m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Post(tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
-
 	Json::Value st_JsonRoot;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+
+	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
+	st_JsonRoot.clear();
 
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
@@ -134,10 +139,13 @@ void CDialog_User::OnBnClickedButton2()
 	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
+	CString m_StrToken;
 	CString m_StrUser = m_ListCtrlClient.GetItemText(nSelect, 1);
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -148,6 +156,7 @@ void CDialog_User::OnBnClickedButton2()
 
 	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
@@ -189,10 +198,12 @@ void CDialog_User::OnBnClickedButton3()
 	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
+	CString m_StrToken;
 	CString m_StrUser = m_ListCtrlClient.GetItemText(nSelect, 1);
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -203,6 +214,7 @@ void CDialog_User::OnBnClickedButton3()
 
 	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
