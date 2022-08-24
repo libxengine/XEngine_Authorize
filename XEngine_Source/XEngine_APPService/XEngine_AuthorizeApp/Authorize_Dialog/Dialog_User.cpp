@@ -25,6 +25,7 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_ListCtrlClient);
+	DDX_Control(pDX, IDC_CHECK1, m_CheckOnlineList);
 }
 
 
@@ -80,6 +81,14 @@ void CDialog_User::OnBnClickedButton1()
 	CHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	if (BST_CHECKED == m_CheckOnlineList.GetCheck())
+	{
+		st_JsonRoot["Online"] = true;
+	}
+	else
+	{
+		st_JsonRoot["Online"] = false;
+	}
 
 	APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 
@@ -93,9 +102,8 @@ void CDialog_User::OnBnClickedButton1()
 		AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
 		return;
 	}
-	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)
+	for (unsigned int i = 0, j = 0; i < st_JsonRoot["Array"].size(); i++)
 	{
-		m_ListCtrlClient.InsertItem(i, _T(""));
 		TCHAR tszIndex[10];
 		memset(tszIndex, '\0', 10);
 		_itot_s(i, tszIndex, 10);
@@ -103,6 +111,7 @@ void CDialog_User::OnBnClickedButton1()
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 		Json::Value st_JsonObject = st_JsonArray["st_UserInfo"];
 
+		m_ListCtrlClient.InsertItem(i, _T(""));
 		m_ListCtrlClient.SetItemText(i, 0, tszIndex);
 		m_ListCtrlClient.SetItemText(i, 1, st_JsonObject["tszUserName"].asCString());
 		m_ListCtrlClient.SetItemText(i, 2, lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]);

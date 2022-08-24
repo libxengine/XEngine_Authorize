@@ -483,3 +483,27 @@ extern "C" BOOL Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLe
 备注：
 *********************************************************************/
 extern "C" BOOL Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, TCHAR * ptszHasTime);
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseOnline
+函数功能：解析在线列表
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pbOnline
+  In/Out：Out
+  类型：逻辑型
+  可空：N
+  意思：导出是否只解析在线列表
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int nMsgLen, BOOL* pbOnline);

@@ -21,3 +21,4 @@ EXPORTS
 	Protocol_Parse_HttpParseTable
 	Protocol_Parse_HttpParseSerial
 	Protocol_Parse_HttpParseSerial2
+	Protocol_Parse_HttpParseOnline

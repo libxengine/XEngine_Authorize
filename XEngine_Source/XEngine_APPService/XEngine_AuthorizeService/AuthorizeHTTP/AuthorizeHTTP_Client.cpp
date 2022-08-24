@@ -30,21 +30,28 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	}
 	else if (0 == _tcsnicmp(lpszAPIList, lpszAPIName, _tcslen(lpszAPIList)))
 	{
+		int nOnCount = 0;
+		int nOffCount = 0;
+		BOOL bOnline = FALSE;
+		AUTHREG_USERTABLE** ppSt_UserInfo;
+		AUTHREG_USERTABLE** ppSt_ListClient;
+		
 		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)
 		{
 			return FALSE;
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
+
+		Protocol_Parse_HttpParseOnline(lpszMsgBuffer, nMsgLen, &bOnline);
 		//得到在线用户
-		int nOnCount = 0;
-		AUTHREG_USERTABLE** ppSt_ListClient;
 		Session_Authorize_GetClient(&ppSt_ListClient, &nOnCount);
 		//得到所有用户
-		int nOffCount = 0;
-		AUTHREG_USERTABLE** ppSt_UserInfo;
-		Database_SQLite_UserList(&ppSt_UserInfo, &nOffCount);
-
+		if (!bOnline)
+		{
+			//只有bOnline不是在线列表的时候才执行
+			Database_SQLite_UserList(&ppSt_UserInfo, &nOffCount);
+		}
 		Protocol_Packet_HttpClientList(ptszMsgBuffer, &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
 
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nOnCount);
@@ -52,7 +59,7 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求客户端列表成功,在线用户:%d,离线用户:%d"), lpszClientAddr, nOnCount, nOffCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求客户端列表成功,在线用户:%d,离线用户:%d,显示标志:%d"), lpszClientAddr, nOnCount, nOffCount, bOnline);
 	}
 	else if (0 == _tcsnicmp(lpszAPIClose, lpszAPIName, _tcslen(lpszAPIClose)))
 	{
