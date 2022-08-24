@@ -31,6 +31,7 @@ void CDialog_Config::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT9, m_EditToken);
 	DDX_Control(pDX, IDC_BUTTON1, m_BtnLogin);
 	DDX_Control(pDX, IDC_BUTTON2, m_BtnLogout);
+	DDX_Control(pDX, IDC_EDIT10, m_EditTimeout);
 }
 
 
@@ -99,6 +100,8 @@ void CDialog_Config::OnBnClickedButton1()
 	}
 	m_StrToken.Format(_T("%lld"), st_JsonRoot["xhToken"].asUInt64());
 	m_EditToken.SetWindowText(m_StrToken);
+	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
+
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	AfxMessageBox(_T("登录成功"));
 

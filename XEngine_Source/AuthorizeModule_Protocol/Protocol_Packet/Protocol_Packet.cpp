@@ -513,12 +513,26 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
+	TCHAR tszTimeStart[128];
+	TCHAR tszTimeEnd[128];
+	XENGINE_LIBTIMER st_TimeOut;
 	Json::Value st_JsonRoot;
+
+	memset(tszTimeStart, '\0', sizeof(tszTimeStart));
+	memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
+	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIMER));
+
+	BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+	_stprintf(tszTimeEnd, _T("0-0-0 0:0:%d"), nTimeout);
+	BaseLib_OperatorTimeSpan_CalForStr(tszTimeStart, tszTimeEnd, &st_TimeOut);
+	BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, TRUE, &st_TimeOut);
 
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
 	st_JsonRoot["xhToken"] = xhToken;
 	st_JsonRoot["nTimeout"] = nTimeout;
+	st_JsonRoot["tszTimeStart"] = tszTimeStart;
+	st_JsonRoot["tszTimeEnd"] = tszTimeEnd;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
