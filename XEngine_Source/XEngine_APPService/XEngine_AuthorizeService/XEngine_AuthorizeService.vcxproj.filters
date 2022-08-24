@@ -13,11 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\AuthorizeHTTP">
+    <Filter Include="头文件\AuthorizeHTTP_Post">
       <UniqueIdentifier>{231f0180-8395-4f8f-a44d-07adc15d00c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\AuthorizeHTTP">
+    <Filter Include="源文件\AuthorizeHTTP_Post">
       <UniqueIdentifier>{a1457b48-ef98-424b-abc3-662a362b1805}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\AuthorizeHTTP_GET">
+      <UniqueIdentifier>{57f931fe-0338-45c8-83d9-88dacdcccfaa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthorizeHTTP_GET">
+      <UniqueIdentifier>{715d49a0-2e80-4227-ab73-7800631a8b29}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -42,14 +48,14 @@
     <ClCompile Include="Authorize_HttpTask.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_User.cpp">
-      <Filter>源文件\AuthorizeHTTP</Filter>
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.cpp">
+      <Filter>源文件\AuthorizeHTTP_Post</Filter>
     </ClCompile>
-    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Client.cpp">
-      <Filter>源文件\AuthorizeHTTP</Filter>
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.cpp">
+      <Filter>源文件\AuthorizeHTTP_Post</Filter>
     </ClCompile>
-    <ClCompile Include="AuthorizeHTTP\AuthorizeHTTP_Serial.cpp">
-      <Filter>源文件\AuthorizeHTTP</Filter>
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.cpp">
+      <Filter>源文件\AuthorizeHTTP_Post</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -74,14 +80,14 @@
     <ClInclude Include="Authorize_HttpTask.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_User.h">
-      <Filter>头文件\AuthorizeHTTP</Filter>
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.h">
+      <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
-    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Client.h">
-      <Filter>头文件\AuthorizeHTTP</Filter>
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.h">
+      <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
-    <ClInclude Include="AuthorizeHTTP\AuthorizeHTTP_Serial.h">
-      <Filter>头文件\AuthorizeHTTP</Filter>
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.h">
+      <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
