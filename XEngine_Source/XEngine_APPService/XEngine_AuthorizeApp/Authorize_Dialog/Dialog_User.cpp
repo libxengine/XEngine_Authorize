@@ -26,6 +26,8 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_ListCtrlClient);
 	DDX_Control(pDX, IDC_CHECK1, m_CheckOnlineList);
+	DDX_Control(pDX, IDC_EDIT1, m_EditFlushTime);
+	DDX_Control(pDX, IDC_CHECK2, m_CheckAuto);
 }
 
 
@@ -34,6 +36,7 @@ BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_User::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_User::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
+	ON_BN_CLICKED(IDC_CHECK2, &CDialog_User::OnBnClickedCheck2)
 END_MESSAGE_MAP()
 
 
@@ -55,6 +58,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(7, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
+	m_EditFlushTime.SetWindowText("1");
 	hUserWnd = m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -68,6 +72,7 @@ void CDialog_User::OnBnClickedButton1()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
@@ -265,4 +270,47 @@ void CDialog_User::OnBnClickedButton4()
 	}
 	CDialog_Modify m_DlgModify;
 	m_DlgModify.DoModal();
+}
+
+
+void CDialog_User::OnBnClickedCheck2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (BST_CHECKED == m_CheckAuto.GetCheck())
+	{
+		bThread = TRUE;
+		hThread = CreateThread(NULL, 0, Dialog_User_Thread, this, 0, NULL);
+	}
+	else
+	{
+		bThread = FALSE;
+		DWORD dwRet = WaitForSingleObject(hThread, INFINITE);
+		if (WAIT_OBJECT_0 != dwRet)
+		{
+			TerminateThread(hThread, -1);
+		}
+		CloseHandle(hThread);
+	}
+}
+
+DWORD CDialog_User::Dialog_User_Thread(LPVOID lParam)
+{
+	CDialog_User* pClass_This = (CDialog_User*)lParam;
+	time_t nTimeStart = time(NULL);
+	CString m_StrTime;
+	
+	pClass_This->m_EditFlushTime.GetWindowText(m_StrTime);
+	int nTimeSecond = _ttoi(m_StrTime.GetBuffer());
+
+	while (pClass_This->bThread)
+	{
+		time_t nTimeEnd = time(NULL);
+		if ((nTimeEnd - nTimeStart) > nTimeSecond)
+		{
+			pClass_This->OnBnClickedButton1();
+			nTimeStart = time(NULL);
+		}
+		Sleep(100);
+	}
+	return 0;
 }

@@ -22,6 +22,10 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	BOOL bThread;
+	HANDLE hThread;
+	static DWORD WINAPI Dialog_User_Thread(LPVOID lParam);
+public:
 	virtual BOOL OnInitDialog();
 	CListCtrl m_ListCtrlClient;
 	afx_msg void OnBnClickedButton1();
@@ -29,4 +33,7 @@ public:
 	afx_msg void OnBnClickedButton3();
 	afx_msg void OnBnClickedButton4();
 	CButton m_CheckOnlineList;
+	CEdit m_EditFlushTime;
+	afx_msg void OnBnClickedCheck2();
+	CButton m_CheckAuto;
 };

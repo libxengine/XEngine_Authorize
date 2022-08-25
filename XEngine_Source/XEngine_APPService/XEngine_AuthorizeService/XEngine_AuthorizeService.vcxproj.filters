@@ -19,10 +19,10 @@
     <Filter Include="源文件\AuthorizeHTTP_Post">
       <UniqueIdentifier>{a1457b48-ef98-424b-abc3-662a362b1805}</UniqueIdentifier>
     </Filter>
-    <Filter Include="头文件\AuthorizeHTTP_GET">
+    <Filter Include="头文件\AuthorizeHTTP_Get">
       <UniqueIdentifier>{57f931fe-0338-45c8-83d9-88dacdcccfaa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\AuthorizeHTTP_GET">
+    <Filter Include="源文件\AuthorizeHTTP_Get">
       <UniqueIdentifier>{715d49a0-2e80-4227-ab73-7800631a8b29}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -57,8 +57,8 @@
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.cpp">
       <Filter>源文件\AuthorizeHTTP_Post</Filter>
     </ClCompile>
-    <ClCompile Include="AuthorizeHTTP_GET\AuthorizeHTTP_Token.cpp">
-      <Filter>源文件\AuthorizeHTTP_GET</Filter>
+    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp">
+      <Filter>源文件\AuthorizeHTTP_Get</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -92,8 +92,8 @@
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.h">
       <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
-    <ClInclude Include="AuthorizeHTTP_GET\AuthorizeHTTP_Token.h">
-      <Filter>头文件\AuthorizeHTTP_GET</Filter>
+    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h">
+      <Filter>头文件\AuthorizeHTTP_Get</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
