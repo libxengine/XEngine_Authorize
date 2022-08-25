@@ -62,8 +62,8 @@ AuthorizeHTTP_Serial.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Serial.cpp
 AuthorizeHTTP_User.o:./AuthorizeHTTP_Post/AuthorizeHTTP_User.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_User.cpp
 
-AuthorizeHTTP_Token.o:./AuthorizeHTTP_GET/AuthorizeHTTP_Token.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_GET/AuthorizeHTTP_Token.cpp
+AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	
 XEngine_AuthorizeService.o:./XEngine_AuthorizeService.cpp             
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./XEngine_AuthorizeService.cpp   
