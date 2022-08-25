@@ -36,4 +36,5 @@ public:
 	CEdit m_EditFlushTime;
 	afx_msg void OnBnClickedCheck2();
 	CButton m_CheckAuto;
+	CButton m_BtnModifyClient;
 };

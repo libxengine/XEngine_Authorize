@@ -11,6 +11,9 @@ network verification support tcp and websocket protocol verification.it is means
 first open source C/C++ network authentication server, supporting various languages ​​and platforms for network authentication and authorization
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
+#### Version difference
+V3 version, the protocol is basically reimplemented. It is no longer compatible with the V2 protocol. V3 is basically changed to the HTTP interface for management. The compatibility is better. Please check the documentation for more.  
+
 ## Software feature
 A simple and high-performance cross-platform network authentication and authorization server developed and implemented based on XEngine  
 feature list:  

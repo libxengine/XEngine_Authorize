@@ -28,6 +28,7 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_CheckOnlineList);
 	DDX_Control(pDX, IDC_EDIT1, m_EditFlushTime);
 	DDX_Control(pDX, IDC_CHECK2, m_CheckAuto);
+	DDX_Control(pDX, IDC_BUTTON4, m_BtnModifyClient);
 }
 
 
@@ -69,23 +70,25 @@ void CDialog_User::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListCtrlClient.DeleteAllItems();
-	CString m_StrIPAddr;
-	CString m_StrIPPort;
-	CString m_StrToken;
-
-	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
-	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
-	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
-	pWnd->m_EditToken.GetWindowText(m_StrToken);
-
+	TCHAR tszIPAddr[MAX_PATH];
+	TCHAR tszIPPort[MAX_PATH];
+	TCHAR tszToken[MAX_PATH];
 	TCHAR tszUrlAddr[MAX_PATH];
+
+	memset(tszIPAddr, '\0', MAX_PATH);
+	memset(tszIPPort, '\0', MAX_PATH);
+	memset(tszToken, '\0', MAX_PATH);
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/list"), m_StrIPAddr.GetBuffer(),m_StrIPPort.GetBuffer());
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, MAX_PATH);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
+
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/list"), tszIPAddr, tszIPPort);
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoi64(tszToken);
 	if (BST_CHECKED == m_CheckOnlineList.GetCheck())
 	{
 		st_JsonRoot["Online"] = true;
@@ -138,6 +141,7 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.SetItemText(i, 7, lpszStuType[st_JsonObject["nUserState"].asInt()]);
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	UpdateWindow();
 }
 
 
