@@ -291,3 +291,22 @@ extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTS
 备注：
 *********************************************************************/
 extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
+/********************************************************************
+函数名称：Session_Token_GetUser
+函数功能：获取用户是否存在
+ 参数.一：lpszUser
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：密码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass);

@@ -245,6 +245,59 @@ BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pS
 	st_Locker.unlock_shared();
 	return TRUE;
 }
+/********************************************************************
+函数名称：Session_Token_GetUser
+函数功能：获取用户是否存在
+ 参数.一：lpszUser
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：密码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass)
+{
+	Session_IsErrorOccur = FALSE;
+
+    if ((NULL == lpszUser) || (NULL == lpszPass))
+    {
+		Session_IsErrorOccur = TRUE;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
+		return FALSE;
+    }
+    BOOL bFound = FALSE;
+	st_Locker.lock_shared();
+	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.begin();
+    for (; stl_MapIterator != stl_MapToken.end(); stl_MapIterator++)
+    {
+        //用户名
+        if (0 == _tcsncmp(lpszUser, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName, _tcslen(lpszUser)))
+        {
+            //密码,验证密码防治冲突
+			if (0 == _tcsncmp(lpszPass, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserPass, _tcslen(lpszPass)))
+			{
+                bFound = TRUE;
+                break;
+			}
+        }
+    }
+    st_Locker.unlock_shared();
+	if (bFound)
+	{
+		Session_IsErrorOccur = TRUE;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_EXIST;
+		return FALSE;
+	}
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
 //////////////////////////////////////////////////////////////////////////

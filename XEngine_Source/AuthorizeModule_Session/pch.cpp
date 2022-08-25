@@ -94,3 +94,7 @@ extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE * pSt_Us
 {
 	return m_SessionToken.Session_Token_Get(xhToken, pSt_UserTable);
 }
+extern "C" BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass)
+{
+	return m_SessionToken.Session_Token_GetUser(lpszUser, lpszPass);
+}

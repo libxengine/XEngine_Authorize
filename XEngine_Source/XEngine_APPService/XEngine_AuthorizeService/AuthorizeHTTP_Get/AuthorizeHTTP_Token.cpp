@@ -28,6 +28,15 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
 
+		//禁止重复登录
+		if (!Session_Token_GetUser(tszUserName, tszUserPass))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user locked");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，用户:%s ,已经登录,无法继续"), lpszClientAddr, tszUserName);
+			return FALSE;
+		}
+
 		if (!Database_SQLite_UserQuery(tszUserName, &st_UserTable))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");

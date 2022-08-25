@@ -29,6 +29,7 @@ public:
     BOOL Session_Token_Delete(XNETHANDLE xhToken);
     BOOL Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass);
     BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
+    BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass);
 protected:
     static XHTHREAD Session_Token_Thread(LPVOID lParam);            
 private:

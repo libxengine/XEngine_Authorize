@@ -72,7 +72,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
 			if (!Session_Token_Get(xhToken))
 			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request url is incorrent");
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 				return FALSE;
@@ -85,7 +85,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
 			if (!Session_Token_Get(xhToken))
 			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request url is incorrent");
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 				return FALSE;

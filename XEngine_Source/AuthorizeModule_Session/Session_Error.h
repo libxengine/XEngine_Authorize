@@ -22,3 +22,4 @@
 #define ERROR_AUTHORIZE_MODULE_SESSION_ISLOGIN 0x0020003                 //用户已经登陆，无法第二次登陆
 #define ERROR_AUTHORIZE_MODULE_SESSION_MATCH 0x0020004                   //找回密码失败，匹配资料错误
 #define ERROR_AUTHORIZE_MODULE_SESSION_VER 0x0020005                     //验证失败
+#define ERROR_AUTHORIZE_MODULE_SESSION_EXIST 0x0020006                   //已存在
