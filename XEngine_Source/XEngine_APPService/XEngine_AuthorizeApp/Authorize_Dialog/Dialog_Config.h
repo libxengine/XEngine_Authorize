@@ -33,4 +33,6 @@ public:
 	CButton m_BtnLogin;
 	CButton m_BtnLogout;
 	CEdit m_EditTimeout;
+	afx_msg void OnBnClickedButton5();
+	CButton m_BtnUpdate;
 };

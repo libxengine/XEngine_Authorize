@@ -168,22 +168,12 @@ BOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
   类型：句柄
   可空：N
   意思：要操作的客户端
- 参数.二：lpszUser
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：用户名
- 参数.三：lpszPass
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：密码
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass)
+BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
 {
 	Session_IsErrorOccur = FALSE;
 
@@ -196,13 +186,6 @@ BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, 
         st_Locker.unlock_shared();
         return FALSE;
 	}
-    if ((0 != _tcsncmp(lpszUser, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName, _tcslen(lpszUser))) || (0 != _tcsncmp(lpszPass, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserPass, _tcslen(lpszPass))))
-    {
-		Session_IsErrorOccur = TRUE;
-		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_VER;
-		st_Locker.unlock_shared();
-		return FALSE;
-    }
     BaseLib_OperatorTime_GetSysTime(&stl_MapIterator->second.st_LibTimer);
 	st_Locker.unlock_shared();
 	return TRUE;

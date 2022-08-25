@@ -27,7 +27,7 @@ public:
     BOOL Session_Token_Destroy();
     BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable);
     BOOL Session_Token_Delete(XNETHANDLE xhToken);
-    BOOL Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass);
+    BOOL Session_Token_UPDate(XNETHANDLE xhToken);
     BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
     BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass);
 protected:

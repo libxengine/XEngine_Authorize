@@ -32,12 +32,14 @@ void CDialog_Config::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BUTTON1, m_BtnLogin);
 	DDX_Control(pDX, IDC_BUTTON2, m_BtnLogout);
 	DDX_Control(pDX, IDC_EDIT10, m_EditTimeout);
+	DDX_Control(pDX, IDC_BUTTON5, m_BtnUpdate);
 }
 
 
 BEGIN_MESSAGE_MAP(CDialog_Config, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_Config::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Config::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_Config::OnBnClickedButton5)
 END_MESSAGE_MAP()
 
 
@@ -56,6 +58,7 @@ BOOL CDialog_Config::OnInitDialog()
 	m_EditPass.SetWindowText(_T("123123aa"));
 
 	m_BtnLogout.EnableWindow(FALSE);
+	m_BtnUpdate.EnableWindow(FALSE);
 	hConfigWnd = m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -107,6 +110,7 @@ void CDialog_Config::OnBnClickedButton1()
 
 	m_BtnLogin.EnableWindow(FALSE);
 	m_BtnLogout.EnableWindow(TRUE);
+	m_BtnUpdate.EnableWindow(TRUE);
 }
 
 
@@ -115,4 +119,45 @@ void CDialog_Config::OnBnClickedButton2()
 	// TODO: 在此添加控件通知处理程序代码
 	m_BtnLogin.EnableWindow(TRUE);
 	m_BtnLogout.EnableWindow(FALSE);
+	m_BtnUpdate.EnableWindow(FALSE);
+}
+
+
+void CDialog_Config::OnBnClickedButton5()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrToken;
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	//组合请求URL
+	m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	m_EditIPPort.GetWindowText(m_StrIPPort);
+	m_EditToken.GetWindowText(m_StrToken);
+
+	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=update&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
+	//请求用户信息
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIHelp_HttpRequest_Get(tszUrlAddr, &ptszMsgBuffer, &nMsgLen);
+
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		AfxMessageBox(_T("续期失败,无法继续"));
+		return;
+	}
+	if (0 != st_JsonRoot["code"].asInt())
+	{
+		AfxMessageBox(_T("续期失败,无法继续"));
+		return;
+	}
+	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	m_BtnLogin.EnableWindow(FALSE);
+	m_BtnLogout.EnableWindow(TRUE);
 }

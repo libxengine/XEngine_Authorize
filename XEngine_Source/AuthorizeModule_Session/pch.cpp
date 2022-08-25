@@ -86,9 +86,9 @@ extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken)
 {
 	return m_SessionToken.Session_Token_Delete(xhToken);
 }
-extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken, LPCTSTR lpszUser, LPCTSTR lpszPass)
+extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken)
 {
-	return m_SessionToken.Session_Token_UPDate(xhToken, lpszUser, lpszPass);
+	return m_SessionToken.Session_Token_UPDate(xhToken);
 }
 extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE * pSt_UserTable)
 {
