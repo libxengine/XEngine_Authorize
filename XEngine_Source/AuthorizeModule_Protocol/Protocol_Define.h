@@ -185,7 +185,7 @@ extern "C" BOOL Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int* pInt_M
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
+extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT *** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
 /********************************************************************
 函数名称：Protocol_Packet_HttpSerialList
 函数功能：HTTP序列号打包函数

@@ -51,7 +51,7 @@ extern "C" BOOL Protocol_Packet_HttpClientInfo(TCHAR * ptszMsgBuffer, int* pInt_
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpClientInfo(ptszMsgBuffer, pInt_MsgLen, pSt_UserTable);
 }
-extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE * **pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE * **pppSt_OffClient, int nOffCount)
+extern "C" BOOL Protocol_Packet_HttpClientList(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT * **pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE * **pppSt_OffClient, int nOffCount)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpClientList(ptszMsgBuffer, pInt_MsgLen, pppSt_OnClient, nOnCount, pppSt_OffClient, nOffCount);
 }

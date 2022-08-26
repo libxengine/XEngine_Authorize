@@ -21,18 +21,18 @@ void ServiceApp_Stop(int signo)
 		bIsRun = FALSE;
 
 		int nListCount = 0;
-		AUTHREG_USERTABLE** ppSt_ListClient;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
 			AUTHREG_PROTOCOL_TIME st_TimeProtocol;
 			memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
-			if (Session_Authorize_GetTimer(ppSt_ListClient[i]->st_UserInfo.tszUserName, &st_TimeProtocol))
+			if (Session_Authorize_GetTimer(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName, &st_TimeProtocol))
 			{
 				Database_SQLite_UserLeave(&st_TimeProtocol);
 			}
-			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserInfo.tszUserName);
+			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
 		}
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);

@@ -335,7 +335,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
+BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -353,20 +353,24 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		Json::Value st_JsonUser;
 		Json::Value st_JsonObject;
 		
-		st_JsonUser["tszUserName"] = (*pppSt_OnClient)[i]->st_UserInfo.tszUserName;
-		st_JsonUser["tszUserPass"] = (*pppSt_OnClient)[i]->st_UserInfo.tszUserPass;
-		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserInfo.tszEMailAddr;
-		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszLoginTime;
-		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszCreateTime;
-		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nPhoneNumber;
-		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nIDNumber;
-		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserInfo.nUserLevel;
+		st_JsonUser["tszUserName"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserName;
+		st_JsonUser["tszUserPass"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserPass;
+		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszEMailAddr;
+		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszLoginTime;
+		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszCreateTime;
+		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nPhoneNumber;
+		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nIDNumber;
+		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nUserLevel;
 		st_JsonUser["nUserState"] = 1;
 
+		st_JsonObject["tszClientAddr"] = (*pppSt_OnClient)[i]->tszClientAddr;
 		st_JsonObject["tszLeftTime"] = (*pppSt_OnClient)[i]->tszLeftTime;
-		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->tszHardCode;
-		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->enSerialType;
-		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->enDeviceType;
+		st_JsonObject["nLeftTime"] = (*pppSt_OnClient)[i]->nLeftTime;
+		st_JsonObject["nOnlineTime"] = (*pppSt_OnClient)[i]->nOnlineTime;
+
+		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->st_UserTable.tszHardCode;
+		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->st_UserTable.enSerialType;
+		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->st_UserTable.enDeviceType;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
@@ -376,7 +380,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		//查找是否在线,在线就跳过
 		for (int j = 0; j < nOnCount; j++)
 		{
-			if (0 == _tcsncmp((*pppSt_OnClient)[j]->st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[j]->st_UserInfo.tszUserName)))
+			if (0 == _tcsncmp((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName)))
 			{
 				bFound = TRUE;
 				break;

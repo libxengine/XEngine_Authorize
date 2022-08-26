@@ -126,7 +126,7 @@ BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
     memset(&st_TokenClient,'\0',sizeof(AUTHSESSION_TOKENCLIENT));
 
     BaseLib_OperatorTime_GetSysTime(&st_TokenClient.st_LibTimer);
-    memcpy(&st_TokenClient.st_AuthUser, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
+    memcpy(&st_TokenClient.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
 
     st_Locker.lock();
     stl_MapToken.insert(make_pair(xhToken, st_TokenClient));
@@ -223,7 +223,7 @@ BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pS
 	}
     if (NULL != pSt_UserTable)
     {
-        *pSt_UserTable = stl_MapIterator->second.st_AuthUser;
+        *pSt_UserTable = stl_MapIterator->second.st_UserTable;
     }
 	st_Locker.unlock_shared();
 	return TRUE;
@@ -262,10 +262,10 @@ BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass)
     for (; stl_MapIterator != stl_MapToken.end(); stl_MapIterator++)
     {
         //用户名
-        if (0 == _tcsncmp(lpszUser, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserName, _tcslen(lpszUser)))
+        if (0 == _tcsncmp(lpszUser, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName, _tcslen(lpszUser)))
         {
             //密码,验证密码防治冲突
-			if (0 == _tcsncmp(lpszPass, stl_MapIterator->second.st_AuthUser.st_UserInfo.tszUserPass, _tcslen(lpszPass)))
+			if (0 == _tcsncmp(lpszPass, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserPass, _tcslen(lpszPass)))
 			{
                 bFound = TRUE;
                 break;

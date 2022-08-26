@@ -34,7 +34,7 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		int nOffCount = 0;
 		BOOL bOnline = FALSE;
 		AUTHREG_USERTABLE** ppSt_UserInfo;
-		AUTHREG_USERTABLE** ppSt_ListClient;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		
 		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)

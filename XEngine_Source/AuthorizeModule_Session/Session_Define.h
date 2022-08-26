@@ -10,6 +10,15 @@
 //    Purpose:     导出定义和函数
 //    History:
 *********************************************************************/
+typedef struct
+{
+	AUTHREG_USERTABLE st_UserTable;                                       //用户表
+	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
+	TCHAR tszClientAddr[64];
+	TCHAR tszLeftTime[64];                                                //过期日期
+	__int64x nOnlineTime;                                                 //在线时间
+	__int64x nLeftTime;                                                   //剩余时间
+}AUTHSESSION_NETCLIENT, * LPAUTHSESSION_NETCLIENT;
 //////////////////////////////////////////////////////////////////////////
 //                         导出的回调函数
 //////////////////////////////////////////////////////////////////////////
@@ -65,7 +74,7 @@ extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
+extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
 /********************************************************************
 函数名称：Session_Authorize_GetTimer
 函数功能：获取客户端时间信息

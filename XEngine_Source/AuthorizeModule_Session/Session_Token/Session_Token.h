@@ -12,7 +12,7 @@
 *********************************************************************/
 typedef struct
 {
-	AUTHREG_USERTABLE st_AuthUser;                                        //用户表
+	AUTHREG_USERTABLE st_UserTable;                                        //用户表
 	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
 	__int64x nOnlineTime;                                                 //在线时间
 }AUTHSESSION_TOKENCLIENT, * LPAUTHSESSION_TOKENCLIENT;

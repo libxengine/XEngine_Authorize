@@ -35,7 +35,7 @@ extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
 {
 	return m_SessionAuth.Session_Authorize_Init(fpCall_AuthEvent, lParam);
 }
-extern "C" BOOL Session_Authorize_GetClient(AUTHREG_USERTABLE * **pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr)
+extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr)
 {
 	return m_SessionAuth.Session_Authorize_GetClient(pppSt_ListClient, pInt_ListCount, lpszClientAddr);
 }

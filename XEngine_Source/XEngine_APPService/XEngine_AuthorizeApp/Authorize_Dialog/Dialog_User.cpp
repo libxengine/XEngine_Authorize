@@ -126,12 +126,10 @@ void CDialog_User::OnBnClickedButton1()
 
 		if (1 == st_JsonObject["nUserState"].asInt())
 		{
-			__int64x nTime = 0;
 			TCHAR tszTimeStr[64];
 			memset(tszTimeStr, '\0', sizeof(tszTimeStr));
 
-			BaseLib_OperatorTime_TimeToStr(tszTimeStr);
-			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStr, st_JsonObject["tszLoginTime"].asCString(), &nTime, 2);
+			__int64x nTime = st_JsonArray["nOnlineTime"].asUInt64();
 			_stprintf(tszTimeStr, _T("%lld"), nTime);
 			m_ListCtrlClient.SetItemText(i, 3, tszTimeStr);
 		}

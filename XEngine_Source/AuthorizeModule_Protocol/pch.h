@@ -25,6 +25,8 @@
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../XAuth_Protocol.h"
+#include "../AuthorizeModule_Session/Session_Define.h"
+#include "../AuthorizeModule_Session/Session_Error.h"
 #include "Protocol_Define.h"
 #include "Protocol_Error.h"
 /********************************************************************
