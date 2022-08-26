@@ -16,10 +16,8 @@
 /************************************************************************/
 /*                     剪贴板                                           */
 /************************************************************************/
-#define ERROR_AUTH_HELP_CLIPBOARD_SET_PARRAMENT 0x00E0001              //设置失败,参数错误
-#define ERROR_AUTH_HELP_CLIPBOARD_SET_OPEN 0x00E0002                   //打开剪贴板失败
-#define ERROR_AUTH_HELP_CLIPBOARD_SET_OWNER 0x00E0003                  //设置所有者失败
-#define ERROR_AUTH_HELP_CLIPBOARD_SET_MALLOC 0x00E0004                 //申请内存失败
-#define ERROR_AUTH_HELP_CLIPBOARD_GET_PARAMENT 0x00E0010               //获取失败,参数错误
-#define ERROR_AUTH_HELP_CLIPBOARD_GET_OPEN 0x00E0011                   //打开剪贴板失败
-#define ERROR_AUTH_HELP_CLIPBOARD_GET_GETDATA 0x00E0012                //获取内容失败
+#define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT 0x0050001         //设置失败,参数错误
+#define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN 0x0050002              //打开剪贴板失败
+#define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OWNER 0x0050003             //设置所有者失败
+#define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC 0x0050004            //申请内存失败
+#define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_GETDATA 0x0050005           //获取内容失败

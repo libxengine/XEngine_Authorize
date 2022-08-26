@@ -50,20 +50,20 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
 	if (NULL == lpszMsgBuffer)
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_SET_PARRAMENT;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
 		return FALSE;
 	}
 	//判断先我们可否打开剪贴板，如果可以
 	if (!OpenClipboard(NULL))
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_SET_OPEN;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
 		return FALSE;
 	}
 	if (!EmptyClipboard())
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_SET_OWNER;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OWNER;
 		return FALSE;
 	}
 	HANDLE hGlobal = INVALID_HANDLE_VALUE;
@@ -72,7 +72,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
 	if (NULL == hGlobal)
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_SET_MALLOC;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC;
 		return FALSE;
 	}
 	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 LPVOID
@@ -116,13 +116,13 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
 	if (NULL == ptszMsgBuffer)
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_GET_PARAMENT;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
 		return FALSE;
 	}
 	if (!OpenClipboard(NULL))
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_GET_OPEN;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
 		return FALSE;
 	}
 
@@ -130,7 +130,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
 	if (NULL == (hCliBd = GetClipboardData(dwFormat)))
 	{
 		Help_IsErrorOccur = TRUE;
-		Help_dwErrorCode = ERROR_AUTH_HELP_CLIPBOARD_GET_GETDATA;
+		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_GETDATA;
 		return FALSE;
 	}
 

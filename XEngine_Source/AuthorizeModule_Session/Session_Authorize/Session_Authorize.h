@@ -10,24 +10,15 @@
 //    Purpose:     会话管理器
 //    History:
 *********************************************************************/
-typedef struct
-{
-    AUTHREG_USERTABLE st_AuthUser;                                        //用户表
-    XENGINE_LIBTIMER st_LibTimer;                                       //登录时间结构
-    TCHAR tszClientAddr[64];
-    TCHAR tszLeftTime[64];                                                //过期日期
-    __int64x nOnlineTime;                                                  //在线时间
-    __int64x nLeftTime;                                                    //剩余时间
-}AUTHREGSERVICE_NETCLIENT,*LPAUTHREGSERVICE_NETCLIENT;
-//////////////////////////////////////////////////////////////////////////
+
 class CSession_Authorize
 {
 public:
     CSession_Authorize();
     ~CSession_Authorize();
 public:
-    BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
-    BOOL Session_Authorize_GetClient(AUTHREG_USERTABLE*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr = NULL);
+    BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
+    BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr = NULL);
     BOOL Session_Authorize_GetTimer(LPCTSTR lpszUserName, AUTHREG_PROTOCOL_TIME* pSt_AuthTime);
     BOOL Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser,TCHAR *ptszClientAddr);
     BOOL Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser);
@@ -43,9 +34,9 @@ private:
     shared_ptr<std::thread> pSTDThread_hActive;                 //时间计算器线程句柄
 private:
     LPVOID m_lParam;
-    CALLBACK_XENGIEN_AUTHREG_SERVICE_EVENTS lpCall_AuthregEvents;
+    CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS lpCall_AuthregEvents;
 private:
     shared_mutex st_Locker;
 private:
-    unordered_map<tstring, AUTHREGSERVICE_NETCLIENT> stl_MapNetClient;
+    unordered_map<tstring, AUTHSESSION_NETCLIENT> stl_MapNetClient;
 };

@@ -32,6 +32,7 @@ typedef struct
 	struct   
 	{
 		int nUserTimeout;                                   //用户登录超时时间
+		int nTokenTimeout;                                  //TOKEN登录超时时间
 		int nVerTime;                                       //验证时间
 		int nVerMode;                                       //验证模式
 		int nTryTime;                                       //验证时间

@@ -74,19 +74,19 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
         if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,nUserLevel integer,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
             return FALSE;
         }
         if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_Serial(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,SerialNumber TEXT,MaxTime TEXT,CardSerialType integer,bIsUsed boolean,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
             return FALSE;
         }
         if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE AuthReg_NetVer(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,VerSerial TEXT NOT NULL,VerMode integer NOT NULL,TryTime integer NOT NULL,CreateTime TEXT NOT NULL)")))
         {
             SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_INIT_CREATETABLE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
             return FALSE;
         }
     }
@@ -135,7 +135,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCTSTR lpszUserName)
     if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_DELETE_EXEC;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXEC;
         return FALSE;
     }
     return TRUE;
@@ -162,14 +162,14 @@ BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
     if (Database_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_EXIST;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return FALSE;
     }
     _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,5,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_REGISERT_INSERT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_INSERT;
         return FALSE;
     }
     return TRUE;
@@ -205,13 +205,13 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
     if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_GETTABLE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
         return FALSE;
     }
     if ((0 == nRow) || (0 == nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_NOTUSER;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
         return FALSE;
     }
     //如果是NULL，表示不想知道结果
@@ -288,7 +288,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
     if ((NULL == lpszUserName) || (NULL == lpszSerialName))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_PARAMENT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
     //查询充值卡是否存在
@@ -300,7 +300,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
     if (st_SerialTable.bIsUsed)
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_ISUSED;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISUSED;
         return FALSE;
     }
     //查询用户信息
@@ -337,14 +337,14 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
         break;
     default:
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_NOTSUPPORT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTSUPPORT;
         return FALSE;
     }
     _stprintf_s(tszSQLStatement, _T("UPDATE AuthReg_Serial SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"), lpszUserName, lpszSerialName);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAY_UPDATAUSEDNAME;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATAUSEDNAME;
         return FALSE;
     }
     return TRUE;
@@ -394,14 +394,14 @@ BOOL CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
     else
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_LEAVE_UNKNOWTYPE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UNKNOWTYPE;
         return FALSE;
     }
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_LEAVE_UPDATA;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
         return FALSE;
     }
     return TRUE;
@@ -468,13 +468,13 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
 	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_GETTABLE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
 		return FALSE;
 	}
 	if ((0 == nRow) || (0 == nColumn))
 	{
 		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_NOTUSER;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
 		return FALSE;
 	}
     *pInt_ListCount = nRow;
@@ -541,7 +541,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
     if (Database_SQLite_SerialQuery(lpszSerialNumber))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_SERIALINSERT_EXIST;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return FALSE;
     }
     ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enAuthSerialType;
@@ -579,7 +579,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
     if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_SERIALINSERT_ISFAILED;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
         return FALSE;
     }
     return TRUE;
@@ -608,7 +608,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
     if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_SERIALDEL_ISFAILED;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
         return FALSE;
     }
     return TRUE;
@@ -644,13 +644,13 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAU
     if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_GETTABLE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
         return FALSE;
     }
     if ((0 == nRow) || (0 == nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERY_SERIAL;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_SERIAL;
         return FALSE;
     }
     if (NULL != pSt_SerialTable)
@@ -714,13 +714,13 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***ppp
     if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERYALL_GETTABLE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
         return FALSE;
     }
     if ((0 == nRow) || (0 == nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_QUERYALL_NONE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
         return FALSE;
     }
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, nRow, sizeof(AUTHREG_SERIALTABLE));
@@ -773,7 +773,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
     if (NULL == pSt_AuthVer)
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYINSERT_PARAMENT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
     TCHAR tszSQLStatement[1024];
@@ -787,7 +787,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
     if (Database_SQLite_TryQuery(&st_AuthVer))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYINSERT_EXIST;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return FALSE;
     }
     //插入数据库
@@ -820,7 +820,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
     if (NULL == pSt_AuthVer)
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYQUERY_PARAMENT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
     int nRow = 0;
@@ -840,7 +840,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
     if ((0 == nRow) || (0 == nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYQUERY_NONE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
         return FALSE;
     }
     //ID
@@ -879,7 +879,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCTSTR lpszSerial)
     if (NULL == lpszSerial)
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_TRYDELETE_PARAMENT;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
     TCHAR tszSQLStatement[1024];
@@ -1079,7 +1079,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
             if (!m_bChange)
             {
                 SQLPacket_IsErrorOccur = TRUE;
-                SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAYTIME_NOTMATCH;
+                SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
                 return FALSE;
             }
         }
@@ -1090,7 +1090,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
         if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
         {
             SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAYTIME_UPDATATYPE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATATYPE;
             return FALSE;
         }
         //处理卡类型
@@ -1173,7 +1173,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
             if (6 != _stscanf_s(lpszUserTime, _T("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
             {
                 SQLPacket_IsErrorOccur = TRUE;
-                SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAYTIME_GETTIME;
+                SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTIME;
                 return FALSE;
             }
             st_EndTimer.wDay += _ttoi(lpszCardTime);
@@ -1220,7 +1220,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
-        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_COMPONENTS_SQLPACKET_PAYTIME_UPDATA;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
         return FALSE;
     }
     return TRUE;

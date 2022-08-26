@@ -11,6 +11,9 @@ network verification support tcp and websocket protocol verification.it is means
 first open source C/C++ network authentication server, supporting various languages ​​and platforms for network authentication and authorization
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
+#### Version difference
+V3 version, the protocol is basically reimplemented. It is no longer compatible with the V2 protocol. V3 is basically changed to the HTTP interface for management. The compatibility is better. Please check the documentation for more.  
+
 ## Software feature
 A simple and high-performance cross-platform network authentication and authorization server developed and implemented based on XEngine  
 feature list:  
@@ -64,11 +67,9 @@ address:app.xyry.org or 159.75.200.173
 port :tcp port 5300,websocket port 5301,Transmission verification password: no encryption
 
 ## Screenshot of the program
-![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 
 ## Participate in contribution
 

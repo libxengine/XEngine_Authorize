@@ -11,6 +11,9 @@ c c++network Authorize service
 全国首款开源C/C++ 网络验证服务器,支持各种语言各种平台进行网络验证和授时服务  
 这是一个跨平台简单高性能网络授权服务器,提供了完整的演示代码  
 
+#### 版本区别
+V3版本后协议基本重新实现,不在兼容V2协议,V3基本改为HTTP接口进行管理.兼容性更好.请查看文档获取更多.  
+
 ## 软件特性
 基于XEngine开发并实现的一套简洁高性能跨平台网络验证授权服务器  
 软件特性:  
@@ -64,11 +67,9 @@ make FLAGS=CleanAll 清理编译
 端口:tcp端口 5300,websocket端口 5301,传输验证密码:无加密
 
 ## 程序截图
-![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 
 ## 参与贡献
 
@@ -88,8 +89,8 @@ make FLAGS=CleanAll 清理编译
 如果你有问题,可以在issues中提交
 
 ## 开发计划 
-重新设计界面版本,服务使用跨平台,管理端使用接口  
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
+支持多端登录  
 生成会话TOKEN分布式鉴权  
 支持OAuth验证  
 mysql支持  

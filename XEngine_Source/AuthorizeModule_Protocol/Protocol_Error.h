@@ -10,5 +10,5 @@
 //    Purpose:     导出错误
 //    History:
 *********************************************************************/
-#define XENGINE_AUTHORIZE_PROTOCOL_PARAMENT 0x0010001
-#define XENGINE_AUTHORIZE_PROTOCOL_PARSE 0x0010002
+#define ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT 0x0040001
+#define ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE 0x0040002

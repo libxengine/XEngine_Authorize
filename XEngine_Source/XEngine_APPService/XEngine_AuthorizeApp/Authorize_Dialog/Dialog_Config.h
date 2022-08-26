@@ -27,4 +27,12 @@ public:
 	CEdit m_EditIPPort;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+	CEdit m_EditUser;
+	CEdit m_EditPass;
+	CEdit m_EditToken;
+	CButton m_BtnLogin;
+	CButton m_BtnLogout;
+	CEdit m_EditTimeout;
+	afx_msg void OnBnClickedButton5();
+	CButton m_BtnUpdate;
 };

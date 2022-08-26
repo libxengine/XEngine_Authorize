@@ -150,6 +150,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.cpp" />
     <ClCompile Include="Authorize_Config.cpp" />
     <ClCompile Include="Authorize_HttpTask.cpp" />
     <ClCompile Include="Authorize_Task.cpp" />
@@ -159,6 +163,10 @@
     <ClCompile Include="XEngine_AuthorizeService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.h" />
     <ClInclude Include="Authorize_Config.h" />
     <ClInclude Include="Authorize_Hdr.h" />
     <ClInclude Include="Authorize_HttpTask.h" />

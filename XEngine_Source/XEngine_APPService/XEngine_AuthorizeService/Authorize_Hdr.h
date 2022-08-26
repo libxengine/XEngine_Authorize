@@ -72,6 +72,10 @@ extern XENGINE_SERVICECONFIG st_AuthConfig;
 #include "Authorize_TCPTask.h"
 #include "Authorize_WSTask.h"
 #include "Authorize_HttpTask.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_User.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_Client.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_Serial.h"
+#include "AuthorizeHTTP_GET/AuthorizeHTTP_Token.h"
 
 #ifdef _WINDOWS
 #ifdef _DEBUG

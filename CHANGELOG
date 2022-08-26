@@ -1,3 +1,67 @@
+XEngine_Authorize V3.1.0.1001
+
+添加:删除TOKEN会话功能
+添加:更新会话TOKEN时间功能
+添加:HTTP管理端支持自动刷新
+添加:HTTP管理客户端的登录功能
+添加:TOKEN功能的支持
+添加:http快速验证功能
+添加:http解析和打包协议到协议模块
+修改:移动TCP协议处理代码到HTTP用户处理中
+修改:分割序列号和客户端管理器接口到单独文件
+修改:modify:Protocol_Packet_SendPkt 名称到 Protocol_Packet_HDRComm function
+修改:发送消息函数的参数
+修改:移动用户协议到用户文件从客户端代码
+修改:HTTPPOST和GET任务区别
+修改:统一错误定义
+修改:HTTP的API请求TOKEN验证
+修改:支持仅仅展示在线客户端了
+修改:禁用HTTP重复登录
+修改:登录必须填写设备类型了
+修复:用户注册结构不正确的问题
+修复:分钟不支持快速验证的问题
+修复:HTTP管理端刷新客户端列表在线程中崩溃的问题
+修复:打包客户端列表协议崩溃
+修复:获取客户端列表时间不正确的问题
+修复:超时通知不正确的问题
+修复:验证客户端重读登录的问题
+优化:TCP登录代码
+删除:重复的打包和解析websocket协议代码
+删除:没有使用的websocket任务代码
+删除:无用的代码
+删除:HTTP登录代码
+
+added:close token msg send server
+added:update session token time
+added:auto flush user list
+added:http management client login support
+added:token function support
+added:fast ver for http protocol
+added:http parse and packet protocol for protocol module
+modify:move tcp protocol process code to http user cpp
+modify:Split serial and client management interface into separate files
+modify:Protocol_Packet_SendPkt to Protocol_Packet_HDRComm function
+modify:Parameters of the send message function
+modify:move user protocol to user file from client file
+modify:http task distinguishes between post and get
+modify:error define
+modify:http api required token
+modify:only show online client now
+modify:Disable repeated HTTP user logins
+modify:must set enDeviceType when you login
+fixed:user register struct is incorrent
+fixed:minute not support fast ver
+fixed:the problem that flush list client crashed in thread
+fixed:packet client list is crashed
+fixed:get client list time is incorrent
+fixed:timeout notify send msg is failed
+fixed:auth client is repeat login
+improved:TCP login code
+delete:redundant packet and parse websocket code for protocol module
+delete:websocket task not use code
+delete:useless code
+delete:login for http
+======================================================================================
 XEngine_Authorize V3.0.0.1001PT
 
 添加:帮助模块

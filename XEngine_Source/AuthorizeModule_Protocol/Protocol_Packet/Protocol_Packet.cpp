@@ -23,352 +23,61 @@ CProtocol_Packet::~CProtocol_Packet()
 //                              公有函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：Protocol_Packet_SendPkt
-函数功能：发送打包函数
+函数名称：Protocol_Packet_HDRComm
+函数功能：通用头打包函数
  参数.一：ptszMsgBuffer
-  In/Out：In
+  In/Out：Out
   类型：字符指针
   可空：N
-  意思：输出要打包的缓冲区
+  意思：输出打好包的数据
  参数.二：pInt_MsgLen
-  In/Out：In
+  In/Out：Out
   类型：整数型指针
   可空：N
-  意思：输出打包大小
+  意思：输出数据大小
  参数.三：pSt_ProtocolHdr
   In/Out：In
   类型：数据结构指针
   可空：N
-  意思：输入协议头
- 参数.四：lpszMsgBuffer
-  In/Out：In
-  类型：常量字符指针
-  可空：Y
-  意思：输入要发送的数据
- 参数.五：nMsgLen
+  意思：输入要打包的数据
+ 参数.四：enDeviceType
   In/Out：In
   类型：整数型
-  可空：Y
-  意思：发送数据大小
+  可空：N
+  意思：输入设备类型
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_SendPkt(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPCTSTR lpszMsgBuffer /* = NULL */, int nMsgLen /* = 0 */)
+BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType)
 {
 	Protocol_IsErrorOccur = FALSE;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
-	pSt_ProtocolHdr->unPacketSize = nMsgLen;
-
-	memcpy(ptszMsgBuffer, pSt_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
-	if (nMsgLen > 0)
+	if (0 == enDeviceType)
 	{
-		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR) + nMsgLen;
-		memcpy(ptszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), lpszMsgBuffer, nMsgLen);
+		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR);
+		memcpy(ptszMsgBuffer, pSt_ProtocolHdr, *pInt_MsgLen);
 	}
 	else
 	{
-		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR);
+		Json::Value st_JsonRoot;
+		st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
+		st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
+		st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
+		st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
+		st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
+		st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
+
+		*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+		memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	}
-	return TRUE;
-}
-/********************************************************************
-函数名称：Protocol_Packet_WSPkt
-函数功能：WEBSOCKET通过打包函数
- 参数.一：ptszMsgBuffer
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：输出打好包的数据
- 参数.二：pInt_MsgLen
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：输出数据大小
- 参数.三：pSt_ProtocolHdr
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_WSPkt(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
-{
-	Protocol_IsErrorOccur = FALSE;
-
-	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
-	{
-		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
-		return FALSE;
-	}
-	Json::Value st_JsonRoot;
-	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
-	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
-	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
-	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
-	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
-
-	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
-	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
-}
-/********************************************************************
-函数名称：Protocol_Packet_WSPktAuth
-函数功能：WEBSOCKET验证打包协议
- 参数.一：ptszMsgBuffer
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：输出打好包的数据
- 参数.二：pInt_MsgLen
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：输出数据大小
- 参数.三：pSt_ProtocolHdr
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
- 参数.四：pSt_UserAuth
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_WSPktAuth(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
-{
-	Protocol_IsErrorOccur = FALSE;
-
-	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
-	{
-		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
-		return FALSE;
-	}
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-
-	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
-	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
-	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
-	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
-	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
-
-	st_JsonObject["tszUserName"] = pSt_UserAuth->tszUserName;
-	st_JsonObject["tszUserPass"] = pSt_UserAuth->tszUserPass;
-	st_JsonObject["enClientType"] = pSt_UserAuth->enClientType;
-	st_JsonObject["enDeviceType"] = pSt_UserAuth->enDeviceType;
-
-	st_JsonRoot["st_UserAuth"] = st_JsonObject;
-
-	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
-	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
-}
-/********************************************************************
-函数名称：Protocol_Packet_WSPktInfo
-函数功能：WEBSOCKET用户信息打包协议
- 参数.一：ptszMsgBuffer
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：输出打好包的数据
- 参数.二：pInt_MsgLen
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：输出数据大小
- 参数.三：pSt_ProtocolHdr
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
- 参数.四：pSt_UserInfo
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_WSPktInfo(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
-{
-	Protocol_IsErrorOccur = FALSE;
-
-	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
-	{
-		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
-		return FALSE;
-	}
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-
-	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
-	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
-	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
-	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
-	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
-
-	st_JsonObject["tszUserName"] = pSt_UserInfo->tszUserName;
-	st_JsonObject["tszUserPass"] = pSt_UserInfo->tszUserPass;
-	st_JsonObject["tszCreateTime"] = pSt_UserInfo->tszCreateTime;
-	st_JsonObject["tszEMailAddr"] = pSt_UserInfo->tszEMailAddr;
-	st_JsonObject["tszLoginTime"] = pSt_UserInfo->tszLoginTime;
-	st_JsonObject["nIDNumber"] = (Json::Value::Int64)pSt_UserInfo->nIDNumber;
-	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)pSt_UserInfo->nPhoneNumber;
-	st_JsonObject["nUserLevel"] = pSt_UserInfo->nUserLevel;
-	st_JsonObject["nUserState"] = pSt_UserInfo->nUserState;
-
-	st_JsonRoot["st_UserInfo"] = st_JsonObject;
-
-	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
-	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
-}
-/********************************************************************
-函数名称：Protocol_Packet_WSPktTime
-函数功能：WEBSOCKET时间打包协议
- 参数.一：ptszMsgBuffer
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：输出打好包的数据
- 参数.二：pInt_MsgLen
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：输出数据大小
- 参数.三：pSt_ProtocolHdr
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
- 参数.四：pSt_ProtocolTime
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的附加数据
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_WSPktTime(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
-{
-	Protocol_IsErrorOccur = FALSE;
-
-	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
-	{
-		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
-		return FALSE;
-	}
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-
-	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
-	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
-	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
-	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
-	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
-
-	st_JsonObject["tszUserName"] = pSt_ProtocolTime->tszUserName;
-	st_JsonObject["tszUserAddr"] = pSt_ProtocolTime->tszUserAddr;
-	st_JsonObject["tszLeftTime"] = pSt_ProtocolTime->tszLeftTime;
-	st_JsonObject["nTimeLeft"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeLeft;
-	st_JsonObject["nTimeONLine"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeONLine;
-	st_JsonObject["enDeviceType"] = pSt_ProtocolTime->enDeviceType;
-	st_JsonObject["enSerialType"] = pSt_ProtocolTime->enSerialType;
-
-	st_JsonRoot["st_UserTime"] = st_JsonObject;
-
-	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
-	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
-}
-/********************************************************************
-函数名称：Protocol_Packet_WSPktNote
-函数功能：WEBSOCKET公告打包协议
- 参数.一：ptszMsgBuffer
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：输出打好包的数据
- 参数.二：pInt_MsgLen
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：输出数据大小
- 参数.三：pSt_ProtocolHdr
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要打包的数据
- 参数.四：lpszMsgBuffer
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：输入要打包的附加数据
- 参数.五：nMsgLen
-  In/Out：In
-  类型：整数型
-  可空：N
-  意思：输入公告信息大小
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_WSPktNote(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, LPCTSTR lpszMsgBuffer, int nMsgLen)
-{
-	Protocol_IsErrorOccur = FALSE;
-
-	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
-	{
-		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
-		return FALSE;
-	}
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-
-	st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
-	st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-	st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
-	st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
-	st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
-	st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
-
-	st_JsonObject["lpszMsgBuffer"] = lpszMsgBuffer;
-	st_JsonObject["nMsgLen"] = nMsgLen;
-
-	st_JsonRoot["st_UserNote"] = st_JsonObject;
-
-	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
-	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	return TRUE;
 }
 /********************************************************************
@@ -406,7 +115,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -421,6 +130,105 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
 	{
 		st_JsonRoot["msg"] = lpszMsgBuffer;
 	}
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpUserPass
+函数功能：HTTP客户端验证数据打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pSt_UserAuth
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonUser;
+
+	st_JsonUser["tszUserName"] = pSt_UserAuth->tszUserName;
+	st_JsonUser["tszUserPass"] = pSt_UserAuth->tszUserPass;
+	st_JsonUser["enDeviceType"] = pSt_UserAuth->enDeviceType;
+	st_JsonUser["enClientType"] = pSt_UserAuth->enClientType;
+
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["st_UserAuth"] = st_JsonUser;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpUserTime
+函数功能：用户时间打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出打好包的数据
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出数据大小
+ 参数.三：pSt_ProtocolTime
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的附加数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+
+	st_JsonObject["tszUserName"] = pSt_ProtocolTime->tszUserName;
+	st_JsonObject["tszUserAddr"] = pSt_ProtocolTime->tszUserAddr;
+	st_JsonObject["tszLeftTime"] = pSt_ProtocolTime->tszLeftTime;
+	st_JsonObject["nTimeLeft"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeLeft;
+	st_JsonObject["nTimeONLine"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeONLine;
+	st_JsonObject["enDeviceType"] = pSt_ProtocolTime->enDeviceType;
+	st_JsonObject["enSerialType"] = pSt_ProtocolTime->enSerialType;
+
+	st_JsonRoot["st_UserTime"] = st_JsonObject;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
@@ -456,7 +264,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -527,14 +335,14 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
+BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -545,20 +353,24 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		Json::Value st_JsonUser;
 		Json::Value st_JsonObject;
 		
-		st_JsonUser["tszUserName"] = (*pppSt_OnClient)[i]->st_UserInfo.tszUserName;
-		st_JsonUser["tszUserPass"] = (*pppSt_OnClient)[i]->st_UserInfo.tszUserPass;
-		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserInfo.tszEMailAddr;
-		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszLoginTime;
-		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserInfo.tszCreateTime;
-		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nPhoneNumber;
-		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserInfo.nIDNumber;
-		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserInfo.nUserLevel;
+		st_JsonUser["tszUserName"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserName;
+		st_JsonUser["tszUserPass"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserPass;
+		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszEMailAddr;
+		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszLoginTime;
+		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszCreateTime;
+		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nPhoneNumber;
+		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nIDNumber;
+		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nUserLevel;
 		st_JsonUser["nUserState"] = 1;
 
+		st_JsonObject["tszClientAddr"] = (*pppSt_OnClient)[i]->tszClientAddr;
 		st_JsonObject["tszLeftTime"] = (*pppSt_OnClient)[i]->tszLeftTime;
-		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->tszHardCode;
-		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->enSerialType;
-		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->enDeviceType;
+		st_JsonObject["nLeftTime"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->nLeftTime;
+		st_JsonObject["nOnlineTime"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->nOnlineTime;
+
+		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->st_UserTable.tszHardCode;
+		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->st_UserTable.enSerialType;
+		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->st_UserTable.enDeviceType;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
@@ -568,7 +380,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		//查找是否在线,在线就跳过
 		for (int j = 0; j < nOnCount; j++)
 		{
-			if (0 == _tcsncmp((*pppSt_OnClient)[i]->st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[i]->st_UserInfo.tszUserName)))
+			if (0 == _tcsncmp((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName)))
 			{
 				bFound = TRUE;
 				break;
@@ -642,7 +454,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
 		Protocol_IsErrorOccur = TRUE;
-		Protocol_dwErrorCode = XENGINE_AUTHORIZE_PROTOCOL_PARAMENT;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
 	Json::Value st_JsonRoot;
@@ -662,6 +474,69 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
 	st_JsonRoot["Array"] = st_JsonArray;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpToken
+函数功能：TOKEN创建打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：xhToken
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入创建的TOKEN
+ 参数.四：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入超时时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	TCHAR tszTimeStart[128];
+	TCHAR tszTimeEnd[128];
+	XENGINE_LIBTIMER st_TimeOut;
+	Json::Value st_JsonRoot;
+
+	memset(tszTimeStart, '\0', sizeof(tszTimeStart));
+	memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
+	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIMER));
+
+	BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+	_stprintf(tszTimeEnd, _T("0-0-0 0:0:%d"), nTimeout);
+	BaseLib_OperatorTimeSpan_CalForStr(tszTimeStart, tszTimeEnd, &st_TimeOut);
+	BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, TRUE, &st_TimeOut);
+
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["xhToken"] = (Json::Value::UInt64)xhToken;
+	st_JsonRoot["nTimeout"] = nTimeout;
+	st_JsonRoot["tszTimeStart"] = tszTimeStart;
+	st_JsonRoot["tszTimeEnd"] = tszTimeEnd;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
