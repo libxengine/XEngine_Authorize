@@ -16,8 +16,9 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
 		st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-		Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, enDeviceType);
-		XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC ? XENGINE_AUTH_APP_NETTYPE_TCP : XENGINE_AUTH_APP_NETTYPE_WS);
+		int nNetType = enDeviceType == ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB ? XENGINE_AUTH_APP_NETTYPE_WS : XENGINE_AUTH_APP_NETTYPE_TCP;
+		Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, nNetType);
+		XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, nNetType);
 
 		if (!st_AuthConfig.bTimeNotify)
 		{

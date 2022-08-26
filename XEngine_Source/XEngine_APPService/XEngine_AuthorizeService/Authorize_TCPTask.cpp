@@ -64,9 +64,17 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
 
-		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		pSt_ProtocolHdr->unPacketSize = 0;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
+
+		if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_UNKNOW == st_AuthProtocol.enDeviceType)
+		{
+			pSt_ProtocolHdr->wReserve = 250;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，没有填写设备类型,无法继续"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			return FALSE;
+		}
 		if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 251;
@@ -101,6 +109,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
+		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable))
 		{
 			pSt_ProtocolHdr->wReserve = 254;
