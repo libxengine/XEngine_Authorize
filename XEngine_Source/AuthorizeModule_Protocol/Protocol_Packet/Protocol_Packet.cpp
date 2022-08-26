@@ -365,8 +365,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 
 		st_JsonObject["tszClientAddr"] = (*pppSt_OnClient)[i]->tszClientAddr;
 		st_JsonObject["tszLeftTime"] = (*pppSt_OnClient)[i]->tszLeftTime;
-		st_JsonObject["nLeftTime"] = (*pppSt_OnClient)[i]->nLeftTime;
-		st_JsonObject["nOnlineTime"] = (*pppSt_OnClient)[i]->nOnlineTime;
+		st_JsonObject["nLeftTime"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->nLeftTime;
+		st_JsonObject["nOnlineTime"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->nOnlineTime;
 
 		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->st_UserTable.tszHardCode;
 		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->st_UserTable.enSerialType;
@@ -533,7 +533,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
-	st_JsonRoot["xhToken"] = xhToken;
+	st_JsonRoot["xhToken"] = (Json::Value::UInt64)xhToken;
 	st_JsonRoot["nTimeout"] = nTimeout;
 	st_JsonRoot["tszTimeStart"] = tszTimeStart;
 	st_JsonRoot["tszTimeEnd"] = tszTimeEnd;

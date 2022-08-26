@@ -62,7 +62,7 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求客户端列表成功,在线用户:%d,离线用户:%d,显示标志:%d"), lpszClientAddr, nOnCount, nOffCount, bOnline);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求客户端列表成功,在线用户:%d,离线用户:%d,显示标志:%d"), lpszClientAddr, nOnCount, nOffCount - nOnCount, bOnline);
 	}
 	else if (0 == _tcsnicmp(lpszAPIClose, lpszAPIName, _tcslen(lpszAPIClose)))
 	{
