@@ -67,11 +67,9 @@ address:app.xyry.org or 159.75.200.173
 port :tcp port 5300,websocket port 5301,Transmission verification password: no encryption
 
 ## Screenshot of the program
-![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 
 ## Participate in contribution
 

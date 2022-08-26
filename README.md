@@ -67,11 +67,9 @@ make FLAGS=CleanAll 清理编译
 端口:tcp端口 5300,websocket端口 5301,传输验证密码:无加密
 
 ## 程序截图
-![输入图片说明](https://www.xyry.org/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 
 ## 参与贡献
 
@@ -91,8 +89,8 @@ make FLAGS=CleanAll 清理编译
 如果你有问题,可以在issues中提交
 
 ## 开发计划 
-重新设计界面版本,服务使用跨平台,管理端使用接口  
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
+支持多端登录  
 生成会话TOKEN分布式鉴权  
 支持OAuth验证  
 mysql支持  
