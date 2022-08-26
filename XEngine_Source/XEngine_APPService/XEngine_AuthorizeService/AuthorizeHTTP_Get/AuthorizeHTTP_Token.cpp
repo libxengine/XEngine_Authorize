@@ -8,6 +8,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 	TCHAR tszURLValue[128];
 	LPCTSTR lpszAPILogin = _T("login");
 	LPCTSTR lpszAPIUPDate = _T("update");
+	LPCTSTR lpszAPIClose = _T("close");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszURLKey, '\0', sizeof(tszURLKey));
@@ -68,22 +69,13 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 	}
 	else if (0 == _tcsnicmp(lpszAPIUPDate, tszURLValue, _tcslen(lpszAPIUPDate)))
 	{
-		//http://app.xyry.org:5302/api?function=update&token=1000112345&user=123123aa&pass=123123
+		//http://app.xyry.org:5302/api?function=update&token=1000112345
 		TCHAR tszUserToken[128];
-		TCHAR tszUserName[128];
-		TCHAR tszUserPass[128];
-		AUTHREG_USERTABLE st_UserTable;
-
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
-		memset(tszUserName, '\0', sizeof(tszUserName));
-		memset(tszUserPass, '\0', sizeof(tszUserPass));
-		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
-		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserName);
-		BaseLib_OperatorString_GetKeyValue(pptszList[3], "=", tszURLKey, tszUserPass);
 
-		if (!Session_Token_UPDate(_ttoi64(tszUserToken), tszUserName, tszUserPass))
+		if (!Session_Token_UPDate(_ttoi64(tszUserToken)))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -93,6 +85,18 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, _ttoi64(tszUserToken), st_AuthConfig.st_XVerification.nTokenTimeout);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求更新TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
+	}
+	else if (0 == _tcsnicmp(lpszAPIClose, tszURLValue, _tcslen(lpszAPIClose)))
+	{
+		//http://app.xyry.org:5302/api?function=close&token=1000112345
+		TCHAR tszUserToken[128];
+		memset(tszUserToken, '\0', sizeof(tszUserToken));
+
+		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		Session_Token_Delete(_ttoi64(tszUserToken));
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
 	}
 	return TRUE;
 }
