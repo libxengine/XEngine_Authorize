@@ -376,7 +376,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 		//查找是否在线,在线就跳过
 		for (int j = 0; j < nOnCount; j++)
 		{
-			if (0 == _tcsncmp((*pppSt_OnClient)[i]->st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[i]->st_UserInfo.tszUserName)))
+			if (0 == _tcsncmp((*pppSt_OnClient)[j]->st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[j]->st_UserInfo.tszUserName)))
 			{
 				bFound = TRUE;
 				break;
