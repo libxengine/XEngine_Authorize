@@ -8,6 +8,7 @@ XHANDLE xhHttpSocket = NULL;
 XHANDLE xhTCPPacket = NULL;
 XHANDLE xhWSPacket = NULL;
 XHANDLE xhHttpPacket = NULL;
+XHANDLE xhMemPool = NULL;
 XNETHANDLE xhTCPPool = 0;
 XNETHANDLE xhWSPool = 0;
 XNETHANDLE xhHttpPool = 0;
@@ -45,6 +46,7 @@ void ServiceApp_Stop(int signo)
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		ManagePool_Thread_NQDestroy(xhHttpPool);
+		ManagePool_Memory_Destory(xhMemPool);
 
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
@@ -128,6 +130,14 @@ int main(int argc, char** argv)
 	signal(SIGTERM, ServiceApp_Stop);
 	signal(SIGABRT, ServiceApp_Stop);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化服务器信号管理成功"));
+
+	xhMemPool = ManagePool_Memory_Create();
+	if (NULL == xhMemPool)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化内存池失败，错误：%lX"), ManagePool_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化内存池成功"));
 
 	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
 	{
@@ -259,6 +269,7 @@ XENGINE_EXITAPP:
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		ManagePool_Thread_NQDestroy(xhHttpPool);
+		ManagePool_Memory_Destory(xhMemPool);
 
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();

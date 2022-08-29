@@ -56,6 +56,7 @@ extern XHANDLE xhHttpSocket;
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XHANDLE xhHttpPacket;
+extern XHANDLE xhMemPool;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
 extern XNETHANDLE xhHttpPool;

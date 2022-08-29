@@ -120,13 +120,12 @@ BOOL XEngine_Client_TaskSend(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 }
 BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCTSTR lpszPass)
 {
-	TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+	TCHAR* ptszMsgBuffer = (TCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_AUTH_MAX_BUFFER);
 	if (NULL == ptszMsgBuffer)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
 		return FALSE;
 	}
-	memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
@@ -142,10 +141,9 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen,
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
 				return FALSE;
 			}
-			memset(ptszCodecBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszCodecBuffer, lpszPass);
 			RfcComponents_WSCodec_EncodeMsg(ptszCodecBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
-			free(ptszCodecBuffer);
+			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 			ptszCodecBuffer = NULL;
 		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
@@ -175,22 +173,19 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen,
 		}
 		else
 		{
-			TCHAR* ptszCodecBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+			TCHAR* ptszCodecBuffer = (TCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_AUTH_MAX_BUFFER);
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
 				return FALSE;
 			}
-			memset(ptszCodecBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
 			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszCodecBuffer, lpszPass);
 			RfcComponents_HttpServer_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nMsgLen, &st_HDRParam, ptszCodecBuffer, nMsgLen);
-			free(ptszCodecBuffer);
-			ptszCodecBuffer = NULL;
+			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
 	}
-	free(ptszMsgBuffer);
-	ptszMsgBuffer = NULL;
+	ManagePool_Memory_Free(xhMemPool, ptszMsgBuffer);
 	return TRUE;
 }
