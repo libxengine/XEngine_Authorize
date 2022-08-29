@@ -24,7 +24,22 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(LPVOID lParam)
 
 			if (RfcComponents_HttpServer_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament))
 			{
-				XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
+				if (st_AuthConfig.st_XCrypto.bEnable)
+				{
+					TCHAR tszPassword[64];
+					TCHAR tszDeBuffer[2048];
+
+					memset(tszPassword, '\0', sizeof(tszPassword));
+					memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
+
+					_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_XCrypto.nPassword);
+					OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament);
+				}
+				else
+				{
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
+				}
 			}
 			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
