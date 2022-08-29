@@ -130,7 +130,24 @@ BOOL XEngine_SendMsg(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen,
 
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
-		RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		if (NULL == lpszPass)
+		{
+			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		}
+		else
+		{
+			TCHAR* ptszCodecBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+			if (NULL == ptszCodecBuffer)
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
+				return FALSE;
+			}
+			memset(ptszCodecBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
+			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszCodecBuffer, lpszPass);
+			RfcComponents_WSCodec_EncodeMsg(ptszCodecBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+			free(ptszCodecBuffer);
+			ptszCodecBuffer = NULL;
+		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
