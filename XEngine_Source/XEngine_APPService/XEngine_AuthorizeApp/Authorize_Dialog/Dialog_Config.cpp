@@ -63,7 +63,6 @@ BOOL CDialog_Config::OnInitDialog()
 	m_EditUser.SetWindowText(_T("admin"));
 	m_EditPass.SetWindowText(_T("123123aa"));
 
-	m_BtnLogout.EnableWindow(FALSE);
 	m_BtnUpdate.EnableWindow(FALSE);
 
 	m_CheckCodecEnable.SetCheck(BST_UNCHECKED);
@@ -268,6 +267,7 @@ void CDialog_Config::OnBnClickedRadio2()
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListEncrypto.EnableWindow(FALSE);
 	m_EditPassword.EnableWindow(FALSE);
+	bCrypto = FALSE;
 }
 
 
@@ -276,4 +276,5 @@ void CDialog_Config::OnBnClickedRadio1()
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListEncrypto.EnableWindow(TRUE);
 	m_EditPassword.EnableWindow(TRUE);
+	bCrypto = TRUE;
 }

@@ -32,12 +32,8 @@
 
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
+extern BOOL bCrypto;
 extern LPCSTR lpszStuType[2];
-#if XENGINE_VERSION_BIT < 7390001001
-extern LPCSTR lpszXSerialType[5];
-extern LPCSTR lpszXDevType[9];
-extern LPCSTR lpszXLevelType[7];
-#endif
 
 #ifdef _DEBUG
 #ifdef _WIN64
