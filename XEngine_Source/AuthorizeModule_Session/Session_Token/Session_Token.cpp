@@ -230,7 +230,7 @@ BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pS
 }
 /********************************************************************
 函数名称：Session_Token_GetUser
-函数功能：获取用户是否存在
+函数功能：获取用户的TOKEN
  参数.一：lpszUser
   In/Out：In
   类型：常量字符指针
@@ -241,12 +241,17 @@ BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pS
   类型：常量字符指针
   可空：N
   意思：密码
+ 参数.三：pxhToken
+  In/Out：Out
+  类型：句柄
+  可空：N
+  意思：导出获取到的句柄
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass)
+BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, XNETHANDLE* pxhToken)
 {
 	Session_IsErrorOccur = FALSE;
 
@@ -267,16 +272,17 @@ BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass)
             //密码,验证密码防治冲突
 			if (0 == _tcsncmp(lpszPass, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserPass, _tcslen(lpszPass)))
 			{
+                *pxhToken = stl_MapIterator->first;
                 bFound = TRUE;
                 break;
 			}
         }
     }
     st_Locker.unlock_shared();
-	if (bFound)
+	if (!bFound)
 	{
 		Session_IsErrorOccur = TRUE;
-		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_EXIST;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
 		return FALSE;
 	}
 	return TRUE;

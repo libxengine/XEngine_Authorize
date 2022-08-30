@@ -63,6 +63,7 @@ BOOL CDialog_Config::OnInitDialog()
 	m_EditUser.SetWindowText(_T("admin"));
 	m_EditPass.SetWindowText(_T("123123aa"));
 
+	m_BtnLogout.EnableWindow(FALSE);
 	m_BtnUpdate.EnableWindow(FALSE);
 
 	m_CheckCodecEnable.SetCheck(BST_UNCHECKED);
