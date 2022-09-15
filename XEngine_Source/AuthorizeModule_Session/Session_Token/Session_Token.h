@@ -12,9 +12,10 @@
 *********************************************************************/
 typedef struct
 {
-	AUTHREG_USERTABLE st_UserTable;                                        //用户表
+	AUTHREG_USERTABLE st_UserTable;                                       //用户表
 	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
 	__int64x nOnlineTime;                                                 //在线时间
+    int nTimeout;                                                         //单独指定超时
 }AUTHSESSION_TOKENCLIENT, * LPAUTHSESSION_TOKENCLIENT;
 //////////////////////////////////////////////////////////////////////////
 class CSession_Token
@@ -25,7 +26,7 @@ public:
 public:
     BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam = NULL);
     BOOL Session_Token_Destroy();
-    BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable);
+    BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
     BOOL Session_Token_Delete(XNETHANDLE xhToken);
     BOOL Session_Token_UPDate(XNETHANDLE xhToken);
     BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);

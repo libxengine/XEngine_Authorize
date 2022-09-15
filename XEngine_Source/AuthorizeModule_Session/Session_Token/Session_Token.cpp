@@ -107,12 +107,17 @@ BOOL CSession_Token::Session_Token_Destroy()
   类型：数据结构指针
   可空：N
   意思：用户信息表
+ 参数.三：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：大于0单独指定TOKEN超时时间
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable)
+BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout /* = 0 */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -125,6 +130,7 @@ BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
     AUTHSESSION_TOKENCLIENT st_TokenClient;
     memset(&st_TokenClient,'\0',sizeof(AUTHSESSION_TOKENCLIENT));
 
+    st_TokenClient.nOnlineTime = nTimeout;
     BaseLib_OperatorTime_GetSysTime(&st_TokenClient.st_LibTimer);
     memcpy(&st_TokenClient.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
 
@@ -307,9 +313,19 @@ XHTHREAD CSession_Token::Session_Token_Thread(LPVOID lParam)
             __int64x nOnlineSpan = 0;                                       //在线时间
             //用户登录了多少秒
             BaseLib_OperatorTimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
-            if (nOnlineSpan > pClass_This->m_nTimeout)
+            if (stl_MapIterator->second.nTimeout > 0)
             {
-                stl_ListNotify.push_back(stl_MapIterator->first);
+				if (nOnlineSpan > stl_MapIterator->second.nTimeout)
+				{
+					stl_ListNotify.push_back(stl_MapIterator->first);
+				}
+            }
+            else
+            {
+				if (nOnlineSpan > pClass_This->m_nTimeout)
+				{
+					stl_ListNotify.push_back(stl_MapIterator->first);
+				}
             }
         }
         pClass_This->st_Locker.unlock_shared();

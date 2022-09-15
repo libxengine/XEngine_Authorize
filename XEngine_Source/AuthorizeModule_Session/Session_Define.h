@@ -237,12 +237,17 @@ extern "C" BOOL Session_Token_Destroy();
   类型：数据结构指针
   可空：N
   意思：用户信息表
+ 参数.三：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：大于0单独指定TOKEN超时时间
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
 /********************************************************************
 函数名称：Session_Token_Delete
 函数功能：移除一个客户端
