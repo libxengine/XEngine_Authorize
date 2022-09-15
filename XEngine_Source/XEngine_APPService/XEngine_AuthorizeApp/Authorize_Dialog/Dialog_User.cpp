@@ -127,7 +127,7 @@ void CDialog_User::OnBnClickedButton1()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -135,7 +135,7 @@ void CDialog_User::OnBnClickedButton1()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -180,7 +180,7 @@ void CDialog_User::OnBnClickedButton2()
 	int nSelect = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
-		AfxMessageBox(_T("你没有选择任何客户！"));
+		Authorize_Help_LogPrint(_T("你没有选择任何客户！"));
 		return;
 	}
 	CString m_StrIPAddr;
@@ -237,7 +237,7 @@ void CDialog_User::OnBnClickedButton2()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -245,18 +245,18 @@ void CDialog_User::OnBnClickedButton2()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("关闭客户端成功"));
+		Authorize_Help_LogPrint(_T("关闭客户端成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("关闭客户端失败"));
+		Authorize_Help_LogPrint(_T("关闭客户端失败"));
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//剔除客户需要刷新客户列表
@@ -271,7 +271,7 @@ void CDialog_User::OnBnClickedButton3()
 	int nSelect = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
-		AfxMessageBox(_T("你没有选择任何客户！"));
+		Authorize_Help_LogPrint(_T("你没有选择任何客户！"));
 		return;
 	}
 	CString m_StrIPAddr;
@@ -325,7 +325,7 @@ void CDialog_User::OnBnClickedButton3()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -333,18 +333,18 @@ void CDialog_User::OnBnClickedButton3()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
 	
 	if (0 == st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("删除客户端成功"));
+		Authorize_Help_LogPrint(_T("删除客户端成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("删除客户端失败"));
+		Authorize_Help_LogPrint(_T("删除客户端失败"));
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//需要刷新客户列表
@@ -359,7 +359,7 @@ void CDialog_User::OnBnClickedButton4()
 	int nItemCount = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
 	if (nItemCount < 0)
 	{
-		AfxMessageBox(_T("你没有选择任何用户！"));
+		Authorize_Help_LogPrint(_T("你没有选择任何用户！"));
 		return;
 	}
 	CDialog_Modify m_DlgModify;

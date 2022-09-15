@@ -27,6 +27,7 @@ void CXEngineAuthorizeAppDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB1, m_TabWindows);
+	DDX_Control(pDX, IDC_EDIT1, m_EditLog);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
@@ -85,6 +86,8 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgUser.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
 	m_TabWindows.SetCurSel(0);
+
+	hMainWnd = m_hWnd;
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

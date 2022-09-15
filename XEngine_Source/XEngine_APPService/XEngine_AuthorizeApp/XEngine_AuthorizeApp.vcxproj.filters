@@ -19,6 +19,12 @@
     <Filter Include="源文件\Authorize_Dialog">
       <UniqueIdentifier>{2e171454-cfc6-43e4-8b9c-5374177f26b5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Authorize_Help">
+      <UniqueIdentifier>{86e90a47-78e1-4c71-9605-73691ce76652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Authorize_Help">
+      <UniqueIdentifier>{09b85906-69e2-4631-bb95-415f2d30d72a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="XEngine_AuthorizeApp.h">
@@ -51,6 +57,9 @@
     <ClInclude Include="Authorize_Dialog\Dialog_Modify.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Authorize_Help\Authorize_Help.h">
+      <Filter>头文件\Authorize_Help</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XEngine_AuthorizeApp.cpp">
@@ -73,6 +82,9 @@
     </ClCompile>
     <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Help\Authorize_Help.cpp">
+      <Filter>源文件\Authorize_Help</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

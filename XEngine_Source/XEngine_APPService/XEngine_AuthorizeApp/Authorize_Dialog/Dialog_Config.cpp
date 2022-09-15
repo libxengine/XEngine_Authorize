@@ -117,7 +117,7 @@ void CDialog_Config::OnBnClickedButton1()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("登录失败,无法继续"));
+			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
 			return;
 		}
 	}
@@ -125,13 +125,13 @@ void CDialog_Config::OnBnClickedButton1()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("登录失败,无法继续"));
+			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
 			return;
 		}
 	}
 	if (0 != st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("登录失败,无法继续"));
+		Authorize_Help_LogPrint(_T("登录失败,无法继续"));
 		return;
 	}
 	m_StrToken.Format(_T("%lld"), st_JsonRoot["xhToken"].asUInt64());
@@ -139,11 +139,13 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
 
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-	AfxMessageBox(_T("登录成功"));
+	Authorize_Help_LogPrint(_T("登录成功"));
 
 	m_BtnLogin.EnableWindow(FALSE);
 	m_BtnLogout.EnableWindow(TRUE);
 	m_BtnUpdate.EnableWindow(TRUE);
+
+
 }
 
 
@@ -180,7 +182,7 @@ void CDialog_Config::OnBnClickedButton2()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("关闭失败,无法继续"));
+			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
 			return;
 		}
 	}
@@ -188,13 +190,13 @@ void CDialog_Config::OnBnClickedButton2()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("关闭失败,无法继续"));
+			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
 			return;
 		}
 	}
 	if (0 != st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("关闭失败,无法继续"));
+		Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
 		return;
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
@@ -241,7 +243,7 @@ void CDialog_Config::OnBnClickedButton5()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("续期失败,无法继续"));
+			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
 			return;
 		}
 	}
@@ -249,13 +251,13 @@ void CDialog_Config::OnBnClickedButton5()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("续期失败,无法继续"));
+			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
 			return;
 		}
 	}
 	if (0 != st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("续期失败,无法继续"));
+		Authorize_Help_LogPrint(_T("续期失败,无法继续"));
 		return;
 	}
 	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());

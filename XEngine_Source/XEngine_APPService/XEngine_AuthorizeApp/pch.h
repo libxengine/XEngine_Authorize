@@ -29,7 +29,9 @@
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
 #include "Authorize_Dialog/Dialog_Modify.h"
+#include "Authorize_Help/Authorize_Help.h"
 
+extern HWND hMainWnd;
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
 extern BOOL bCrypto;

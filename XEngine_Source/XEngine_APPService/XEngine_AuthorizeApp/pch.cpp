@@ -3,6 +3,7 @@
 #include "pch.h"
 
 // 当使用预编译的头时，需要使用此源文件，编译才能成功。
+HWND hMainWnd = NULL;
 HWND hUserWnd = NULL;
 HWND hConfigWnd = NULL;
 BOOL bCrypto = FALSE;

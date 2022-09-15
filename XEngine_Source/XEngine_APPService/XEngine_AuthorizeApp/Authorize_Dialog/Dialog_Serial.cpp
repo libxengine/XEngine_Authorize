@@ -125,7 +125,7 @@ void CDialog_Serial::OnBnClickedButton1()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -133,7 +133,7 @@ void CDialog_Serial::OnBnClickedButton1()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -229,7 +229,7 @@ void CDialog_Serial::OnBnClickedButton2()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -237,18 +237,18 @@ void CDialog_Serial::OnBnClickedButton2()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("插入序列号成功"));
+		Authorize_Help_LogPrint(_T("插入序列号成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("插入序列号失败"));
+		Authorize_Help_LogPrint(_T("插入序列号失败"));
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//刷新
@@ -263,7 +263,7 @@ void CDialog_Serial::OnBnClickedButton4()
 	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
-		AfxMessageBox(_T("你没有选择任何客户！"));
+		Authorize_Help_LogPrint(_T("你没有选择任何客户！"));
 		return;
 	}
 	CString m_StrSerial = m_ListSerial.GetItemText(nSelect, 1);
@@ -328,7 +328,7 @@ void CDialog_Serial::OnBnClickedButton4()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -336,18 +336,18 @@ void CDialog_Serial::OnBnClickedButton4()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户列表接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
 			return;
 		}
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("删除序列号成功"));
+		Authorize_Help_LogPrint(_T("删除序列号成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("删除序列号失败"));
+		Authorize_Help_LogPrint(_T("删除序列号失败"));
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//刷新
@@ -362,14 +362,14 @@ void CDialog_Serial::OnBnClickedButton3()
 	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
-		AfxMessageBox(_T("你没有选择序列号！"));
+		Authorize_Help_LogPrint(_T("你没有选择序列号！"));
 		return;
 	}
 	CString m_Str = m_ListSerial.GetItemText(nSelect, 1);
 	if (!AuthHelp_ClipBoard_Set(m_Str.GetBuffer(), m_Str.GetLength()))
 	{
-		AfxMessageBox(_T("复制失败！"));
+		Authorize_Help_LogPrint(_T("复制失败！"));
 		return;
 	}
-	AfxMessageBox(_T("复制成功！"));
+	Authorize_Help_LogPrint(_T("复制成功！"));
 }

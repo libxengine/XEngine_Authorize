@@ -107,7 +107,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return FALSE;
 		}
 	}
@@ -115,7 +115,7 @@ BOOL CDialog_Modify::OnInitDialog()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return FALSE;
 		}
 	}
@@ -238,7 +238,7 @@ void CDialog_Modify::OnBnClickedButton2()
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
@@ -246,18 +246,18 @@ void CDialog_Modify::OnBnClickedButton2()
 	{
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
-			AfxMessageBox(_T("解析客户接口数据错误,无法继续"));
+			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
 		}
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
 	{
-		AfxMessageBox(_T("修改客户端成功"));
+		Authorize_Help_LogPrint(_T("修改客户端成功"));
 	}
 	else
 	{
-		AfxMessageBox(_T("修改客户端失败"));
+		Authorize_Help_LogPrint(_T("修改客户端失败"));
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
