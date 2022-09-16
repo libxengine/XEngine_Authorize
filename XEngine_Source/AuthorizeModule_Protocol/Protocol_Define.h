@@ -93,17 +93,12 @@ extern "C" BOOL Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen,
   类型：数据结构指针
   可空：N
   意思：输入要打包的数据
- 参数.四：nType
-  In/Out：In
-  类型：整数型
-  可空：Y
-  意思：输入打包类型-1为响应,0离线,1在线
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth, int nType = -1);
+extern "C" BOOL Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Packet_HttpUserTime
 函数功能：用户时间打包函数
