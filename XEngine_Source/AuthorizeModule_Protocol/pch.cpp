@@ -39,9 +39,9 @@ extern "C" BOOL Protocol_Packet_HttpComm(TCHAR * ptszMsgBuffer, int* pInt_MsgLen
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpComm(ptszMsgBuffer, pInt_MsgLen, nCode, lpszMsgBuffer);
 }
-extern "C" BOOL Protocol_Packet_HttpUserPass(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+extern "C" BOOL Protocol_Packet_HttpUserPass(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth, int nType)
 {
-	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth);
+	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth, nType);
 }
 extern "C" BOOL Protocol_Packet_HttpUserTime(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
 {

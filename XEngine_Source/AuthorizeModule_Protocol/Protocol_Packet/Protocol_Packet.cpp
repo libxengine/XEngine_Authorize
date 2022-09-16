@@ -153,12 +153,17 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
   类型：数据结构指针
   可空：N
   意思：输入要打包的数据
+ 参数.四：nType
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入打包类型-1为响应,0离线,1在线
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth, int nType /* = -1 */)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -176,8 +181,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* p
 	st_JsonUser["enDeviceType"] = pSt_UserAuth->enDeviceType;
 	st_JsonUser["enClientType"] = pSt_UserAuth->enClientType;
 
-	st_JsonRoot["msg"] = "success";
-	st_JsonRoot["code"] = 0;
+	if (-1 == nType)
+	{
+		st_JsonRoot["msg"] = "success";
+		st_JsonRoot["code"] = 0;
+	}
+	else
+	{
+		st_JsonUser["Online"] = nType;
+	}
 	st_JsonRoot["st_UserAuth"] = st_JsonUser;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
