@@ -75,21 +75,44 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，没有填写设备类型,无法继续"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return FALSE;
 		}
-		if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
+		//是否使用了第三方验证
+		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
-			pSt_ProtocolHdr->wReserve = 251;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
+			//启用三方验证
+			int nHTTPCode = 0;
+			int nHTTPLen = 0;
+			TCHAR* ptszMsgBuffer = NULL;
+			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
+			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.tszPassUrl, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			if (200 != nHTTPCode)
+			{
+				pSt_ProtocolHdr->wReserve = 251;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，三方验证失败,错误码:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, nHTTPCode);
+				return FALSE;
+			}
+			Protocol_Parse_HttpParseTable(ptszMsgBuffer, nHTTPLen, &st_UserTable);
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
-		if ((_tcslen(st_AuthProtocol.tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass))))
+		else
 		{
-			pSt_ProtocolHdr->wReserve = 252;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return FALSE;
+			if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
+			{
+				pSt_ProtocolHdr->wReserve = 251;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				return FALSE;
+			}
+			if ((_tcslen(st_AuthProtocol.tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(st_AuthProtocol.tszUserPass))))
+			{
+				pSt_ProtocolHdr->wReserve = 252;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				return FALSE;
+			}
 		}
 		//是否已经登录
 		TCHAR tszClientAddr[128];
@@ -120,7 +143,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			return FALSE;
 		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
-		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable))
+		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, nNetType))
 		{
 			pSt_ProtocolHdr->wReserve = 256;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
