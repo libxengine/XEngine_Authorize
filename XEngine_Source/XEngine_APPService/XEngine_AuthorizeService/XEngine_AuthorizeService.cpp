@@ -26,12 +26,22 @@ void ServiceApp_Stop(int signo)
 		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
-			AUTHREG_PROTOCOL_TIME st_TimeProtocol;
-			memset(&st_TimeProtocol, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+			AUTHREG_PROTOCOL_TIME st_AuthTime;
+			AUTHSESSION_NETCLIENT st_NETClient;
 
-			if (Session_Authorize_GetTimer(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName, &st_TimeProtocol))
+			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+			memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
+
+			if (Session_Authorize_GetClientForUser(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName, &st_NETClient))
 			{
-				Database_SQLite_UserLeave(&st_TimeProtocol);
+				st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
+				st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
+				st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
+				_tcscpy(st_AuthTime.tszUserName, ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
+				_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
+				_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
+
+				Database_SQLite_UserLeave(&st_AuthTime);
 			}
 			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
 		}

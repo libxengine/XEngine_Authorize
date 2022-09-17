@@ -135,28 +135,28 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
     return TRUE;
 }
 /********************************************************************
-函数名称：Session_Authorize_GetTimer
-函数功能：获取客户端时间信息
+函数名称：Session_Authorize_GetClientForUser
+函数功能：获取客户端信息
  参数.一：lpszUserName
   In/Out：In
   类型：常量字符指针
   可空：N
   意思：输入要查找用户名
- 参数.二：pSt_AuthTime
+ 参数.二：pSt_Client
   In/Out：Out
   类型：数据结构指针
   可空：N
-  意思：用户时间信息结构体
+  意思：用户信息结构体
 返回值
   类型：逻辑型
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime)
+BOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client)
 {
     Session_IsErrorOccur = FALSE;
 
-    if ((NULL == lpszUserName) || (NULL == pSt_AuthTime))
+    if ((NULL == lpszUserName) || (NULL == pSt_Client))
     {
         Session_IsErrorOccur = TRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
@@ -171,13 +171,7 @@ BOOL CSession_Authorize::Session_Authorize_GetTimer(LPCTSTR lpszUserName,AUTHREG
         st_Locker.unlock_shared();
         return FALSE;
     }
-    pSt_AuthTime->nTimeLeft = stl_MapIterator->second.nLeftTime;
-    pSt_AuthTime->nTimeONLine = stl_MapIterator->second.nOnlineTime;
-    pSt_AuthTime->enSerialType = stl_MapIterator->second.st_UserTable.enSerialType;
-
-    _tcscpy(pSt_AuthTime->tszUserName, lpszUserName);
-    _tcscpy(pSt_AuthTime->tszLeftTime, stl_MapIterator->second.tszLeftTime);
-    _tcscpy(pSt_AuthTime->tszUserAddr, stl_MapIterator->second.tszClientAddr);
+    *pSt_Client = stl_MapIterator->second;
     st_Locker.unlock_shared();
 
     return TRUE;
@@ -339,12 +333,17 @@ BOOL CSession_Authorize::Session_Authorize_Destroy()
   类型：数据结构指针
   可空：N
   意思：用户传递的协议数据
+ 参数.三：nNetType
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：用户连接的类型
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable)
+BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable, int nNetType)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -369,6 +368,7 @@ BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHRE
     AUTHSESSION_NETCLIENT st_Client;
     memset(&st_Client,'\0',sizeof(AUTHSESSION_NETCLIENT));
 
+    st_Client.nNetType = nNetType;
     BaseLib_OperatorTime_GetSysTime(&st_Client.st_LibTimer);
     _tcscpy(st_Client.tszClientAddr,lpszClientAddr);
     memcpy(&st_Client.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
@@ -463,6 +463,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
                 stl_MapIterator->second.nOnlineTime = nOnlineSpan;
                 //赋值给回调函数
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
+                st_ProtocolTimer.nNetType = stl_MapIterator->second.nNetType;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_UserTable.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_UserTable.enDeviceType;
@@ -480,6 +481,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
                 _stprintf(stl_MapIterator->second.tszLeftTime, _T("%lld"), stl_MapIterator->second.nLeftTime);
                 //次数处理不做任何时间操作
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
+                st_ProtocolTimer.nNetType = stl_MapIterator->second.nNetType;
                 st_ProtocolTimer.nTimeLeft = stl_MapIterator->second.nLeftTime;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_UserTable.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_UserTable.enDeviceType;
@@ -511,6 +513,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
 
                 st_ProtocolTimer.nTimeONLine = nOnlineSpan;
                 st_ProtocolTimer.nTimeLeft = nLeftTime;
+                st_ProtocolTimer.nNetType = stl_MapIterator->second.nNetType;
                 st_ProtocolTimer.enSerialType = stl_MapIterator->second.st_UserTable.enSerialType;
                 st_ProtocolTimer.enDeviceType = stl_MapIterator->second.st_UserTable.enDeviceType;
                 _tcscpy(st_ProtocolTimer.tszLeftTime, stl_MapIterator->second.st_UserTable.tszLeftTime);
@@ -527,7 +530,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
             list<AUTHREG_PROTOCOL_TIME>::iterator stl_ListIterator = stl_ListNotify.begin();
             for (; stl_ListIterator != stl_ListNotify.end(); stl_ListIterator++)
             {
-                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, stl_ListIterator->enDeviceType, pClass_This->m_lParam);
+                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, stl_ListIterator->enDeviceType, st_ProtocolTimer.nNetType = stl_MapIterator->second.nNetType, pClass_This->m_lParam);
             }
             stl_ListNotify.clear();        //清理元素
         }

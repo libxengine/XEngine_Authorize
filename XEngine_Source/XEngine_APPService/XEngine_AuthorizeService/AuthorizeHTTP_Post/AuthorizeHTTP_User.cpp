@@ -110,20 +110,28 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPITime, _tcslen(lpszAPIName)))
 	{
 		AUTHREG_PROTOCOL_TIME st_AuthTime;
+		AUTHSESSION_NETCLIENT st_NETClient;
 		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
 
 		memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+		memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		_tcscpy(st_AuthTime.tszUserName, st_UserAuth.tszUserName);
-		if (!Session_Authorize_GetTimer(st_AuthTime.tszUserName, &st_AuthTime))
+		if (!Session_Authorize_GetClientForUser(st_AuthTime.tszUserName, &st_NETClient))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
 			return FALSE;
 		}
+		st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
+		st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
+		st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
+		_tcscpy(st_AuthTime.tszUserName, st_UserAuth.tszUserName);
+		_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
+		_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
+
 		Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%lld，剩余时间：%lld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);

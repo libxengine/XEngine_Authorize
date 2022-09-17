@@ -39,9 +39,9 @@ extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_List
 {
 	return m_SessionAuth.Session_Authorize_GetClient(pppSt_ListClient, pInt_ListCount, lpszClientAddr);
 }
-extern "C" BOOL Session_Authorize_GetTimer(LPCTSTR lpszUserName, AUTHREG_PROTOCOL_TIME * pSt_AuthTime)
+extern "C" BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client)
 {
-	return m_SessionAuth.Session_Authorize_GetTimer(lpszUserName, pSt_AuthTime);
+	return m_SessionAuth.Session_Authorize_GetClientForUser(lpszUserName, pSt_Client);
 }
 extern "C" BOOL Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser, TCHAR * ptszClientAddr)
 {
@@ -59,9 +59,9 @@ extern "C" BOOL Session_Authorize_Destroy()
 {
 	return m_SessionAuth.Session_Authorize_Destroy();
 }
-extern "C" BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable)
+extern "C" BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType)
 {
-	return m_SessionAuth.Session_Authorize_Insert(lpszClientAddr, pSt_UserTable);
+	return m_SessionAuth.Session_Authorize_Insert(lpszClientAddr, pSt_UserTable, nNetType);
 }
 extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE * pSt_UserTable)
 {
