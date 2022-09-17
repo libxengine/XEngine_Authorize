@@ -25,9 +25,20 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		}
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
+			AUTHREG_PROTOCOL_TIME st_AuthTime;
+			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+
+			st_AuthTime.nNetType = nNetType;
+			st_AuthTime.nTimeLeft = nLeftTimer;
+			st_AuthTime.nTimeONLine = nOnlineTimer;
+			st_AuthTime.enSerialType = enSerialType;
+			_tcscpy(st_AuthTime.tszUserName, lpszUserName);
+			_tcscpy(st_AuthTime.tszLeftTime, lpszLeftDate);
+			_tcscpy(st_AuthTime.tszUserAddr, lpszUserAddr);
+
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-			Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.tszPassUrl, tszMsgBuffer);
+			Protocol_Packet_HttpUserTime(tszMsgBuffer, &nMsgLen, &st_AuthTime);
+			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, st_AuthConfig.st_XLogin.bPassAuth);
 	}
@@ -55,6 +66,15 @@ void __stdcall XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
 			_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
 			_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
 
+			if (st_AuthConfig.st_XLogin.bHTTPAuth)
+			{
+				int nSDLen = 0;
+				TCHAR tszSDBuffer[MAX_PATH];
+				memset(tszSDBuffer, '\0', MAX_PATH);
+
+				Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
+				APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+			}
 			Database_SQLite_UserLeave(&st_AuthTime);
 		}
 		Session_Authorize_CloseClient(st_UserTable.st_UserInfo.tszUserName);

@@ -110,7 +110,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			memset(tszSDBuffer, '\0', MAX_PATH);
 
 			Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.tszPassUrl, tszSDBuffer);
+			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_AuthTime.nTimeONLine);
 	}

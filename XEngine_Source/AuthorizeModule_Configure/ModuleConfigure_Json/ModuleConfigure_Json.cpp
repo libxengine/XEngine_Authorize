@@ -126,7 +126,11 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLogin.bHTTPAuth = st_JsonXLogin["bHTTPAuth"].asBool();
 	pSt_ServerConfig->st_XLogin.bPassAuth = st_JsonXLogin["bPassAuth"].asBool();
 	pSt_ServerConfig->st_XLogin.nHTTPAuthTime = st_JsonXLogin["nHTTPAuthTime"].asInt();
-	_tcscpy(pSt_ServerConfig->st_XLogin.tszPassUrl, st_JsonXLogin["tszPassUrl"].asCString());
+
+	Json::Value st_JsonXLoginUrl = st_JsonXLogin["st_PassUrl"];
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogin, st_JsonXLoginUrl["tszPassLogin"].asCString());
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogout, st_JsonXLoginUrl["tszPassLogout"].asCString());
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassTimeout, st_JsonXLoginUrl["tszPassTimeout"].asCString());
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
