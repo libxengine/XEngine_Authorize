@@ -30,19 +30,48 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
 
-		if (!Database_SQLite_UserQuery(tszUserName, &st_UserTable))
+		//是否使用了第三方验证
+		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，用户名不存在"), lpszClientAddr);
-			return FALSE;
+			//启用三方验证
+			int nHTTPCode = 0;
+			int nHTTPLen = 0;
+			TCHAR* ptszMsgBuffer = NULL;
+			XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
+			memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+			_tcscpy(st_AuthProtocol.tszUserName, tszUserName);
+			_tcscpy(st_AuthProtocol.tszUserPass, tszUserPass);
+			st_AuthProtocol.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
+
+			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
+			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			if (200 != nHTTPCode)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，三方验证失败,错误码:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, nHTTPCode);
+				return FALSE;
+			}
+			Protocol_Parse_HttpParseTable(ptszMsgBuffer, nHTTPLen, &st_UserTable);
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
-		if ((_tcslen(tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(tszUserPass))))
+		else
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，密码错误"), lpszClientAddr);
-			return FALSE;
+			if (!Database_SQLite_UserQuery(tszUserName, &st_UserTable))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，用户名不存在"), lpszClientAddr);
+				return FALSE;
+			}
+			if ((_tcslen(tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(tszUserPass))))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，密码错误"), lpszClientAddr);
+				return FALSE;
+			}
 		}
 		//用户是否存在会话,存在就返回
 		if (Session_Token_GetUser(tszUserName, tszUserPass, &xhToken))
@@ -99,7 +128,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 				return FALSE;
 			}
 			st_UserTable.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
-			if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable))
+			if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, XENGINE_AUTH_APP_NETTYPE_HTTP))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "server is error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
