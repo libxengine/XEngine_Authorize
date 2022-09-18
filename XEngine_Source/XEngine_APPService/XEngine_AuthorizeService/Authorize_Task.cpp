@@ -16,13 +16,6 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT;
 		st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-		Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, nNetType);
-		XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, nNetType);
-
-		if (!st_AuthConfig.bTimeNotify)
-		{
-			XEngine_CloseClient(lpszUserAddr);
-		}
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
 			AUTHREG_PROTOCOL_TIME st_AuthTime;
@@ -39,6 +32,16 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 			Protocol_Packet_HttpUserTime(tszMsgBuffer, &nMsgLen, &st_AuthTime);
 			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
+		}
+		if (XENGINE_AUTH_APP_NETTYPE_HTTP != nNetType)
+		{
+			//HTTP不能通知
+			Protocol_Packet_HDRComm(tszMsgBuffer, &nMsgLen, &st_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, nNetType);
+		}
+		if (!st_AuthConfig.bTimeNotify)
+		{
+			XEngine_CloseClient(lpszUserAddr);
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, st_AuthConfig.st_XLogin.bPassAuth);
 	}
