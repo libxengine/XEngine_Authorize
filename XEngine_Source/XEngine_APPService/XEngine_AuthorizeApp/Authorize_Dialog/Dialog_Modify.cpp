@@ -34,6 +34,7 @@ void CDialog_Modify::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, m_ComboLeave);
 	DDX_Control(pDX, IDC_EDIT7, m_EditHardCode);
 	DDX_Control(pDX, IDC_EDIT8, m_EditCreateTime);
+	DDX_Control(pDX, IDC_BUTTON2, m_BtnModify);
 }
 
 
@@ -53,103 +54,111 @@ BOOL CDialog_Modify::OnInitDialog()
 	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	CDialog_User* pUserWnd = (CDialog_User*)CDialog_User::FromHandle(hUserWnd);
 
-	POSITION pSt_Sition = pUserWnd->m_ListCtrlClient.GetFirstSelectedItemPosition();
-	int nItemCount = pUserWnd->m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
-	CString m_StrUser = pUserWnd->m_ListCtrlClient.GetItemText(nItemCount, 1);
-
-	CString m_StrIPAddr;
-	CString m_StrIPPort;
-	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
-	//组合请求URL
-	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
-	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
-	pConfigWnd->m_EditToken.GetWindowText(m_StrToken);
-
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
-	//请求用户信息
-	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-
-	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
-	st_JsonRoot["st_UserInfo"] = st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
-	//是否加密
-	TCHAR tszPassBuffer[64];
-	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
-	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
-	if (bCrypto)
-	{
-		TCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		nMsgLen = st_JsonRoot.toStyledString().length();
-		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIHelp_HttpRequest_Post(tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
-	}
-	else
-	{
-		APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	}
-	st_JsonObject.clear();
-	st_JsonRoot.clear();
-	JSONCPP_STRING st_JsonError;
-	Json::CharReaderBuilder st_ReaderBuilder;
-	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (bCrypto)
-	{
-		TCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
-			return FALSE;
-		}
-	}
-	else
-	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
-			return FALSE;
-		}
-	}
-
-	st_JsonObject = st_JsonRoot["st_UserTable"];
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-
-	m_EditUser.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserName"].asCString());
-	m_EditPass.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString());
-	m_EditEMail.SetWindowText(st_JsonObject["st_UserInfo"]["tszEMailAddr"].asCString());
-	m_EditCreateTime.SetWindowText(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString());
-
-	CString m_StrNumber;
-	m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nIDNumber"].asUInt64());
-	m_EditCardID.SetWindowText(m_StrNumber);
-
-	m_StrNumber.ReleaseBuffer();
-	m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nPhoneNumber"].asUInt64());
-	m_EditPhone.SetWindowText(m_StrNumber);
-
-	m_EditHardCode.SetWindowText(st_JsonObject["tszHardCode"].asCString());
-	m_EditLeftTime.SetWindowText(st_JsonObject["tszLeftTime"].asCString());
-
 	for (int i = 0; i < 5; i++)
 	{
 		m_ComboSerial.InsertString(i, lpszXSerialType[i]);
 	}
-	m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
-
 	for (int i = 0; i < 7; i++)
 	{
 		m_ComboLeave.InsertString(i, lpszXLevelType[i]);
 	}
-	m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
+
+	POSITION pSt_Sition = pUserWnd->m_ListCtrlClient.GetFirstSelectedItemPosition();
+	if (NULL == pSt_Sition)
+	{
+		//没有选择,表示添加
+		m_BtnModify.SetWindowText(_T("添加"));
+	}
+	else
+	{
+		int nItemCount = pUserWnd->m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
+		CString m_StrUser = pUserWnd->m_ListCtrlClient.GetItemText(nItemCount, 1);
+
+		CString m_StrIPAddr;
+		CString m_StrIPPort;
+		CString m_StrToken;
+		TCHAR tszUrlAddr[MAX_PATH];
+		memset(tszUrlAddr, '\0', MAX_PATH);
+		//组合请求URL
+		pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+		pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+		pConfigWnd->m_EditToken.GetWindowText(m_StrToken);
+
+		_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+		//请求用户信息
+		int nMsgLen = 0;
+		CHAR* ptszMsgBuffer = NULL;
+		Json::Value st_JsonRoot;
+		Json::Value st_JsonObject;
+
+		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+		st_JsonRoot["st_UserInfo"] = st_JsonObject;
+		st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+		//是否加密
+		TCHAR tszPassBuffer[64];
+		memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
+		::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
+		if (bCrypto)
+		{
+			TCHAR tszMsgBuffer[2048];
+			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+			nMsgLen = st_JsonRoot.toStyledString().length();
+			OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+			APIHelp_HttpRequest_Post(tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		}
+		else
+		{
+			APIHelp_HttpRequest_Post(tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		}
+		st_JsonObject.clear();
+		st_JsonRoot.clear();
+		JSONCPP_STRING st_JsonError;
+		Json::CharReaderBuilder st_ReaderBuilder;
+		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+		if (bCrypto)
+		{
+			TCHAR tszMsgBuffer[2048];
+			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+			if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+			{
+				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
+				return FALSE;
+			}
+		}
+		else
+		{
+			if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+			{
+				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
+				return FALSE;
+			}
+		}
+
+		st_JsonObject = st_JsonRoot["st_UserTable"];
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+
+		m_EditUser.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserName"].asCString());
+		m_EditPass.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString());
+		m_EditEMail.SetWindowText(st_JsonObject["st_UserInfo"]["tszEMailAddr"].asCString());
+		m_EditCreateTime.SetWindowText(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString());
+
+		CString m_StrNumber;
+		m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nIDNumber"].asUInt64());
+		m_EditCardID.SetWindowText(m_StrNumber);
+
+		m_StrNumber.ReleaseBuffer();
+		m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nPhoneNumber"].asUInt64());
+		m_EditPhone.SetWindowText(m_StrNumber);
+
+		m_EditHardCode.SetWindowText(st_JsonObject["tszHardCode"].asCString());
+		m_EditLeftTime.SetWindowText(st_JsonObject["tszLeftTime"].asCString());
+
+		m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
+		m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
+	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -184,14 +193,24 @@ void CDialog_Modify::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+	CString m_StrBtnModify;
+
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
+	m_BtnModify.GetWindowText(m_StrBtnModify);
 	//组合请求URL
 	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pConfigWnd->m_EditToken.GetWindowText(m_StrToken);
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	if (0 == _tcscmp("添加", m_StrBtnModify.GetBuffer()))
+	{
+		_stprintf(tszUrlAddr, _T("http://%s:%s/auth/user/register"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	}
+	else
+	{
+		_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	}
 
 	st_JsonUser["tszUserName"] = st_UserTable.st_UserInfo.tszUserName;
 	st_JsonUser["tszUserPass"] = st_UserTable.st_UserInfo.tszUserPass;
