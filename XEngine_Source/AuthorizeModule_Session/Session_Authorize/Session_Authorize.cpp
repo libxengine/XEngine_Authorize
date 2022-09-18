@@ -530,7 +530,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
             list<AUTHREG_PROTOCOL_TIME>::iterator stl_ListIterator = stl_ListNotify.begin();
             for (; stl_ListIterator != stl_ListNotify.end(); stl_ListIterator++)
             {
-                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, stl_ListIterator->enDeviceType, st_ProtocolTimer.nNetType = stl_MapIterator->second.nNetType, pClass_This->m_lParam);
+                pClass_This->lpCall_AuthregEvents(stl_ListIterator->tszUserAddr, stl_ListIterator->tszUserName, stl_ListIterator->nTimeONLine, stl_ListIterator->nTimeLeft, stl_ListIterator->tszLeftTime, stl_ListIterator->enSerialType, stl_ListIterator->enDeviceType, stl_ListIterator->nNetType, pClass_This->m_lParam);
             }
             stl_ListNotify.clear();        //清理元素
         }
