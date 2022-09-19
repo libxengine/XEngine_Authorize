@@ -109,7 +109,7 @@ int AuthClient_Register()
 	st_JsonUserInfo["tszEMailAddr"] = lpszEmail;
 	st_JsonUserInfo["nPhoneNumber"] = nPhoneNumber;
 	st_JsonUserInfo["nIDNumber"] = nIDNumber;
-	st_JsonUserInfo["nIDNumber"] = nIDNumber;
+	st_JsonUserInfo["nUserLevel"] = 5;
 
 	st_JsonUserTable["tszHardCode"] = "2FDWAD02JD2091";
 	st_JsonUserTable["st_UserInfo"] = st_JsonUserInfo;
