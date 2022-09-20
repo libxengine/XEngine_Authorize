@@ -20,6 +20,17 @@
         "nTryTime":5,
         "nTryMode":1
     },
+    "XLogin":{
+        "bMultiLogin":true,
+        "bHTTPAuth":false,
+        "bPassAuth":false,
+        "nHTTPAuthTime":10,
+        "st_PassUrl":{
+            "tszPassLogin":"http://127.0.0.1:5000/api/auth/login",
+            "tszPassLogout":"http://127.0.0.1:5000/api/auth/logout",
+            "tszPassTimeout":"http://127.0.0.1:5000/api/auth/timeout"
+        }
+    },
     "XCrypto":{
         "bEnable":false,
         "nPass":123123
@@ -34,6 +45,7 @@
         "LogLeave":32
     },
     "XVer":[
+        "V3.2.0.1001 Build20220924",
         "V3.1.0.1001 Build20220826",
         "V3.0.0.1001 Build20220816",
         "V2.8.0.1001 Build20220809",
@@ -47,6 +59,20 @@
         "V2.4.0.1001 Build20211105",
         "V2.3.0.1001 Build20211022",
         "V2.2.0.1001 Build20210806",
-        "V1.0.0.1001 Build20210501"
+        "V2.1.0.1001 Build20210801",
+        "V2.0.0.1001 Build20210723",
+        "V1.11.0.1001 Build20210618",
+        "V1.10.0.1001 Build20210524",
+        "V1.9.0.1001 Build20210503",
+        "V1.9.0.1001 Build20210423",
+        "V1.8.0.1001 Build20210209",
+        "V1.7.0.1001 Build20210116",
+        "V1.6.0.1001 Build20190601",
+        "V1.5.0.1001 Build20190522",
+        "V1.4.0.1001 Build20190308",
+        "V1.3.0.1001 Build20141030",
+        "V1.2.0.1001 Build20140907",
+        "V1.1.0.1001 Build20110320",
+        "V1.0.0.1001 Build20110306"
     ]
 }
