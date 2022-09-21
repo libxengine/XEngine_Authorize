@@ -60,6 +60,9 @@
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp">
       <Filter>源文件\AuthorizeHTTP_Get</Filter>
     </ClCompile>
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.cpp">
+      <Filter>源文件\AuthorizeHTTP_Post</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h">
       <Filter>头文件\AuthorizeHTTP_Get</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.h">
+      <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

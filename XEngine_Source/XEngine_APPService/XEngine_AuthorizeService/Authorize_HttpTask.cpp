@@ -67,6 +67,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		LPCTSTR lpszAPIVerClient = _T("client");
 		LPCTSTR lpszAPIVerSerial = _T("serial");
 		LPCTSTR lpszAPIVerUser = _T("user");
+		LPCTSTR lpszAPIVerPass = _T("pass");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
@@ -128,6 +129,10 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		else if (0 == _tcsnicmp(lpszAPIVerUser, tszAPIVer, _tcslen(lpszAPIVerUser)))
 		{
 			XEngine_AuthorizeHTTP_User(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerPass, tszAPIVer, _tcslen(lpszAPIVerPass)))
+		{
+			XEngine_AuthorizeHTTP_Pass(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
