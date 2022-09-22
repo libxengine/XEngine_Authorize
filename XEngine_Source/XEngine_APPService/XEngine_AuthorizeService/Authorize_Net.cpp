@@ -98,10 +98,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			_tcscpy(st_AuthTime.tszUserName, tszClientUser);
 			_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
 			_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
-
-			Database_SQLite_UserLeave(&st_AuthTime);
 		}
-		Session_Authorize_CloseClient(tszClientUser);
 		//只有登录的用户才通知
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
@@ -112,6 +109,11 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
 			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
+		else
+		{
+			Database_SQLite_UserLeave(&st_AuthTime);
+		}
+		Session_Authorize_CloseClient(tszClientUser);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_AuthTime.nTimeONLine);
 	}
 	else
