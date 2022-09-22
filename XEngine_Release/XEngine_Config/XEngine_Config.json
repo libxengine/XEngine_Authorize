@@ -26,9 +26,9 @@
         "bPassAuth":false,
         "nHTTPAuthTime":10,
         "st_PassUrl":{
-            "tszPassLogin":"http://127.0.0.1:5000/api/auth/login",
-            "tszPassLogout":"http://127.0.0.1:5000/api/auth/logout",
-            "tszPassTimeout":"http://127.0.0.1:5000/api/auth/timeout"
+            "tszPassLogin":"http://127.0.0.1:5303/auth/pass/login",
+            "tszPassLogout":"http://127.0.0.1:5303/auth/pass/logout",
+            "tszPassTimeout":"http://127.0.0.1:5303/auth/pass/timeout"
         }
     },
     "XCrypto":{
@@ -45,7 +45,7 @@
         "LogLeave":32
     },
     "XVer":[
-        "V3.2.0.1001 Build20220924",
+        "V3.2.0.1001 Build20220923",
         "V3.1.0.1001 Build20220826",
         "V3.0.0.1001 Build20220816",
         "V2.8.0.1001 Build20220809",
