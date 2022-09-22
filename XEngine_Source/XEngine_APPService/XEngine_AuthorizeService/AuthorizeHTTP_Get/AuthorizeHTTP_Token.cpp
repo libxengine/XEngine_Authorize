@@ -165,13 +165,52 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 	{
 		//http://app.xyry.org:5302/api?function=close&token=1000112345
 		TCHAR tszUserToken[128];
+		AUTHREG_USERTABLE st_UserTable;
+
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
+		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		//主动关闭,更新用户时间
+		Session_Token_Get(_ttoi64(tszUserToken), &st_UserTable);
+		if (st_UserTable.st_UserInfo.nUserLevel > 1)
+		{
+			//如果权限是普通用户
+			AUTHREG_PROTOCOL_TIME st_AuthTime;
+			AUTHSESSION_NETCLIENT st_NETClient;
+			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+			memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
+			//需要设置时间并且关闭会话
+			if (Session_Authorize_GetClientForUser(st_UserTable.st_UserInfo.tszUserName, &st_NETClient))
+			{
+				st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
+				st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
+				st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
+				_tcscpy(st_AuthTime.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+				_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
+				_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
+				//是否需要通知
+				if (st_AuthConfig.st_XLogin.bHTTPAuth)
+				{
+					int nSDLen = 0;
+					TCHAR tszSDBuffer[MAX_PATH];
+					memset(tszSDBuffer, '\0', MAX_PATH);
+
+					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
+					APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+				}
+				Database_SQLite_UserLeave(&st_AuthTime);
+			}
+			Session_Authorize_CloseClient(st_UserTable.st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("Token：%s，用户名：%s，主动关闭,在线时长:%d"), tszUserToken, st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
+		}
+		else
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
+		}
 		Session_Token_Delete(_ttoi64(tszUserToken));
-		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
 	}
 	return TRUE;
 }

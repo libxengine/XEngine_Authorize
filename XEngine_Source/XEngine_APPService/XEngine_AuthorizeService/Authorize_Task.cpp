@@ -52,7 +52,7 @@ void __stdcall XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 	Session_Token_Get(xhToken, &st_UserTable);
-	if (st_UserTable.st_UserInfo.nUserLevel > 0)
+	if (st_UserTable.st_UserInfo.nUserLevel > 1)
 	{
 		//如果权限是普通用户
 		AUTHREG_PROTOCOL_TIME st_AuthTime;
