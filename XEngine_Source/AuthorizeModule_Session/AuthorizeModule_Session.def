@@ -5,7 +5,7 @@ EXPORTS
 
 	Session_Authorize_Init
 	Session_Authorize_GetClient
-	Session_Authorize_GetTimer
+	Session_Authorize_GetClientForUser
 	Session_Authorize_GetAddrForUser
 	Session_Authorize_GetUserForAddr
 	Session_Authorize_CloseClient

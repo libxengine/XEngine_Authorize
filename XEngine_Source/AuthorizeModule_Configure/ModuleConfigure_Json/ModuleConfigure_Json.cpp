@@ -114,6 +114,23 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XVerification.nVerMode = st_JsonXVerification["nVerMode"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryTime = st_JsonXVerification["nTryTime"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryMode = st_JsonXVerification["nTryMode"].asInt();
+	//登录配置
+	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
+	{
+		Config_IsErrorOccur = TRUE;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
+		return FALSE;
+	}
+	Json::Value st_JsonXLogin = st_JsonRoot["XLogin"];
+	pSt_ServerConfig->st_XLogin.bMultiLogin = st_JsonXLogin["bMultiLogin"].asBool();
+	pSt_ServerConfig->st_XLogin.bHTTPAuth = st_JsonXLogin["bHTTPAuth"].asBool();
+	pSt_ServerConfig->st_XLogin.bPassAuth = st_JsonXLogin["bPassAuth"].asBool();
+	pSt_ServerConfig->st_XLogin.nHTTPAuthTime = st_JsonXLogin["nHTTPAuthTime"].asInt();
+
+	Json::Value st_JsonXLoginUrl = st_JsonXLogin["st_PassUrl"];
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogin, st_JsonXLoginUrl["tszPassLogin"].asCString());
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogout, st_JsonXLoginUrl["tszPassLogout"].asCString());
+	_tcscpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassTimeout, st_JsonXLoginUrl["tszPassTimeout"].asCString());
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{

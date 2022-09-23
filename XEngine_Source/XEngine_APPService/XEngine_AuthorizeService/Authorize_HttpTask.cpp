@@ -24,7 +24,22 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(LPVOID lParam)
 
 			if (RfcComponents_HttpServer_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament))
 			{
-				XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
+				if (st_AuthConfig.st_XCrypto.bEnable)
+				{
+					TCHAR tszPassword[64];
+					TCHAR tszDeBuffer[2048];
+
+					memset(tszPassword, '\0', sizeof(tszPassword));
+					memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
+
+					_stprintf(tszPassword, _T("%d"), st_AuthConfig.st_XCrypto.nPassword);
+					OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament);
+				}
+				else
+				{
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
+				}
 			}
 			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
@@ -52,6 +67,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		LPCTSTR lpszAPIVerClient = _T("client");
 		LPCTSTR lpszAPIVerSerial = _T("serial");
 		LPCTSTR lpszAPIVerUser = _T("user");
+		LPCTSTR lpszAPIVerPass = _T("pass");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
@@ -68,26 +84,44 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 
 		if (0 == _tcsnicmp(lpszAPIVerClient, tszAPIVer, _tcslen(lpszAPIVerClient)))
 		{
+			AUTHREG_USERTABLE st_UserTable;
+			memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 			//验证权限
 			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
-			if (!Session_Token_Get(xhToken))
+			if (!Session_Token_Get(xhToken, &st_UserTable))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 				return FALSE;
 			}
+			if (0 != st_UserTable.st_UserInfo.nUserLevel)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "permission is failed");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为TOKEN权限不足"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
+			}
 			XEngine_AuthorizeHTTP_Client(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 		else if (0 == _tcsnicmp(lpszAPIVerSerial, tszAPIVer, _tcslen(lpszAPIVerSerial)))
 		{
+			AUTHREG_USERTABLE st_UserTable;
+			memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 			//验证权限
 			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
-			if (!Session_Token_Get(xhToken))
+			if (!Session_Token_Get(xhToken, &st_UserTable))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
+			}
+			if (0 != st_UserTable.st_UserInfo.nUserLevel)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "permission is failed");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为TOKEN权限不足"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 				return FALSE;
 			}
 			XEngine_AuthorizeHTTP_Serial(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
@@ -95,6 +129,10 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		else if (0 == _tcsnicmp(lpszAPIVerUser, tszAPIVer, _tcslen(lpszAPIVerUser)))
 		{
 			XEngine_AuthorizeHTTP_User(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerPass, tszAPIVer, _tcslen(lpszAPIVerPass)))
+		{
+			XEngine_AuthorizeHTTP_Pass(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))

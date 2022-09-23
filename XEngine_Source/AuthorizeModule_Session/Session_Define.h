@@ -18,12 +18,13 @@ typedef struct
 	TCHAR tszLeftTime[64];                                                //过期日期
 	__int64x nOnlineTime;                                                 //在线时间
 	__int64x nLeftTime;                                                   //剩余时间
+	int nNetType;                                                         //连接类型
 }AUTHSESSION_NETCLIENT, * LPAUTHSESSION_NETCLIENT;
 //////////////////////////////////////////////////////////////////////////
 //                         导出的回调函数
 //////////////////////////////////////////////////////////////////////////
 //用户在线时间事件回调处理函数，用户名 在线时间 剩余时间（分,天） 注册的卡类型 自定义参数
-typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, LPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, LPVOID lParam);
 typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS)(XNETHANDLE xhToken, LPVOID lParam);
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
@@ -76,24 +77,24 @@ extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
 *********************************************************************/
 extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
 /********************************************************************
-函数名称：Session_Authorize_GetTimer
-函数功能：获取客户端时间信息
+函数名称：Session_Authorize_GetClientForUser
+函数功能：获取客户端信息
  参数.一：lpszUserName
   In/Out：In
   类型：常量字符指针
   可空：N
   意思：输入要查找用户名
- 参数.二：pSt_AuthTime
+ 参数.二：pSt_Client
   In/Out：Out
   类型：数据结构指针
   可空：N
-  意思：用户时间信息结构体
+  意思：用户信息结构体
 返回值
   类型：逻辑型
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetTimer(LPCSTR lpszUserName,AUTHREG_PROTOCOL_TIME *pSt_AuthTime);
+extern "C" BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client);
 /********************************************************************
 函数名称：Session_Authorize_GetAddrForUser
 函数功能：通过用户名获取对应地址
@@ -168,12 +169,17 @@ extern "C" BOOL Session_Authorize_Destroy();
   类型：数据结构指针
   可空：N
   意思：用户传递的协议数据
+ 参数.三：nNetType
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：用户连接的类型
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable);
+extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType = 0);
 /********************************************************************
 函数名称：Session_Authorize_SetUser
 函数功能：设置用户信息
@@ -237,12 +243,17 @@ extern "C" BOOL Session_Token_Destroy();
   类型：数据结构指针
   可空：N
   意思：用户信息表
+ 参数.三：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：大于0单独指定TOKEN超时时间
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
 /********************************************************************
 函数名称：Session_Token_Delete
 函数功能：移除一个客户端
@@ -303,9 +314,14 @@ extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_Use
   类型：常量字符指针
   可空：N
   意思：密码
+ 参数.三：pxhToken
+  In/Out：Out
+  类型：句柄
+  可空：N
+  意思：导出获取到的句柄
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass);
+extern "C" BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, XNETHANDLE * pxhToken);

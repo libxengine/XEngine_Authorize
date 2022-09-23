@@ -680,3 +680,83 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int 
 	*pbOnline = st_JsonRoot["Online"].asBool();
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseTime
+函数功能：解析时间信息结构
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_ProtocolTime
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：导出解析的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_ProtocolTime))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTime"];
+
+	if (!st_JsonProtocol["enSerialType"].isNull())
+	{
+		pSt_ProtocolTime->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonProtocol["enSerialType"].asInt();
+	}
+	if (!st_JsonProtocol["enDeviceType"].isNull())
+	{
+		pSt_ProtocolTime->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	if (!st_JsonProtocol["nNetType"].isNull())
+	{
+		pSt_ProtocolTime->nNetType = st_JsonProtocol["nNetType"].asInt();
+	}
+	if (!st_JsonProtocol["nTimeLeft"].isNull())
+	{
+		pSt_ProtocolTime->nTimeLeft = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["nTimeLeft"].asInt64();
+	}
+	if (!st_JsonProtocol["nTimeONLine"].isNull())
+	{
+		pSt_ProtocolTime->nTimeONLine = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["nTimeONLine"].asInt64();
+	}
+	if (!st_JsonProtocol["tszLeftTime"].isNull())
+	{
+		_tcscpy(pSt_ProtocolTime->tszLeftTime, st_JsonProtocol["tszLeftTime"].asCString());
+	}
+	if (!st_JsonProtocol["tszUserAddr"].isNull())
+	{
+		_tcscpy(pSt_ProtocolTime->tszUserAddr, st_JsonProtocol["tszUserAddr"].asCString());
+	}
+	if (!st_JsonProtocol["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_ProtocolTime->tszUserName, st_JsonProtocol["tszUserName"].asCString());
+	}
+	return TRUE;
+}

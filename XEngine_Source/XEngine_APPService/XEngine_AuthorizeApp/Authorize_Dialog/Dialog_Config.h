@@ -35,4 +35,10 @@ public:
 	CEdit m_EditTimeout;
 	afx_msg void OnBnClickedButton5();
 	CButton m_BtnUpdate;
+	CButton m_CheckCodecEnable;
+	CButton m_CheckCodecDisable;
+	CComboBox m_ListEncrypto;
+	afx_msg void OnBnClickedRadio2();
+	afx_msg void OnBnClickedRadio1();
+	CEdit m_EditPassword;
 };

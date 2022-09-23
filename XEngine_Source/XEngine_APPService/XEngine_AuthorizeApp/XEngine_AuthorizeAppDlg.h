@@ -37,4 +37,7 @@ public:
 public:
 	CTabCtrl m_TabWindows;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
+	CEdit m_EditLog;
+	afx_msg void OnBnClickedButton1();
+	afx_msg void OnBnClickedButton2();
 };

@@ -38,6 +38,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
+#include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
+#include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Database/Database_Define.h"
 #include "../../AuthorizeModule_Database/Database_Error.h"
@@ -56,6 +58,7 @@ extern XHANDLE xhHttpSocket;
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XHANDLE xhHttpPacket;
+extern XHANDLE xhMemPool;
 extern XNETHANDLE xhTCPPool;
 extern XNETHANDLE xhWSPool;
 extern XNETHANDLE xhHttpPool;
@@ -75,7 +78,8 @@ extern XENGINE_SERVICECONFIG st_AuthConfig;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_User.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Client.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Serial.h"
-#include "AuthorizeHTTP_GET/AuthorizeHTTP_Token.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_Pass.h"
+#include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
 
 #ifdef _WINDOWS
 #ifdef _DEBUG
@@ -113,4 +117,5 @@ extern XENGINE_SERVICECONFIG st_AuthConfig;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
+#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp.lib")
 #endif

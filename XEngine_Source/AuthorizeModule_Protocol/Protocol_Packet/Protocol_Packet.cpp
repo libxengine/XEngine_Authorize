@@ -227,6 +227,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* p
 	st_JsonObject["nTimeONLine"] = (Json::Value::Int64)pSt_ProtocolTime->nTimeONLine;
 	st_JsonObject["enDeviceType"] = pSt_ProtocolTime->enDeviceType;
 	st_JsonObject["enSerialType"] = pSt_ProtocolTime->enSerialType;
+	st_JsonObject["nNetType"] = pSt_ProtocolTime->nNetType;
 
 	st_JsonRoot["st_UserTime"] = st_JsonObject;
 

@@ -27,12 +27,15 @@ void CXEngineAuthorizeAppDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB1, m_TabWindows);
+	DDX_Control(pDX, IDC_EDIT1, m_EditLog);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, &CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1)
+	ON_BN_CLICKED(IDC_BUTTON1, &CXEngineAuthorizeAppDlg::OnBnClickedButton1)
+	ON_BN_CLICKED(IDC_BUTTON2, &CXEngineAuthorizeAppDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
 
@@ -85,6 +88,8 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgUser.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
 	m_TabWindows.SetCurSel(0);
+
+	hMainWnd = m_hWnd;
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -151,4 +156,32 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 	}
 
 	*pResult = 0;
+}
+
+
+void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	TCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	// 构造保存文件对话框   
+	CFileDialog m_FileDlg(FALSE, _T("txt"), _T("log"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	
+	// 显示保存文件对话框   
+	if (IDOK == m_FileDlg.DoModal())
+	{
+		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
+		
+		TCHAR tszLogBuffer[8196];
+		memset(tszLogBuffer, '\0', sizeof(tszLogBuffer));
+		int nSize = m_EditLog.GetWindowText(tszLogBuffer, sizeof(tszLogBuffer));
+		fwrite(tszLogBuffer, 1, nSize, pSt_File);
+		fclose(pSt_File);
+	}
+}
+
+
+void CXEngineAuthorizeAppDlg::OnBnClickedButton2()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_EditLog.SetWindowText("");
 }

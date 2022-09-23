@@ -37,4 +37,5 @@ public:
 	afx_msg void OnBnClickedCheck2();
 	CButton m_CheckAuto;
 	CButton m_BtnModifyClient;
+	afx_msg void OnBnClickedButton5();
 };

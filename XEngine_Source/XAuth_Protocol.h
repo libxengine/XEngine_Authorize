@@ -28,7 +28,6 @@
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPGETTIME 0x200C
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQTRYVER 0x200D       //临时验证协议请求
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPTRYVER 0x200E
-#define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_NOTIFYMSG 0x2FF0       //数据
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT 0x2FFF        //通知客户端时间到期
 //////////////////////////////////////////////////////////////////////////
 //                         导出的数据结构
@@ -47,8 +46,9 @@ typedef struct
 	CHAR tszLeftTime[64];                                                 //过期日期
 	__int64x nTimeLeft;                                                   //剩余时间
 	__int64x nTimeONLine;                                                 //在线时间
+	int nNetType;                                                         //连接类型
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
-	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                        
+	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;
 }AUTHREG_PROTOCOL_TIME, * LPAUTHREG_PROTOCOL_TIME;
 //用户表
 typedef struct tag_AuthReg_UserTable

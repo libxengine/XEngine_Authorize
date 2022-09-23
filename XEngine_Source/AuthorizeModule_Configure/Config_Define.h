@@ -38,6 +38,19 @@ typedef struct
 		int nTryTime;                                       //验证时间
 		int nTryMode;                                       //验证模式
 	}st_XVerification;
+	struct 
+	{
+		BOOL bMultiLogin;                                   //是否允许多端登录
+		BOOL bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
+		BOOL bPassAuth;                                     //是否启用三方认证
+		int nHTTPAuthTime;                                  //HTTP验证超时时间,单位秒
+		struct  
+		{
+			TCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
+			TCHAR tszPassLogout[MAX_PATH];                  //三方认证登出通知
+			TCHAR tszPassTimeout[MAX_PATH];                 //三方认证超时通知
+		}st_PassUrl;
+	}st_XLogin;
 	struct  
 	{
 		BOOL bEnable;                                       //是否启用加密传输 

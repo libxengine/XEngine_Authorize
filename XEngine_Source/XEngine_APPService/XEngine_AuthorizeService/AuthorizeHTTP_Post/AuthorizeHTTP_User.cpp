@@ -40,17 +40,29 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		//填充写入数据
 		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_XVerification.nTryTime);
 		st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
+		//禁止权限0和1注册
+		if (st_UserTable.st_UserInfo.nUserLevel <= 1)
+		{
+			st_UserTable.st_UserInfo.nUserLevel = 5;
+		}
+		if (_tcslen(st_UserTable.st_UserInfo.tszUserName) <= 0 || _tcslen(st_UserTable.st_UserInfo.tszUserPass) <= 0)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user and pass does not set");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
+			return FALSE;
+		}
 		if (!Database_SQLite_UserRegister(&st_UserTable))
 		{
 			DWORD dwRet = DBModule_GetLastError();
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, dwRet, "user register is failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, dwRet);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, dwRet);
 			return FALSE;
 		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 	}
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPIPay, _tcslen(lpszAPIName)))
 	{
@@ -65,14 +77,14 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "Serial number not available");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, DBModule_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, DBModule_GetLastError());
 			return FALSE;
 		}
 		Database_SQLite_UserQuery(st_UserPay.tszUserName, &st_UserInfo);
 		Session_Authorize_SetUser(&st_UserInfo);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
 	}
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPIPass, _tcslen(lpszAPIName)))
 	{
@@ -89,7 +101,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，找回密码失败，用户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，找回密码失败，用户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		//安全验证判断
@@ -97,7 +109,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user information is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，找回密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，找回密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
 			return FALSE;
 		}
 		_tcscpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
@@ -105,28 +117,36 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 
 		Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPITime, _tcslen(lpszAPIName)))
 	{
 		AUTHREG_PROTOCOL_TIME st_AuthTime;
+		AUTHSESSION_NETCLIENT st_NETClient;
 		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
 
 		memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+		memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		_tcscpy(st_AuthTime.tszUserName, st_UserAuth.tszUserName);
-		if (!Session_Authorize_GetTimer(st_AuthTime.tszUserName, &st_AuthTime))
+		if (!Session_Authorize_GetClientForUser(st_UserAuth.tszUserName, &st_NETClient))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
 			return FALSE;
 		}
+		st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
+		st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
+		st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
+		_tcscpy(st_AuthTime.tszUserName, st_UserAuth.tszUserName);
+		_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
+		_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
+
 		Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%lld，剩余时间：%lld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%lld，剩余时间：%lld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
 	}
 	else if (0 == _tcsnicmp(lpszAPIName, lpszAPITry, _tcslen(lpszAPIName)))
 	{
@@ -155,7 +175,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，序列号：%s，临时验证失败，此序列号已经试用到期"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，序列号：%s，临时验证失败，此序列号已经试用到期"), lpszClientAddr, st_AuthVer.tszVerSerial);
 			}
 			else
 			{
@@ -167,7 +187,7 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 				}
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，序列号：%s，临时验证成功，已用时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，序列号：%s，临时验证成功，已用时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
 			}
 		}
 		else
@@ -180,18 +200,18 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_AuthVer.tszVerSerial);
 				return FALSE;
 			}
 			if (!Database_SQLite_TryInsert(&st_AuthVer))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "Internal Server Error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_AuthVer.tszVerSerial, DBModule_GetLastError());
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_AuthVer.tszVerSerial, DBModule_GetLastError());
 			}
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_AuthVer.tszVerSerial);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_AuthVer.tszVerSerial);
 		}
 	}
 	return TRUE;

@@ -34,4 +34,5 @@ public:
 	afx_msg void OnBnClickedButton2();
 	CEdit m_EditHardCode;
 	CEdit m_EditCreateTime;
+	CButton m_BtnModify;
 };

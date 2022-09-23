@@ -1,3 +1,53 @@
+XEngine_Authorize V3.2.0.1001
+
+增加:为管理程序增加用户注册功能
+增加:日志窗口并且支持日志保存和清理
+增加:http支持加密
+增加:配置窗口支持加密配置管理
+增加:发送消息内存池支持
+增加:登录配置选项
+增加:指定会话TOKEN用户超时
+增加:HTTP用户授权验证
+增加:会话网络类型
+增加:三方验证支持
+增加:分布式验证功能
+修改:Session_Authorize_GetTimer 为 Session_Authorize_GetClientForUser 可以获取更多信息
+修改:token关闭的时候验证会话也会一起关闭
+修改:http管理接口验证权限
+修改:程序启动按钮关闭没有禁用
+修改:用户管理和用户修改以及序列号验证接口支持加解密了
+修改:允许http管理器重复登录了
+修改:弹窗消息现在显示在日志窗口了
+修正:一个大小写问题
+修正:websocket协议不支持加密的问题
+修正:token打印问题
+修正:添加用户注册级别设置无效的问题
+删除:类型字符串
+
+added:user insert for app management
+added:log windows and log save and clear
+added:encrypto for payload of the http
+added:configure dialog supported crypto for management app
+added:memory pool for send message
+added:login for configure
+added:specified user timeout for session token
+added:user authorize verification for http
+added:nettype for session authorize
+added:Third Party Verification
+added:distributed verification function
+modify:Session_Authorize_GetTimer to Session_Authorize_GetClientForUser for get more information
+modify:token close with authorize session
+modify:http manage api verification permission now
+modify:close buttom is not disable when program start
+modify:user manage and user modify and serial management support encrypto
+modify:allow repeat login for http management
+modify:messagebox to log window
+fixed:case problem
+fixed:websocket not support crypto
+fixed:token print error
+fixed:add user level set does not work
+delete:type string array
+======================================================================================
 XEngine_Authorize V3.1.0.1001
 
 添加:删除TOKEN会话功能

@@ -19,13 +19,13 @@ public:
 public:
     BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
     BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr = NULL);
-    BOOL Session_Authorize_GetTimer(LPCTSTR lpszUserName, AUTHREG_PROTOCOL_TIME* pSt_AuthTime);
+    BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client);
     BOOL Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser,TCHAR *ptszClientAddr);
     BOOL Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser);
     BOOL Session_Authorize_CloseClient(LPCTSTR lpszClientAddr);
     BOOL Session_Authorize_Destroy();
 public:
-    BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable);
+    BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, int nNetType = 0);
     BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
 protected:
     static XHTHREAD Session_Authorize_ActiveThread(LPVOID lParam);            //计时器线程

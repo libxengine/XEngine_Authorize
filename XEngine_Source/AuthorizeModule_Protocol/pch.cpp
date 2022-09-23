@@ -106,3 +106,7 @@ extern "C" BOOL Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int nMsgLe
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseOnline(lpszMsgBuffer, nMsgLen, pbOnline);
 }
+extern "C" BOOL Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseTime(lpszMsgBuffer, nMsgLen, pSt_ProtocolTime);
+}
