@@ -10,7 +10,7 @@ LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool 
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
 LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
-             AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o \
+             AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o  \
 			 AuthorizeHTTP_Token.o
 
 ifeq ($(OS),Windows_NT)
@@ -61,6 +61,8 @@ AuthorizeHTTP_Serial.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Serial.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_Serial.cpp
 AuthorizeHTTP_User.o:./AuthorizeHTTP_Post/AuthorizeHTTP_User.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_User.cpp
+AuthorizeHTTP_Pass.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Pass.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_Pass.cpp
 
 AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
