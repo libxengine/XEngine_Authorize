@@ -59,9 +59,9 @@ extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XHANDLE xhHttpPacket;
 extern XHANDLE xhMemPool;
-extern XNETHANDLE xhTCPPool;
-extern XNETHANDLE xhWSPool;
-extern XNETHANDLE xhHttpPool;
+extern XHANDLE xhTCPPool;
+extern XHANDLE xhWSPool;
+extern XHANDLE xhHttpPool;
 extern XENGINE_SERVICECONFIG st_AuthConfig;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
