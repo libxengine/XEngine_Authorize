@@ -63,6 +63,7 @@ extern XHANDLE xhTCPPool;
 extern XHANDLE xhWSPool;
 extern XHANDLE xhHttpPool;
 extern XENGINE_SERVICECONFIG st_AuthConfig;
+extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1

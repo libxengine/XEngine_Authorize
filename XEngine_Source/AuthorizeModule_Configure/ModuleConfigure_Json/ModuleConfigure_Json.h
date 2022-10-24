@@ -18,6 +18,7 @@ public:
 	~CModuleConfigure_Json();
 public:
 	BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG* pSt_ServerConfig);
+	BOOL ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH* pSt_ServerConfig);
 protected:
 private:
 };

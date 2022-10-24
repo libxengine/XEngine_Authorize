@@ -33,3 +33,7 @@ extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVIC
 {
 	return m_Config.ModuleConfigure_Json_File(lpszConfigFile, pSt_ServerConfig);
 }
+extern "C" BOOL ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig)
+{
+	return m_Config.ModuleConfigure_Json_Switch(lpszConfigFile, pSt_ServerConfig);
+}

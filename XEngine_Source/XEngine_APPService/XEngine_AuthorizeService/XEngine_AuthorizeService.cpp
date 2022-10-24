@@ -13,6 +13,7 @@ XHANDLE xhTCPPool = NULL;
 XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
 XENGINE_SERVICECONFIG st_AuthConfig;
+XENGINE_FUNCTIONSWITCH st_FunSwitch;
 
 void ServiceApp_Stop(int signo)
 {
@@ -112,6 +113,7 @@ int main(int argc, char** argv)
 
 	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
 	memset(&st_AuthConfig, '\0', sizeof(XENGINE_SERVICECONFIG));
+	memset(&st_FunSwitch, '\0', sizeof(XENGINE_FUNCTIONSWITCH));
 
 	if (!Authorize_Service_Parament(argc, argv))
 	{
@@ -182,7 +184,7 @@ int main(int argc, char** argv)
 		xhTCPSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nTCPPort, st_AuthConfig.st_XMax.nMaxClient, st_AuthConfig.st_XMax.nIOThread);
 		if (NULL == xhTCPSocket)
 		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动TCP验证网络服务失败，错误：%lX"), NetCore_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化TCP验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 			goto XENGINE_EXITAPP;
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化TCP验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nTCPPort, st_AuthConfig.st_XMax.nIOThread);
@@ -198,7 +200,7 @@ int main(int argc, char** argv)
 			ppSt_ListTCPThread[i]->fpCall_ThreadsTask = XEngine_AuthService_TCPThread;
 		}
 		xhTCPPool = ManagePool_Thread_NQCreate(&ppSt_ListTCPThread, st_AuthConfig.st_XMax.nTCPThread);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动TCP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nTCPThread);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化TCP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nTCPThread);
 	}
 	//是否开启WEBSOCEKT服务
 	if (st_AuthConfig.nWSPort > 0)
@@ -214,7 +216,7 @@ int main(int argc, char** argv)
 		xhWSSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nWSPort, st_AuthConfig.st_XMax.nMaxQueue, st_AuthConfig.st_XMax.nIOThread);
 		if (NULL == xhWSSocket)
 		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动WEBSOCKET验证网络服务失败，错误：%lX"), NetCore_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化WEBSOCKET验证网络服务失败，错误：%lX"), NetCore_GetLastError());
 			goto XENGINE_EXITAPP;
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WEBSOCKET验证网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nWSPort, st_AuthConfig.st_XMax.nIOThread);
@@ -230,7 +232,7 @@ int main(int argc, char** argv)
 			ppSt_ListWSThread[i]->fpCall_ThreadsTask = XEngine_AuthService_WSThread;
 		}
 		xhWSPool = ManagePool_Thread_NQCreate(&ppSt_ListWSThread, st_AuthConfig.st_XMax.nWSThread);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nWSThread);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化WEBSOCKET任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nWSThread);
 	}
 	//是否开启HTTP服务
 	if (st_AuthConfig.nHTTPPort > 0)
@@ -246,7 +248,7 @@ int main(int argc, char** argv)
 		xhHttpSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nHTTPPort, st_AuthConfig.st_XMax.nMaxQueue, st_AuthConfig.st_XMax.nIOThread);
 		if (NULL == xhHttpSocket)
 		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，启动HTTP管理网络服务失败，错误：%lX"), NetCore_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化HTTP管理网络服务失败，错误：%lX"), NetCore_GetLastError());
 			goto XENGINE_EXITAPP;
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP管理网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nHTTPPort, st_AuthConfig.st_XMax.nIOThread);
@@ -262,8 +264,10 @@ int main(int argc, char** argv)
 			ppSt_ListHttpThread[i]->fpCall_ThreadsTask = XEngine_AuthService_HttpThread;
 		}
 		xhHttpPool = ManagePool_Thread_NQCreate(&ppSt_ListHttpThread, st_AuthConfig.st_XMax.nHTTPThread);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，启动HTTP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nHTTPThread);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nHTTPThread);
 	}
+
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,XEngien版本:%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XGetStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (TRUE)

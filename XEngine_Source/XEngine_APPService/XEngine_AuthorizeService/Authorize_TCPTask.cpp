@@ -67,6 +67,14 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 		pSt_ProtocolHdr->unPacketSize = 0;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
 
+		if (!st_FunSwitch.bSwitchLogin)
+		{
+			pSt_ProtocolHdr->wReserve = 503;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
+			return FALSE;
+		}
 		if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_UNKNOW == st_AuthProtocol.enDeviceType)
 		{
 			pSt_ProtocolHdr->wReserve = 250;
