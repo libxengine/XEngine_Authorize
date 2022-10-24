@@ -1,3 +1,3 @@
 ﻿#pragma once
 
-BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, TCHAR** pptszList, int nListCount);
+BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int nListCount);

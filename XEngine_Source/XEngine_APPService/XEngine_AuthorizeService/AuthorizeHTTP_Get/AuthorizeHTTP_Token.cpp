@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, TCHAR** pptszList, int nListCount)
+BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int nListCount)
 {
 	int nSDLen = 4096;
 	TCHAR tszSDBuffer[4096];

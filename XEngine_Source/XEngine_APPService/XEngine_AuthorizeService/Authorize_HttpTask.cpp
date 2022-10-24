@@ -152,7 +152,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,发送的URL请求参数不正确:%s"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return FALSE;
 		}
-		XEngine_AuthorizeHTTP_Token(lpszClientAddr, lpszMsgBuffer, nMsgLen, pptszList, nListCount);
+		XEngine_AuthorizeHTTP_Token(lpszClientAddr, pptszList, nListCount);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
 	}
 	else
