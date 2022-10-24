@@ -45,7 +45,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 			st_AuthProtocol.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
 
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
-			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
@@ -197,7 +197,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 					memset(tszSDBuffer, '\0', MAX_PATH);
 
 					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-					APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+					APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 				}
 				Database_SQLite_UserLeave(&st_AuthTime);
 			}
