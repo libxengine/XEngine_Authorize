@@ -110,3 +110,7 @@ extern "C" BOOL Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen,
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseTime(lpszMsgBuffer, nMsgLen, pSt_ProtocolTime);
 }
+extern "C" BOOL Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseSwitch(lpszMsgBuffer, nMsgLen, pSt_FunSwitch);
+}
