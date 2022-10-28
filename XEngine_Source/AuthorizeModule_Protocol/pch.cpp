@@ -63,6 +63,10 @@ extern "C" BOOL Protocol_Packet_HttpToken(TCHAR * ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout);
 }
+extern "C" BOOL Protocol_Packet_HttpSwitch(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpSwitch(ptszMsgBuffer, pInt_MsgLen, pSt_FunSwitch);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/

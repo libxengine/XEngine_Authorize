@@ -244,6 +244,30 @@ extern "C" BOOL Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int* pInt_M
 备注：
 *********************************************************************/
 extern "C" BOOL Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout);
+/********************************************************************
+函数名称：Protocol_Packet_HttpSwitch
+函数功能：打包开关功能选项
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pSt_FunSwitch
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
