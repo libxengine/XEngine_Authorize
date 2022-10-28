@@ -34,6 +34,7 @@ public:
 	CDialog_Config m_DlgConfig;
 	CDialog_User m_DlgUser;
 	CDialog_Serial m_DlgSerial;
+	CDialog_Switch m_DlgSwitch;
 public:
 	CTabCtrl m_TabWindows;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
