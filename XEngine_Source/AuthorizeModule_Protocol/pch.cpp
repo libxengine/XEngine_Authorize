@@ -118,3 +118,7 @@ extern "C" BOOL Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLe
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseSwitch(lpszMsgBuffer, nMsgLen, pSt_FunSwitch);
 }
+extern "C" BOOL Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, pInt_PosStart, pInt_PosEnd);
+}

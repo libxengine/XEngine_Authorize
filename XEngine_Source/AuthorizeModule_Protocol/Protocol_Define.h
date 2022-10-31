@@ -579,3 +579,32 @@ extern "C" BOOL Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen,
 备注：
 *********************************************************************/
 extern "C" BOOL Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch);
+/********************************************************************
+函数名称：Protocol_Parse_HttpParsePos
+函数功能：解析开始结束字段
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pInt_PosStart
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出获取到的开始位置
+ 参数.四：pInt_PosEnd
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出获取到的结束位置
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd);

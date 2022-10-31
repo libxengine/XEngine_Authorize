@@ -25,3 +25,4 @@ EXPORTS
 	Protocol_Parse_HttpParseOnline
 	Protocol_Parse_HttpParseTime
 	Protocol_Parse_HttpParseSwitch
+	Protocol_Parse_HttpParsePos
