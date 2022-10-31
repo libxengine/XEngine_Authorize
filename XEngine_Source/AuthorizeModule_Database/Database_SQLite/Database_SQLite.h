@@ -29,12 +29,12 @@ public:
     BOOL Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpszSerialName);                       //充值卡充值
     BOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol);            //用户离开更新表
     BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
-    BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount);
+    BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
 public:
     BOOL Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber);                                     //插入序列卡
     BOOL Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber);                                     //删除一个序列号
-    BOOL Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                     //按照卡号或者用户查询
-    BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount);                           //查询所有序列卡
+    BOOL Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                      //按照卡号或者用户查询
+    BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount, int nPosStart, int nPosEnd);//查询所有序列卡
     BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
 public:
     BOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);

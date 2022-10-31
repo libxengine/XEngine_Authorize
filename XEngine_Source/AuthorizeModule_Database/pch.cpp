@@ -61,9 +61,9 @@ extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE * pSt_UserTable)
 {
 	return m_SQLAuth.Database_SQLite_UserSet(pSt_UserTable);
 }
-extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE * **pppSt_UserInfo, int* pInt_ListCount)
+extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE * **pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
-	return m_SQLAuth.Database_SQLite_UserList(pppSt_UserInfo, pInt_ListCount);
+	return m_SQLAuth.Database_SQLite_UserList(pppSt_UserInfo, pInt_ListCount, nPosStart, nPosEnd);
 }
 extern "C" BOOL Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
 {
@@ -77,9 +77,9 @@ extern "C" BOOL Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber, LPAUTHREG_
 {
 	return m_SQLAuth.Database_SQLite_SerialQuery(lpszSerialNumber, pSt_SerialTable);
 }
-extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount)
+extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
-	return m_SQLAuth.Database_SQLite_SerialQueryAll(pppSt_SerialTable, pInt_ListCount);
+	return m_SQLAuth.Database_SQLite_SerialQueryAll(pppSt_SerialTable, pInt_ListCount, nPosStart, nPosEnd);
 }
 extern "C" BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE * pSt_SerialTable)
 {

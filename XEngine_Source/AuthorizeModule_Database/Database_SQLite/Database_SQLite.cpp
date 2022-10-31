@@ -449,12 +449,22 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
   类型：整数型
   可空：N
   意思：输出列表个数
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入起始位置
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入结束位置
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount)
+BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
@@ -464,7 +474,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
     TCHAR tszSQLStatement[1024];    //SQL语句
 	memset(tszSQLStatement, '\0', 1024);
 
-	_stprintf_s(tszSQLStatement, _T("SELECT * FROM AuthReg_User"));
+    _stprintf_s(tszSQLStatement, _T("SELECT * FROM AuthReg_User LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = TRUE;
@@ -694,12 +704,22 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAU
   类型：整数型指针
   可空：Y
   意思：输出多少张卡
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入起始位置
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入结束位置
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount)
+BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = FALSE;
     
@@ -710,7 +730,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***ppp
    
     memset(tszSQLStatement,'\0',1024);
     
-    _stprintf_s(tszSQLStatement,_T("select * from AuthReg_Serial"));
+    _stprintf_s(tszSQLStatement, _T("SELECT * FROM AuthReg_Serial LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
     if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;

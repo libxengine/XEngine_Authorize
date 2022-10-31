@@ -152,12 +152,22 @@ extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
   类型：整数型
   可空：N
   意思：输出列表个数
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入起始位置
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入结束位置
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount);
+extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
 /********************************************************************
 函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
@@ -218,12 +228,22 @@ extern "C" BOOL Database_SQLite_SerialQuery(LPCSTR lpszSerialNumber,LPAUTHREG_SE
   类型：整数型指针
   可空：Y
   意思：输出多少张卡
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入起始位置
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入结束位置
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount);
+extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);
 /********************************************************************
 函数名称：Database_SQLite_SerialPush
 函数功能：插入一条指定的序列号信息到服务器
