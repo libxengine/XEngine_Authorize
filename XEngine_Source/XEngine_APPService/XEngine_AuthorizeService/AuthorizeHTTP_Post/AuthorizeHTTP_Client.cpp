@@ -32,6 +32,8 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	{
 		int nOnCount = 0;
 		int nOffCount = 0;
+		int nPosStart = 0;
+		int nPosEnd = 0;
 		BOOL bOnline = FALSE;
 		AUTHREG_USERTABLE** ppSt_UserInfo;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
@@ -46,6 +48,14 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
+		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
+		if ((nPosEnd - nPosStart) > 100)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "pos parament is not rigth");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求用户列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
+			return FALSE;
+		}
 		Protocol_Parse_HttpParseOnline(lpszMsgBuffer, nMsgLen, &bOnline);
 		//得到在线用户
 		Session_Authorize_GetClient(&ppSt_ListClient, &nOnCount);
@@ -53,7 +63,7 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		if (!bOnline)
 		{
 			//只有bOnline不是在线列表的时候才执行
-			Database_SQLite_UserList(&ppSt_UserInfo, &nOffCount);
+			Database_SQLite_UserList(&ppSt_UserInfo, &nOffCount, nPosStart, nPosEnd);
 		}
 		Protocol_Packet_HttpClientList(ptszMsgBuffer, &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
 
