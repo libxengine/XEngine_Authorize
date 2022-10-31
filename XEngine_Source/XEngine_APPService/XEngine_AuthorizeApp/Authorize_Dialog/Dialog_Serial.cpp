@@ -37,6 +37,8 @@ BEGIN_MESSAGE_MAP(CDialog_Serial, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Serial::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_Serial::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Serial::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_BUTTON6, &CDialog_Serial::OnBnClickedButton6)
+	ON_BN_CLICKED(IDC_BUTTON7, &CDialog_Serial::OnBnClickedButton7)
 END_MESSAGE_MAP()
 
 
@@ -372,4 +374,184 @@ void CDialog_Serial::OnBnClickedButton3()
 		return;
 	}
 	Authorize_Help_LogPrint(_T("复制成功！"));
+}
+
+
+void CDialog_Serial::OnBnClickedButton6()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	TCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	CFileDialog m_FileDlg(TRUE, _T("txt"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	// 显示保存文件对话框   
+	if (IDOK != m_FileDlg.DoModal())
+	{
+		return;
+	}
+	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("rb"));
+
+	TCHAR tszMsgBuffer[MAX_PATH];
+	//跳过第一行
+	if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+	{
+		//没有数据
+		AfxMessageBox(_T("没有数据"));
+		return;
+	}
+	list<AUTHREG_SERIALTABLE> stl_ListSerial;
+	while (TRUE)
+	{
+		memset(tszMsgBuffer, '\0', MAX_PATH);
+		//一行一行读取
+		if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+		{
+			break;
+		}
+		//解析数据
+		int nID = 0;
+		AUTHREG_SERIALTABLE st_SerialTable;
+		memset(&st_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
+
+		int nRet = _stscanf(tszMsgBuffer, _T("%d %s %s %s %d %d %s %s"), &nID, st_SerialTable.tszUserName, st_SerialTable.tszSerialNumber, st_SerialTable.tszMaxTime, &st_SerialTable.enSerialType, &st_SerialTable.bIsUsed, st_SerialTable.tszCreateTime, (st_SerialTable.tszCreateTime + 11));
+		st_SerialTable.tszCreateTime[10] = ' ';
+		stl_ListSerial.push_back(st_SerialTable);
+	}
+	fclose(pSt_File);
+
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrToken;
+	TCHAR tszUrlAddr[MAX_PATH];
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pWnd->m_EditToken.GetWindowText(m_StrToken);
+
+	CString m_StrHasTime;
+	CString m_StrSerialCount;
+	CString m_StrNumberCount;
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	m_EditHasTime.GetWindowText(m_StrHasTime);
+	m_EditSerialCount.GetWindowText(m_StrSerialCount);
+	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
+
+	for (auto stl_ListIterator = stl_ListSerial.begin(); stl_ListIterator != stl_ListSerial.end(); stl_ListIterator++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["bIsUsed"] = stl_ListIterator->bIsUsed;
+		st_JsonObject["enSerialType"] = stl_ListIterator->enSerialType;
+		st_JsonObject["tszCreateTime"] = stl_ListIterator->tszCreateTime;
+		st_JsonObject["tszMaxTime"] = stl_ListIterator->tszMaxTime;
+		st_JsonObject["tszSerialNumber"] = stl_ListIterator->tszSerialNumber;
+		st_JsonObject["tszUserName"] = stl_ListIterator->tszUserName;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["Array"] = st_JsonArray;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/push"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	//是否加密
+	TCHAR tszPassBuffer[64];
+	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
+	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
+
+	if (bCrypto)
+	{
+		TCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+	}
+	else
+	{
+		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	}
+	st_JsonRoot.clear();
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (bCrypto)
+	{
+		TCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("解析序列号推送接口数据错误,无法继续"));
+			return;
+		}
+	}
+	else
+	{
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("解析序列号推送接口数据错误,无法继续"));
+			return;
+		}
+	}
+
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		Authorize_Help_LogPrint(_T("导入序列号成功"));
+	}
+	else
+	{
+		Authorize_Help_LogPrint(_T("导入序列号失败"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	//刷新
+	OnBnClickedButton1();
+}
+
+
+void CDialog_Serial::OnBnClickedButton7()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	TCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	CFileDialog m_FileDlg(FALSE, _T("txt"), _T("serial"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	// 显示保存文件对话框   
+	if (IDOK != m_FileDlg.DoModal())
+	{
+		return;
+	}
+	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
+
+	TCHAR tszMsgBuffer[MAX_PATH];
+	memset(tszMsgBuffer, '\0', MAX_PATH);
+	//写字段头
+	int nRet = _stprintf(tszMsgBuffer, _T("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime\r\n"));
+	fwrite(tszMsgBuffer, 1, nRet, pSt_File);
+
+	for (int i = 0; i < m_ListSerial.GetItemCount(); i++)
+	{
+		int nSerialType = 0;
+		int nUsedType = 0;
+		memset(tszMsgBuffer, '\0', MAX_PATH);
+
+		for (int j = 0; j < sizeof(lpszXSerialType) - 1; j++)
+		{
+			if (0 == _tcsnicmp(lpszXSerialType[j], m_ListSerial.GetItemText(i, 3).GetBuffer(), _tcslen(lpszXSerialType[j])))
+			{
+				nSerialType = j;
+				break;
+			}
+		}
+		if (0 == _tcsnicmp(m_ListSerial.GetItemText(i, 4).GetBuffer(), "未使用", m_ListSerial.GetItemText(i, 4).GetLength()))
+		{
+			nUsedType = 0;
+		}
+		nRet = _stprintf(tszMsgBuffer, _T("%d %s %s %s %d %d %s %s\r\n"), i, m_ListSerial.GetItemText(i, 0).GetBuffer(), m_ListSerial.GetItemText(i, 1).GetBuffer(), m_ListSerial.GetItemText(i, 2).GetBuffer(), nSerialType, nUsedType, m_ListSerial.GetItemText(i, 5).GetBuffer(), m_ListSerial.GetItemText(i, 6).GetBuffer());
+		fwrite(tszMsgBuffer, 1, nRet, pSt_File);
+	}
+	fclose(pSt_File);
+
+	Authorize_Help_LogPrint(_T("导出序列号成功"));
 }

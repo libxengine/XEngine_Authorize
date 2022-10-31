@@ -779,7 +779,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return FALSE;
 	}
-    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'%s','%s','%s',%d,%d,%s)"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime);
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO AuthReg_Serial values(NULL,'%s','%s','%s',%d,%d,'%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime);
 
 	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
 	{
