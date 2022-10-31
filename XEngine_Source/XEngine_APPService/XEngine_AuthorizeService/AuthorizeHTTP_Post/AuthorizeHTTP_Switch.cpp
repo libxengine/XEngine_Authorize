@@ -3,14 +3,11 @@
 BOOL XEngine_AuthorizeHTTP_Switch(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	int nRVLen = 4096;
 	TCHAR tszSDBuffer[4096];
-	TCHAR tszRVBuffer[4096];
 	LPCTSTR lpszAPIGet = _T("get");
 	LPCTSTR lpszAPISet = _T("set");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-	memset(tszRVBuffer, '\0', sizeof(tszRVBuffer));
 
 	if (0 == _tcsnicmp(lpszAPIGet, lpszAPIName, _tcslen(lpszAPIGet)))
 	{
