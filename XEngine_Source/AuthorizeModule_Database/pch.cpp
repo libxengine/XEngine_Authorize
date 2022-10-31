@@ -81,6 +81,10 @@ extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_Ser
 {
 	return m_SQLAuth.Database_SQLite_SerialQueryAll(pppSt_SerialTable, pInt_ListCount);
 }
+extern "C" BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE * pSt_SerialTable)
+{
+	return m_SQLAuth.Database_SQLite_SerialPush(pSt_SerialTable);
+}
 extern "C" BOOL Database_SQLite_TryInsert(AUTHREG_NETVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TryInsert(pSt_AuthVer);

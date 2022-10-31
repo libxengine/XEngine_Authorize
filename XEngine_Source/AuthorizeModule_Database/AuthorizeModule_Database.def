@@ -16,6 +16,7 @@ EXPORTS
 	Database_SQLite_SerialDelete
 	Database_SQLite_SerialQuery
 	Database_SQLite_SerialQueryAll
+	Database_SQLite_SerialPush
 	Database_SQLite_TryInsert
 	Database_SQLite_TryQuery
 	Database_SQLite_TryDelete

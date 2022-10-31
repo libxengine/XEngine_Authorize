@@ -35,6 +35,7 @@ public:
     BOOL Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber);                                     //删除一个序列号
     BOOL Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                     //按照卡号或者用户查询
     BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount);                           //查询所有序列卡
+    BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
 public:
     BOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
     BOOL Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
