@@ -102,6 +102,13 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 		//处理权限
 		if (st_UserTable.st_UserInfo.nUserLevel > 0)
 		{
+			if (!st_FunSwitch.bSwitchLogin)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "Function does not to enable");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
+				return FALSE;
+			}
 			//普通用户
 			if (!st_AuthConfig.st_XLogin.bHTTPAuth)
 			{
