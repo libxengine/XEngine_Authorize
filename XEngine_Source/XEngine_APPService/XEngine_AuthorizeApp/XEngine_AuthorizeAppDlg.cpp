@@ -68,10 +68,12 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_TabWindows.InsertItem(0, _T("服务配置"));
 	m_TabWindows.InsertItem(1, _T("用户管理"));
 	m_TabWindows.InsertItem(2, _T("序列号管理"));
+	m_TabWindows.InsertItem(3, _T("功能开关"));
 
 	m_DlgConfig.Create(IDD_DIALOG_CONFIG, &m_TabWindows);
 	m_DlgUser.Create(IDD_DIALOG_USER, &m_TabWindows);
 	m_DlgSerial.Create(IDD_DIALOG_SERIAL, &m_TabWindows);
+	m_DlgSwitch.Create(IDD_DIALOG_SWITCH, &m_TabWindows);
 	//调整子对话框在父窗口中的位置 
 	CRect st_Rect;
 	m_TabWindows.GetClientRect(&st_Rect);
@@ -83,10 +85,12 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgConfig.MoveWindow(&st_Rect);
 	m_DlgUser.MoveWindow(&st_Rect);
 	m_DlgSerial.MoveWindow(&st_Rect);
+	m_DlgSwitch.MoveWindow(&st_Rect);
 	//分别设置隐藏和显示 
 	m_DlgConfig.ShowWindow(TRUE);
 	m_DlgUser.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
+	m_DlgSwitch.ShowWindow(FALSE);
 	m_TabWindows.SetCurSel(0);
 
 	hMainWnd = m_hWnd;
@@ -140,17 +144,25 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(TRUE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(FALSE);
 		break;
 	case 1:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(TRUE);
 		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(FALSE);
 		break;
 	case 2:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(TRUE);
+		m_DlgSwitch.ShowWindow(FALSE);
 		break;
+	case 3:
+		m_DlgConfig.ShowWindow(FALSE);
+		m_DlgUser.ShowWindow(FALSE);
+		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(TRUE);
 	default:
 		break;
 	}

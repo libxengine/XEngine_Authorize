@@ -41,14 +41,14 @@ using namespace std;
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
 #include "../../XAuth_Protocol.h"
+#include "../../AuthorizeModule_Configure/Config_Define.h"
+#include "../../AuthorizeModule_Configure/Config_Error.h"
 #include "../../AuthorizeModule_Database/Database_Define.h"
 #include "../../AuthorizeModule_Database/Database_Error.h"
 #include "../../AuthorizeModule_Session/Session_Define.h"
 #include "../../AuthorizeModule_Session/Session_Error.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
-#include "../../AuthorizeModule_Configure/Config_Define.h"
-#include "../../AuthorizeModule_Configure/Config_Error.h"
 
 extern BOOL bIsRun;
 extern XLOG xhLog;
@@ -59,10 +59,11 @@ extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XHANDLE xhHttpPacket;
 extern XHANDLE xhMemPool;
-extern XNETHANDLE xhTCPPool;
-extern XNETHANDLE xhWSPool;
-extern XNETHANDLE xhHttpPool;
+extern XHANDLE xhTCPPool;
+extern XHANDLE xhWSPool;
+extern XHANDLE xhHttpPool;
 extern XENGINE_SERVICECONFIG st_AuthConfig;
+extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
@@ -79,6 +80,7 @@ extern XENGINE_SERVICECONFIG st_AuthConfig;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Client.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Serial.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Pass.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_Switch.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
 
 #ifdef _WINDOWS

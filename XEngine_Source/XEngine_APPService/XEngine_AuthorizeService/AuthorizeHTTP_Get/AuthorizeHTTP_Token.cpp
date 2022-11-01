@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, TCHAR** pptszList, int nListCount)
+BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int nListCount)
 {
 	int nSDLen = 4096;
 	TCHAR tszSDBuffer[4096];
@@ -45,7 +45,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 			st_AuthProtocol.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
 
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
-			APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
@@ -102,6 +102,13 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 		//处理权限
 		if (st_UserTable.st_UserInfo.nUserLevel > 0)
 		{
+			if (!st_FunSwitch.bSwitchLogin)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "Function does not to enable");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
+				return FALSE;
+			}
 			//普通用户
 			if (!st_AuthConfig.st_XLogin.bHTTPAuth)
 			{
@@ -197,7 +204,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, 
 					memset(tszSDBuffer, '\0', MAX_PATH);
 
 					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-					APIHelp_HttpRequest_Post(st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+					APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 				}
 				Database_SQLite_UserLeave(&st_AuthTime);
 			}

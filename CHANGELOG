@@ -1,3 +1,19 @@
+XEngine_Authorize V3.3.0.1001
+
+增加:自定义序列号导入和导出
+增加:功能开关支持(注册,登录,删除,充值,获取时间,找回密码)
+修改:支持TCP,WEBSOCEKT,HTTP功能开关
+修改:客户端和序列号查询支持设置起始和结束位置
+更新:匹配XEngine V7.42
+删除:不需要的HTTPGET负载参数
+
+added:custom serial number export and import
+added:functions switch support(register,login,delete,pay,get time,get pass)
+modify:support tcp and websocket and http function switch
+modify:client and serial query supported set start and end pos
+update:match xengine v7.42
+delete:not need parament for http get
+======================================================================================
 XEngine_Authorize V3.2.0.1001
 
 增加:为管理程序增加用户注册功能

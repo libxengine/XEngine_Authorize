@@ -93,7 +93,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>false</SDLCheck>
+      <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
@@ -123,7 +123,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;_WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
@@ -154,6 +154,7 @@
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Switch.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.cpp" />
     <ClCompile Include="Authorize_Config.cpp" />
     <ClCompile Include="Authorize_HttpTask.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Switch.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.h" />
     <ClInclude Include="Authorize_Config.h" />
     <ClInclude Include="Authorize_Hdr.h" />

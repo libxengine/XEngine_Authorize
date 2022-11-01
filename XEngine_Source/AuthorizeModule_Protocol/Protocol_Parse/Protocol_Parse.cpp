@@ -760,3 +760,110 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nM
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseSwitch
+函数功能：开关选项解析函数
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_FunSwitch
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：导出获取到的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_FunSwitch))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+	Json::Value st_JsonObject = st_JsonRoot["st_SwitchInfo"];
+
+	pSt_FunSwitch->bSwitchDelete = st_JsonObject["bSwitchDelete"].asBool();
+	pSt_FunSwitch->bSwitchRegister = st_JsonObject["bSwitchRegister"].asBool();
+	pSt_FunSwitch->bSwitchLogin = st_JsonObject["bSwitchLogin"].asBool();
+	pSt_FunSwitch->bSwitchPay = st_JsonObject["bSwitchPay"].asBool();
+	pSt_FunSwitch->bSwitchPass = st_JsonObject["bSwitchPass"].asBool();
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParsePos
+函数功能：解析开始结束字段
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pInt_PosStart
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出获取到的开始位置
+ 参数.四：pInt_PosEnd
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出获取到的结束位置
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pInt_PosStart))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+
+	*pInt_PosStart = st_JsonRoot["PosStart"].asInt();
+	*pInt_PosEnd = st_JsonRoot["PosEnd"].asInt();
+	return TRUE;
+}

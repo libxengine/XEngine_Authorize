@@ -21,6 +21,13 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		memset(tszClientAddr, '\0', sizeof(tszClientAddr));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
+		if (!st_FunSwitch.bSwitchDelete)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，删除失败，删除功能已经被服务器关闭!"), lpszClientAddr);
+			return FALSE;
+		}
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 
 		Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr);
@@ -36,6 +43,13 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		AUTHREG_USERTABLE st_UserTable;
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
+		if (!st_FunSwitch.bSwitchRegister)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，注册失败，注册功能已经被服务器关闭!"), lpszClientAddr);
+			return FALSE;
+		}
 		Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, &st_UserTable);
 		//填充写入数据
 		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_XVerification.nTryTime);
@@ -72,6 +86,13 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		memset(&st_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_UserPay, '\0', sizeof(AUTHREG_PROTOCOL_USERPAY));
 
+		if (!st_FunSwitch.bSwitchPay)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，充值失败，充值功能已经被服务器关闭!"), lpszClientAddr);
+			return FALSE;
+		}
 		Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, &st_UserPay);
 		if (!Database_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber))
 		{
@@ -96,6 +117,13 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
+		if (!st_FunSwitch.bSwitchPass)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，找回密码失败，密码找回功能已经被服务器关闭!"), lpszClientAddr);
+			return FALSE;
+		}
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
 		{

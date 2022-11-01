@@ -543,3 +543,50 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Packet_HttpSwitch
+函数功能：打包开关功能选项
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pSt_FunSwitch
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["bSwitchDelete"] = pSt_FunSwitch->bSwitchDelete;
+	st_JsonRoot["bSwitchLogin"] = pSt_FunSwitch->bSwitchLogin;
+	st_JsonRoot["bSwitchPass"] = pSt_FunSwitch->bSwitchPass;
+	st_JsonRoot["bSwitchPay"] = pSt_FunSwitch->bSwitchPay;
+	st_JsonRoot["bSwitchRegister"] = pSt_FunSwitch->bSwitchRegister;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}

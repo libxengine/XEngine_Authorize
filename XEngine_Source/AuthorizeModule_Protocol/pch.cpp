@@ -63,6 +63,10 @@ extern "C" BOOL Protocol_Packet_HttpToken(TCHAR * ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout);
 }
+extern "C" BOOL Protocol_Packet_HttpSwitch(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpSwitch(ptszMsgBuffer, pInt_MsgLen, pSt_FunSwitch);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -109,4 +113,12 @@ extern "C" BOOL Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int nMsgLe
 extern "C" BOOL Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseTime(lpszMsgBuffer, nMsgLen, pSt_ProtocolTime);
+}
+extern "C" BOOL Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseSwitch(lpszMsgBuffer, nMsgLen, pSt_FunSwitch);
+}
+extern "C" BOOL Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, pInt_PosStart, pInt_PosEnd);
 }

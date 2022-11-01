@@ -101,7 +101,7 @@ void CDialog_Config::OnBnClickedButton1()
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Get(tszUrlAddr, &ptszMsgBuffer, &nMsgLen);
+	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -166,7 +166,7 @@ void CDialog_Config::OnBnClickedButton2()
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Get(tszUrlAddr, &ptszMsgBuffer, &nMsgLen);
+	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -227,7 +227,7 @@ void CDialog_Config::OnBnClickedButton5()
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Get(tszUrlAddr, &ptszMsgBuffer, &nMsgLen);
+	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;

@@ -66,12 +66,22 @@ typedef struct
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
-	}st_XLog;
+	}st_XLog;                                 
 	struct  
 	{
 		list<string> *pStl_ListVer;
 	}st_XVer;
 }XENGINE_SERVICECONFIG;
+//功能开关
+typedef struct
+{
+	BOOL bSwitchDelete;                                     //删除开关
+	BOOL bSwitchRegister;                                   //注册开关
+	BOOL bSwitchLogin;                                      //登录开关
+	BOOL bSwitchPay;                                        //充值开关
+	BOOL bSwitchPass;                                       //找回密码开关
+	BOOL bSwtichTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
+}XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
 //////////////////////////////////////////////////////////////////////////
@@ -98,3 +108,22 @@ extern "C" DWORD Config_GetLastError(int* pInt_SysError = NULL);
 备注：
 *********************************************************************/
 extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
+/********************************************************************
+函数名称：ModuleConfigure_Json_Switch
+函数功能：功能开关配置文件
+ 参数.一：lpszFile
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入配置文件位置
+ 参数.二：pSt_AuthConfig
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出读取到的配置信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig);

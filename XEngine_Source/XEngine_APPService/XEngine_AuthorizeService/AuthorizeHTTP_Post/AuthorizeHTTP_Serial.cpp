@@ -7,11 +7,14 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	LPCTSTR lpszAPIList = _T("list");
 	LPCTSTR lpszAPIInsert = _T("insert");
 	LPCTSTR lpszAPIDelete = _T("delete");
+	LPCTSTR lpszAPIPush = _T("push");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
 	if (0 == _tcsnicmp(lpszAPIList, lpszAPIName, _tcslen(lpszAPIList)))
 	{
+		int nPosStart = 0;
+		int nPosEnd = 0;
 		int nListCount = 0;
 		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)
@@ -20,8 +23,16 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
+		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
+		if ((nPosEnd - nPosStart) > 100)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "pos parament is not rigth");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求序列号列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
+			return FALSE;
+		}
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
-		Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount);
+		Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
 		Protocol_Packet_HttpSerialList(ptszMsgBuffer, &nSDLen, &ppSt_SerialTable, nListCount);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -105,6 +116,21 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求删除序列号成功,删除个数:%d"), lpszClientAddr, nListCount);
+	}
+	else if (0 == _tcsnicmp(lpszAPIPush, lpszAPIName, _tcslen(lpszAPIPush)))
+	{
+		int nListCount = 0;
+		AUTHREG_SERIALTABLE** ppSt_SerialTable;
+
+		Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &ppSt_SerialTable, &nListCount);
+		for (int i = 0; i < nListCount; i++)
+		{
+			Database_SQLite_SerialPush(ppSt_SerialTable[i]);
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求推送自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);
 	}
 	return TRUE;
 }

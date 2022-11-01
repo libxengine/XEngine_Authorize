@@ -82,6 +82,7 @@ make FLAGS=CleanAll 清理编译
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
 
 ## 参与贡献
 
@@ -106,8 +107,8 @@ V3版本为全新版本,为了适应过多环境要求开发
 如果你有问题,可以在issues中提交
 
 ## 开发计划 
-功能启用关闭(注册,登录,等)
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
+消息公告  
 支持多端登录  
 多端登录合并用时  
 生成会话TOKEN分布式鉴权  
@@ -115,5 +116,8 @@ mfc转qt界面库(我们需要会Qt的人员加入一起开发)
 mysql支持  
 列表数据分割,用于大型服务器  
 支持用户和硬件绑定同时验证  
-支持自定义序列号插入导入  
+支持自定义序列号导入导出  
 统计用户所有在线时间  
+黑名单设置(IP,用户)  
+支持代理端  
+支持绑定自定义内容  

@@ -60,6 +60,9 @@
     <ClInclude Include="Authorize_Help\Authorize_Help.h">
       <Filter>头文件\Authorize_Help</Filter>
     </ClInclude>
+    <ClInclude Include="Authorize_Dialog\Dialog_Switch.h">
+      <Filter>头文件\Authorize_Dialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XEngine_AuthorizeApp.cpp">
@@ -85,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="Authorize_Help\Authorize_Help.cpp">
       <Filter>源文件\Authorize_Help</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Dialog\Dialog_Switch.cpp">
+      <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

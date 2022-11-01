@@ -12,6 +12,8 @@
 
 #endif //PCH_H
 #include <json/json.h>
+#include <list>
+using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
@@ -23,12 +25,15 @@
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
+#include "../../AuthorizeModule_Configure/Config_Define.h"
+#include "../../AuthorizeModule_Configure/Config_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
 #include "Authorize_Dialog/Dialog_Modify.h"
+#include "Authorize_Dialog/Dialog_Switch.h"
 #include "Authorize_Help/Authorize_Help.h"
 
 extern HWND hMainWnd;
