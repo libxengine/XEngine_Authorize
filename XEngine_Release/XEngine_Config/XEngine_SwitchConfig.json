@@ -1,0 +1,8 @@
+{
+    "bSwitchDelete":true,
+    "bSwitchRegister":true,
+    "bSwitchLogin":true,
+    "bSwitchPay":true,
+    "bSwitchPass":true,
+    "bSwtichTime":true
+}
