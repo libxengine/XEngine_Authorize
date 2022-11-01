@@ -29,6 +29,8 @@ void CDialog_User::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT1, m_EditFlushTime);
 	DDX_Control(pDX, IDC_CHECK2, m_CheckAuto);
 	DDX_Control(pDX, IDC_BUTTON4, m_BtnModifyClient);
+	DDX_Control(pDX, IDC_EDIT2, m_EditPosStart);
+	DDX_Control(pDX, IDC_EDIT3, m_EditPosEnd);
 }
 
 
@@ -61,6 +63,8 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText("1");
+	m_EditPosStart.SetWindowText("0");
+	m_EditPosEnd.SetWindowText("50");
 	hUserWnd = m_hWnd;
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -75,12 +79,16 @@ void CDialog_User::OnBnClickedButton1()
 	TCHAR tszIPPort[MAX_PATH];
 	TCHAR tszToken[MAX_PATH];
 	TCHAR tszUrlAddr[MAX_PATH];
+	CString m_StrPosStart;
+	CString m_StrPosEnd;
 
 	memset(tszIPAddr, '\0', MAX_PATH);
 	memset(tszIPPort, '\0', MAX_PATH);
 	memset(tszToken, '\0', MAX_PATH);
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
+	m_EditPosStart.GetWindowText(m_StrPosStart);
+	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, MAX_PATH);
 	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
 	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
@@ -90,6 +98,8 @@ void CDialog_User::OnBnClickedButton1()
 	CHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	st_JsonRoot["xhToken"] = _ttoi64(tszToken);
+	st_JsonRoot["PosStart"] = _ttoi(m_StrPosStart.GetBuffer());
+	st_JsonRoot["PosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
 	if (BST_CHECKED == m_CheckOnlineList.GetCheck())
 	{
 		st_JsonRoot["Online"] = true;

@@ -38,4 +38,6 @@ public:
 	CButton m_CheckAuto;
 	CButton m_BtnModifyClient;
 	afx_msg void OnBnClickedButton5();
+	CEdit m_EditPosStart;
+	CEdit m_EditPosEnd;
 };

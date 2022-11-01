@@ -29,6 +29,8 @@ void CDialog_Serial::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, m_ComboNumber);
 	DDX_Control(pDX, IDC_EDIT1, m_EditSerialCount);
 	DDX_Control(pDX, IDC_EDIT2, m_EditHasTime);
+	DDX_Control(pDX, IDC_EDIT3, m_EditPosStart);
+	DDX_Control(pDX, IDC_EDIT7, m_EditPosEnd);
 }
 
 
@@ -71,6 +73,9 @@ BOOL CDialog_Serial::OnInitDialog()
 	m_ComboNumber.InsertString(5, _T("9"));
 	m_ComboNumber.InsertString(6, _T("10"));
 
+	m_EditPosStart.SetWindowText("0");
+	m_EditPosEnd.SetWindowText("50");
+
 	m_ComboNumber.SetCurSel(0);
 	m_ComboSerialType.SetCurSel(0);
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -85,10 +90,15 @@ void CDialog_Serial::OnBnClickedButton1()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+	CString m_StrPosStart;
+	CString m_StrPosEnd;
+	
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
+	m_EditPosStart.GetWindowText(m_StrPosStart);
+	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -98,6 +108,8 @@ void CDialog_Serial::OnBnClickedButton1()
 	CHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["PosStart"] = _ttoi(m_StrPosStart.GetBuffer());
+	st_JsonRoot["PosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
