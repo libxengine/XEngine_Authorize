@@ -82,6 +82,7 @@ make FLAGS=CleanAll 清理编译
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
 
 ## 参与贡献
 
@@ -106,8 +107,8 @@ V3版本为全新版本,为了适应过多环境要求开发
 如果你有问题,可以在issues中提交
 
 ## 开发计划 
-功能启用关闭(注册,登录,等)
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
+消息公告  
 支持多端登录  
 多端登录合并用时  
 生成会话TOKEN分布式鉴权  
