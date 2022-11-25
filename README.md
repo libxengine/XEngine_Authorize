@@ -73,8 +73,16 @@ make 编译
 make FLAGS=InstallAll 安装库程序  
 make FLAGS=CleanAll 清理编译  
 
+## 如何使用
+#### 服务端(管理端)
+Windows:编译成功后,拷贝VSCopy_x86或者VSCopy_x64 到你的编译目录,执行自动拷贝依赖的模块,然后把XEngine_Release下的文件全部拷贝到编译目录即可  
+Linux:直接运行即可  
+
+#### 客户端
+客户端可以参考XEngine_Apps的例子,也可以参考文档的通信协议自己集成到你的客户端,流程应该是:注册->登录->充值->等待超时->结束.  
+
 ## 测试服务器
-地址:app.xyry.org 或者 159.75.200.173  
+地址:app.xyry.org  
 端口:tcp端口 5300,websocket端口 5301,http管理端 5302,传输验证密码:无加密
 
 ## 程序截图
