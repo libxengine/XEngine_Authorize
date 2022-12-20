@@ -10,6 +10,7 @@
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <tchar.h>
+#include <commctrl.h>
 #endif //PCH_H
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
@@ -26,3 +27,8 @@
 *********************************************************************/
 extern BOOL Help_IsErrorOccur;
 extern DWORD Help_dwErrorCode;
+
+
+#ifdef _MSC_BUILD
+#pragma comment(lib,"Comctl32.lib")
+#endif

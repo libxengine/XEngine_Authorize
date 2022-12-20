@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
+#include "AuthHelp_Windows/AuthHelp_Windows.h"
 /********************************************************************
 //    Created:     2022/08/12  14:14:11
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Help\pch.cpp
@@ -15,6 +16,7 @@ BOOL Help_IsErrorOccur = FALSE;
 DWORD Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_ClipBoard m_HelpClipBoard;
+CAuthHelp_Windows m_HelpWindow;
 //////////////////////////////////////////////////////////////////////////
 extern "C" DWORD AuthHelp_GetLastError(int* pInt_SysError)
 {
@@ -39,5 +41,16 @@ extern "C" BOOL AuthHelp_ClipBoard_Get(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, 
 extern "C" BOOL AuthHelp_ClipBoard_Clear()
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Clear();
+}
+/************************************************************************/
+/*                    窗口类导出定义                                    */
+/************************************************************************/
+extern "C" BOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree, int nDitheringCareer)
+{
+	return m_HelpWindow.AuthHelp_Windows_Dithering(hWnd, nDitheringDegree, nDitheringCareer);
+}
+extern "C" BOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip)
+{
+	return m_HelpWindow.AuthHelp_Windows_CreateTooltip(hWnd, lpszContextOfTip);
 }
 #endif

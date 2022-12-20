@@ -6,3 +6,6 @@ EXPORTS
 	AuthHelp_ClipBoard_Set
 	AuthHelp_ClipBoard_Get
 	AuthHelp_ClipBoard_Clear
+
+	AuthHelp_Windows_Dithering
+	AuthHelp_Windows_CreateTooltip

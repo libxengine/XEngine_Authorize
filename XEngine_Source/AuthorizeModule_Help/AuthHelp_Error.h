@@ -21,3 +21,10 @@
 #define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OWNER 0x0050003             //设置所有者失败
 #define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC 0x0050004            //申请内存失败
 #define ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_GETDATA 0x0050005           //获取内容失败
+/************************************************************************/
+/*                     窗口                                             */
+/************************************************************************/
+#define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_GETRECT 0x0050010              //获取失败
+#define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_INIT 0x0050011                 //初始化窗口失败
+#define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_CREATEWINDOW 0x0050012         //创建窗口失败
+#define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_SETWINDOW 0x0050013            //设置窗口失败

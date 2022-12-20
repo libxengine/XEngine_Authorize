@@ -19,6 +19,12 @@
     <Filter Include="源文件\AuthHelp_ClipBoard">
       <UniqueIdentifier>{f8204c92-f86d-47b3-869b-bc57822a8276}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\AuthHelp_Windows">
+      <UniqueIdentifier>{d240ac1c-aaa2-40cf-9b28-dffdc2f25922}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthHelp_Windows">
+      <UniqueIdentifier>{4a1f4a92-dfc7-4a5a-bd47-85349ebdc583}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,6 +42,9 @@
     <ClInclude Include="AuthHelp_Error.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AuthHelp_Windows\AuthHelp_Windows.h">
+      <Filter>头文件\AuthHelp_Windows</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -46,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="AuthHelp_ClipBoard\AuthHelp_ClipBoard.cpp">
       <Filter>源文件\AuthHelp_ClipBoard</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthHelp_Windows\AuthHelp_Windows.cpp">
+      <Filter>源文件\AuthHelp_Windows</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
