@@ -28,6 +28,8 @@ void CXEngineAuthorizeAppDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB1, m_TabWindows);
 	DDX_Control(pDX, IDC_EDIT1, m_EditLog);
+	DDX_Control(pDX, IDC_BUTTON1, m_BtnLogSave);
+	DDX_Control(pDX, IDC_BUTTON2, m_BtnLogClear);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
@@ -94,6 +96,9 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_TabWindows.SetCurSel(0);
 
 	hMainWnd = m_hWnd;
+
+	AuthHelp_Windows_CreateTooltip(m_BtnLogSave.m_hWnd, _T("保存日志为文件"));
+	AuthHelp_Windows_CreateTooltip(m_BtnLogClear.m_hWnd, _T("清空日志窗口"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 

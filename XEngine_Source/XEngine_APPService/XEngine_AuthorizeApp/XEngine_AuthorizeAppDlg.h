@@ -41,4 +41,6 @@ public:
 	CEdit m_EditLog;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();
+	CButton m_BtnLogSave;
+	CButton m_BtnLogClear;
 };
