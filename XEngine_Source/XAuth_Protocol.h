@@ -77,3 +77,12 @@ typedef struct tag_AuthReg_NetVer
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode;                  //验证方式
 	int nTryTime;                                                         //试用时间
 }AUTHREG_NETVER, * LPAUTHREG_NETVER;
+//禁止列表
+typedef struct 
+{
+	__int64x nID;                                                         //ID
+	CHAR tszUserName[MAX_PATH];                                           //用户名
+	CHAR tszIPStart[128];                                                 //起始IP
+	CHAR tszIPEnd[128];                                                   //结束IP
+	CHAR tszTime[64];                                                     //时间
+}AUTHREG_BANNED, * LPAUTHREG_BANNED;

@@ -1080,6 +1080,282 @@ BOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
     }
     return TRUE;
 }
+/********************************************************************
+函数名称：Database_SQLite_BannedInsert
+函数功能：黑名单列表插入
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	if (NULL == pSt_Banned)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return FALSE;
+	}
+    //存在直接返回
+    if (Database_SQLite_BannedExist(pSt_Banned))
+    {
+        return TRUE;
+    }
+	TCHAR tszSQLStatement[1024];
+	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
+    //处理的类型
+    if (_tcslen(pSt_Banned->tszUserName) > 0)
+    {
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Auth_BannedUser(tszUserName,tszCreateTime) VALUES('%s',datetime('now', 'localtime'))"), pSt_Banned->tszUserName);
+    }
+    else
+    {
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Auth_BannedAddr(tszIPStart,tszIPEnd,tszCreateTime) VALUES('%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
+    }
+    //插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Database_SQLite_BannedDelete
+函数功能：黑名单列表删除
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	if (NULL == pSt_Banned)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return FALSE;
+	}
+	TCHAR tszSQLStatement[1024];
+	memset(tszSQLStatement, '\0', 1024);
+	//处理的类型
+	if (_tcslen(pSt_Banned->tszUserName) > 0)
+	{
+        _stprintf_s(tszSQLStatement, _T("DELETE * FROM Auth_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
+	}
+	else
+	{
+        if (_tcslen(pSt_Banned->tszIPEnd) > 0)
+        {
+            _stprintf_s(tszSQLStatement, _T("DELETE * FROM Auth_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
+        }
+        else
+        {
+            _stprintf_s(tszSQLStatement, _T("DELETE * FROM Auth_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
+        }
+	}
+	//操作数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Database_SQLite_BannedList
+函数功能：黑名单列表查询
+ 参数.一：pppSt_BannedUser
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：禁用的用户名列表
+ 参数.二：pInt_UserCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出用户禁用列表个数
+ 参数.三：pppSt_BannedAddr
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：禁用的IP地址列表
+ 参数.四：pInt_AddrCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出地址禁用列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	int nRow = 0;
+	int nColumn = 0;
+	CHAR** ppszResult = NULL;
+	TCHAR tszSQLStatement[1024];    //SQL语句
+
+	memset(tszSQLStatement, '\0', 1024);
+	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr"));
+
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	int nFliedValue = nColumn;
+	list<AUTHREG_BANNED> stl_ListAddr;
+	//轮训所有内容
+	for (int i = 0; i < nRow; i++)
+	{
+        AUTHREG_BANNED st_Banned;
+		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+		//ID
+        st_Banned.nID = _ttoi64(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//起始地址
+		_tcscpy(st_Banned.tszIPStart, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//结束地址
+		_tcscpy(st_Banned.tszIPEnd, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//注册时间
+		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+
+        stl_ListAddr.push_back(st_Banned);
+	}
+	DataBase_SQLite_FreeTable(ppszResult);
+    //用户列表
+	nRow = 0;
+	nColumn = 0;
+	memset(tszSQLStatement, '\0', 1024);
+	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedUser"));
+
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	nFliedValue = nColumn;
+	list<AUTHREG_BANNED> stl_ListUser;
+	//轮训所有内容
+	for (int i = 0; i < nRow; i++)
+	{
+		AUTHREG_BANNED st_Banned;
+		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+		//ID
+		st_Banned.nID = _ttoi64(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//用户名
+		_tcscpy(st_Banned.tszUserName, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//注册时间
+		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+
+		stl_ListAddr.push_back(st_Banned);
+	}
+	DataBase_SQLite_FreeTable(ppszResult);
+    //导出
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
+
+	list<AUTHREG_BANNED>::const_iterator stl_ListIterator = stl_ListAddr.begin();
+    for (int i = 0; stl_ListIterator != stl_ListAddr.end(); stl_ListIterator++, i++)
+	{
+        (*pppSt_BannedAddr)[i]->nID = stl_ListIterator->nID;
+        _tcscpy((*pppSt_BannedAddr)[i]->tszIPStart, stl_ListIterator->tszIPStart);
+        _tcscpy((*pppSt_BannedAddr)[i]->tszIPEnd, stl_ListIterator->tszIPEnd);
+        _tcscpy((*pppSt_BannedAddr)[i]->tszTime, stl_ListIterator->tszTime);
+	}
+	stl_ListIterator = stl_ListUser.begin();
+	for (int i = 0; stl_ListIterator != stl_ListUser.end(); stl_ListIterator++, i++)
+	{
+		(*pppSt_BannedUser)[i]->nID = stl_ListIterator->nID;
+		_tcscpy((*pppSt_BannedUser)[i]->tszUserName, stl_ListIterator->tszUserName);
+		_tcscpy((*pppSt_BannedUser)[i]->tszTime, stl_ListIterator->tszTime);
+	}
+
+    stl_ListAddr.clear();
+    stl_ListUser.clear();
+	return TRUE;
+}
+/********************************************************************
+函数名称：Database_SQLite_BannedExist
+函数功能：名单是否存在黑名单列表
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	int nRow = 0;
+	int nColumn = 0;
+	CHAR** ppszResult = NULL;
+	TCHAR tszSQLStatement[1024];  
+	memset(tszSQLStatement, '\0', 1024);
+
+    if (_tcslen(pSt_Banned->tszUserName) > 0)
+	{
+        _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
+    }
+    else
+    {
+        if (_tcslen(pSt_Banned->tszIPEnd) > 0)
+        {
+            _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
+        }
+        else
+        {
+            _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
+        }
+    }
+
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	DataBase_SQLite_FreeTable(ppszResult);
+
+    if (nRow <= 0)
+    {
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+		return FALSE;
+    }
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////

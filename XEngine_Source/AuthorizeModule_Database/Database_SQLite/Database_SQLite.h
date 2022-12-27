@@ -42,6 +42,11 @@ public:
     BOOL Database_SQLite_TryDelete(LPCTSTR lpszSerial);
     BOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
     BOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+public:
+    BOOL Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
+    BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
+    BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
+    BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
 protected:
     BOOL Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType);
 private:
