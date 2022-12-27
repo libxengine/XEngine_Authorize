@@ -89,6 +89,18 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
             return FALSE;
         }
+		if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE Auth_BannedAddr(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszIPStart TEXT,tszIPEnd TEXT,tszCreateTime DATE NOT NULL)")))
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+			return FALSE;
+		}
+		if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE Auth_BannedUser(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszUserName TEXT,tszCreateTime DATE NOT NULL)")))
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+			return FALSE;
+		}
     }
     return TRUE;
 }
