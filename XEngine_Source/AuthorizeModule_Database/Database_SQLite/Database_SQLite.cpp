@@ -43,7 +43,6 @@ CDatabase_SQLite::~CDatabase_SQLite()
 BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange /* = TRUE */)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    BOOL bIsCreate = FALSE;
     //创建数据库
     if (!DataBase_SQLite_Create(lpszSQLFile))
     {
@@ -55,10 +54,6 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
             return FALSE;
         }
     }
-    else
-    {
-        bIsCreate = TRUE;
-    }
     m_bChange = bIsChange;
     //打开数据库
     if (!DataBase_SQLite_Open(&xhData,lpszSQLFile))
@@ -67,41 +62,37 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
         SQLPacket_dwErrorCode = DataBase_GetLastError();
         return FALSE;
     }
-    //如果是否创建数据库为真，那么我们需要创建数据库
-    if (bIsCreate)
-    {
-        //如果创建成功了，说明需要创建表
-        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,nUserLevel integer,CreateTime TEXT NOT NULL)")))
-        {
-            SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
-            return FALSE;
-        }
-        if (!DataBase_SQLite_Exec(xhData,_T("CREATE TABLE AuthReg_Serial(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,SerialNumber TEXT,MaxTime TEXT,CardSerialType integer,bIsUsed boolean,CreateTime TEXT NOT NULL)")))
-        {
-            SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
-            return FALSE;
-        }
-        if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE AuthReg_NetVer(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,VerSerial TEXT NOT NULL,VerMode integer NOT NULL,TryTime integer NOT NULL,CreateTime TEXT NOT NULL)")))
-        {
-            SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
-            return FALSE;
-        }
-		if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE Auth_BannedAddr(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszIPStart TEXT,tszIPEnd TEXT,tszCreateTime DATE NOT NULL)")))
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
-			return FALSE;
-		}
-		if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE Auth_BannedUser(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszUserName TEXT,tszCreateTime DATE NOT NULL)")))
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
-			return FALSE;
-		}
-    }
+	//如果创建成功了，说明需要创建表
+	if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE IF NOT EXISTS AuthReg_User(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,Password TEXT,LeftTime TEXT,EmailAddr TEXT,HardCode TEXT,CardSerialType integer,PhoneNumber integer,IDCard integer,nUserLevel integer,CreateTime TEXT NOT NULL)")))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+		return FALSE;
+	}
+	if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE IF NOT EXISTS AuthReg_Serial(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,UserName TEXT,SerialNumber TEXT,MaxTime TEXT,CardSerialType integer,bIsUsed boolean,CreateTime TEXT NOT NULL)")))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+		return FALSE;
+	}
+	if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE IF NOT EXISTS AuthReg_NetVer(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,VerSerial TEXT NOT NULL,VerMode integer NOT NULL,TryTime integer NOT NULL,CreateTime TEXT NOT NULL)")))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+		return FALSE;
+	}
+	if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE IF NOT EXISTS Auth_BannedAddr(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszIPStart TEXT,tszIPEnd TEXT,tszCreateTime DATE NOT NULL)")))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+		return FALSE;
+	}
+	if (!DataBase_SQLite_Exec(xhData, _T("CREATE TABLE IF NOT EXISTS Auth_BannedUser(ID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,tszUserName TEXT,tszCreateTime DATE NOT NULL)")))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_CREATETABLE;
+		return FALSE;
+	}
     return TRUE;
 }
 /********************************************************************
