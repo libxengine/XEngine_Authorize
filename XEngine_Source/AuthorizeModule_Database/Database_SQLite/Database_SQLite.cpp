@@ -1330,42 +1330,56 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
-	int nRow = 0;
-	int nColumn = 0;
-	CHAR** ppszResult = NULL;
-	TCHAR tszSQLStatement[1024];  
-	memset(tszSQLStatement, '\0', 1024);
-
+    //判断用域名是否存在
     if (_tcslen(pSt_Banned->tszUserName) > 0)
 	{
+		int nRow = 0;
+		int nColumn = 0;
+		CHAR** ppszResult = NULL;
+		TCHAR tszSQLStatement[1024];
+        memset(tszSQLStatement, '\0', 1024);
+
         _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
-    }
-    else
-    {
-        if (_tcslen(pSt_Banned->tszIPEnd) > 0)
-        {
-            _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
-        }
-        else
-        {
-            _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
-        }
-    }
+		if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = DataBase_GetLastError();
+			return FALSE;
+		}
+		DataBase_SQLite_FreeTable(ppszResult);
 
-	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+		if (nRow <= 0)
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+			return FALSE;
+		}
+    }
+    //判断IP地址是否存在
+    if (_tcslen(pSt_Banned->tszIPStart) > 0)
 	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = DataBase_GetLastError();
-		return FALSE;
-	}
-	DataBase_SQLite_FreeTable(ppszResult);
+		int nRow = 0;
+		int nColumn = 0;
+		CHAR** ppszResult = NULL;
+		TCHAR tszSQLStatement[1024];
+		memset(tszSQLStatement, '\0', 1024);
 
-    if (nRow <= 0)
-    {
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
-		return FALSE;
-    }
+        _stprintf_s(tszSQLStatement, _T("SELECT * FROM Auth_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
+		if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = DataBase_GetLastError();
+			return FALSE;
+		}
+		DataBase_SQLite_FreeTable(ppszResult);
+
+		if (nRow <= 0)
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+			return FALSE;
+		}
+	}
 	return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
