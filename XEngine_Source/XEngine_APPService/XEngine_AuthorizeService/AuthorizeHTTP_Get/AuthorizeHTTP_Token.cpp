@@ -39,6 +39,18 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
 		BaseLib_OperatorString_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
+		//是否在黑名单
+		AUTHREG_BANNED st_Banned;
+		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+
+		_tcscpy(st_Banned.tszUserName, tszUserName);
+		if (Database_SQLite_BannedExist(&st_Banned))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user name is banned");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
+			return FALSE;
+		}
 		//是否使用了第三方验证
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
