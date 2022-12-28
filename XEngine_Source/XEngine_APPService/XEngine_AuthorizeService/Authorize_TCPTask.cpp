@@ -66,20 +66,6 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 
 		pSt_ProtocolHdr->unPacketSize = 0;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
-
-		AUTHREG_BANNED st_Banned;
-		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-		_tcscpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
-		//是否在黑名单
-		if (Database_SQLite_BannedExist(&st_Banned))
-		{
-			pSt_ProtocolHdr->wReserve = 423;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
-			return FALSE;
-		}
 		//是否允许登录
 		if (!st_FunSwitch.bSwitchLogin)
 		{
