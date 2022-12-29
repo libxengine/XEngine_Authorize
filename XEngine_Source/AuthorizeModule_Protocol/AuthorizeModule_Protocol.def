@@ -12,6 +12,7 @@ EXPORTS
 	Protocol_Packet_HttpSerialList
 	Protocol_Packet_HttpToken
 	Protocol_Packet_HttpSwitch
+	Protocol_Packet_HttpBanned
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_HttpParseToken

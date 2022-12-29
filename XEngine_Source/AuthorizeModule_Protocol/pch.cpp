@@ -67,6 +67,10 @@ extern "C" BOOL Protocol_Packet_HttpSwitch(TCHAR * ptszMsgBuffer, int* pInt_MsgL
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpSwitch(ptszMsgBuffer, pInt_MsgLen, pSt_FunSwitch);
 }
+extern "C" BOOL Protocol_Packet_HttpBanned(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED * **pppSt_BannedUser, int nUserCount, AUTHREG_BANNED * **pppSt_BannedAddr, int nAddrCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpBanned(ptszMsgBuffer, pInt_MsgLen, pppSt_BannedUser, nUserCount, pppSt_BannedAddr, nAddrCount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/

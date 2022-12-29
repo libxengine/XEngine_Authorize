@@ -590,3 +590,83 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pIn
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Packet_HttpBanned
+函数功能：HTTP客户端禁用名单包装函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_BannedUser
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的用户列表
+ 参数.四：nUserCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入用户列表个数
+ 参数.五：pppSt_BannedAddr
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的地址列表
+ 参数.六：nAddrCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入地址列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonUser;
+	Json::Value st_JsonAddr;
+
+	for (int i = 0; i < nUserCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nID"] = (*pppSt_BannedUser)[i]->nID;
+		st_JsonObject["tszTime"] = (*pppSt_BannedUser)[i]->tszTime;
+		st_JsonObject["tszUserName"] = (*pppSt_BannedUser)[i]->tszUserName;
+		st_JsonUser.append(st_JsonObject);
+	}
+	for (int i = 0; i < nUserCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nID"] = (*pppSt_BannedUser)[i]->nID;
+		st_JsonObject["tszIPEnd"] = (*pppSt_BannedUser)[i]->tszIPEnd;
+		st_JsonObject["tszIPStart"] = (*pppSt_BannedUser)[i]->tszIPStart;
+		st_JsonObject["tszTime"] = (*pppSt_BannedUser)[i]->tszTime;
+		st_JsonAddr.append(st_JsonObject);
+	}
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["CountAddr"] = st_JsonAddr.size();
+	st_JsonRoot["CountUser"] = st_JsonUser.size();
+	st_JsonRoot["ArrayUser"] = st_JsonUser;
+	st_JsonRoot["ArrayAddr"] = st_JsonAddr;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
