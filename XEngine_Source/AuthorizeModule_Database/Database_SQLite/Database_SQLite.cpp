@@ -1235,10 +1235,12 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 		//注册时间
 		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
 
-		stl_ListAddr.push_back(st_Banned);
+        stl_ListUser.push_back(st_Banned);
 	}
 	DataBase_SQLite_FreeTable(ppszResult);
     //导出
+    *pInt_AddrCount = stl_ListAddr.size();
+    *pInt_UserCount = stl_ListUser.size();
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
 
