@@ -118,6 +118,7 @@ void CDialog_Config::OnBnClickedButton1()
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
+			AuthHelp_Windows_Dithering(hMainWnd);
 			return;
 		}
 	}
@@ -126,12 +127,14 @@ void CDialog_Config::OnBnClickedButton1()
 		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
+			AuthHelp_Windows_Dithering(hMainWnd);
 			return;
 		}
 	}
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		Authorize_Help_LogPrint(_T("登录失败,无法继续"));
+		AuthHelp_Windows_Dithering(hMainWnd);
 		return;
 	}
 	m_StrToken.Format(_T("%lld"), st_JsonRoot["xhToken"].asUInt64());
@@ -144,8 +147,6 @@ void CDialog_Config::OnBnClickedButton1()
 	m_BtnLogin.EnableWindow(FALSE);
 	m_BtnLogout.EnableWindow(TRUE);
 	m_BtnUpdate.EnableWindow(TRUE);
-
-
 }
 
 
