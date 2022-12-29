@@ -21,4 +21,19 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedRadio1();
+	CButton m_RadioIPAddr;
+	CButton m_RadioUser;
+	CStatic m_StaticTips;
+	afx_msg void OnBnClickedRadio2();
+	virtual BOOL OnInitDialog();
+	CStatic m_StaticIPEnd;
+	CEdit m_EditIPEnd;
+	afx_msg void OnBnClickedButton2();
+	afx_msg void OnBnClickedButton4();
+	afx_msg void OnBnClickedButton3();
+	CListCtrl m_ListAddr;
+	CListCtrl m_ListUser;
+	CEdit m_EditUser;
 };
