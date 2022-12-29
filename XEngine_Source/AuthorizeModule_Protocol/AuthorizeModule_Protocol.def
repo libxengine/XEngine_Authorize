@@ -26,3 +26,4 @@ EXPORTS
 	Protocol_Parse_HttpParseTime
 	Protocol_Parse_HttpParseSwitch
 	Protocol_Parse_HttpParsePos
+	Protocol_Parse_HttpParseBanned

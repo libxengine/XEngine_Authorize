@@ -867,3 +867,70 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMs
 	*pInt_PosEnd = st_JsonRoot["PosEnd"].asInt();
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseBanned
+函数功能：解析黑名单协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pSt_AuthBanned
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：导出解析的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_AuthBanned))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+
+	if (!st_JsonRoot["nID"].isNull())
+	{
+		pSt_AuthBanned->nID = st_JsonRoot["nID"].asInt64();
+	}
+	if (!st_JsonRoot["tszIPEnd"].isNull())
+	{
+		_tcscpy(pSt_AuthBanned->tszIPEnd, st_JsonRoot["tszIPEnd"].asCString());
+	}
+	if (!st_JsonRoot["tszIPStart"].isNull())
+	{
+		_tcscpy(pSt_AuthBanned->tszIPStart, st_JsonRoot["tszIPStart"].asCString());
+	}
+	if (!st_JsonRoot["tszTime"].isNull())
+	{
+		_tcscpy(pSt_AuthBanned->tszTime, st_JsonRoot["tszTime"].asCString());
+	}
+	if (!st_JsonRoot["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_AuthBanned->tszUserName, st_JsonRoot["tszUserName"].asCString());
+	}
+	return TRUE;
+}

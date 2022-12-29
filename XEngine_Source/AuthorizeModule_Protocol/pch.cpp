@@ -122,3 +122,7 @@ extern "C" BOOL Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, 
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, pInt_PosStart, pInt_PosEnd);
 }
+extern "C" BOOL Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED * pSt_AuthBanned)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseBanned(lpszMsgBuffer, nMsgLen, pSt_AuthBanned);
+}
