@@ -160,7 +160,7 @@ int AuthClient_Login()
 	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
-	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC;
+	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
 	strcpy(st_AuthUser.tszUserName, lpszUser);
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
 
