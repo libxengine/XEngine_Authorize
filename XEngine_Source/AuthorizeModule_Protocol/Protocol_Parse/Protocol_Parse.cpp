@@ -911,26 +911,27 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int 
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
+	Json::Value st_JsonObject = st_JsonRoot["st_Banned"];
 
-	if (!st_JsonRoot["nID"].isNull())
+	if (!st_JsonObject["nID"].isNull())
 	{
-		pSt_AuthBanned->nID = st_JsonRoot["nID"].asInt64();
+		pSt_AuthBanned->nID = st_JsonObject["nID"].asInt64();
 	}
-	if (!st_JsonRoot["tszIPEnd"].isNull())
+	if (!st_JsonObject["tszIPEnd"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszIPEnd, st_JsonRoot["tszIPEnd"].asCString());
+		_tcscpy(pSt_AuthBanned->tszIPEnd, st_JsonObject["tszIPEnd"].asCString());
 	}
-	if (!st_JsonRoot["tszIPStart"].isNull())
+	if (!st_JsonObject["tszIPStart"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszIPStart, st_JsonRoot["tszIPStart"].asCString());
+		_tcscpy(pSt_AuthBanned->tszIPStart, st_JsonObject["tszIPStart"].asCString());
 	}
-	if (!st_JsonRoot["tszTime"].isNull())
+	if (!st_JsonObject["tszTime"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszTime, st_JsonRoot["tszTime"].asCString());
+		_tcscpy(pSt_AuthBanned->tszTime, st_JsonObject["tszTime"].asCString());
 	}
-	if (!st_JsonRoot["tszUserName"].isNull())
+	if (!st_JsonObject["tszUserName"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszUserName, st_JsonRoot["tszUserName"].asCString());
+		_tcscpy(pSt_AuthBanned->tszUserName, st_JsonObject["tszUserName"].asCString());
 	}
 	return TRUE;
 }
