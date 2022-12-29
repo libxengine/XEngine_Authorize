@@ -32,9 +32,10 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	CDialog_Config m_DlgConfig;
+	CDialog_Switch m_DlgSwitch;
 	CDialog_User m_DlgUser;
 	CDialog_Serial m_DlgSerial;
-	CDialog_Switch m_DlgSwitch;
+	CDialog_Banned m_DlgBanned;
 public:
 	CTabCtrl m_TabWindows;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);
