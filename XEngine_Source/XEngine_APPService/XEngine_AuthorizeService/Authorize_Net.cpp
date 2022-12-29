@@ -2,16 +2,6 @@
 //////////////////////////////////////////////////////////////////////////
 BOOL __stdcall XEngine_Client_TCPAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
-	AUTHREG_BANNED st_Banned;
-	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
-	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，连接被阻止，IP地址被禁用!"), lpszClientAddr);
-		return FALSE;
-	}
 	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("TCP客户端：%s，进入服务器"), lpszClientAddr);
 	return TRUE;
@@ -30,16 +20,6 @@ void __stdcall XEngine_Client_TCPClose(LPCTSTR lpszClientAddr, SOCKET hSocket, L
 //////////////////////////////////////////////////////////////////////////
 BOOL __stdcall XEngine_Client_WSAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
-	AUTHREG_BANNED st_Banned;
-	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
-	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，连接被阻止，IP地址被禁用!"), lpszClientAddr);
-		return FALSE;
-	}
 	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("WS客户端：%s，进入服务器"), lpszClientAddr);
 	return TRUE;
@@ -74,16 +54,6 @@ void __stdcall XEngine_Client_WSClose(LPCTSTR lpszClientAddr, SOCKET hSocket, LP
 //////////////////////////////////////////////////////////////////////////
 BOOL __stdcall XEngine_Client_HttpAccept(LPCTSTR lpszClientAddr, SOCKET hSocket, LPVOID lParam)
 {
-	AUTHREG_BANNED st_Banned;
-	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
-	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，连接被阻止，IP地址被禁用!"), lpszClientAddr);
-		return FALSE;
-	}
 	RfcComponents_HttpServer_CreateClientEx(xhHttpPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，进入服务器"), lpszClientAddr);
 	return TRUE;
