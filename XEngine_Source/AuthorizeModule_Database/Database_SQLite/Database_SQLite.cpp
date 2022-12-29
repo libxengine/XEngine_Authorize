@@ -1117,17 +1117,17 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
 	//处理的类型
 	if (_tcslen(pSt_Banned->tszUserName) > 0)
 	{
-        _stprintf_s(tszSQLStatement, _T("DELETE * FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
+        _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
 	}
 	else
 	{
         if (_tcslen(pSt_Banned->tszIPEnd) > 0)
         {
-            _stprintf_s(tszSQLStatement, _T("DELETE * FROM Authorize_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
+            _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
         }
         else
         {
-            _stprintf_s(tszSQLStatement, _T("DELETE * FROM Authorize_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
+            _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
         }
 	}
 	//操作数据库
@@ -1203,6 +1203,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 		nFliedValue++;
 		//注册时间
 		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+        nFliedValue++;
 
         stl_ListAddr.push_back(st_Banned);
 	}
@@ -1234,6 +1235,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 		nFliedValue++;
 		//注册时间
 		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+        nFliedValue++;
 
         stl_ListUser.push_back(st_Banned);
 	}
