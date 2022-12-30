@@ -40,11 +40,12 @@ V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程�
 12. 支持HTTP管理接口,可以自己写前端实现网络验证管理界面
 13. 支持第三方用户验证接口
 14. 分布式验证授权功能支持
+15. 黑名单管理
 
 ## 安装教程
 
 #### XEngine环境
-必须安装XEngine,版本需要V7.38或者以上版本,安装XEngine可以参考其Readme文档  
+必须安装XEngine,版本需要V7.46或者以上版本,安装XEngine可以参考其Readme文档  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
 
@@ -76,10 +77,13 @@ make FLAGS=CleanAll 清理编译
 ## 如何使用
 #### 服务端(管理端)
 Windows:编译成功后,拷贝VSCopy_x86或者VSCopy_x64 到你的编译目录,执行自动拷贝依赖的模块,然后把XEngine_Release下的文件全部拷贝到编译目录即可  
-Linux:直接运行即可  
+Linux or macos:直接运行即可  
 
 #### 客户端
 客户端可以参考XEngine_Apps的例子,也可以参考文档的通信协议自己集成到你的客户端,流程应该是:注册->登录->充值->等待超时->结束.  
+
+#### 管理员
+现在发布的程序自带管理员用户,用户名:admin 密码:123123aa,你需要自己修改密码.  
 
 ## 测试服务器
 地址:app.xyry.org  
@@ -132,7 +136,6 @@ mysql支持
 支持用户和硬件绑定同时验证  
 支持自定义序列号导入导出  
 统计用户所有在线时间  
-黑名单设置(IP,用户)  
 账号封禁与处罚,时间永久  
 持久层,redis,memcached等支持  
 支持代理端(序列号分发,权限控制)  

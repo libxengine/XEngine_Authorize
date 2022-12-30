@@ -40,11 +40,12 @@ feature list:
 12. support http management api function,you can write web page to implement network authorize management interface by self
 13. support third user verification interface
 14. support distributed verification authorize function
+15. black list management
 
 ## install
 
 #### XEngine Evn
-you must install XEngine,need V7.38 or above,install XEngine can be refer to xengine Readme docment  
+you must install XEngine,need V7.46 or above,install XEngine can be refer to xengine Readme docment  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
 
@@ -76,10 +77,13 @@ make FLAGS=CleanAll Clear Complie
 ## how to use
 #### server(management)
 Windows:complie complete,copy VSCopy_x86 or VSCopy_x64 to your complie dir,should copy depend module when execution complete,and copy XEngine_Release dir all file to complie dir  
-Linux:it can be execution....
+Linux or macos:it can be execution....
 
 #### client
 client can be refer XEngine_Apps,and can be refer the docment of protocol,The process should be:register->login->pay->timeout->end.  
+
+#### administrator
+The program released now comes with an administrator user, user name: admin password: 123123aa, you need to change the password yourself  
 
 ## test server
 address:app.xyry.org  
