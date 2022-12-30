@@ -17,19 +17,28 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 
 	if (0 == _tcsnicmp(lpszAPILogin, tszURLValue, _tcslen(lpszAPILogin)))
 	{
-		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123
+		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=36
 		TCHAR tszUserName[128];
 		TCHAR tszUserPass[128];
+		TCHAR tszDeviceType[128];
 		XNETHANDLE xhToken = 0;
 		AUTHREG_USERTABLE st_UserTable;
 
 		memset(tszUserName, '\0', sizeof(tszUserName));
 		memset(tszUserPass, '\0', sizeof(tszUserPass));
+		memset(tszDeviceType, '\0', sizeof(tszDeviceType));
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
+		if (nListCount < 3)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录失败，请求参数不正确"), lpszClientAddr);
+			return FALSE;
+		}
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
-
+		BaseLib_OperatorString_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
 		//是否使用了第三方验证
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
@@ -42,7 +51,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 
 			_tcscpy(st_AuthProtocol.tszUserName, tszUserName);
 			_tcscpy(st_AuthProtocol.tszUserPass, tszUserPass);
-			st_AuthProtocol.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
+			st_AuthProtocol.enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)_ttoi(tszDeviceType);
 
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
 			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
@@ -134,7 +143,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, tszUserName);
 				return FALSE;
 			}
-			st_UserTable.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_WEB;
+			st_UserTable.enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)_ttoi(tszDeviceType);
 			if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, XENGINE_AUTH_APP_NETTYPE_HTTP))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "server is error");

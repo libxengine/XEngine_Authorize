@@ -40,6 +40,7 @@ void CDialog_Modify::DoDataExchange(CDataExchange* pDX)
 
 BEGIN_MESSAGE_MAP(CDialog_Modify, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Modify::OnBnClickedButton2)
+	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Modify::OnBnClickedButton3)
 END_MESSAGE_MAP()
 
 
@@ -281,4 +282,11 @@ void CDialog_Modify::OnBnClickedButton2()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
 	OnOK();
+}
+
+
+void CDialog_Modify::OnBnClickedButton3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	OnCancel();
 }

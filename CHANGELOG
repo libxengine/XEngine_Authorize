@@ -1,3 +1,21 @@
+XEngine_Authorize V3.4.0.1001
+
+添加:windows窗口特效类
+添加:为管理程序增加提示窗口
+添加:黑名单功能,支持IP和用户名,支持删除,插入,查询
+修改:token登录现在必须设置设备类型
+修改:数据库表名称
+修改:现在数据库初始化不在创建数据库了
+修正:修改用户取消功能不生效的问题
+
+added:window effects class
+added:tips window for management program
+added:black list function
+modify:must set device type for token login
+modify:database table name
+modify:does not create table when sql init
+fixed:modify user info cancel does not work
+======================================================================================
 XEngine_Authorize V3.3.0.1001
 
 增加:自定义序列号导入和导出

@@ -333,3 +333,74 @@ extern "C" BOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUT
 备注：
 *********************************************************************/
 extern "C" BOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+/********************************************************************
+函数名称：Database_SQLite_BannedInsert
+函数功能：黑名单列表插入
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
+/********************************************************************
+函数名称：Database_SQLite_BannedDelete
+函数功能：黑名单列表删除
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
+/********************************************************************
+函数名称：Database_SQLite_BannedList
+函数功能：黑名单列表查询
+ 参数.一：pppSt_BannedUser
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：禁用的用户名列表
+ 参数.二：pInt_UserCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出用户禁用列表个数
+ 参数.三：pppSt_BannedAddr
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：禁用的IP地址列表
+ 参数.四：pInt_AddrCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出地址禁用列表个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
+/********************************************************************
+函数名称：Database_SQLite_BannedExist
+函数功能：名单是否存在黑名单列表
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);

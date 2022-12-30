@@ -75,4 +75,50 @@ extern "C" BOOL AuthHelp_ClipBoard_Get(CHAR * ptszMsgBuffer, int* pInt_MsgLen, D
 备注：
 *********************************************************************/
 extern "C" BOOL AuthHelp_ClipBoard_Clear();
+/************************************************************************/
+/*                    窗口类导出定义                                    */
+/************************************************************************/
+/********************************************************************
+函数名称：AuthHelp_Windows_Dithering
+函数功能：窗口抖动函数
+ 参数.一：hWnd
+  In/Out：In
+  类型：窗口句柄
+  可空：N
+  意思：要设置的窗口
+ 参数.二：nDitheringDegree
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：抖动次数，默认4此
+ 参数.三：nDitheringCareer
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：抖动间隔，默认30毫秒
+返回值
+  类型：逻辑型
+  意思：是否成功抖动
+备注：仿造QQ抖动，支持抖动后播放声音或者不播放，不播放传递NULL
+*********************************************************************/
+extern "C" BOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
+/********************************************************************
+函数名称：AuthHelp_Windows_CreateTooltip
+函数功能：为控件句柄添加提示
+ 参数.一：hWnd
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：控件的句柄
+ 参数.二：lpszContextOfTip
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：是否添加成功
+返回值
+  类型：逻辑型
+  意思：是否成功添加
+备注：
+*********************************************************************/
+extern "C" BOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip);
 #endif

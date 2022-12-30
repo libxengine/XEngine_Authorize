@@ -191,6 +191,7 @@
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Authorize_Dialog\Dialog_Banned.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Config.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Modify.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Serial.h" />
@@ -205,6 +206,7 @@
     <ClInclude Include="XEngine_AuthorizeAppDlg.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Authorize_Dialog\Dialog_Banned.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Config.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Serial.cpp" />

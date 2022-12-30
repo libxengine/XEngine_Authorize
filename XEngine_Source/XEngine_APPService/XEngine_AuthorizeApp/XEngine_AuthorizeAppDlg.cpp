@@ -28,6 +28,8 @@ void CXEngineAuthorizeAppDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TAB1, m_TabWindows);
 	DDX_Control(pDX, IDC_EDIT1, m_EditLog);
+	DDX_Control(pDX, IDC_BUTTON1, m_BtnLogSave);
+	DDX_Control(pDX, IDC_BUTTON2, m_BtnLogClear);
 }
 
 BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
@@ -66,14 +68,16 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 
 	m_TabWindows.InsertItem(0, _T("服务配置"));
-	m_TabWindows.InsertItem(1, _T("用户管理"));
-	m_TabWindows.InsertItem(2, _T("序列号管理"));
-	m_TabWindows.InsertItem(3, _T("功能开关"));
-
+	m_TabWindows.InsertItem(1, _T("功能开关"));
+	m_TabWindows.InsertItem(2, _T("用户管理"));
+	m_TabWindows.InsertItem(3, _T("序列号管理"));
+	m_TabWindows.InsertItem(4, _T("黑名单配置"));
+	
 	m_DlgConfig.Create(IDD_DIALOG_CONFIG, &m_TabWindows);
+	m_DlgSwitch.Create(IDD_DIALOG_SWITCH, &m_TabWindows);
 	m_DlgUser.Create(IDD_DIALOG_USER, &m_TabWindows);
 	m_DlgSerial.Create(IDD_DIALOG_SERIAL, &m_TabWindows);
-	m_DlgSwitch.Create(IDD_DIALOG_SWITCH, &m_TabWindows);
+	m_DlgBanned.Create(IDD_DIALOG_BANNED, &m_TabWindows);
 	//调整子对话框在父窗口中的位置 
 	CRect st_Rect;
 	m_TabWindows.GetClientRect(&st_Rect);
@@ -83,17 +87,22 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	st_Rect.right -= 1;
 	//设置子对话框尺寸并移动到指定位置
 	m_DlgConfig.MoveWindow(&st_Rect);
+	m_DlgSwitch.MoveWindow(&st_Rect);
 	m_DlgUser.MoveWindow(&st_Rect);
 	m_DlgSerial.MoveWindow(&st_Rect);
-	m_DlgSwitch.MoveWindow(&st_Rect);
+	m_DlgBanned.MoveWindow(&st_Rect);
 	//分别设置隐藏和显示 
 	m_DlgConfig.ShowWindow(TRUE);
+	m_DlgSwitch.ShowWindow(FALSE);
 	m_DlgUser.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
-	m_DlgSwitch.ShowWindow(FALSE);
+	m_DlgBanned.ShowWindow(FALSE);
 	m_TabWindows.SetCurSel(0);
 
 	hMainWnd = m_hWnd;
+
+	AuthHelp_Windows_CreateTooltip(m_BtnLogSave.m_hWnd, _T("保存日志为文件"));
+	AuthHelp_Windows_CreateTooltip(m_BtnLogClear.m_hWnd, _T("清空日志窗口"));
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
 
@@ -142,27 +151,39 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 	{
 	case 0:
 		m_DlgConfig.ShowWindow(TRUE);
+		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
+		m_DlgBanned.ShowWindow(FALSE);
 		break;
 	case 1:
 		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(TRUE);
+		m_DlgSwitch.ShowWindow(TRUE);
+		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
+		m_DlgBanned.ShowWindow(FALSE);
 		break;
 	case 2:
 		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(TRUE);
 		m_DlgSwitch.ShowWindow(FALSE);
+		m_DlgUser.ShowWindow(TRUE);
+		m_DlgSerial.ShowWindow(FALSE);
+		m_DlgBanned.ShowWindow(FALSE);
 		break;
 	case 3:
 		m_DlgConfig.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(FALSE);
+		m_DlgUser.ShowWindow(FALSE);
+		m_DlgSerial.ShowWindow(TRUE);
+		m_DlgBanned.ShowWindow(FALSE);
+		break;
+	case 4:
+		m_DlgConfig.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(TRUE);
+		m_DlgBanned.ShowWindow(TRUE);
+		break;
 	default:
 		break;
 	}

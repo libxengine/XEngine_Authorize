@@ -105,3 +105,19 @@ extern "C" BOOL Database_SQLite_TrySet(AUTHREG_NETVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TrySet(pSt_AuthVer);
 }
+extern "C" BOOL Database_SQLite_BannedInsert(AUTHREG_BANNED * pSt_Banned)
+{
+	return m_SQLAuth.Database_SQLite_BannedInsert(pSt_Banned);
+}
+extern "C" BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED * pSt_Banned)
+{
+	return m_SQLAuth.Database_SQLite_BannedDelete(pSt_Banned);
+}
+extern "C" BOOL Database_SQLite_BannedList(AUTHREG_BANNED * **pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED * **pppSt_BannedAddr, int* pInt_AddrCount)
+{
+	return m_SQLAuth.Database_SQLite_BannedList(pppSt_BannedUser, pInt_UserCount, pppSt_BannedAddr, pInt_AddrCount);
+}
+extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED * pSt_Banned)
+{
+	return m_SQLAuth.Database_SQLite_BannedExist(pSt_Banned);
+}

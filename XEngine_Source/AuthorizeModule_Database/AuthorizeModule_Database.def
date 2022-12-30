@@ -22,3 +22,7 @@ EXPORTS
 	Database_SQLite_TryDelete
 	Database_SQLite_TryClear
 	Database_SQLite_TrySet
+	Database_SQLite_BannedInsert
+	Database_SQLite_BannedDelete
+	Database_SQLite_BannedList
+	Database_SQLite_BannedExist

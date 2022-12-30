@@ -57,6 +57,19 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
+	AUTHREG_BANNED st_Banned;
+	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+
+	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
+	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPStart);
+	//是否在黑名单
+	if (Database_SQLite_BannedExist(&st_Banned))
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
+		return FALSE;
+	}
 	if (0 == _tcsnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodPost)))
 	{
 		TCHAR tszAPIType[64];
@@ -69,6 +82,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		LPCTSTR lpszAPIVerUser = _T("user");
 		LPCTSTR lpszAPIVerPass = _T("pass");
 		LPCTSTR lpszAPIVerSwitch = _T("switch");
+		LPCTSTR lpszAPIVerBanned = _T("banned");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
@@ -156,6 +170,28 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 				return FALSE;
 			}
 			XEngine_AuthorizeHTTP_Switch(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerBanned, tszAPIVer, _tcslen(lpszAPIVerBanned)))
+		{
+			AUTHREG_USERTABLE st_UserTable;
+			memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+			//验证权限
+			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
+			if (!Session_Token_Get(xhToken, &st_UserTable))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
+			}
+			if (0 != st_UserTable.st_UserInfo.nUserLevel)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "permission is failed");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为TOKEN权限不足"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
+			}
+			XEngine_AuthorizeHTTP_Banned(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
