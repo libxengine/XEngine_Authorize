@@ -105,7 +105,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			int nHTTPLen = 0;
 			TCHAR* ptszMsgBuffer = NULL;
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
-			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
 				pSt_ProtocolHdr->wReserve = 251;

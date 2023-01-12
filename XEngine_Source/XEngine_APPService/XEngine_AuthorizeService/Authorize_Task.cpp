@@ -31,7 +31,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 			Protocol_Packet_HttpUserTime(tszMsgBuffer, &nMsgLen, &st_AuthTime);
-			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
+			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
 		}
 		if (XENGINE_AUTH_APP_NETTYPE_HTTP != nNetType)
 		{
@@ -76,7 +76,7 @@ void __stdcall XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
 				memset(tszSDBuffer, '\0', MAX_PATH);
 
 				Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-				APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+				APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 			}
 			Database_SQLite_UserLeave(&st_AuthTime);
 		}

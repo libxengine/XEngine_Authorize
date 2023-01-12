@@ -38,8 +38,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
-#include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
-#include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
+#include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
+#include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
@@ -120,5 +120,5 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
-#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp.lib")
+#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient.lib")
 #endif
