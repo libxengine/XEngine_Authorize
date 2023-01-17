@@ -935,3 +935,136 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int 
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseCDKey
+函数功能：解析CDKEY
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入缓冲区大小
+ 参数.三：pSt_Authorize
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析后的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Authorize))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	//解析JSON
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+
+	if (!st_JsonRoot["tszAddr"].isNull())
+	{
+		_tcscpy(pSt_Authorize->tszAddr, st_JsonRoot["tszAddr"].asCString());
+	}
+	if (!st_JsonRoot["nPort"].isNull())
+	{
+		pSt_Authorize->nPort = st_JsonRoot["nPort"].asInt();
+	}
+	//应用信息
+	Json::Value st_JsonAPPInfo = st_JsonRoot["st_AuthAppInfo"];
+	if (!st_JsonAPPInfo["nExecTime"].isNull())
+	{
+		pSt_Authorize->st_AuthAppInfo.nExecTime = st_JsonAPPInfo["nExecTime"].asInt();
+	}
+	if (!st_JsonAPPInfo["bInit"].isNull())
+	{
+		pSt_Authorize->st_AuthAppInfo.bInit = st_JsonAPPInfo["bInit"].asBool();
+	}
+	if (!st_JsonAPPInfo["tszAppName"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthAppInfo.tszAppName, st_JsonAPPInfo["tszAppName"].asCString());
+	}
+	if (!st_JsonAPPInfo["tszAppVer"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthAppInfo.tszAppVer, st_JsonAPPInfo["tszAppVer"].asCString());
+	}
+	//注册信息
+	Json::Value st_JsonREGInfo = st_JsonRoot["st_AuthRegInfo"];
+	if (!st_JsonREGInfo["nHasTime"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.nHasTime = (ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE)st_JsonREGInfo["nHasTime"].asInt();
+	}
+	if (!st_JsonREGInfo["enSerialType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
+	}
+	if (!st_JsonREGInfo["enRegType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE)st_JsonREGInfo["enRegType"].asInt();
+	}
+	if (!st_JsonREGInfo["enHWType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_HELPCOMPONENTS_AUTHORIZE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
+	}
+	if (!st_JsonREGInfo["enVModeType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_HELPCOMPONENTS_AUTHORIZE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
+	}
+	if (!st_JsonREGInfo["tszHardware"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszHardware, st_JsonREGInfo["tszHardware"].asCString());
+	}
+	if (!st_JsonREGInfo["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszCreateTime, st_JsonREGInfo["tszCreateTime"].asCString());
+	}
+	if (!st_JsonREGInfo["tszRegisterTime"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszRegisterTime, st_JsonREGInfo["tszRegisterTime"].asCString());
+	}
+	if (!st_JsonREGInfo["tszLeftTime"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszLeftTime, st_JsonREGInfo["tszLeftTime"].asCString());
+	}
+	if (!st_JsonREGInfo["tszStartTime"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszStartTime, st_JsonREGInfo["tszStartTime"].asCString());
+	}
+	if (!st_JsonREGInfo["tszExpiryTime"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthRegInfo.tszExpiryTime, st_JsonREGInfo["tszExpiryTime"].asCString());
+	}
+	//CDKEY用户信息
+	Json::Value st_JsonUserInfo = st_JsonRoot["st_AuthUserInfo"];
+	if (!st_JsonUserInfo["tszUserName"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthUserInfo.tszUserName, st_JsonUserInfo["tszUserName"].asCString());
+	}
+	if (!st_JsonUserInfo["tszUserContact"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthUserInfo.tszUserContact, st_JsonUserInfo["tszUserContact"].asCString());
+	}
+	if (!st_JsonUserInfo["tszCustom"].isNull())
+	{
+		_tcscpy(pSt_Authorize->st_AuthUserInfo.tszCustom, st_JsonUserInfo["tszCustom"].asCString());
+	}
+	return TRUE;
+}

@@ -32,6 +32,7 @@ public:
 	BOOL Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
 	BOOL Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd);
 	BOOL Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned);
+	BOOL Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize);
 protected:
 private:
 };
