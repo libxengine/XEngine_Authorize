@@ -51,5 +51,5 @@ protected:
     BOOL Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType);
 private:
     BOOL m_bChange;
-    XHDATA xhData;                 //数据库句柄
+    XNETHANDLE xhData;                 //数据库句柄
 };
