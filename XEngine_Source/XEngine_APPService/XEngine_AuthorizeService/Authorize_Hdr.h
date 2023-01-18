@@ -82,6 +82,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Pass.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Switch.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Banned.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
 
 #ifdef _WINDOWS

@@ -152,6 +152,7 @@
   <ItemGroup>
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.cpp" />
@@ -168,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.h" />

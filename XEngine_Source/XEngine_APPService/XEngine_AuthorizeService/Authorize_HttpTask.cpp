@@ -83,6 +83,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		LPCTSTR lpszAPIVerPass = _T("pass");
 		LPCTSTR lpszAPIVerSwitch = _T("switch");
 		LPCTSTR lpszAPIVerBanned = _T("banned");
+		LPCTSTR lpszAPIVerCDKey = _T("cdkey");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
@@ -192,6 +193,10 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 				return FALSE;
 			}
 			XEngine_AuthorizeHTTP_Banned(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerCDKey, tszAPIVer, _tcslen(lpszAPIVerCDKey)))
+		{
+			XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
