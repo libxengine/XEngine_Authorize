@@ -29,7 +29,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 		memset(tszDeviceType, '\0', sizeof(tszDeviceType));
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-		if (nListCount < 3)
+		if (nListCount < 4)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

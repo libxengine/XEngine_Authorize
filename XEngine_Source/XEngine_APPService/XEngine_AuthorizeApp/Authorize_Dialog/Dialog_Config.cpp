@@ -96,8 +96,8 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditUser.GetWindowText(m_StrUser);
 	m_EditPass.GetWindowText(m_StrPass);
-
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer());
+	
+	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;

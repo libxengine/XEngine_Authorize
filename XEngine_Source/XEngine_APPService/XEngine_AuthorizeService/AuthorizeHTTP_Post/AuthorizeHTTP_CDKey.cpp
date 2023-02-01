@@ -18,7 +18,7 @@ BOOL XEngine_AuthorizeHTTP_CDKey(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LP
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
 		Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, &st_Authorize);
-		if (!Authorize_Local_WriteMemory(tszRVBuffer,&nRVLen, &st_Authorize))
+		if (!Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 406, "Not Acceptable,write key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
