@@ -45,7 +45,7 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
     SQLPacket_IsErrorOccur = FALSE;
     m_bChange = bIsChange;
     //打开数据库
-    if (!DataBase_SQLite_Open(&xhData,lpszSQLFile))
+    if (!DataBase_SQLite_Open(&xhData, lpszSQLFile))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -90,10 +90,10 @@ BOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCTSTR lpszUserName)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
-    memset(tszSQLStatement,'\0',1024);
-    _stprintf_s(tszSQLStatement,_T("delete from Authorize_User where UserName = '%s'"),lpszUserName);
+    memset(tszSQLStatement, '\0', 1024);
+    _stprintf_s(tszSQLStatement, _T("delete from Authorize_User where UserName = '%s'"), lpszUserName);
     //执行
-    if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXEC;
@@ -118,7 +118,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
-    memset(tszSQLStatement,'\0',1024);
+    memset(tszSQLStatement, '\0', 1024);
 
     if (Database_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
     {
@@ -157,13 +157,13 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
-    char **ppszResult = NULL;
+    char** ppszResult = NULL;
     int nRow = 0;
     int nColumn = 0;
-    memset(tszSQLStatement,'\0',1024);
+    memset(tszSQLStatement, '\0', 1024);
 
-    _stprintf_s(tszSQLStatement,_T("select * from Authorize_User where UserName = '%s'"),lpszUserName);
-    if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
+    _stprintf_s(tszSQLStatement, _T("select * from Authorize_User where UserName = '%s'"), lpszUserName);
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -205,12 +205,12 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
         //身份证ID
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nIDNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
-		//用户级别 -1表示封禁
-		nFliedValue++;
-		pSt_UserInfo->st_UserInfo.nUserLevel = _ttoi(ppszResult[nFliedValue]);
-		//注册日期
-		nFliedValue++;
-		_tcscpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+        //用户级别 -1表示封禁
+        nFliedValue++;
+        pSt_UserInfo->st_UserInfo.nUserLevel = _ttoi(ppszResult[nFliedValue]);
+        //注册日期
+        nFliedValue++;
+        _tcscpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -234,7 +234,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpszSerialName)
+BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName, LPCTSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -242,9 +242,9 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
     AUTHREG_USERTABLE st_UserTable;
     TCHAR tszSQLStatement[1024];    //SQL语句
 
-    memset(tszSQLStatement,'\0',1024);
-    memset(&st_SerialTable,'\0',sizeof(st_SerialTable));
-    memset(&st_UserTable,'\0',sizeof(st_UserTable));
+    memset(tszSQLStatement, '\0', 1024);
+    memset(&st_SerialTable, '\0', sizeof(st_SerialTable));
+    memset(&st_UserTable, '\0', sizeof(st_UserTable));
     //参数检查
     if ((NULL == lpszUserName) || (NULL == lpszSerialName))
     {
@@ -253,7 +253,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
         return FALSE;
     }
     //查询充值卡是否存在
-    if (!Database_SQLite_SerialQuery(lpszSerialName,&st_SerialTable))
+    if (!Database_SQLite_SerialQuery(lpszSerialName, &st_SerialTable))
     {
         return FALSE;
     }
@@ -265,7 +265,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName,LPCTSTR lpsz
         return FALSE;
     }
     //查询用户信息
-    if (!Database_SQLite_UserQuery(lpszUserName,&st_UserTable))
+    if (!Database_SQLite_UserQuery(lpszUserName, &st_UserTable))
     {
         return FALSE;
     }
@@ -427,67 +427,67 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
-	int nRow = 0;
-	int nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     char** ppszResult = NULL;
     TCHAR tszSQLStatement[1024];    //SQL语句
-	memset(tszSQLStatement, '\0', 1024);
+    memset(tszSQLStatement, '\0', 1024);
 
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_User LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
-	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
-		return FALSE;
-	}
-	if ((0 == nRow) || (0 == nColumn))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
-		return FALSE;
-	}
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
+        return FALSE;
+    }
+    if ((0 == nRow) || (0 == nColumn))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
+        return FALSE;
+    }
     *pInt_ListCount = nRow;
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, nRow, sizeof(AUTHREG_USERTABLE));
-	//ID
-	int nFliedValue = nColumn;
+    //ID
+    int nFliedValue = nColumn;
     for (int i = 0; i < nRow; i++)
     {
         nFliedValue++;          //ID
         //用户名
         _tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserName, ppszResult[nFliedValue]);
-		//密码
-		nFliedValue++;
-		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
-		//过期时间
-		nFliedValue++;
-		_tcscpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
-		//电子邮件
-		nFliedValue++;
-		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszEMailAddr, ppszResult[nFliedValue]);
-		//硬件码
-		nFliedValue++;
-		_tcscpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
-		//充值卡类型
-		nFliedValue++;
+        //密码
+        nFliedValue++;
+        _tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
+        //过期时间
+        nFliedValue++;
+        _tcscpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
+        //电子邮件
+        nFliedValue++;
+        _tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszEMailAddr, ppszResult[nFliedValue]);
+        //硬件码
+        nFliedValue++;
+        _tcscpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
+        //充值卡类型
+        nFliedValue++;
         (*pppSt_UserInfo)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
-		//QQ号
-		nFliedValue++;
+        //QQ号
+        nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nPhoneNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
-		//身份证ID
-		nFliedValue++;
+        //身份证ID
+        nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nIDNumber = _tcstoi64(ppszResult[nFliedValue], NULL, 10);
-		//用户级别 -1表示封禁
-		nFliedValue++;
+        //用户级别 -1表示封禁
+        nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nUserLevel = _ttoi(ppszResult[nFliedValue]);
-		//注册日期
-		nFliedValue++;
-		_tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+        //注册日期
+        nFliedValue++;
+        _tcscpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
     }
-	DataBase_SQLite_FreeTable(ppszResult);
-	return TRUE;
+    DataBase_SQLite_FreeTable(ppszResult);
+    return TRUE;
 }
 /********************************************************************
 函数名称：Database_SQLite_SerialInsert
@@ -507,7 +507,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
     SQLPacket_IsErrorOccur = FALSE;
 
     TCHAR tszSQLStatement[1024];    //SQL语句
-    memset(tszSQLStatement,'\0',1024);
+    memset(tszSQLStatement, '\0', 1024);
 
     if (Database_SQLite_SerialQuery(lpszSerialNumber))
     {
@@ -517,7 +517,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
     }
     ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enAuthSerialType;
     XENGINE_LIBTIMER st_AuthTimer;
-    memset(&st_AuthTimer,'\0',sizeof(st_AuthTimer));
+    memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
 
     if (!Authorize_Serial_GetType(lpszSerialNumber, &enAuthSerialType, &st_AuthTimer))
     {
@@ -547,7 +547,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
         _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Serial values(NULL,'NOT','%s',0,'%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, enAuthSerialType);
     }
 
-    if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
@@ -573,10 +573,10 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
     SQLPacket_IsErrorOccur = FALSE;
 
     TCHAR tszSQLStatement[1024];    //SQL语句
-    memset(tszSQLStatement,'\0',1024);
-    _stprintf_s(tszSQLStatement,_T("delete from Authorize_Serial where SerialNumber = '%s'"),lpszSerialNumber);
+    memset(tszSQLStatement, '\0', 1024);
+    _stprintf_s(tszSQLStatement, _T("delete from Authorize_Serial where SerialNumber = '%s'"), lpszSerialNumber);
     //执行
-    if (!DataBase_SQLite_Exec(xhData,tszSQLStatement))
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
@@ -602,17 +602,17 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
+BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
 {
     SQLPacket_IsErrorOccur = FALSE;
     TCHAR tszSQLStatement[1024];    //SQL语句
-    char **ppszResult = NULL;
+    char** ppszResult = NULL;
     int nRow = 0;
     int nColumn = 0;
-    memset(tszSQLStatement,'\0',1024);
+    memset(tszSQLStatement, '\0', 1024);
 
-    _stprintf_s(tszSQLStatement,_T("select * from Authorize_Serial where SerialNumber = '%s'"),lpszSerialNumber);
-    if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
+    _stprintf_s(tszSQLStatement, _T("select * from Authorize_Serial where SerialNumber = '%s'"), lpszSerialNumber);
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -631,22 +631,22 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAU
         int nFliedValue = nColumn;
         //使用者
         nFliedValue++;
-        _tcscpy(pSt_SerialTable->tszUserName,ppszResult[nFliedValue]);
+        _tcscpy(pSt_SerialTable->tszUserName, ppszResult[nFliedValue]);
         //序列号
         nFliedValue++;
-        _tcscpy(pSt_SerialTable->tszSerialNumber,ppszResult[nFliedValue]);
+        _tcscpy(pSt_SerialTable->tszSerialNumber, ppszResult[nFliedValue]);
         //超时时间
         nFliedValue++;
-        _tcscpy(pSt_SerialTable->tszMaxTime,ppszResult[nFliedValue]);
+        _tcscpy(pSt_SerialTable->tszMaxTime, ppszResult[nFliedValue]);
         //序列卡类型
         nFliedValue++;
         pSt_SerialTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttoi(ppszResult[nFliedValue]);
-		//超时时间
-		nFliedValue++;
-		_tcscpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
+        //超时时间
+        nFliedValue++;
+        _tcscpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -683,16 +683,16 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber,LPAU
 BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    
-	int nRow = 0;
-	int nColumn = 0;
+
+    int nRow = 0;
+    int nColumn = 0;
     char** ppszResult = NULL;
     TCHAR tszSQLStatement[1024];    //SQL语句
-   
-    memset(tszSQLStatement,'\0',1024);
-    
+
+    memset(tszSQLStatement, '\0', 1024);
+
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_Serial LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
-    if (!DataBase_SQLite_GetTable(xhData,tszSQLStatement,&ppszResult,&nRow,&nColumn))
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
         SQLPacket_IsErrorOccur = TRUE;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -708,18 +708,18 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
 
     *pInt_ListCount = nRow;
     int nFliedValue = nColumn;
-    for (int i = 0;i < nRow;i++)
+    for (int i = 0; i < nRow; i++)
     {
         //ID
         nFliedValue++;
         //使用者
-        _tcscpy((*pppSt_SerialTable)[i]->tszUserName,ppszResult[nFliedValue]);
+        _tcscpy((*pppSt_SerialTable)[i]->tszUserName, ppszResult[nFliedValue]);
         nFliedValue++;
         //序列号
-        _tcscpy((*pppSt_SerialTable)[i]->tszSerialNumber,ppszResult[nFliedValue]);
+        _tcscpy((*pppSt_SerialTable)[i]->tszSerialNumber, ppszResult[nFliedValue]);
         nFliedValue++;
         //超时时间
-        _tcscpy((*pppSt_SerialTable)[i]->tszMaxTime,ppszResult[nFliedValue]);
+        _tcscpy((*pppSt_SerialTable)[i]->tszMaxTime, ppszResult[nFliedValue]);
         nFliedValue++;
         //序列卡类型
         (*pppSt_SerialTable)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttoi(ppszResult[nFliedValue]);
@@ -727,9 +727,9 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
         //是否已经使用
         (*pppSt_SerialTable)[i]->bIsUsed = _ttoi(ppszResult[nFliedValue]);
         nFliedValue++;
-		//创建时间
+        //创建时间
         _tcscpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
-		nFliedValue++;
+        nFliedValue++;
     }
     DataBase_SQLite_FreeTable(ppszResult);
     return TRUE;
@@ -749,26 +749,26 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
-	TCHAR tszSQLStatement[1024];    //SQL语句
-	memset(tszSQLStatement, '\0', 1024);
+    TCHAR tszSQLStatement[1024];    //SQL语句
+    memset(tszSQLStatement, '\0', 1024);
 
-	if (Database_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
-		return FALSE;
-	}
+    if (Database_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
+        return FALSE;
+    }
     _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Serial values(NULL,'%s','%s','%s',%d,%d,'%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime);
 
-	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
-		return FALSE;
-	}
-	return TRUE;
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
+        return FALSE;
+    }
+    return TRUE;
 }
 /********************************************************************
 函数名称：Database_SQLite_TryInsert
@@ -1056,38 +1056,38 @@ BOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
-	if (NULL == pSt_Banned)
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
-		return FALSE;
-	}
+    if (NULL == pSt_Banned)
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+        return FALSE;
+    }
     //存在直接返回
     if (Database_SQLite_BannedExist(pSt_Banned))
     {
         return TRUE;
     }
-	TCHAR tszSQLStatement[1024];
-	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
+    TCHAR tszSQLStatement[1024];
+    memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
     //处理的类型
     if (_tcslen(pSt_Banned->tszUserName) > 0)
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedUser(tszUserName,tszLeftTime,tszCreateTime) VALUES('%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszUserName, pSt_Banned->tszLeftTime);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedUser(bEnable,tszUserName,tszLeftTime,tszCreateTime) VALUES(%d,'%s','%s',datetime('now', 'localtime'))"), pSt_Banned->bEnable, pSt_Banned->tszUserName, pSt_Banned->tszLeftTime);
     }
     else
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedAddr(tszIPStart,tszIPEnd,tszLeftTime,tszCreateTime) VALUES('%s','%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd, pSt_Banned->tszLeftTime);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedAddr(bEnable,tszIPAddr,tszLeftTime,tszCreateTime) VALUES(%d,'%s','%s',datetime('now', 'localtime'))"), pSt_Banned->bEnable, pSt_Banned->tszIPAddr, pSt_Banned->tszLeftTime);
     }
     //插入数据库
-	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = DataBase_GetLastError();
-		return FALSE;
-	}
-	return TRUE;
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return FALSE;
+    }
+    return TRUE;
 }
 /********************************************************************
 函数名称：Database_SQLite_BannedDelete
@@ -1104,40 +1104,33 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
-	if (NULL == pSt_Banned)
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
-		return FALSE;
-	}
-	TCHAR tszSQLStatement[1024];
-	memset(tszSQLStatement, '\0', 1024);
-	//处理的类型
-	if (_tcslen(pSt_Banned->tszUserName) > 0)
-	{
+    if (NULL == pSt_Banned)
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+        return FALSE;
+    }
+    TCHAR tszSQLStatement[1024];
+    memset(tszSQLStatement, '\0', 1024);
+    //处理的类型
+    if (_tcslen(pSt_Banned->tszUserName) > 0)
+    {
         _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
-	}
-	else
-	{
-        if (_tcslen(pSt_Banned->tszIPEnd) > 0)
-        {
-            _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedAddr WHERE tszIPStart = '%s' AND tszIPEnd = '%s'"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
-        }
-        else
-        {
-            _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
-        }
-	}
-	//操作数据库
-	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = DataBase_GetLastError();
-		return FALSE;
-	}
-	return TRUE;
+    }
+    else
+    {
+        _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_BannedAddr WHERE tszIPAddr = '%s'"), pSt_Banned->tszIPAddr);
+    }
+    //操作数据库
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return FALSE;
+    }
+    return TRUE;
 }
 /********************************************************************
 函数名称：Database_SQLite_BannedList
@@ -1169,110 +1162,114 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
-	int nRow = 0;
-	int nColumn = 0;
-	CHAR** ppszResult = NULL;
-	TCHAR tszSQLStatement[1024];    //SQL语句
+    int nRow = 0;
+    int nColumn = 0;
+    CHAR** ppszResult = NULL;
+    TCHAR tszSQLStatement[1024];    //SQL语句
 
-	memset(tszSQLStatement, '\0', 1024);
-	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr"));
+    memset(tszSQLStatement, '\0', 1024);
+    _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr"));
 
-	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = DataBase_GetLastError();
-		return FALSE;
-	}
-	int nFliedValue = nColumn;
-	list<AUTHREG_BANNED> stl_ListAddr;
-	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
-	{
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return FALSE;
+    }
+    int nFliedValue = nColumn;
+    list<AUTHREG_BANNED> stl_ListAddr;
+    //轮训所有内容
+    for (int i = 0; i < nRow; i++)
+    {
         AUTHREG_BANNED st_Banned;
-		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-		//ID
+        memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+        //ID
         st_Banned.nID = _ttoi64(ppszResult[nFliedValue]);
+        nFliedValue++;
+		//是否启用
+		st_Banned.bEnable = _ttoi(ppszResult[nFliedValue]);
 		nFliedValue++;
-		//起始地址
-		_tcscpy(st_Banned.tszIPStart, ppszResult[nFliedValue]);
-		nFliedValue++;
-		//结束地址
-		_tcscpy(st_Banned.tszIPEnd, ppszResult[nFliedValue]);
-		nFliedValue++;
-		//过期时间
-		_tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
-		nFliedValue++;
-		//注册时间
-		_tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
+        //地址
+        _tcscpy(st_Banned.tszIPAddr, ppszResult[nFliedValue]);
+        nFliedValue++;
+        //过期时间
+        _tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
+        nFliedValue++;
+        //注册时间
+        _tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
 
         stl_ListAddr.push_back(st_Banned);
-	}
-	DataBase_SQLite_FreeTable(ppszResult);
+    }
+    DataBase_SQLite_FreeTable(ppszResult);
     //用户列表
-	nRow = 0;
-	nColumn = 0;
-	memset(tszSQLStatement, '\0', 1024);
-	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedUser"));
+    nRow = 0;
+    nColumn = 0;
+    memset(tszSQLStatement, '\0', 1024);
+    _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedUser"));
 
-	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-	{
-		SQLPacket_IsErrorOccur = TRUE;
-		SQLPacket_dwErrorCode = DataBase_GetLastError();
-		return FALSE;
-	}
-	nFliedValue = nColumn;
-	list<AUTHREG_BANNED> stl_ListUser;
-	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
-	{
-		AUTHREG_BANNED st_Banned;
-		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-		//ID
-		st_Banned.nID = _ttoi64(ppszResult[nFliedValue]);
+    if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+    {
+        SQLPacket_IsErrorOccur = TRUE;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return FALSE;
+    }
+    nFliedValue = nColumn;
+    list<AUTHREG_BANNED> stl_ListUser;
+    //轮训所有内容
+    for (int i = 0; i < nRow; i++)
+    {
+        AUTHREG_BANNED st_Banned;
+        memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
+        //ID
+        st_Banned.nID = _ttoi64(ppszResult[nFliedValue]);
+        nFliedValue++;
+		//是否启用
+		st_Banned.bEnable = _ttoi(ppszResult[nFliedValue]);
 		nFliedValue++;
-		//用户名
-		_tcscpy(st_Banned.tszUserName, ppszResult[nFliedValue]);
-		nFliedValue++;
-		//过期时间
-		_tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
-		nFliedValue++;
-		//注册时间
-		_tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
+        //用户名
+        _tcscpy(st_Banned.tszUserName, ppszResult[nFliedValue]);
+        nFliedValue++;
+        //过期时间
+        _tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
+        nFliedValue++;
+        //注册时间
+        _tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
 
         stl_ListUser.push_back(st_Banned);
-	}
-	DataBase_SQLite_FreeTable(ppszResult);
+    }
+    DataBase_SQLite_FreeTable(ppszResult);
     //导出
     *pInt_AddrCount = stl_ListAddr.size();
     *pInt_UserCount = stl_ListUser.size();
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
     BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
 
-	list<AUTHREG_BANNED>::const_iterator stl_ListIterator = stl_ListAddr.begin();
+    list<AUTHREG_BANNED>::const_iterator stl_ListIterator = stl_ListAddr.begin();
     for (int i = 0; stl_ListIterator != stl_ListAddr.end(); stl_ListIterator++, i++)
-	{
+    {
         (*pppSt_BannedAddr)[i]->nID = stl_ListIterator->nID;
-        _tcscpy((*pppSt_BannedAddr)[i]->tszIPStart, stl_ListIterator->tszIPStart);
-        _tcscpy((*pppSt_BannedAddr)[i]->tszIPEnd, stl_ListIterator->tszIPEnd);
+        (*pppSt_BannedAddr)[i]->bEnable = stl_ListIterator->bEnable;
+        _tcscpy((*pppSt_BannedAddr)[i]->tszIPAddr, stl_ListIterator->tszIPAddr);
         _tcscpy((*pppSt_BannedAddr)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
         _tcscpy((*pppSt_BannedAddr)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
-	}
-	stl_ListIterator = stl_ListUser.begin();
-	for (int i = 0; stl_ListIterator != stl_ListUser.end(); stl_ListIterator++, i++)
-	{
-		(*pppSt_BannedUser)[i]->nID = stl_ListIterator->nID;
-		_tcscpy((*pppSt_BannedUser)[i]->tszUserName, stl_ListIterator->tszUserName);
+    }
+    stl_ListIterator = stl_ListUser.begin();
+    for (int i = 0; stl_ListIterator != stl_ListUser.end(); stl_ListIterator++, i++)
+    {
+        (*pppSt_BannedUser)[i]->nID = stl_ListIterator->nID;
+        (*pppSt_BannedAddr)[i]->bEnable = stl_ListIterator->bEnable;
+        _tcscpy((*pppSt_BannedUser)[i]->tszUserName, stl_ListIterator->tszUserName);
         _tcscpy((*pppSt_BannedAddr)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
-		_tcscpy((*pppSt_BannedUser)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
-	}
+        _tcscpy((*pppSt_BannedUser)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
+    }
 
     stl_ListAddr.clear();
     stl_ListUser.clear();
-	return TRUE;
+    return TRUE;
 }
 /********************************************************************
 函数名称：Database_SQLite_BannedExist
@@ -1289,59 +1286,59 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 *********************************************************************/
 BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 {
-	SQLPacket_IsErrorOccur = FALSE;
+    SQLPacket_IsErrorOccur = FALSE;
 
     //判断用域名是否存在
     if (_tcslen(pSt_Banned->tszUserName) > 0)
-	{
-		int nRow = 0;
-		int nColumn = 0;
-		CHAR** ppszResult = NULL;
-		TCHAR tszSQLStatement[1024];
+    {
+        int nRow = 0;
+        int nColumn = 0;
+        CHAR** ppszResult = NULL;
+        TCHAR tszSQLStatement[1024];
         memset(tszSQLStatement, '\0', 1024);
 
         _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
-		if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = DataBase_GetLastError();
-			return FALSE;
-		}
-		DataBase_SQLite_FreeTable(ppszResult);
+        if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+        {
+            SQLPacket_IsErrorOccur = TRUE;
+            SQLPacket_dwErrorCode = DataBase_GetLastError();
+            return FALSE;
+        }
+        DataBase_SQLite_FreeTable(ppszResult);
 
-		if (nRow <= 0)
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
-			return FALSE;
-		}
+        if (nRow <= 0)
+        {
+            SQLPacket_IsErrorOccur = TRUE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+            return FALSE;
+        }
     }
     //判断IP地址是否存在
-    if (_tcslen(pSt_Banned->tszIPStart) > 0)
-	{
-		int nRow = 0;
-		int nColumn = 0;
-		CHAR** ppszResult = NULL;
-		TCHAR tszSQLStatement[1024];
-		memset(tszSQLStatement, '\0', 1024);
+    if (_tcslen(pSt_Banned->tszIPAddr) > 0)
+    {
+        int nRow = 0;
+        int nColumn = 0;
+        CHAR** ppszResult = NULL;
+        TCHAR tszSQLStatement[1024];
+        memset(tszSQLStatement, '\0', 1024);
 
-        _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr WHERE tszIPStart = '%s'"), pSt_Banned->tszIPStart);
-		if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = DataBase_GetLastError();
-			return FALSE;
-		}
-		DataBase_SQLite_FreeTable(ppszResult);
+        _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr WHERE tszIPAddr = '%s'"), pSt_Banned->tszIPAddr);
+        if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+        {
+            SQLPacket_IsErrorOccur = TRUE;
+            SQLPacket_dwErrorCode = DataBase_GetLastError();
+            return FALSE;
+        }
+        DataBase_SQLite_FreeTable(ppszResult);
 
-		if (nRow <= 0)
-		{
-			SQLPacket_IsErrorOccur = TRUE;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
-			return FALSE;
-		}
-	}
-	return TRUE;
+        if (nRow <= 0)
+        {
+            SQLPacket_IsErrorOccur = TRUE;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+            return FALSE;
+        }
+    }
+    return TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数

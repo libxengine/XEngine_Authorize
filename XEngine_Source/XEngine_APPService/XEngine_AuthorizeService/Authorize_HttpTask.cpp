@@ -60,8 +60,8 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 	AUTHREG_BANNED st_Banned;
 	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
-	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
-	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPStart);
+	_tcscpy(st_Banned.tszIPAddr, lpszClientAddr);
+	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
 	//是否在黑名单
 	if (Database_SQLite_BannedExist(&st_Banned))
 	{

@@ -917,13 +917,13 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int 
 	{
 		pSt_AuthBanned->nID = st_JsonObject["nID"].asInt64();
 	}
-	if (!st_JsonObject["tszIPEnd"].isNull())
+	if (!st_JsonObject["bEnable"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszIPEnd, st_JsonObject["tszIPEnd"].asCString());
+		pSt_AuthBanned->bEnable = st_JsonObject["bEnable"].asBool();
 	}
-	if (!st_JsonObject["tszIPStart"].isNull())
+	if (!st_JsonObject["tszIPAddr"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszIPStart, st_JsonObject["tszIPStart"].asCString());
+		_tcscpy(pSt_AuthBanned->tszIPAddr, st_JsonObject["tszIPAddr"].asCString());
 	}
 	if (!st_JsonObject["tszLeftTime"].isNull())
 	{
