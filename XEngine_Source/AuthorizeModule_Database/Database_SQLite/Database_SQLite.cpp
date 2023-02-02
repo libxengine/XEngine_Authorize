@@ -1261,9 +1261,9 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
     for (int i = 0; stl_ListIterator != stl_ListUser.end(); stl_ListIterator++, i++)
     {
         (*pppSt_BannedUser)[i]->nID = stl_ListIterator->nID;
-        (*pppSt_BannedAddr)[i]->bEnable = stl_ListIterator->bEnable;
+        (*pppSt_BannedUser)[i]->bEnable = stl_ListIterator->bEnable;
         _tcscpy((*pppSt_BannedUser)[i]->tszUserName, stl_ListIterator->tszUserName);
-        _tcscpy((*pppSt_BannedAddr)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
+        _tcscpy((*pppSt_BannedUser)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
         _tcscpy((*pppSt_BannedUser)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
     }
 

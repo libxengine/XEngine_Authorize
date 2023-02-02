@@ -646,7 +646,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
 	{
 		Json::Value st_JsonObject;
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_BannedUser)[i]->nID;
-		st_JsonObject["bEnable"] = (*pppSt_BannedAddr)[i]->bEnable;
+		st_JsonObject["bEnable"] = (*pppSt_BannedUser)[i]->bEnable;
 		st_JsonObject["tszLeftTime"] = (*pppSt_BannedUser)[i]->tszLeftTime;
 		st_JsonObject["tszCreateTime"] = (*pppSt_BannedUser)[i]->tszCreateTime;
 		st_JsonObject["tszUserName"] = (*pppSt_BannedUser)[i]->tszUserName;
