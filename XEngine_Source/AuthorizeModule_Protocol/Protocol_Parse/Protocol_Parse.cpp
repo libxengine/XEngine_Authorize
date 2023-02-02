@@ -925,9 +925,13 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int 
 	{
 		_tcscpy(pSt_AuthBanned->tszIPStart, st_JsonObject["tszIPStart"].asCString());
 	}
-	if (!st_JsonObject["tszTime"].isNull())
+	if (!st_JsonObject["tszLeftTime"].isNull())
 	{
-		_tcscpy(pSt_AuthBanned->tszTime, st_JsonObject["tszTime"].asCString());
+		_tcscpy(pSt_AuthBanned->tszLeftTime, st_JsonObject["tszLeftTime"].asCString());
+	}
+	if (!st_JsonObject["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_AuthBanned->tszCreateTime, st_JsonObject["tszCreateTime"].asCString());
 	}
 	if (!st_JsonObject["tszUserName"].isNull())
 	{

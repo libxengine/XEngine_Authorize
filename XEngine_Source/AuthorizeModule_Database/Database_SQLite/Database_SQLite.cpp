@@ -1074,11 +1074,11 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
     //处理的类型
     if (_tcslen(pSt_Banned->tszUserName) > 0)
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedUser(tszUserName,tszCreateTime) VALUES('%s',datetime('now', 'localtime'))"), pSt_Banned->tszUserName);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedUser(tszUserName,tszLeftTime,tszCreateTime) VALUES('%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszUserName, pSt_Banned->tszLeftTime);
     }
     else
     {
-        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedAddr(tszIPStart,tszIPEnd,tszCreateTime) VALUES('%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd);
+        _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_BannedAddr(tszIPStart,tszIPEnd,tszLeftTime,tszCreateTime) VALUES('%s','%s','%s',datetime('now', 'localtime'))"), pSt_Banned->tszIPStart, pSt_Banned->tszIPEnd, pSt_Banned->tszLeftTime);
     }
     //插入数据库
 	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
@@ -1201,8 +1201,11 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 		//结束地址
 		_tcscpy(st_Banned.tszIPEnd, ppszResult[nFliedValue]);
 		nFliedValue++;
+		//过期时间
+		_tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
+		nFliedValue++;
 		//注册时间
-		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+		_tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
 
         stl_ListAddr.push_back(st_Banned);
@@ -1233,8 +1236,11 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 		//用户名
 		_tcscpy(st_Banned.tszUserName, ppszResult[nFliedValue]);
 		nFliedValue++;
+		//过期时间
+		_tcscpy(st_Banned.tszLeftTime, ppszResult[nFliedValue]);
+		nFliedValue++;
 		//注册时间
-		_tcscpy(st_Banned.tszTime, ppszResult[nFliedValue]);
+		_tcscpy(st_Banned.tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
 
         stl_ListUser.push_back(st_Banned);
@@ -1252,14 +1258,16 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
         (*pppSt_BannedAddr)[i]->nID = stl_ListIterator->nID;
         _tcscpy((*pppSt_BannedAddr)[i]->tszIPStart, stl_ListIterator->tszIPStart);
         _tcscpy((*pppSt_BannedAddr)[i]->tszIPEnd, stl_ListIterator->tszIPEnd);
-        _tcscpy((*pppSt_BannedAddr)[i]->tszTime, stl_ListIterator->tszTime);
+        _tcscpy((*pppSt_BannedAddr)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
+        _tcscpy((*pppSt_BannedAddr)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
 	}
 	stl_ListIterator = stl_ListUser.begin();
 	for (int i = 0; stl_ListIterator != stl_ListUser.end(); stl_ListIterator++, i++)
 	{
 		(*pppSt_BannedUser)[i]->nID = stl_ListIterator->nID;
 		_tcscpy((*pppSt_BannedUser)[i]->tszUserName, stl_ListIterator->tszUserName);
-		_tcscpy((*pppSt_BannedUser)[i]->tszTime, stl_ListIterator->tszTime);
+        _tcscpy((*pppSt_BannedAddr)[i]->tszLeftTime, stl_ListIterator->tszLeftTime);
+		_tcscpy((*pppSt_BannedUser)[i]->tszCreateTime, stl_ListIterator->tszCreateTime);
 	}
 
     stl_ListAddr.clear();

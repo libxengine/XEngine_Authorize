@@ -84,5 +84,6 @@ typedef struct
 	CHAR tszUserName[MAX_PATH];                                           //用户名
 	CHAR tszIPStart[128];                                                 //起始IP
 	CHAR tszIPEnd[128];                                                   //结束IP
-	CHAR tszTime[64];                                                     //时间
+	CHAR tszLeftTime[64];                                                 //过期时间
+	CHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_BANNED, * LPAUTHREG_BANNED;
