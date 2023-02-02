@@ -27,13 +27,13 @@ void CDialog_Banned::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO1, m_RadioIPAddr);
 	DDX_Control(pDX, IDC_RADIO2, m_RadioUser);
 	DDX_Control(pDX, IDC_STATIC_TIPS, m_StaticTips);
-	DDX_Control(pDX, IDC_STATIC_TIPS2, m_StaticIPEnd);
-	DDX_Control(pDX, IDC_EDIT2, m_EditIPEnd);
 	DDX_Control(pDX, IDC_LIST1, m_ListAddr);
 	DDX_Control(pDX, IDC_LIST2, m_ListUser);
 	DDX_Control(pDX, IDC_EDIT1, m_EditUser);
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_DataTime);
 	DDX_Control(pDX, IDC_CHECK1, m_BtnCheckTime);
+	DDX_Control(pDX, IDC_RADIO4, m_RadioEnable);
+	DDX_Control(pDX, IDC_RADIO6, m_RadioDisable);
 }
 
 
@@ -54,9 +54,6 @@ void CDialog_Banned::OnBnClickedRadio1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_StaticTips.SetWindowText(_T("要禁用的IP地址:"));
-	m_StaticIPEnd.SetWindowText(_T("禁用的结束IP地址:"));
-	m_StaticIPEnd.ShowWindow(SW_SHOW);
-	m_EditIPEnd.ShowWindow(SW_SHOW);
 }
 
 
@@ -64,9 +61,6 @@ void CDialog_Banned::OnBnClickedRadio2()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_StaticTips.SetWindowText(_T("要禁用的用户名:"));
-
-	m_StaticIPEnd.ShowWindow(SW_HIDE);
-	m_EditIPEnd.ShowWindow(SW_HIDE);
 }
 
 
@@ -78,21 +72,22 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_StaticTips.SetWindowText(_T("要禁用的用户名:"));
 	m_RadioUser.SetCheck(BST_CHECKED);
 
-	m_StaticIPEnd.ShowWindow(SW_HIDE);
-	m_EditIPEnd.ShowWindow(SW_HIDE);
-
 	m_ListAddr.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListAddr.InsertColumn(1, _T("起始IP地址"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(2, _T("结束IP地址"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(3, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListAddr.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
+	m_ListAddr.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 120);
+	m_ListAddr.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
+	m_ListAddr.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListAddr.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_ListUser.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListUser.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 120);
-	m_ListUser.InsertColumn(2, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListUser.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
+	m_ListUser.InsertColumn(2, _T("用户名"), LVCFMT_LEFT, 120);
+	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
+	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_DataTime.EnableWindow(FALSE);
+	m_RadioEnable.SetCheck(BST_CHECKED);
 	m_DataTime.SetFormat(_T("yyyy-mm-dd hh:mm:ss"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -106,7 +101,6 @@ void CDialog_Banned::OnBnClickedButton2()
 	CString m_StrIPPort;
 	CString m_StrToken;
 	CString m_StrUser;
-	CString m_StrIPEnd;
 	CString m_StrTime;
 
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
@@ -114,7 +108,6 @@ void CDialog_Banned::OnBnClickedButton2()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 	m_EditUser.GetWindowText(m_StrUser);
-	m_EditIPEnd.GetWindowText(m_StrIPEnd);
 	m_DataTime.GetWindowText(m_StrTime);
 
 	TCHAR tszUrlAddr[MAX_PATH];
@@ -132,14 +125,20 @@ void CDialog_Banned::OnBnClickedButton2()
 	}
 	else
 	{
-		st_JsonObject["tszIPStart"] = m_StrUser.GetBuffer();
-		st_JsonObject["tszIPEnd"] = m_StrIPEnd.GetBuffer();
+		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
+	}
+	if (BST_CHECKED == m_RadioEnable.GetCheck())
+	{
+		st_JsonObject["bEnable"] = true;
+	}
+	else
+	{
+		st_JsonObject["bEnable"] = false;
 	}
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
 		st_JsonObject["tszLeftTime"] = m_StrTime.GetBuffer();
 	}
-	
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -271,9 +270,17 @@ void CDialog_Banned::OnBnClickedButton4()
 
 		m_ListAddr.InsertItem(i, _T(""));
 		m_ListAddr.SetItemText(i, 0, tszIndex);
-		m_ListAddr.SetItemText(i, 1, st_JsonArray["tszIPStart"].asCString());
-		m_ListAddr.SetItemText(i, 2, st_JsonArray["tszIPEnd"].asCString());
-		m_ListAddr.SetItemText(i, 3, st_JsonArray["tszTime"].asCString());
+		if (st_JsonArray["bEnable"].asBool())
+		{
+			m_ListAddr.SetItemText(i, 1, "启用");
+		}
+		else
+		{
+			m_ListAddr.SetItemText(i, 1, "禁用");
+		}
+		m_ListAddr.SetItemText(i, 2, st_JsonArray["tszIPAddr"].asCString());
+		m_ListAddr.SetItemText(i, 3, st_JsonArray["tszLeftTime"].asCString());
+		m_ListAddr.SetItemText(i, 4, st_JsonArray["tszCreateTime"].asCString());
 	}
 	for (unsigned int i = 0; i < st_JsonRoot["ArrayUser"].size(); i++)
 	{
@@ -285,8 +292,17 @@ void CDialog_Banned::OnBnClickedButton4()
 
 		m_ListUser.InsertItem(i, _T(""));
 		m_ListUser.SetItemText(i, 0, tszIndex);
-		m_ListUser.SetItemText(i, 1, st_JsonArray["tszUserName"].asCString());
-		m_ListUser.SetItemText(i, 2, st_JsonArray["tszTime"].asCString());
+		if (st_JsonArray["bEnable"].asBool())
+		{
+			m_ListUser.SetItemText(i, 1, "启用");
+		}
+		else
+		{
+			m_ListUser.SetItemText(i, 1, "禁用");
+		}
+		m_ListUser.SetItemText(i, 2, st_JsonArray["tszUserName"].asCString());
+		m_ListUser.SetItemText(i, 3, st_JsonArray["tszLeftTime"].asCString());
+		m_ListUser.SetItemText(i, 4, st_JsonArray["tszCreateTime"].asCString());
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }

@@ -28,8 +28,6 @@ public:
 	CStatic m_StaticTips;
 	afx_msg void OnBnClickedRadio2();
 	virtual BOOL OnInitDialog();
-	CStatic m_StaticIPEnd;
-	CEdit m_EditIPEnd;
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton3();
@@ -39,4 +37,6 @@ public:
 	CDateTimeCtrl m_DataTime;
 	afx_msg void OnBnClickedCheck1();
 	CButton m_BtnCheckTime;
+	CButton m_RadioEnable;
+	CButton m_RadioDisable;
 };
