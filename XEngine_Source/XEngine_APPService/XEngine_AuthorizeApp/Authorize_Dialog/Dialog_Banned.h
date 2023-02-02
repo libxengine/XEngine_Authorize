@@ -36,4 +36,7 @@ public:
 	CListCtrl m_ListAddr;
 	CListCtrl m_ListUser;
 	CEdit m_EditUser;
+	CDateTimeCtrl m_DataTime;
+	afx_msg void OnBnClickedCheck1();
+	CButton m_BtnCheckTime;
 };

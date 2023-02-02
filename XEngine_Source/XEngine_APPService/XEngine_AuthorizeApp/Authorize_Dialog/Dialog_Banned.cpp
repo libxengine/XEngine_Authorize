@@ -32,6 +32,8 @@ void CDialog_Banned::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_LIST1, m_ListAddr);
 	DDX_Control(pDX, IDC_LIST2, m_ListUser);
 	DDX_Control(pDX, IDC_EDIT1, m_EditUser);
+	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_DataTime);
+	DDX_Control(pDX, IDC_CHECK1, m_BtnCheckTime);
 }
 
 
@@ -41,6 +43,7 @@ BEGIN_MESSAGE_MAP(CDialog_Banned, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CDialog_Banned::OnBnClickedButton2)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_Banned::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Banned::OnBnClickedButton3)
+	ON_BN_CLICKED(IDC_CHECK1, &CDialog_Banned::OnBnClickedCheck1)
 END_MESSAGE_MAP()
 
 
@@ -88,6 +91,9 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_ListUser.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 120);
 	m_ListUser.InsertColumn(2, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	m_DataTime.EnableWindow(FALSE);
+	m_DataTime.SetFormat(_T("yyyy-mm-dd hh:mm:ss"));
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
 }
@@ -101,6 +107,7 @@ void CDialog_Banned::OnBnClickedButton2()
 	CString m_StrToken;
 	CString m_StrUser;
 	CString m_StrIPEnd;
+	CString m_StrTime;
 
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -108,6 +115,7 @@ void CDialog_Banned::OnBnClickedButton2()
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 	m_EditUser.GetWindowText(m_StrUser);
 	m_EditIPEnd.GetWindowText(m_StrIPEnd);
+	m_DataTime.GetWindowText(m_StrTime);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -127,6 +135,11 @@ void CDialog_Banned::OnBnClickedButton2()
 		st_JsonObject["tszIPStart"] = m_StrUser.GetBuffer();
 		st_JsonObject["tszIPEnd"] = m_StrIPEnd.GetBuffer();
 	}
+	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
+	{
+		st_JsonObject["tszLeftTime"] = m_StrTime.GetBuffer();
+	}
+	
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -374,4 +387,20 @@ void CDialog_Banned::OnBnClickedButton3()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	//刷新
 	OnBnClickedButton4();
+}
+
+
+void CDialog_Banned::OnBnClickedCheck1()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
+	{
+		m_DataTime.EnableWindow(TRUE);
+		m_BtnCheckTime.SetCheck(BST_CHECKED);
+	}
+	else
+	{
+		m_DataTime.EnableWindow(FALSE);
+		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
+	}
 }
