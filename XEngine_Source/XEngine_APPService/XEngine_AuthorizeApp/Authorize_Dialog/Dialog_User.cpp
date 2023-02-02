@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_CHECK2, &CDialog_User::OnBnClickedCheck2)
 	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_User::OnBnClickedButton5)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CDialog_User::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 
@@ -431,4 +432,13 @@ void CDialog_User::OnBnClickedButton5()
 	}
 	CDialog_Modify m_DlgModify;
 	m_DlgModify.DoModal();
+}
+
+
+void CDialog_User::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	OnBnClickedButton4();
+	*pResult = 0;
 }

@@ -40,4 +40,5 @@ public:
 	afx_msg void OnBnClickedButton5();
 	CEdit m_EditPosStart;
 	CEdit m_EditPosEnd;
+	afx_msg void OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult);
 };
