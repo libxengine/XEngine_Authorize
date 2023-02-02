@@ -159,6 +159,11 @@ BOOL CDialog_Modify::OnInitDialog()
 
 		m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
 		m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
+
+		if (ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_ROOT == st_JsonObject["st_UserInfo"]["nUserLevel"].asInt())
+		{
+			m_ComboLeave.EnableWindow(FALSE);
+		}
 	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
