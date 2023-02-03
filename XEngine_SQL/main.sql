@@ -10,7 +10,7 @@
  Target Server Version : 3035005 (3.35.5)
  File Encoding         : 65001
 
- Date: 29/12/2022 13:14:11
+ Date: 03/02/2023 15:14:23
 */
 
 PRAGMA foreign_keys = false;
@@ -21,8 +21,9 @@ PRAGMA foreign_keys = false;
 DROP TABLE IF EXISTS "Authorize_BannedAddr";
 CREATE TABLE "Authorize_BannedAddr" (
   "ID" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "tszIPStart" TEXT,
-  "tszIPEnd" TEXT,
+  "bEnable" blob NOT NULL,
+  "tszIPAddr" TEXT NOT NULL,
+  "tszLeftTime" DATE,
   "tszCreateTime" DATE NOT NULL
 );
 
@@ -36,7 +37,9 @@ CREATE TABLE "Authorize_BannedAddr" (
 DROP TABLE IF EXISTS "Authorize_BannedUser";
 CREATE TABLE "Authorize_BannedUser" (
   "ID" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  "tszUserName" TEXT,
+  "bEnable" blob NOT NULL,
+  "tszUserName" TEXT NOT NULL,
+  "tszLeftTime" DATE,
   "tszCreateTime" DATE NOT NULL
 );
 
@@ -114,6 +117,18 @@ CREATE TABLE "sqlite_sequence" (
 -- Records of sqlite_sequence
 -- ----------------------------
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 1);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedUser', 6);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedAddr', 5);
+
+-- ----------------------------
+-- Auto increment value for Authorize_BannedAddr
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 5 WHERE name = 'Authorize_BannedAddr';
+
+-- ----------------------------
+-- Auto increment value for Authorize_BannedUser
+-- ----------------------------
+UPDATE "sqlite_sequence" SET seq = 6 WHERE name = 'Authorize_BannedUser';
 
 -- ----------------------------
 -- Auto increment value for Authorize_User
