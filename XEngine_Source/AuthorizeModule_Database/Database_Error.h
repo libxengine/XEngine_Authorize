@@ -34,3 +34,5 @@
 #define ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA 0x0030016                 //更新数据库失败
 #define ERROR_AUTHORIZE_MODULE_DATABASE_UNKNOWTYPE 0x0030017             //无法识别的卡的类型，无法正确处理离开消息
 #define ERROR_AUTHORIZE_MODULE_DATABASE_NONE 0x0030018                   //获取失败，没有任何记录
+#define ERROR_AUTHORIZE_MODULE_DATABASE_NOTENABLE 0x0030019              //没有启用.不禁用
+#define ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT 0x0030020               //超过禁用时间

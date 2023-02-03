@@ -58,13 +58,10 @@ BOOL XEngine_AuthorizeHTTP_User(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPC
 		_tcscpy(st_Banned.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		if (Database_SQLite_BannedExist(&st_Banned))
 		{
-			if (st_Banned.bEnable)
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user name is banned");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，注册失败，用户名已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
-				return FALSE;
-			}
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user name is banned");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，注册失败，用户名已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
+			return FALSE;
 		}
 		//填充写入数据
 		_stprintf(st_UserTable.tszLeftTime, _T("%d"), st_AuthConfig.st_XVerification.nTryTime);

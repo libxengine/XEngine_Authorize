@@ -1287,7 +1287,6 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = FALSE;
-
     //判断用域名是否存在
     if (_tcslen(pSt_Banned->tszUserName) > 0)
     {
@@ -1304,14 +1303,28 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
             SQLPacket_dwErrorCode = DataBase_GetLastError();
             return FALSE;
         }
-        DataBase_SQLite_FreeTable(ppszResult);
-
-        if (nRow <= 0)
-        {
-            SQLPacket_IsErrorOccur = TRUE;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
-            return FALSE;
-        }
+		if (nRow <= 0)
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+            DataBase_SQLite_FreeTable(ppszResult);
+			return FALSE;
+		}
+        int nFliedValue = nColumn;
+		//ID
+        pSt_Banned->nID = _ttoi64(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//是否启用
+        pSt_Banned->bEnable = _ttoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//地址
+		nFliedValue++;
+		//过期时间
+		_tcscpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//注册时间
+		_tcscpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
+		DataBase_SQLite_FreeTable(ppszResult);
     }
     //判断IP地址是否存在
     if (_tcslen(pSt_Banned->tszIPAddr) > 0)
@@ -1329,15 +1342,52 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
             SQLPacket_dwErrorCode = DataBase_GetLastError();
             return FALSE;
         }
-        DataBase_SQLite_FreeTable(ppszResult);
-
         if (nRow <= 0)
         {
             SQLPacket_IsErrorOccur = TRUE;
             SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+            DataBase_SQLite_FreeTable(ppszResult);
             return FALSE;
         }
+        int nFliedValue = nColumn;
+		//ID
+        pSt_Banned->nID = _ttoi64(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//是否启用
+        pSt_Banned->bEnable = _ttoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//地址
+		nFliedValue++;
+		//过期时间
+		_tcscpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//注册时间
+		_tcscpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
+		DataBase_SQLite_FreeTable(ppszResult);
     }
+    //处理是否被禁用
+	if (!pSt_Banned->bEnable)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTENABLE;
+		return FALSE;
+	}
+    if (_tcslen(pSt_Banned->tszLeftTime) > 0)
+    {
+		__int64x nTimer = 0;
+		TCHAR tszStrTime[128];
+		memset(tszStrTime, '\0', sizeof(tszStrTime));
+
+		BaseLib_OperatorTime_TimeToStr(tszStrTime);
+		BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+		if (nTimer > 0)
+		{
+			SQLPacket_IsErrorOccur = TRUE;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
+			return FALSE;
+		}
+    }
+	
     return TRUE;
 }
 /********************************************************************

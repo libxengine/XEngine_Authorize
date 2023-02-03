@@ -65,13 +65,10 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 	//是否在黑名单
 	if (Database_SQLite_BannedExist(&st_Banned))
 	{
-		if (st_Banned.bEnable)
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
-			return FALSE;
-		}
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
+		return FALSE;
 	}
 	if (0 == _tcsnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodPost)))
 	{
