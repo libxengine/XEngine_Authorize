@@ -423,6 +423,101 @@ void CDialog_Banned::OnBnClickedCheck1()
 void CDialog_Banned::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	CString m_StrToken;
+	CString m_StrUser;
+	CString m_StrTime;
+
+	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
+	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
+	pWnd->m_EditToken.GetWindowText(m_StrToken);
+	m_EditUser.GetWindowText(m_StrUser);
+	m_DataTime.GetWindowText(m_StrTime);
+
+	TCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+
+	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	if (BST_CHECKED == m_RadioUser.GetCheck())
+	{
+		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+	}
+	else
+	{
+		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
+	}
+	if (BST_CHECKED == m_RadioEnable.GetCheck())
+	{
+		st_JsonObject["bEnable"] = true;
+	}
+	else
+	{
+		st_JsonObject["bEnable"] = false;
+	}
+	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
+	{
+		st_JsonObject["tszLeftTime"] = m_StrTime.GetBuffer();
+	}
+	st_JsonRoot["st_Banned"] = st_JsonObject;
+	//是否加密
+	TCHAR tszPassBuffer[64];
+	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
+	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
+	if (bCrypto)
+	{
+		TCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+	}
+	else
+	{
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+	}
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	st_JsonRoot.clear();
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (bCrypto)
+	{
+		TCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
+			return;
+		}
+	}
+	else
+	{
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
+			return;
+		}
+	}
+
+	if (0 == st_JsonRoot["code"].asInt())
+	{
+		Authorize_Help_LogPrint(_T("更新黑名单信息成功"));
+	}
+	else
+	{
+		Authorize_Help_LogPrint(_T("更新黑名单信息成功"));
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	OnBnClickedButton4();
 }
 
 
@@ -508,8 +603,8 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		m_RadioEnable.SetCheck(BST_UNCHECKED);
 		m_RadioDisable.SetCheck(BST_CHECKED);
 	}
-	m_RadioIPAddr.SetCheck(BST_UNCHECKED);
-	m_RadioUser.SetCheck(BST_CHECKED);
+	m_RadioIPAddr.SetCheck(BST_CHECKED);
+	m_RadioUser.SetCheck(BST_UNCHECKED);
 
 	m_EditUser.SetWindowText(m_StrUser.GetBuffer());
 	if (m_StrTime.GetLength() > 0)

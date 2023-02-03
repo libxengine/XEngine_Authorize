@@ -1340,6 +1340,49 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     }
     return TRUE;
 }
+/********************************************************************
+函数名称：Database_SQLite_BannedUPDate
+函数功能：更新名单列表信息
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	if (NULL == pSt_Banned)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return FALSE;
+	}
+	TCHAR tszSQLStatement[1024];
+	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
+	//处理的类型
+	if (_tcslen(pSt_Banned->tszUserName) > 0)
+	{
+		_stprintf_s(tszSQLStatement, _T("UPDATE Authorize_BannedUser SET bEnable = %d,tszLeftTime = '%s' WHERE tszUserName = '%s'"), pSt_Banned->bEnable, pSt_Banned->tszLeftTime, pSt_Banned->tszUserName);
+	}
+	else
+	{
+		_stprintf_s(tszSQLStatement, _T("UPDATE Authorize_BannedAddr SET bEnable = %d,tszLeftTime = '%s' WHERE tszIPAddr = '%s'"), pSt_Banned->bEnable, pSt_Banned->tszLeftTime, pSt_Banned->tszIPAddr);
+	}
+	//插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////
