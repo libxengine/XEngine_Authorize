@@ -311,8 +311,6 @@ void CDialog_Banned::OnBnClickedButton4()
 void CDialog_Banned::OnBnClickedButton3()
 {
 	CString m_StrUser;
-	CString m_StrIPStart;
-	CString m_StrIPEnd;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	// TODO: 在此添加控件通知处理程序代码
@@ -320,18 +318,15 @@ void CDialog_Banned::OnBnClickedButton3()
 	int nSelect = m_ListUser.GetNextSelectedItem(pSt_Sition);
 	if (nSelect >= 0)
 	{
-		m_StrUser = m_ListUser.GetItemText(nSelect, 1);
+		m_StrUser = m_ListUser.GetItemText(nSelect, 2);
 		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	}
 	pSt_Sition = m_ListAddr.GetFirstSelectedItemPosition();
 	nSelect = m_ListAddr.GetNextSelectedItem(pSt_Sition);
 	if (nSelect >= 0)
 	{
-		m_StrIPStart = m_ListAddr.GetItemText(nSelect, 1);
-		m_StrIPEnd = m_ListAddr.GetItemText(nSelect, 2);
-
-		st_JsonObject["tszIPStart"] = m_StrIPStart.GetBuffer();
-		st_JsonObject["tszIPEnd"] = m_StrIPEnd.GetBuffer();
+		m_StrUser = m_ListAddr.GetItemText(nSelect, 2);
+		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
 	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
