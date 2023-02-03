@@ -108,6 +108,10 @@ The V1 version is an XEngine component. Most of the code is concentrated in XEng
 The V2 version comes out separately with all related modules and is developed separately  
 The V3 version is a new version, developed to meet the requirements of many environments  
 
+## update guide
+Database update Use Navicat and other database software to open the judgment table and the different fields for modification  
+After modification, directly copy the database to the new version to overwrite, and modify your configuration file
+
 ## Authorization instructions
 Use this software must be open source and indicate the source,If you want closed source and commercial,Then need to be authorized by the author.
 
