@@ -5,7 +5,7 @@
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
 #pragma comment(lib,"XEngine_Client/XClient_Socket")
-#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIHelp")
+#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient")
 #pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
 #else
 #include <stdio.h>
@@ -23,14 +23,14 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
-#include <XEngine_Include/XEngine_NetHelp/APIHelp_Define.h>
-#include <XEngine_Include/XEngine_NetHelp/APIHelp_Error.h>
+#include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
+#include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
-//Linux::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp,--disable-new-dtags
-//Macos::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIHelp -lpthread -ljsoncpp
+//Linux::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp,--disable-new-dtags
+//Macos::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp
 
 BOOL bRun = TRUE;
 BOOL bLogin = TRUE;
@@ -118,7 +118,7 @@ int AuthClient_Register()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Register:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -138,7 +138,7 @@ int AuthClient_Pay()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Pay:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -213,7 +213,7 @@ int AuthClient_GetPass()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_GetPass:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -232,7 +232,7 @@ int AuthClient_GetTime()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_GetTime:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -255,7 +255,7 @@ int AuthClient_Delete()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Delete:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -274,7 +274,7 @@ int AuthClient_Try()
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Try:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 

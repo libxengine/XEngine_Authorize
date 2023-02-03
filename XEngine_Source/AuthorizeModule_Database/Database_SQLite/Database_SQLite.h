@@ -47,9 +47,10 @@ public:
     BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
     BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
     BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
+    BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
 protected:
     BOOL Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType);
 private:
     BOOL m_bChange;
-    XHDATA xhData;                 //数据库句柄
+    XNETHANDLE xhData;                 //数据库句柄
 };

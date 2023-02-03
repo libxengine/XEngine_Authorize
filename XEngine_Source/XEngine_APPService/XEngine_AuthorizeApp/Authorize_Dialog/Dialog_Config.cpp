@@ -96,12 +96,12 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditUser.GetWindowText(m_StrUser);
 	m_EditPass.GetWindowText(m_StrPass);
-
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer());
+	
+	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -167,7 +167,7 @@ void CDialog_Config::OnBnClickedButton2()
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -228,7 +228,7 @@ void CDialog_Config::OnBnClickedButton5()
 	//请求用户信息
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
-	APIHelp_HttpRequest_Custom(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;

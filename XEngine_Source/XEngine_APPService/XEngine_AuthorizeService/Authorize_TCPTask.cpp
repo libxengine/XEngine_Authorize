@@ -58,8 +58,8 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 	AUTHREG_BANNED st_Banned;
 	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
-	_tcscpy(st_Banned.tszIPStart, lpszClientAddr);
-	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPStart);
+	_tcscpy(st_Banned.tszIPAddr, lpszClientAddr);
+	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
 	//是否在黑名单
 	if (Database_SQLite_BannedExist(&st_Banned))
 	{
@@ -105,7 +105,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			int nHTTPLen = 0;
 			TCHAR* ptszMsgBuffer = NULL;
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
-			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
 				pSt_ProtocolHdr->wReserve = 251;

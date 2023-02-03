@@ -1,3 +1,27 @@
+XEngine_Authorize V3.5.0.1001
+
+添加:禁用列表功能支持修改信息了
+添加:禁用功能支持启用和禁用
+添加:禁用功能支持过期时间设置了
+添加:本地CDKEY生成解析支持
+更新:HTTP请求函数
+修改:数据库句柄类型
+修改:管理程序不允许修改ROOT用户
+修改:管理程序可以双击打开用户修改界面了
+修改:IP禁用功能不在使用开始和结束字段了
+修正:管理程序登录的时候没有设置设备类型的问题
+
+added:banned function to modify support
+added:enable field for banned
+added:banned function support left time
+added:local cdkey support
+update:http request function name
+modify:XHDATA to XNETHANDLE
+modify:root user is not allowed to modify
+modify:open user modify window when double click user list
+modify:does not need to start and end for ip address
+fixed:management program have not device type when login
+======================================================================================
 XEngine_Authorize V3.4.0.1001
 
 添加:windows窗口特效类

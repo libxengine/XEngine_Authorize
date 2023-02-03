@@ -106,11 +106,11 @@ BOOL CDialog_Modify::OnInitDialog()
 
 			nMsgLen = st_JsonRoot.toStyledString().length();
 			OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-			APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+			APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 		}
 		else
 		{
-			APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+			APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 		}
 		st_JsonObject.clear();
 		st_JsonRoot.clear();
@@ -159,6 +159,11 @@ BOOL CDialog_Modify::OnInitDialog()
 
 		m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
 		m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
+
+		if (ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_ROOT == st_JsonObject["st_UserInfo"]["nUserLevel"].asInt())
+		{
+			m_ComboLeave.EnableWindow(FALSE);
+		}
 	}
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// 异常: OCX 属性页应返回 FALSE
@@ -240,11 +245,11 @@ void CDialog_Modify::OnBnClickedButton2()
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
 		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	st_JsonRoot.clear();
 	JSONCPP_STRING st_JsonError;

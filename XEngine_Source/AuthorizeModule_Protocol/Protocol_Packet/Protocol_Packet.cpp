@@ -646,7 +646,9 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
 	{
 		Json::Value st_JsonObject;
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_BannedUser)[i]->nID;
-		st_JsonObject["tszTime"] = (*pppSt_BannedUser)[i]->tszTime;
+		st_JsonObject["bEnable"] = (*pppSt_BannedUser)[i]->bEnable;
+		st_JsonObject["tszLeftTime"] = (*pppSt_BannedUser)[i]->tszLeftTime;
+		st_JsonObject["tszCreateTime"] = (*pppSt_BannedUser)[i]->tszCreateTime;
 		st_JsonObject["tszUserName"] = (*pppSt_BannedUser)[i]->tszUserName;
 		st_JsonUser.append(st_JsonObject);
 	}
@@ -654,9 +656,10 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
 	{
 		Json::Value st_JsonObject;
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_BannedAddr)[i]->nID;
-		st_JsonObject["tszIPEnd"] = (*pppSt_BannedAddr)[i]->tszIPEnd;
-		st_JsonObject["tszIPStart"] = (*pppSt_BannedAddr)[i]->tszIPStart;
-		st_JsonObject["tszTime"] = (*pppSt_BannedAddr)[i]->tszTime;
+		st_JsonObject["bEnable"] = (*pppSt_BannedAddr)[i]->bEnable;
+		st_JsonObject["tszIPAddr"] = (*pppSt_BannedAddr)[i]->tszIPAddr;
+		st_JsonObject["tszLeftTime"] = (*pppSt_BannedAddr)[i]->tszLeftTime;
+		st_JsonObject["tszCreateTime"] = (*pppSt_BannedAddr)[i]->tszCreateTime;
 		st_JsonAddr.append(st_JsonObject);
 	}
 	st_JsonRoot["msg"] = "success";

@@ -5,12 +5,12 @@ RELEASE = 0
 UNICODE = 0  
 LOADBIN = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_HelpComponents -L /usr/local/lib/XEngine_Release/XEngine_RfcComponents -L /usr/local/lib/XEngine_Release/XEngine_NetHelp -L /usr/local/lib/XEngine_Release/XEngine_SystemSdk   \
           -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../XEngine_ThirdPart/jsoncpp
-LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_HttpServer -lNetHelp_APIHelp -lXEngine_ProcFile -lXEngine_SystemApi  \
+LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_HttpServer -lNetHelp_APIClient -lXEngine_ProcFile -lXEngine_SystemApi  \
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -ljsoncpp
 LIBEX = -ldl -lpthread
 LOADSO = -Wl,-rpath=./,--disable-new-dtags
 LIBINCLUDE = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
-             AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o \
+             AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o\
 			 AuthorizeHTTP_Token.o
 
 ifeq ($(OS),Windows_NT)
@@ -67,6 +67,8 @@ AuthorizeHTTP_Switch.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Switch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_Switch.cpp
 AuthorizeHTTP_Banned.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Banned.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_Banned.cpp
+AuthorizeHTTP_CDKey.o:./AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.cpp
 
 AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp

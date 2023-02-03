@@ -41,6 +41,7 @@ BEGIN_MESSAGE_MAP(CDialog_User, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_User::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_CHECK2, &CDialog_User::OnBnClickedCheck2)
 	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_User::OnBnClickedButton5)
+	ON_NOTIFY(NM_DBLCLK, IDC_LIST1, &CDialog_User::OnNMDblclkList1)
 END_MESSAGE_MAP()
 
 
@@ -120,11 +121,11 @@ void CDialog_User::OnBnClickedButton1()
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
 		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
@@ -229,11 +230,11 @@ void CDialog_User::OnBnClickedButton2()
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
 		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	//查看返回值是否正确
 	st_JsonRoot.clear();
@@ -317,11 +318,11 @@ void CDialog_User::OnBnClickedButton3()
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
 		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIHelp_HttpRequest_Custom(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	//查看返回值是否正确
 	st_JsonRoot.clear();
@@ -431,4 +432,13 @@ void CDialog_User::OnBnClickedButton5()
 	}
 	CDialog_Modify m_DlgModify;
 	m_DlgModify.DoModal();
+}
+
+
+void CDialog_User::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	OnBnClickedButton4();
+	*pResult = 0;
 }

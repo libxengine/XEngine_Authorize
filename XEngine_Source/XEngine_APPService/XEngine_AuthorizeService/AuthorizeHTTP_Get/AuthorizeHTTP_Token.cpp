@@ -29,7 +29,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 		memset(tszDeviceType, '\0', sizeof(tszDeviceType));
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
-		if (nListCount < 3)
+		if (nListCount < 4)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -54,7 +54,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 			st_AuthProtocol.enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)_ttoi(tszDeviceType);
 
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
-			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
+			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
@@ -213,7 +213,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 					memset(tszSDBuffer, '\0', MAX_PATH);
 
 					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-					APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+					APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 				}
 				Database_SQLite_UserLeave(&st_AuthTime);
 			}

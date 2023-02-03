@@ -107,7 +107,7 @@ BOOL XEngine_CloseClient(LPCTSTR lpszClientAddr)
 			memset(tszSDBuffer, '\0', MAX_PATH);
 
 			Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-			APIHelp_HttpRequest_Custom(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
 		else
 		{

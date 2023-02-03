@@ -404,3 +404,17 @@ extern "C" BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, i
 备注：
 *********************************************************************/
 extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
+/********************************************************************
+函数名称：Database_SQLite_BannedUPDate
+函数功能：更新名单列表信息
+ 参数.一：pSt_Banned
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);

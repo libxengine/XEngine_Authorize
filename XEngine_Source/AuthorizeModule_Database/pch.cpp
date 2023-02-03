@@ -121,3 +121,7 @@ extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED * pSt_Banned)
 {
 	return m_SQLAuth.Database_SQLite_BannedExist(pSt_Banned);
 }
+extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED * pSt_Banned)
+{
+	return m_SQLAuth.Database_SQLite_BannedUPDate(pSt_Banned);
+}
