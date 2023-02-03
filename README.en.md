@@ -41,6 +41,7 @@ feature list:
 13. support third user verification interface
 14. support distributed verification authorize function
 15. black list management
+16. local cdkey support
 
 ## install
 
