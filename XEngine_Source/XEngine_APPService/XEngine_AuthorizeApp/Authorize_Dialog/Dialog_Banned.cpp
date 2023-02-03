@@ -44,6 +44,9 @@ BEGIN_MESSAGE_MAP(CDialog_Banned, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON4, &CDialog_Banned::OnBnClickedButton4)
 	ON_BN_CLICKED(IDC_BUTTON3, &CDialog_Banned::OnBnClickedButton3)
 	ON_BN_CLICKED(IDC_CHECK1, &CDialog_Banned::OnBnClickedCheck1)
+	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_Banned::OnBnClickedButton5)
+	ON_NOTIFY(NM_CLICK, IDC_LIST2, &CDialog_Banned::OnNMClickList2)
+	ON_NOTIFY(NM_CLICK, IDC_LIST1, &CDialog_Banned::OnNMClickList1)
 END_MESSAGE_MAP()
 
 
@@ -414,4 +417,127 @@ void CDialog_Banned::OnBnClickedCheck1()
 		m_DataTime.EnableWindow(FALSE);
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
 	}
+}
+
+
+void CDialog_Banned::OnBnClickedButton5()
+{
+	// TODO: 在此添加控件通知处理程序代码
+}
+
+
+void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListUser.GetFirstSelectedItemPosition();
+	int nItemCount = m_ListUser.GetNextSelectedItem(pSt_Sition);
+	if (nItemCount < 0)
+	{
+		return;
+	}
+	CString m_StrEnable = m_ListUser.GetItemText(nItemCount, 1);
+	CString m_StrUser = m_ListUser.GetItemText(nItemCount, 2);
+	CString m_StrTime = m_ListUser.GetItemText(nItemCount, 3);
+
+	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	{
+		m_RadioEnable.SetCheck(BST_CHECKED);
+		m_RadioDisable.SetCheck(BST_UNCHECKED);
+	}
+	else
+	{
+		m_RadioEnable.SetCheck(BST_UNCHECKED);
+		m_RadioDisable.SetCheck(BST_CHECKED);
+	}
+	m_RadioIPAddr.SetCheck(BST_UNCHECKED);
+	m_RadioUser.SetCheck(BST_CHECKED);
+
+	m_EditUser.SetWindowText(m_StrUser.GetBuffer());
+	if (m_StrTime.GetLength() > 0)
+	{
+		SYSTEMTIME st_SysTime;
+		XENGINE_LIBTIMER st_LibTime;
+
+		memset(&st_SysTime, '\0', sizeof(SYSTEMTIME));
+		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
+
+		BaseLib_OperatorTime_StrToTime(m_StrTime.GetBuffer(), &st_LibTime);
+
+		st_SysTime.wYear = st_LibTime.wYear;
+		st_SysTime.wMonth = st_LibTime.wMonth;
+		st_SysTime.wDay = st_LibTime.wDay;
+		st_SysTime.wHour = st_LibTime.wHour;
+		st_SysTime.wMinute = st_LibTime.wMinute;
+		st_SysTime.wSecond = st_LibTime.wSecond;
+
+		m_BtnCheckTime.SetCheck(BST_CHECKED);
+		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.SetTime(&st_SysTime);
+	}
+	else
+	{
+		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
+		m_DataTime.EnableWindow(FALSE);
+	}
+	*pResult = 0;
+}
+
+
+void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	// TODO: 在此添加控件通知处理程序代码
+	POSITION pSt_Sition = m_ListAddr.GetFirstSelectedItemPosition();
+	int nItemCount = m_ListAddr.GetNextSelectedItem(pSt_Sition);
+	if (nItemCount < 0)
+	{
+		return;
+	}
+	CString m_StrEnable = m_ListAddr.GetItemText(nItemCount, 1);
+	CString m_StrUser = m_ListAddr.GetItemText(nItemCount, 2);
+	CString m_StrTime = m_ListAddr.GetItemText(nItemCount, 3);
+
+	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	{
+		m_RadioEnable.SetCheck(BST_CHECKED);
+		m_RadioDisable.SetCheck(BST_UNCHECKED);
+	}
+	else
+	{
+		m_RadioEnable.SetCheck(BST_UNCHECKED);
+		m_RadioDisable.SetCheck(BST_CHECKED);
+	}
+	m_RadioIPAddr.SetCheck(BST_UNCHECKED);
+	m_RadioUser.SetCheck(BST_CHECKED);
+
+	m_EditUser.SetWindowText(m_StrUser.GetBuffer());
+	if (m_StrTime.GetLength() > 0)
+	{
+		SYSTEMTIME st_SysTime;
+		XENGINE_LIBTIMER st_LibTime;
+
+		memset(&st_SysTime, '\0', sizeof(SYSTEMTIME));
+		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
+
+		BaseLib_OperatorTime_StrToTime(m_StrTime.GetBuffer(), &st_LibTime);
+
+		st_SysTime.wYear = st_LibTime.wYear;
+		st_SysTime.wMonth = st_LibTime.wMonth;
+		st_SysTime.wDay = st_LibTime.wDay;
+		st_SysTime.wHour = st_LibTime.wHour;
+		st_SysTime.wMinute = st_LibTime.wMinute;
+		st_SysTime.wSecond = st_LibTime.wSecond;
+
+		m_BtnCheckTime.SetCheck(BST_CHECKED);
+		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.SetTime(&st_SysTime);
+	}
+	else
+	{
+		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
+		m_DataTime.EnableWindow(FALSE);
+	}
+
+	*pResult = 0;
 }

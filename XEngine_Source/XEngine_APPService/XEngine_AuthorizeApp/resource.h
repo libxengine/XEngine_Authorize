@@ -39,6 +39,7 @@
 #define IDC_RADIO3                      1017
 #define IDC_STATIC_TIPS                 1017
 #define IDC_RADIO4                      1018
+#define IDC_STATIC_TIPS2                1018
 #define IDC_RADIO5                      1019
 #define IDC_DATETIMEPICKER1             1019
 #define IDC_RADIO6                      1020

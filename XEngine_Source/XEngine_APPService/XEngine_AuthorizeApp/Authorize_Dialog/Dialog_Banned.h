@@ -39,4 +39,7 @@ public:
 	CButton m_BtnCheckTime;
 	CButton m_RadioEnable;
 	CButton m_RadioDisable;
+	afx_msg void OnBnClickedButton5();
+	afx_msg void OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult);
 };
