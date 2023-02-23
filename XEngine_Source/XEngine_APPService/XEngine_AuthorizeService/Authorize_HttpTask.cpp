@@ -196,25 +196,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		}
 		else if (0 == _tcsnicmp(lpszAPIVerCDKey, tszAPIVer, _tcslen(lpszAPIVerCDKey)))
 		{
-			int nListCount = 0;
-			TCHAR** pptszList;
-			RfcComponents_HttpHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount);
-			if (nListCount > 0)
-			{
-				TCHAR tszKeyBuffer[64];
-				TCHAR tszValueBuffer[64];
-
-				memset(tszKeyBuffer, '\0', sizeof(tszKeyBuffer));
-				memset(tszValueBuffer, '\0', sizeof(tszValueBuffer));
-
-				BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszKeyBuffer, tszValueBuffer);
-				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen, tszValueBuffer);
-			}
-			else
-			{
-				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
-			}
-			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
+			XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
