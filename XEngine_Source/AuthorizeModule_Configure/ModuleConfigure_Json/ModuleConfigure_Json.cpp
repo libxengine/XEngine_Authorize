@@ -248,7 +248,7 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchPay = st_JsonRoot["bSwitchPay"].asBool();
 	pSt_ServerConfig->bSwitchPass = st_JsonRoot["bSwitchPass"].asBool();
 	pSt_ServerConfig->bSwtichTime = st_JsonRoot["bSwtichTime"].asBool();
-	pSt_ServerConfig->bSwtichCDkey = st_JsonRoot["bSwtichCDkey"].asBool();
+	pSt_ServerConfig->bSwtichCDKey = st_JsonRoot["bSwtichCDKey"].asBool();
 	
 	return TRUE;
 }
