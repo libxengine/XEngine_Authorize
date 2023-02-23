@@ -37,4 +37,6 @@ public:
 	virtual BOOL OnInitDialog();
 	CButton m_BtnSetConfigure;
 	CButton m_BtnGetConfigure;
+	CButton m_RadioCDkeyOPen;
+	CButton m_RadioCDKeyClose;
 };

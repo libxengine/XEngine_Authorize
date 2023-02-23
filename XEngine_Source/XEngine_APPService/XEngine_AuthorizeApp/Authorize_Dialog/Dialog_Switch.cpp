@@ -36,6 +36,8 @@ void CDialog_Switch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO10, m_RadioPassClose);
 	DDX_Control(pDX, IDC_BUTTON2, m_BtnSetConfigure);
 	DDX_Control(pDX, IDC_BUTTON1, m_BtnGetConfigure);
+	DDX_Control(pDX, IDC_RADIO11, m_RadioCDkeyOPen);
+	DDX_Control(pDX, IDC_RADIO12, m_RadioCDKeyClose);
 }
 
 
@@ -169,6 +171,17 @@ void CDialog_Switch::OnBnClickedButton1()
 			m_RadioPassOPen.SetCheck(BST_UNCHECKED);
 			m_RadioPassClose.SetCheck(BST_CHECKED);
 		}
+
+		if (st_JsonRoot["bSwitchCDKey"].asBool())
+		{
+			m_RadioCDkeyOPen.SetCheck(BST_CHECKED);
+			m_RadioCDKeyClose.SetCheck(BST_UNCHECKED);
+		}
+		else
+		{
+			m_RadioCDkeyOPen.SetCheck(BST_UNCHECKED);
+			m_RadioCDKeyClose.SetCheck(BST_CHECKED);
+		}
 		m_BtnSetConfigure.EnableWindow(TRUE);
 	}
 	else
@@ -239,6 +252,15 @@ void CDialog_Switch::OnBnClickedButton2()
 	else
 	{
 		st_JsonObject["bSwitchPass"] = false;
+	}
+
+	if (BST_CHECKED == m_RadioCDkeyOPen.GetCheck())
+	{
+		st_JsonObject["bSwitchCDKey"] = true;
+	}
+	else
+	{
+		st_JsonObject["bSwitchCDKey"] = false;
 	}
 
 	st_JsonRoot["st_SwitchInfo"] = st_JsonObject;
