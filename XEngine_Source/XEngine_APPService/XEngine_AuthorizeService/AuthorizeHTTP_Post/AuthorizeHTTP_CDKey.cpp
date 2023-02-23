@@ -54,7 +54,20 @@ BOOL XEngine_AuthorizeHTTP_CDKey(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LP
 	}
 	else if (0 == _tcsnicmp(lpszAPIVer, lpszAPIName, _tcslen(lpszAPIVer)))
 	{
+		XENGINE_AUTHORIZE_LOCAL st_Authorize;
+		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
+		Authorize_Local_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+		if (!Authorize_Local_GetLeftTimer(&st_Authorize))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized,cdkey is not authorized");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Authorize_GetLastError());
+			return FALSE;
+		}
+		Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
+		XEngine_Client_TaskSend(lpszClientAddr, tszRVBuffer, nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求验证CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
 	else
 	{
