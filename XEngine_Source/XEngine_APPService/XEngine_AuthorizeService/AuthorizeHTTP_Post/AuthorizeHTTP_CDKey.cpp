@@ -13,6 +13,13 @@ BOOL XEngine_AuthorizeHTTP_CDKey(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LP
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszRVBuffer, '\0', sizeof(tszRVBuffer));
 
+	if (!st_FunSwitch.bSwtichCDkey)
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，CDKey验证授权失败，功能已经被服务器关闭!"), lpszClientAddr);
+		return FALSE;
+	}
 	if (0 == _tcsnicmp(lpszAPICreate, lpszAPIName, _tcslen(lpszAPICreate)))
 	{
 		XENGINE_AUTHORIZE_LOCAL st_Authorize;
