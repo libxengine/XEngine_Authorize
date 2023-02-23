@@ -13,7 +13,7 @@ BOOL XEngine_AuthorizeHTTP_CDKey(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LP
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszRVBuffer, '\0', sizeof(tszRVBuffer));
 
-	if (!st_FunSwitch.bSwtichCDKey)
+	if (!st_FunSwitch.bSwitchCDKey)
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

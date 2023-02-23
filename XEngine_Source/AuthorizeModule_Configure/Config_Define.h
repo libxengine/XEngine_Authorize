@@ -80,8 +80,8 @@ typedef struct
 	BOOL bSwitchLogin;                                      //登录开关
 	BOOL bSwitchPay;                                        //充值开关
 	BOOL bSwitchPass;                                       //找回密码开关
-	BOOL bSwtichTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
-	BOOL bSwtichCDKey;                                      //是否允许本地CDKEY创建使用
+	BOOL bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
+	BOOL bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
