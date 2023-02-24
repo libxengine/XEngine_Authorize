@@ -4,5 +4,7 @@
     "bSwitchLogin":true,
     "bSwitchPay":true,
     "bSwitchPass":true,
-    "bSwtichTime":true
+    "bSwitchTime":true,
+    "bSwitchCDKey":true,
+    "bSwitchNotice":true
 }

@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, LPVOID lParam)
+void CALLBACK XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, LPVOID lParam)
 {
 	if (nLeftTimer <= 0)
 	{
@@ -46,7 +46,7 @@ void __stdcall XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
 	}
 }
-void __stdcall XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
+void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
 {
 	AUTHREG_USERTABLE st_UserTable;
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));

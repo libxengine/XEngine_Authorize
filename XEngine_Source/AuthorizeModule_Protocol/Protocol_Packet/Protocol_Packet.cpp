@@ -585,6 +585,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchPass"] = pSt_FunSwitch->bSwitchPass;
 	st_JsonRoot["bSwitchPay"] = pSt_FunSwitch->bSwitchPay;
 	st_JsonRoot["bSwitchRegister"] = pSt_FunSwitch->bSwitchRegister;
+	st_JsonRoot["bSwitchCDKey"] = pSt_FunSwitch->bSwitchCDKey;
+	st_JsonRoot["bSwitchNotice"] = pSt_FunSwitch->bSwitchNotice;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
@@ -668,6 +670,64 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["CountUser"] = st_JsonUser.size();
 	st_JsonRoot["ArrayUser"] = st_JsonUser;
 	st_JsonRoot["ArrayAddr"] = st_JsonAddr;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return TRUE;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpAnnouncement
+函数功能：打包公告列表
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_Announcement
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的列表
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Packet::Protocol_Packet_HttpAnnouncement(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_Announcement)[i]->nID;
+		st_JsonObject["tszContext"] = (*pppSt_Announcement)[i]->tszContext;
+		st_JsonObject["tszCreateTime"] = (*pppSt_Announcement)[i]->tszCreateTime;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["Count"] = st_JsonArray.size();
+	st_JsonRoot["Array"] = st_JsonArray;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);

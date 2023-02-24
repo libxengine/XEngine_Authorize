@@ -1433,6 +1433,131 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementInsert
+函数功能：公告插入
+ 参数.一：pSt_Announcement
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	if (NULL == pSt_Announcement)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return FALSE;
+	}
+	TCHAR tszSQLStatement[8192];
+	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
+
+    _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Announcement(tszContext,tszCreateTime) VALUES('%s',datetime('now', 'localtime'))"), pSt_Announcement->tszContext);
+	//插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementDelete
+函数功能：公告删除
+ 参数.一：pSt_Announcement
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	if (NULL == pSt_Announcement)
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return FALSE;
+	}
+	TCHAR tszSQLStatement[1024];
+	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
+
+    _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_Announcement WHERE ID = %lld"), pSt_Announcement->nID);
+	//插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+	return TRUE;
+}
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementList
+函数功能：列举所有公告
+ 参数.一：ppppSt_Announcement
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
+{
+	SQLPacket_IsErrorOccur = FALSE;
+
+	int nRow = 0;
+	int nColumn = 0;
+	CHAR** ppszResult = NULL;
+	TCHAR tszSQLStatement[1024];    //SQL语句
+
+	memset(tszSQLStatement, '\0', 1024);
+	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_Announcement"));
+
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = TRUE;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return FALSE;
+	}
+    *pInt_ListCount = nRow;
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, nRow, sizeof(AUTHREG_ANNOUNCEMENT));
+
+	int nFliedValue = nColumn;
+	//轮训所有内容
+	for (int i = 0; i < nRow; i++)
+	{
+		(*ppppSt_Announcement)[i]->nID = _ttoi64(ppszResult[nFliedValue]);
+        nFliedValue++;
+		_tcscpy((*ppppSt_Announcement)[i]->tszContext, ppszResult[nFliedValue]);
+        nFliedValue++;
+		_tcscpy((*ppppSt_Announcement)[i]->tszCreateTime, ppszResult[nFliedValue]);
+        nFliedValue++;
+	}
+	DataBase_SQLite_FreeTable(ppszResult);
+	return TRUE;
+}
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////

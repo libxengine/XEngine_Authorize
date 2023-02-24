@@ -197,6 +197,38 @@ int AuthClient_Login()
 	}
 	return 0;
 }
+int AuthClient_Notice()
+{
+	int nHTTPCode = 0;
+	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=notice");
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_T("GET"), lpszUrl, NULL, &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		return 0;
+	}
+	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)
+	{
+		TCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
+
+		int nMsgLen = st_JsonArray["tszContext"].asString().length();
+		BaseLib_OperatorCharset_UTFToAnsi(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
+
+		printf("AuthClient_Notice:\nID:%lld:%s\n", st_JsonArray["nID"].asInt64(), tszMsgBuffer);
+	}
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	return 0;
+}
 int AuthClient_GetPass()
 {
 	int nHTTPCode = 0;
@@ -299,6 +331,7 @@ int main()
 	AuthClient_Register();
 	AuthClient_Pay();
 	AuthClient_Login();
+	AuthClient_Notice();
 	AuthClient_GetPass();
 	AuthClient_GetTime();
 	AuthClient_Delete();

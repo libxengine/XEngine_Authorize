@@ -87,3 +87,10 @@ typedef struct
 	CHAR tszCreateTime[64];                                               //创建时间
 	BOOL bEnable;                                                         //是否启用
 }AUTHREG_BANNED, * LPAUTHREG_BANNED;
+//公告信息
+typedef struct
+{
+	CHAR tszContext[4096];                                                //信息
+	CHAR tszCreateTime[64];                                               //创建时间
+	__int64x nID;                                                         //ID
+}AUTHREG_ANNOUNCEMENT, * LPAUTHREG_ANNOUNCEMENT;

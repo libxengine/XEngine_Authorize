@@ -31,3 +31,7 @@ EXPORTS
 	Database_SQLite_BannedList
 	Database_SQLite_BannedExist
 	Database_SQLite_BannedUPDate
+
+	Database_SQLite_AnnouncementInsert
+	Database_SQLite_AnnouncementDelete
+	Database_SQLite_AnnouncementList

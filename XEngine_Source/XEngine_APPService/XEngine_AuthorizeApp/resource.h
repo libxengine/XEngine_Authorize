@@ -10,6 +10,7 @@
 #define IDD_DIALOG_MODIFY               136
 #define IDD_DIALOG_SWITCH               138
 #define IDD_DIALOG_BANNED               140
+#define IDD_DIALOG_ANNOUNCEMENT         142
 #define IDC_TAB1                        1000
 #define IDC_EDIT1                       1001
 #define IDC_EDIT2                       1002
@@ -47,14 +48,18 @@
 #define IDC_RADIO8                      1022
 #define IDC_RADIO9                      1023
 #define IDC_RADIO10                     1024
+#define IDC_RADIO11                     1025
+#define IDC_RADIO12                     1026
+#define IDC_RADIO13                     1027
+#define IDC_RADIO14                     1028
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        142
+#define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

@@ -84,6 +84,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		LPCTSTR lpszAPIVerSwitch = _T("switch");
 		LPCTSTR lpszAPIVerBanned = _T("banned");
 		LPCTSTR lpszAPIVerCDKey = _T("cdkey");
+		LPCTSTR lpszAPIVerNotice = _T("notice");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
@@ -196,25 +197,29 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		}
 		else if (0 == _tcsnicmp(lpszAPIVerCDKey, tszAPIVer, _tcslen(lpszAPIVerCDKey)))
 		{
-			int nListCount = 0;
-			TCHAR** pptszList;
-			RfcComponents_HttpHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount);
-			if (nListCount > 0)
+			XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerNotice, tszAPIVer, _tcslen(lpszAPIVerNotice)))
+		{
+			AUTHREG_USERTABLE st_UserTable;
+			memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+			//验证权限
+			Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken);
+			if (!Session_Token_Get(xhToken, &st_UserTable))
 			{
-				TCHAR tszKeyBuffer[64];
-				TCHAR tszValueBuffer[64];
-
-				memset(tszKeyBuffer, '\0', sizeof(tszKeyBuffer));
-				memset(tszValueBuffer, '\0', sizeof(tszValueBuffer));
-
-				BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszKeyBuffer, tszValueBuffer);
-				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen, tszValueBuffer);
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为没有经过验证"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
 			}
-			else
+			if (0 != st_UserTable.st_UserInfo.nUserLevel)
 			{
-				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "permission is failed");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求的API:%s 失败,因为TOKEN权限不足"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return FALSE;
 			}
-			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
+			XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 		}
 	}
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
@@ -223,6 +228,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		TCHAR** pptszList;
 		TCHAR tszUrlName[128];
 		LPCTSTR lpszFuncName = _T("api");
+		LPCTSTR lpszAPIVerNotice = _T("notice");
 
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		RfcComponents_HttpHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
@@ -234,7 +240,21 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,发送的URL请求参数不正确:%s"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return FALSE;
 		}
-		XEngine_AuthorizeHTTP_Token(lpszClientAddr, pptszList, nListCount);
+		TCHAR tszURLKey[128];
+		TCHAR tszURLValue[128];
+
+		memset(tszURLKey, '\0', sizeof(tszURLKey));
+		memset(tszURLValue, '\0', sizeof(tszURLValue));
+
+		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
+		if (0 == _tcsnicmp(lpszAPIVerNotice, tszURLValue, _tcslen(lpszAPIVerNotice)))
+		{
+			XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, "list", lpszMsgBuffer, nMsgLen);
+		}
+		else
+		{
+			XEngine_AuthorizeHTTP_Token(lpszClientAddr, pptszList, nListCount);
+		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
 	}
 	else

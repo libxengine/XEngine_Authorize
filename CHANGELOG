@@ -1,3 +1,17 @@
+XEngine_Authorize V3.6.0.1001
+
+添加:公告功能支持
+添加:公告功能开关支持
+添加:cdkey功能开关
+添加:cdkey验证支持
+删除:cdkey的单独密码支持
+
+added:announcement function
+added:switch function for announcement system
+added:cdkey switch support
+added:verification cdkey support
+delete:cdkey password support
+======================================================================================
 XEngine_Authorize V3.5.0.1001
 
 添加:禁用列表功能支持修改信息了

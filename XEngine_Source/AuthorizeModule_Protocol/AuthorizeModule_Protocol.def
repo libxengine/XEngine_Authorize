@@ -13,6 +13,7 @@ EXPORTS
 	Protocol_Packet_HttpToken
 	Protocol_Packet_HttpSwitch
 	Protocol_Packet_HttpBanned
+	Protocol_Packet_HttpAnnouncement
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_HttpParseToken
@@ -29,3 +30,4 @@ EXPORTS
 	Protocol_Parse_HttpParsePos
 	Protocol_Parse_HttpParseBanned
 	Protocol_Parse_HttpParseCDKey
+	Protocol_Parse_HttpParseAnnouncement
