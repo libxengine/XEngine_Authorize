@@ -39,4 +39,6 @@ public:
 	CButton m_BtnGetConfigure;
 	CButton m_RadioCDkeyOPen;
 	CButton m_RadioCDKeyClose;
+	CButton m_RadioNoticeOPen;
+	CButton m_RadioNoticeClose;
 };
