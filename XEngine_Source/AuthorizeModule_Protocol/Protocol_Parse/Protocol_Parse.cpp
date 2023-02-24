@@ -1117,18 +1117,19 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCTSTR lpszMsgBuffer
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return FALSE;
 	}
+	Json::Value st_JsonObject = st_JsonRoot["st_Notice"];
 
-	if (!st_JsonRoot["tszContext"].isNull())
+	if (!st_JsonObject["tszContext"].isNull())
 	{
-		_tcscpy(pSt_Announcement->tszContext, st_JsonRoot["tszContext"].asCString());
+		_tcscpy(pSt_Announcement->tszContext, st_JsonObject["tszContext"].asCString());
 	}
-	if (!st_JsonRoot["tszCreateTime"].isNull())
+	if (!st_JsonObject["tszCreateTime"].isNull())
 	{
-		_tcscpy(pSt_Announcement->tszCreateTime, st_JsonRoot["tszCreateTime"].asCString());
+		_tcscpy(pSt_Announcement->tszCreateTime, st_JsonObject["tszCreateTime"].asCString());
 	}
-	if (!st_JsonRoot["nID"].isNull())
+	if (!st_JsonObject["nID"].isNull())
 	{
-		pSt_Announcement->nID = st_JsonRoot["nID"].asInt64();
+		pSt_Announcement->nID = st_JsonObject["nID"].asInt64();
 	}
 	return TRUE;
 }
