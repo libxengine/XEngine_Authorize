@@ -42,6 +42,7 @@ feature list:
 14. support distributed verification authorize function
 15. black list management
 16. local cdkey support
+17. announecement management
 
 ## install
 
