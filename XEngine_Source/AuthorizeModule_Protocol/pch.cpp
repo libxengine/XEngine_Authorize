@@ -71,6 +71,10 @@ extern "C" BOOL Protocol_Packet_HttpBanned(TCHAR * ptszMsgBuffer, int* pInt_MsgL
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpBanned(ptszMsgBuffer, pInt_MsgLen, pppSt_BannedUser, nUserCount, pppSt_BannedAddr, nAddrCount);
 }
+extern "C" BOOL Protocol_Packet_HttpAnnouncement(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT * **pppSt_Announcement, int nListCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpAnnouncement(ptszMsgBuffer, pInt_MsgLen, pppSt_Announcement, nListCount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -133,4 +137,8 @@ extern "C" BOOL Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int nMsgLe
 extern "C" BOOL Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL * pSt_Authorize)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, pSt_Authorize);
+}
+extern "C" BOOL Protocol_Parse_HttpParseAnnouncement(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT * pSt_Announcement)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, pSt_Announcement);
 }

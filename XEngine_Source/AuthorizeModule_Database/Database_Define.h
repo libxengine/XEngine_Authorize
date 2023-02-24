@@ -418,3 +418,50 @@ extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
 备注：
 *********************************************************************/
 extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementInsert
+函数功能：公告插入
+ 参数.一：pSt_Announcement
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementDelete
+函数功能：公告删除
+ 参数.一：pSt_Announcement
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+/********************************************************************
+函数名称：Database_SQLite_AnnouncementList
+函数功能：列举所有公告
+ 参数.一：ppppSt_Announcement
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" BOOL Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);

@@ -1073,3 +1073,62 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int n
 	}
 	return TRUE;
 }
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseAnnouncement
+函数功能：解析公告信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入缓冲区大小
+ 参数.三：pSt_Announcement
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析后的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+BOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+{
+	Protocol_IsErrorOccur = FALSE;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Announcement))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return FALSE;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	//解析JSON
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = TRUE;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return FALSE;
+	}
+
+	if (!st_JsonRoot["tszContext"].isNull())
+	{
+		_tcscpy(pSt_Announcement->tszContext, st_JsonRoot["tszContext"].asCString());
+	}
+	if (!st_JsonRoot["tszCreateTime"].isNull())
+	{
+		_tcscpy(pSt_Announcement->tszCreateTime, st_JsonRoot["tszCreateTime"].asCString());
+	}
+	if (!st_JsonRoot["nID"].isNull())
+	{
+		pSt_Announcement->nID = st_JsonRoot["nID"].asInt64();
+	}
+	return TRUE;
+}

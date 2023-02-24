@@ -125,3 +125,15 @@ extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED * pSt_Banned)
 {
 	return m_SQLAuth.Database_SQLite_BannedUPDate(pSt_Banned);
 }
+extern "C" BOOL Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT * pSt_Announcement)
+{
+	return m_SQLAuth.Database_SQLite_AnnouncementInsert(pSt_Announcement);
+}
+extern "C" BOOL Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT * pSt_Announcement)
+{
+	return m_SQLAuth.Database_SQLite_AnnouncementDelete(pSt_Announcement);
+}
+extern "C" BOOL Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT * **ppppSt_Announcement, int* pInt_ListCount)
+{
+	return m_SQLAuth.Database_SQLite_AnnouncementList(ppppSt_Announcement, pInt_ListCount);
+}
