@@ -249,6 +249,7 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchPass = st_JsonRoot["bSwitchPass"].asBool();
 	pSt_ServerConfig->bSwitchTime = st_JsonRoot["bSwitchTime"].asBool();
 	pSt_ServerConfig->bSwitchCDKey = st_JsonRoot["bSwitchCDKey"].asBool();
-	
+	pSt_ServerConfig->bSwitchNotice = st_JsonRoot["bSwitchNotice"].asBool();
+
 	return TRUE;
 }

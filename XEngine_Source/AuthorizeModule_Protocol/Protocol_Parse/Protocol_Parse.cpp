@@ -812,6 +812,8 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchPay = st_JsonObject["bSwitchPay"].asBool();
 	pSt_FunSwitch->bSwitchPass = st_JsonObject["bSwitchPass"].asBool();
 	pSt_FunSwitch->bSwitchCDKey = st_JsonObject["bSwitchCDKey"].asBool();
+	pSt_FunSwitch->bSwitchNotice = st_JsonObject["bSwitchNotice"].asBool();
+
 	return TRUE;
 }
 /********************************************************************

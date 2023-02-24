@@ -10,6 +10,13 @@ BOOL XEngine_AuthorizeHTTP_Announcement(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIN
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
+	if (!st_FunSwitch.bSwitchNotice)
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，公告系统协议处理失败，功能已经被服务器关闭!"), lpszClientAddr);
+		return FALSE;
+	}
 	if (0 == _tcsnicmp(lpszAPIInsert, lpszAPIName, _tcslen(lpszAPIInsert)))
 	{
 		AUTHREG_ANNOUNCEMENT st_Announcement;
