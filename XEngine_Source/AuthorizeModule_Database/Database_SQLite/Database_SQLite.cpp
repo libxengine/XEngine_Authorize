@@ -1495,7 +1495,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* 
 	TCHAR tszSQLStatement[1024];
 	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
-    _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_Announcement WHERE nID = '%lld'"), pSt_Announcement->nID);
+    _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_Announcement WHERE ID = %lld"), pSt_Announcement->nID);
 	//插入数据库
 	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
 	{
@@ -1541,6 +1541,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
 		return FALSE;
 	}
+    *pInt_ListCount = nRow;
     BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
 	int nFliedValue = nColumn;
