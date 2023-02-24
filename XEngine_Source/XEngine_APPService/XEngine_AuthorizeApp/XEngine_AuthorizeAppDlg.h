@@ -36,6 +36,7 @@ public:
 	CDialog_User m_DlgUser;
 	CDialog_Serial m_DlgSerial;
 	CDialog_Banned m_DlgBanned;
+	CDialog_Announcement m_DlgAnnouncement;
 public:
 	CTabCtrl m_TabWindows;
 	afx_msg void OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult);

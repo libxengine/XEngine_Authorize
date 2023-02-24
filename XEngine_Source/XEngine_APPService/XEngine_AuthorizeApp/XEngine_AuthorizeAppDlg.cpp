@@ -70,12 +70,14 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_TabWindows.InsertItem(0, _T("服务配置"));
 	m_TabWindows.InsertItem(1, _T("功能开关"));
 	m_TabWindows.InsertItem(2, _T("用户管理"));
-	m_TabWindows.InsertItem(3, _T("序列号管理"));
-	m_TabWindows.InsertItem(4, _T("黑名单配置"));
+	m_TabWindows.InsertItem(3, _T("公告管理"));
+	m_TabWindows.InsertItem(4, _T("序列号管理"));
+	m_TabWindows.InsertItem(5, _T("黑名单配置"));
 	
 	m_DlgConfig.Create(IDD_DIALOG_CONFIG, &m_TabWindows);
 	m_DlgSwitch.Create(IDD_DIALOG_SWITCH, &m_TabWindows);
 	m_DlgUser.Create(IDD_DIALOG_USER, &m_TabWindows);
+	m_DlgAnnouncement.Create(IDD_DIALOG_ANNOUNCEMENT, &m_TabWindows);
 	m_DlgSerial.Create(IDD_DIALOG_SERIAL, &m_TabWindows);
 	m_DlgBanned.Create(IDD_DIALOG_BANNED, &m_TabWindows);
 	//调整子对话框在父窗口中的位置 
@@ -89,12 +91,14 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgConfig.MoveWindow(&st_Rect);
 	m_DlgSwitch.MoveWindow(&st_Rect);
 	m_DlgUser.MoveWindow(&st_Rect);
+	m_DlgAnnouncement.MoveWindow(&st_Rect);
 	m_DlgSerial.MoveWindow(&st_Rect);
 	m_DlgBanned.MoveWindow(&st_Rect);
 	//分别设置隐藏和显示 
 	m_DlgConfig.ShowWindow(TRUE);
 	m_DlgSwitch.ShowWindow(FALSE);
 	m_DlgUser.ShowWindow(FALSE);
+	m_DlgAnnouncement.ShowWindow(FALSE);
 	m_DlgSerial.ShowWindow(FALSE);
 	m_DlgBanned.ShowWindow(FALSE);
 	m_TabWindows.SetCurSel(0);
@@ -153,6 +157,7 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(TRUE);
 		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
+		m_DlgAnnouncement.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgBanned.ShowWindow(FALSE);
 		break;
@@ -160,6 +165,7 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgSwitch.ShowWindow(TRUE);
 		m_DlgUser.ShowWindow(FALSE);
+		m_DlgAnnouncement.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgBanned.ShowWindow(FALSE);
 		break;
@@ -167,6 +173,7 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(TRUE);
+		m_DlgAnnouncement.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgBanned.ShowWindow(FALSE);
 		break;
@@ -174,13 +181,23 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(TRUE);
+		m_DlgAnnouncement.ShowWindow(TRUE);
+		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgBanned.ShowWindow(FALSE);
 		break;
 	case 4:
 		m_DlgConfig.ShowWindow(FALSE);
 		m_DlgSwitch.ShowWindow(FALSE);
 		m_DlgUser.ShowWindow(FALSE);
+		m_DlgAnnouncement.ShowWindow(FALSE);
+		m_DlgSerial.ShowWindow(TRUE);
+		m_DlgBanned.ShowWindow(FALSE);
+		break;
+	case 5:
+		m_DlgConfig.ShowWindow(FALSE);
+		m_DlgSwitch.ShowWindow(FALSE);
+		m_DlgUser.ShowWindow(FALSE);
+		m_DlgAnnouncement.ShowWindow(FALSE);
 		m_DlgSerial.ShowWindow(FALSE);
 		m_DlgBanned.ShowWindow(TRUE);
 		break;

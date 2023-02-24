@@ -10,6 +10,7 @@
 #define IDD_DIALOG_MODIFY               136
 #define IDD_DIALOG_SWITCH               138
 #define IDD_DIALOG_BANNED               140
+#define IDD_DIALOG_ANNOUNCEMENT         142
 #define IDC_TAB1                        1000
 #define IDC_EDIT1                       1001
 #define IDC_EDIT2                       1002
@@ -54,9 +55,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        142
+#define _APS_NEXT_RESOURCE_VALUE        144
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1020
+#define _APS_NEXT_CONTROL_VALUE         1022
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
