@@ -247,7 +247,7 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
-		if (0 == _tcsncicmp(lpszAPIVerNotice, tszURLValue, _tcslen(lpszAPIVerNotice)))
+		if (0 == _tcsnicmp(lpszAPIVerNotice, tszURLValue, _tcslen(lpszAPIVerNotice)))
 		{
 			XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, "list", lpszMsgBuffer, nMsgLen);
 		}

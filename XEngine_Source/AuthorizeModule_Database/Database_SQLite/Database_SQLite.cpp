@@ -1456,7 +1456,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* 
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return FALSE;
 	}
-	TCHAR tszSQLStatement[1024];
+	TCHAR tszSQLStatement[8192];
 	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
     _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Announcement(tszContext,tszCreateTime) VALUES('%s',datetime('now', 'localtime'))"), pSt_Announcement->tszContext);
