@@ -10,10 +10,25 @@
  Target Server Version : 3035005 (3.35.5)
  File Encoding         : 65001
 
- Date: 03/02/2023 15:14:23
+ Date: 24/02/2023 14:43:17
 */
 
 PRAGMA foreign_keys = false;
+
+-- ----------------------------
+-- Table structure for Authorize_Announcement
+-- ----------------------------
+DROP TABLE IF EXISTS "Authorize_Announcement";
+CREATE TABLE "Authorize_Announcement" (
+  "ID" INTEGER NOT NULL,
+  "tszContext" TEXT,
+  "tszCreateTime" DATE,
+  PRIMARY KEY ("ID")
+);
+
+-- ----------------------------
+-- Records of Authorize_Announcement
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for Authorize_BannedAddr
@@ -116,7 +131,7 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 1);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 2);
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedUser', 6);
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedAddr', 5);
 
@@ -133,6 +148,6 @@ UPDATE "sqlite_sequence" SET seq = 6 WHERE name = 'Authorize_BannedUser';
 -- ----------------------------
 -- Auto increment value for Authorize_User
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_User';
+UPDATE "sqlite_sequence" SET seq = 2 WHERE name = 'Authorize_User';
 
 PRAGMA foreign_keys = true;
