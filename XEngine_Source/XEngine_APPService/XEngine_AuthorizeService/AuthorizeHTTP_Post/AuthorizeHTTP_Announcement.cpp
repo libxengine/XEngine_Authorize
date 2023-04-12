@@ -1,12 +1,12 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Announcement(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszAPIInsert = _T("insert");
-	LPCTSTR lpszAPIDelete = _T("delete");
-	LPCTSTR lpszAPIList = _T("list");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszAPIInsert = _T("insert");
+	LPCXSTR lpszAPIDelete = _T("delete");
+	LPCXSTR lpszAPIList = _T("list");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 

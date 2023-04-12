@@ -1,13 +1,13 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszAPIList = _T("list");
-	LPCTSTR lpszAPIInsert = _T("insert");
-	LPCTSTR lpszAPIDelete = _T("delete");
-	LPCTSTR lpszAPIPush = _T("push");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszAPIList = _T("list");
+	LPCXSTR lpszAPIInsert = _T("insert");
+	LPCXSTR lpszAPIDelete = _T("delete");
+	LPCXSTR lpszAPIPush = _T("push");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
@@ -16,7 +16,7 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		int nPosStart = 0;
 		int nPosEnd = 0;
 		int nListCount = 0;
-		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)
 		{
 			return FALSE;
@@ -44,7 +44,7 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	{
 		int nNumberCount = 0;
 		int nSerialCount = 0;
-		TCHAR tszHasTime[128];
+		XCHAR tszHasTime[128];
 		XENGINE_LIBTIMER st_AuthTimer;
 		ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
 
@@ -83,8 +83,8 @@ BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 			return FALSE;
 		}
 		//生成卡
-		TCHAR** pptszSerialNumber;
-		LPCTSTR lpszUserHdr = _T("XAUTH");
+		XCHAR** pptszSerialNumber;
+		LPCXSTR lpszUserHdr = _T("XAUTH");
 		if (!Authorize_Serial_Creator(&pptszSerialNumber, lpszUserHdr, nSerialCount, nNumberCount, &st_AuthTimer, enSerialType))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "Internal Server Error");

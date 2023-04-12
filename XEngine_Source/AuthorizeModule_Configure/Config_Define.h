@@ -18,8 +18,8 @@ typedef struct
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
 	int nHTTPPort;                                          //HTTP管理端口
-	BOOL bDeamon;                                           //守护进程,LINUX
-	BOOL bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
+	XBOOL bDeamon;                                           //守护进程,LINUX
+	XBOOL bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct
 	{
 		int nMaxClient;                                     //最大客户端个数
@@ -40,29 +40,29 @@ typedef struct
 	}st_XVerification;
 	struct 
 	{
-		BOOL bMultiLogin;                                   //是否允许多端登录
-		BOOL bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
-		BOOL bPassAuth;                                     //是否启用三方认证
+		XBOOL bMultiLogin;                                   //是否允许多端登录
+		XBOOL bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
+		XBOOL bPassAuth;                                     //是否启用三方认证
 		int nHTTPAuthTime;                                  //HTTP验证超时时间,单位秒
 		struct  
 		{
-			TCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
-			TCHAR tszPassLogout[MAX_PATH];                  //三方认证登出通知
-			TCHAR tszPassTimeout[MAX_PATH];                 //三方认证超时通知
+			XCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
+			XCHAR tszPassLogout[MAX_PATH];                  //三方认证登出通知
+			XCHAR tszPassTimeout[MAX_PATH];                 //三方认证超时通知
 		}st_PassUrl;
 	}st_XLogin;
 	struct  
 	{
-		BOOL bEnable;                                       //是否启用加密传输 
+		XBOOL bEnable;                                       //是否启用加密传输 
 		int nPassword;                                      //密码
 	}st_XCrypto;
 	struct
 	{ 
-		TCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
+		XCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
 	}st_XSql;
 	struct
 	{
-		TCHAR tszLogFile[MAX_PATH];                         //日志文件
+		XCHAR tszLogFile[MAX_PATH];                         //日志文件
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
@@ -75,19 +75,19 @@ typedef struct
 //功能开关
 typedef struct
 {
-	BOOL bSwitchDelete;                                     //删除开关
-	BOOL bSwitchRegister;                                   //注册开关
-	BOOL bSwitchLogin;                                      //登录开关
-	BOOL bSwitchPay;                                        //充值开关
-	BOOL bSwitchPass;                                       //找回密码开关
-	BOOL bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
-	BOOL bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
-	BOOL bSwitchNotice;                                     //是否开启公告系统
+	XBOOL bSwitchDelete;                                     //删除开关
+	XBOOL bSwitchRegister;                                   //注册开关
+	XBOOL bSwitchLogin;                                      //登录开关
+	XBOOL bSwitchPay;                                        //充值开关
+	XBOOL bSwitchPass;                                       //找回密码开关
+	XBOOL bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
+	XBOOL bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
+	XBOOL bSwitchNotice;                                     //是否开启公告系统
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD Config_GetLastError(int* pInt_SysError = NULL);
+extern "C" XLONG Config_GetLastError(int* pInt_SysError = NULL);
 /************************************************************************/
 /*                              配置文件导出函数                        */
 /************************************************************************/
@@ -109,7 +109,7 @@ extern "C" DWORD Config_GetLastError(int* pInt_SysError = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
+extern "C" XBOOL ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
 /********************************************************************
 函数名称：ModuleConfigure_Json_Switch
 函数功能：功能开关配置文件
@@ -128,4 +128,4 @@ extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVIC
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig);
+extern "C" XBOOL ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig);

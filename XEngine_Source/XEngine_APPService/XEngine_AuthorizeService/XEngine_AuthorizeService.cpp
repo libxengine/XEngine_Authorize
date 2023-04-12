@@ -1,7 +1,7 @@
 ﻿#include "Authorize_Hdr.h"
 
-BOOL bIsRun = FALSE;
-XLOG xhLog = NULL;
+XBOOL bIsRun = FALSE;
+XHANDLE xhLog = NULL;
 XHANDLE xhTCPSocket = NULL;
 XHANDLE xhWSSocket = NULL;
 XHANDLE xhHttpSocket = NULL;
@@ -48,7 +48,7 @@ void ServiceApp_Stop(int signo)
 		}
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
-		RfcComponents_HttpServer_DestroyEx(xhHttpPacket);
+		HttpProtocol_Server_DestroyEx(xhHttpPacket);
 
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
@@ -108,8 +108,8 @@ int main(int argc, char** argv)
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
 	THREADPOOL_PARAMENT** ppSt_ListHttpThread;
-	LPCTSTR lpszHTTPMime = _T("./XEngine_Config/HttpMime.types");
-	LPCTSTR lpszHTTPCode = _T("./XEngine_Config/HttpCode.types");
+	LPCXSTR lpszHTTPMime = _T("./XEngine_Config/HttpMime.types");
+	LPCXSTR lpszHTTPCode = _T("./XEngine_Config/HttpCode.types");
 
 	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
 	memset(&st_AuthConfig, '\0', sizeof(XENGINE_SERVICECONFIG));
@@ -237,10 +237,10 @@ int main(int argc, char** argv)
 	//是否开启HTTP服务
 	if (st_AuthConfig.nHTTPPort > 0)
 	{
-		xhHttpPacket = RfcComponents_HttpServer_InitEx(lpszHTTPCode, lpszHTTPMime, st_AuthConfig.st_XMax.nHTTPThread);
+		xhHttpPacket = HttpProtocol_Server_InitEx(lpszHTTPCode, lpszHTTPMime, st_AuthConfig.st_XMax.nHTTPThread);
 		if (NULL == xhHttpPacket)
 		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化HTTP组包器失败，错误：%lX"), HttpServer_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化HTTP组包器失败，错误：%lX"), HttpProtocol_GetLastError());
 			goto XENGINE_EXITAPP;
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化HTTP组包器成功,任务池个数:%d"), st_AuthConfig.st_XMax.nHTTPThread);
@@ -284,7 +284,7 @@ XENGINE_EXITAPP:
 
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
-		RfcComponents_HttpServer_DestroyEx(xhHttpPacket);
+		HttpProtocol_Server_DestroyEx(xhHttpPacket);
 
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);

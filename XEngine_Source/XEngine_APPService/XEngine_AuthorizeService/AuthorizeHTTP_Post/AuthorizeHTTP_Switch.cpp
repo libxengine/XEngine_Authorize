@@ -1,11 +1,11 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Switch(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_Switch(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszAPIGet = _T("get");
-	LPCTSTR lpszAPISet = _T("set");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszAPIGet = _T("get");
+	LPCXSTR lpszAPISet = _T("set");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 

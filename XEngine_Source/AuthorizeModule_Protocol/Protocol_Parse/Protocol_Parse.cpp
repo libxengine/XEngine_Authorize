@@ -45,7 +45,7 @@ CProtocol_Parse::~CProtocol_Parse()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
+XBOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -97,7 +97,7 @@ BOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCTSTR lpszMsgBuffer, int nMsgLen, X
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCTSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -150,7 +150,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCTSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -214,7 +214,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCTSTR lpszMsgBuffer, int nM
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -297,7 +297,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCTSTR lpszMsgBuffer, int nM
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -353,7 +353,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCTSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCTSTR lpszMsgBuffer, int nMsgLen, TCHAR* ptszSerial)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -405,7 +405,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCTSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -512,7 +512,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCTSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -603,7 +603,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCTSTR lpszMsgBuffer, int 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, TCHAR* ptszHasTime)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -655,7 +655,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCTSTR lpszMsgBuffer, int
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int nMsgLen, BOOL* pbOnline)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, XBOOL* pbOnline)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -703,7 +703,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCTSTR lpszMsgBuffer, int 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -783,7 +783,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCTSTR lpszMsgBuffer, int nM
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -844,7 +844,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCTSTR lpszMsgBuffer, int 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -893,7 +893,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCTSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -965,7 +965,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCTSTR lpszMsgBuffer, int 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -1098,7 +1098,7 @@ BOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCTSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCTSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
 	Protocol_IsErrorOccur = FALSE;
 

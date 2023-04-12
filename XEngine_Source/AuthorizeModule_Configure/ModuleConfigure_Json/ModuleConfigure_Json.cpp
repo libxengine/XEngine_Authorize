@@ -40,7 +40,7 @@ CModuleConfigure_Json::~CModuleConfigure_Json()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG* pSt_ServerConfig)
+XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG* pSt_ServerConfig)
 {
 	Config_IsErrorOccur = FALSE;
 
@@ -62,7 +62,7 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XE
 		return FALSE;
 	}
 	size_t nCount = 0;
-	TCHAR tszMsgBuffer[4096];
+	XCHAR tszMsgBuffer[4096];
 	while (1)
 	{
 		size_t nRet = fread(tszMsgBuffer + nCount, 1, 2048, pSt_File);
@@ -201,7 +201,7 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XE
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH* pSt_ServerConfig)
+XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH* pSt_ServerConfig)
 {
 	Config_IsErrorOccur = FALSE;
 
@@ -223,7 +223,7 @@ BOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, 
 		return FALSE;
 	}
 	size_t nCount = 0;
-	TCHAR tszMsgBuffer[4096];
+	XCHAR tszMsgBuffer[4096];
 	while (1)
 	{
 		size_t nRet = fread(tszMsgBuffer + nCount, 1, 2048, pSt_File);

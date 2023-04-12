@@ -67,7 +67,7 @@ void CDialog_Banned::OnBnClickedRadio2()
 }
 
 
-BOOL CDialog_Banned::OnInitDialog()
+XBOOL CDialog_Banned::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -113,12 +113,12 @@ void CDialog_Banned::OnBnClickedButton2()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
@@ -144,12 +144,12 @@ void CDialog_Banned::OnBnClickedButton2()
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -166,7 +166,7 @@ void CDialog_Banned::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -213,21 +213,21 @@ void CDialog_Banned::OnBnClickedButton4()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -244,7 +244,7 @@ void CDialog_Banned::OnBnClickedButton4()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -265,7 +265,7 @@ void CDialog_Banned::OnBnClickedButton4()
 
 	for (unsigned int i = 0; i < st_JsonRoot["ArrayAddr"].size(); i++)
 	{
-		TCHAR tszIndex[10];
+		XCHAR tszIndex[10];
 		memset(tszIndex, '\0', 10);
 		_itot_s(i, tszIndex, 10);
 
@@ -287,7 +287,7 @@ void CDialog_Banned::OnBnClickedButton4()
 	}
 	for (unsigned int i = 0; i < st_JsonRoot["ArrayUser"].size(); i++)
 	{
-		TCHAR tszIndex[10];
+		XCHAR tszIndex[10];
 		memset(tszIndex, '\0', 10);
 		_itot_s(i, tszIndex, 10);
 
@@ -334,7 +334,7 @@ void CDialog_Banned::OnBnClickedButton3()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -345,16 +345,16 @@ void CDialog_Banned::OnBnClickedButton3()
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -371,7 +371,7 @@ void CDialog_Banned::OnBnClickedButton3()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -436,12 +436,12 @@ void CDialog_Banned::OnBnClickedButton5()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
@@ -467,12 +467,12 @@ void CDialog_Banned::OnBnClickedButton5()
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -489,7 +489,7 @@ void CDialog_Banned::OnBnClickedButton5()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);

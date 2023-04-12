@@ -6,5 +6,5 @@
 HWND hMainWnd = NULL;
 HWND hUserWnd = NULL;
 HWND hConfigWnd = NULL;
-BOOL bCrypto = FALSE;
-LPCSTR lpszStuType[2] = { "离线","在线" };
+XBOOL bCrypto = FALSE;
+LPCXSTR lpszStuType[2] = { "离线","在线" };

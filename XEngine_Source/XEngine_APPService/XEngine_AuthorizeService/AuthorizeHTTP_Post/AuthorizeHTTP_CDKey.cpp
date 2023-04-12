@@ -1,14 +1,14 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_CDKey(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
 	int nRVLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	TCHAR tszRVBuffer[4096];
-	LPCTSTR lpszAPICreate = _T("create");
-	LPCTSTR lpszAPIAuth = _T("auth");
-	LPCTSTR lpszAPIVer = _T("ver");
+	XCHAR tszSDBuffer[4096];
+	XCHAR tszRVBuffer[4096];
+	LPCXSTR lpszAPICreate = _T("create");
+	LPCXSTR lpszAPIAuth = _T("auth");
+	LPCXSTR lpszAPIVer = _T("ver");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszRVBuffer, '\0', sizeof(tszRVBuffer));

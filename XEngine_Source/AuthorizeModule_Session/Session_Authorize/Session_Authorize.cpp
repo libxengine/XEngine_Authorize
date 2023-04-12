@@ -39,7 +39,7 @@ CSession_Authorize::~CSession_Authorize()
   意思：是否初始化成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam /* = NULL */)
+XBOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,XPVOID lParam /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -87,7 +87,7 @@ BOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSI
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr /* = NULL */)
+XBOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientAddr /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -152,7 +152,7 @@ BOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client)
+XBOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -194,7 +194,7 @@ BOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCTSTR lpszUserName
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser, TCHAR *ptszClientAddr)
+XBOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser, XCHAR *ptszClientAddr)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -236,7 +236,7 @@ BOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser)
+XBOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR *ptszClientUser)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -246,7 +246,7 @@ BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return FALSE;
     }
-    BOOL bIsFound = FALSE;
+    XBOOL bIsFound = FALSE;
     st_Locker.lock_shared();
     unordered_map<tstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
     for (;stl_MapIterator != stl_MapNetClient.end();stl_MapIterator++)
@@ -282,7 +282,7 @@ BOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr
   意思：是否移除成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_CloseClient(LPCTSTR lpszClientAddr)
+XBOOL CSession_Authorize::Session_Authorize_CloseClient(LPCXSTR lpszClientAddr)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -304,7 +304,7 @@ BOOL CSession_Authorize::Session_Authorize_CloseClient(LPCTSTR lpszClientAddr)
   意思：是否销毁成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_Destroy()
+XBOOL CSession_Authorize::Session_Authorize_Destroy()
 {
     Session_IsErrorOccur = FALSE;
 
@@ -343,7 +343,7 @@ BOOL CSession_Authorize::Session_Authorize_Destroy()
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable, int nNetType)
+XBOOL CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable, int nNetType)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -391,7 +391,7 @@ BOOL CSession_Authorize::Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHRE
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable)
+XBOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -418,7 +418,7 @@ BOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTa
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(LPVOID lParam)
+XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 {
     CSession_Authorize *pClass_This = (CSession_Authorize *)lParam;
     XENGINE_LIBTIMER st_LibTimer;

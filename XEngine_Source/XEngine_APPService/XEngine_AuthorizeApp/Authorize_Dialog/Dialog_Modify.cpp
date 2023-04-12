@@ -47,7 +47,7 @@ END_MESSAGE_MAP()
 // CDialog_Modify 消息处理程序
 
 
-BOOL CDialog_Modify::OnInitDialog()
+XBOOL CDialog_Modify::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -78,7 +78,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		CString m_StrIPAddr;
 		CString m_StrIPPort;
 		CString m_StrToken;
-		TCHAR tszUrlAddr[MAX_PATH];
+		XCHAR tszUrlAddr[MAX_PATH];
 		memset(tszUrlAddr, '\0', MAX_PATH);
 		//组合请求URL
 		pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -88,7 +88,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 		//请求用户信息
 		int nMsgLen = 0;
-		CHAR* ptszMsgBuffer = NULL;
+		XCHAR* ptszMsgBuffer = NULL;
 		Json::Value st_JsonRoot;
 		Json::Value st_JsonObject;
 
@@ -96,12 +96,12 @@ BOOL CDialog_Modify::OnInitDialog()
 		st_JsonRoot["st_UserInfo"] = st_JsonObject;
 		st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 		//是否加密
-		TCHAR tszPassBuffer[64];
+		XCHAR tszPassBuffer[64];
 		memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 		::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 		if (bCrypto)
 		{
-			TCHAR tszMsgBuffer[2048];
+			XCHAR tszMsgBuffer[2048];
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 			nMsgLen = st_JsonRoot.toStyledString().length();
@@ -119,7 +119,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 		if (bCrypto)
 		{
-			TCHAR tszMsgBuffer[2048];
+			XCHAR tszMsgBuffer[2048];
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -201,7 +201,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	CString m_StrToken;
 	CString m_StrBtnModify;
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	m_BtnModify.GetWindowText(m_StrBtnModify);
 	//组合请求URL
@@ -234,13 +234,13 @@ void CDialog_Modify::OnBnClickedButton2()
 
 	//是否加密
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	TCHAR tszPassBuffer[64];
+	XCHAR* ptszMsgBuffer = NULL;
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -257,7 +257,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);

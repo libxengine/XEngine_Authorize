@@ -43,7 +43,7 @@ CAuthHelp_Windows::~CAuthHelp_Windows()
   意思：是否成功抖动
 备注：仿造QQ抖动，支持抖动后播放声音或者不播放，不播放传递NULL
 *********************************************************************/
-BOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree /* = 4 */, int nDitheringCareer /* = 30 */)
+XBOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree /* = 4 */, int nDitheringCareer /* = 30 */)
 {
 	RECT st_Rect = { '\0' };//定义一个矩形
 	//获得窗口边框
@@ -93,7 +93,7 @@ BOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegr
   意思：是否成功添加
 备注：
 *********************************************************************/
-BOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip)
+XBOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
 {
 	Help_IsErrorOccur = FALSE;
 

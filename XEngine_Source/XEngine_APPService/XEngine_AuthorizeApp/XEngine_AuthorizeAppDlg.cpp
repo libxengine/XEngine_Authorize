@@ -43,7 +43,7 @@ END_MESSAGE_MAP()
 
 // CXEngineAuthorizeAppDlg 消息处理程序
 
-BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
+XBOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -56,7 +56,7 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	HANDLE hMutex = CreateMutex(NULL, TRUE, _T("XEngine_AuthorizeApp"));
 	if (NULL != hMutex)
 	{
-		DWORD dwRet = GetLastError();
+		XLONG dwRet = GetLastError();
 		if (dwRet == ERROR_ALREADY_EXISTS)
 		{
 			AfxMessageBox(_T("程序已经运行,无法继续!"));
@@ -212,7 +212,7 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	TCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
+	XCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
 	// 构造保存文件对话框   
 	CFileDialog m_FileDlg(FALSE, _T("txt"), _T("log"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
 	
@@ -221,7 +221,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 	{
 		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 		
-		TCHAR tszLogBuffer[8196];
+		XCHAR tszLogBuffer[8196];
 		memset(tszLogBuffer, '\0', sizeof(tszLogBuffer));
 		int nSize = m_EditLog.GetWindowText(tszLogBuffer, sizeof(tszLogBuffer));
 		fwrite(tszLogBuffer, 1, nSize, pSt_File);

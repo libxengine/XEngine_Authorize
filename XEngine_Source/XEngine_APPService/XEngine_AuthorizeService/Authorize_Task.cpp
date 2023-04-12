@@ -1,11 +1,11 @@
 ﻿#include "Authorize_Hdr.h"
 
-void CALLBACK XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, LPVOID lParam)
+void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCXSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, XPVOID lParam)
 {
 	if (nLeftTimer <= 0)
 	{
 		int nMsgLen = 0;
-		TCHAR tszMsgBuffer[1024];
+		XCHAR tszMsgBuffer[1024];
 		XENGINE_PROTOCOLHDR st_ProtocolHdr;
 
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
@@ -46,7 +46,7 @@ void CALLBACK XEngine_TaskEvent_Client(LPCSTR lpszUserAddr, LPCSTR lpszUserName,
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
 	}
 }
-void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
+void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 {
 	AUTHREG_USERTABLE st_UserTable;
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
@@ -72,7 +72,7 @@ void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, LPVOID lParam)
 			if (st_AuthConfig.st_XLogin.bHTTPAuth)
 			{
 				int nSDLen = 0;
-				TCHAR tszSDBuffer[MAX_PATH];
+				XCHAR tszSDBuffer[MAX_PATH];
 				memset(tszSDBuffer, '\0', MAX_PATH);
 
 				Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);

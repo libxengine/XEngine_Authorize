@@ -14,8 +14,8 @@ typedef struct
 {
 	AUTHREG_USERTABLE st_UserTable;                                       //用户表
 	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
-	TCHAR tszClientAddr[64];
-	TCHAR tszLeftTime[64];                                                //过期日期
+	XCHAR tszClientAddr[64];
+	XCHAR tszLeftTime[64];                                                //过期日期
 	__int64x nOnlineTime;                                                 //在线时间
 	__int64x nLeftTime;                                                   //剩余时间
 	int nNetType;                                                         //连接类型
@@ -24,12 +24,12 @@ typedef struct
 //                         导出的回调函数
 //////////////////////////////////////////////////////////////////////////
 //用户在线时间事件回调处理函数，用户名 在线时间 剩余时间（分,天） 注册的卡类型 自定义参数
-typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCSTR lpszUserAddr, LPCSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, LPVOID lParam);
-typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS)(XNETHANDLE xhToken, LPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCXSTR lpszUserAddr, LPCXSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCXSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, XPVOID lParam);
+typedef void(CALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS)(XNETHANDLE xhToken, XPVOID lParam);
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
+extern "C" XLONG Session_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
 /*                         网络验证导出函数                             */
 /************************************************************************/
@@ -51,7 +51,7 @@ extern "C" DWORD Session_GetLastError(int *pInt_SysError = NULL);
   意思：是否初始化成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
+extern "C" XBOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,XPVOID lParam = NULL);
 /********************************************************************
 函数名称：Session_Authorize_GetClient
 函数功能：获取客户端信息
@@ -75,7 +75,7 @@ extern "C" BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCSTR lpszClientAddr = NULL);
+extern "C" XBOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientAddr = NULL);
 /********************************************************************
 函数名称：Session_Authorize_GetClientForUser
 函数功能：获取客户端信息
@@ -94,7 +94,7 @@ extern "C" BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_List
   意思：是否获取成功
 备注：通过卡类型来判断导出的时间是分钟还是天
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client);
+extern "C" XBOOL Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client);
 /********************************************************************
 函数名称：Session_Authorize_GetAddrForUser
 函数功能：通过用户名获取对应地址
@@ -113,7 +113,7 @@ extern "C" BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSES
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetAddrForUser(LPCSTR lpszClientUser,CHAR *ptszClientAddr);
+extern "C" XBOOL Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser,XCHAR *ptszClientAddr);
 /********************************************************************
 函数名称：Session_Authorize_GetUserForAddr
 函数功能：通过IP地址获取对应用户名
@@ -132,7 +132,7 @@ extern "C" BOOL Session_Authorize_GetAddrForUser(LPCSTR lpszClientUser,CHAR *pts
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_GetUserForAddr(LPCSTR lpszClientAddr, CHAR *ptszClientUser);
+extern "C" XBOOL Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR *ptszClientUser);
 /********************************************************************
 函数名称：Session_Authorize_CloseClient
 函数功能：移除一个客户端
@@ -146,7 +146,7 @@ extern "C" BOOL Session_Authorize_GetUserForAddr(LPCSTR lpszClientAddr, CHAR *pt
   意思：是否移除成功
 备注：此函数会自动调用AuthRegService_Sql_UserLeave来处理离开时间
 *********************************************************************/
-extern "C" BOOL Session_Authorize_CloseClient(LPCSTR lpszClientUser);
+extern "C" XBOOL Session_Authorize_CloseClient(LPCXSTR lpszClientUser);
 /********************************************************************
 函数名称：Session_Authorize_Destroy
 函数功能：销毁网络服务
@@ -155,7 +155,7 @@ extern "C" BOOL Session_Authorize_CloseClient(LPCSTR lpszClientUser);
   意思：是否销毁成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_Destroy();
+extern "C" XBOOL Session_Authorize_Destroy();
 /********************************************************************
 函数名称：Session_Authorize_Insert
 函数功能：用户登陆协议分析
@@ -179,7 +179,7 @@ extern "C" BOOL Session_Authorize_Destroy();
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType = 0);
+extern "C" XBOOL Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType = 0);
 /********************************************************************
 函数名称：Session_Authorize_SetUser
 函数功能：设置用户信息
@@ -193,7 +193,7 @@ extern "C" BOOL Session_Authorize_Insert(LPCSTR lpszClientAddr, AUTHREG_USERTABL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" XBOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
 /************************************************************************/
 /*                         TOKEN会话导出函数                            */
 /************************************************************************/
@@ -220,7 +220,7 @@ extern "C" BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
   意思：是否初始化成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam = NULL);
+extern "C" XBOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, XPVOID lParam = NULL);
 /********************************************************************
 函数名称：Session_Token_Destroy
 函数功能：销毁服务
@@ -229,7 +229,7 @@ extern "C" BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESS
   意思：是否销毁成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Destroy();
+extern "C" XBOOL Session_Token_Destroy();
 /********************************************************************
 函数名称：Session_Authorize_Insert
 函数功能：用户登陆协议分析
@@ -253,7 +253,7 @@ extern "C" BOOL Session_Token_Destroy();
   意思：是否允许登陆
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
+extern "C" XBOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
 /********************************************************************
 函数名称：Session_Token_Delete
 函数功能：移除一个客户端
@@ -267,7 +267,7 @@ extern "C" BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_
   意思：是否移除成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken);
+extern "C" XBOOL Session_Token_Delete(XNETHANDLE xhToken);
 /********************************************************************
 函数名称：Session_Token_UPDate
 函数功能：更新一个客户端的TOKEN时间
@@ -281,7 +281,7 @@ extern "C" BOOL Session_Token_Delete(XNETHANDLE xhToken);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken);
+extern "C" XBOOL Session_Token_UPDate(XNETHANDLE xhToken);
 /********************************************************************
 函数名称：Session_Token_Get
 函数功能：获取客户端信息
@@ -300,7 +300,7 @@ extern "C" BOOL Session_Token_UPDate(XNETHANDLE xhToken);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
+extern "C" XBOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
 /********************************************************************
 函数名称：Session_Token_GetUser
 函数功能：获取用户是否存在
@@ -324,4 +324,4 @@ extern "C" BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_Use
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, XNETHANDLE * pxhToken);
+extern "C" XBOOL Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE * pxhToken);

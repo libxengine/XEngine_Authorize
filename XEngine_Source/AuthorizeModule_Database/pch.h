@@ -41,8 +41,8 @@ using namespace std;
 //    Purpose:     公有头文件
 //    History:
 *********************************************************************/
-extern BOOL SQLPacket_IsErrorOccur;
-extern DWORD SQLPacket_dwErrorCode;
+extern XBOOL SQLPacket_IsErrorOccur;
+extern XLONG SQLPacket_dwErrorCode;
 
 #ifdef _UNICODE
 typedef std::wstring tstring;

@@ -50,7 +50,7 @@ CProtocol_Packet::~CProtocol_Packet()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType)
+XBOOL CProtocol_Packet::Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -108,7 +108,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_M
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode /* = 0 */, LPCTSTR lpszMsgBuffer /* = NULL */)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode /* = 0 */, LPCXSTR lpszMsgBuffer /* = NULL */)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -158,7 +158,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -207,7 +207,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* p
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -258,7 +258,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* p
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -336,7 +336,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -377,7 +377,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 	}
 	for (int i = 0; i < nOffCount; i++)
 	{
-		BOOL bFound = FALSE;
+		XBOOL bFound = FALSE;
 		//查找是否在线,在线就跳过
 		for (int j = 0; j < nOnCount; j++)
 		{
@@ -448,7 +448,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -508,7 +508,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -518,8 +518,8 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return FALSE;
 	}
-	TCHAR tszTimeStart[128];
-	TCHAR tszTimeEnd[128];
+	XCHAR tszTimeStart[128];
+	XCHAR tszTimeEnd[128];
 	XENGINE_LIBTIMER st_TimeOut;
 	Json::Value st_JsonRoot;
 
@@ -566,7 +566,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -630,7 +630,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 
@@ -703,7 +703,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpAnnouncement(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount)
 {
 	Protocol_IsErrorOccur = FALSE;
 

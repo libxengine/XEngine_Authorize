@@ -58,7 +58,7 @@ void CDialog_Switch::OnBnClickedButton1()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -70,16 +70,16 @@ void CDialog_Switch::OnBnClickedButton1()
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -96,7 +96,7 @@ void CDialog_Switch::OnBnClickedButton1()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -211,7 +211,7 @@ void CDialog_Switch::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -289,16 +289,16 @@ void CDialog_Switch::OnBnClickedButton2()
 	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/set"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
-	TCHAR tszPassBuffer[64];
+	XCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -315,7 +315,7 @@ void CDialog_Switch::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -346,7 +346,7 @@ void CDialog_Switch::OnBnClickedButton2()
 }
 
 
-BOOL CDialog_Switch::OnInitDialog()
+XBOOL CDialog_Switch::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 

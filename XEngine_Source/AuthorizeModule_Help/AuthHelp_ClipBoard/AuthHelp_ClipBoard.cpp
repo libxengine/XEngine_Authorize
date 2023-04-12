@@ -43,7 +43,7 @@ CAuthHelp_ClipBoard::~CAuthHelp_ClipBoard()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, DWORD dwFormat)
+XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
 	Help_IsErrorOccur = TRUE;
 
@@ -75,7 +75,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC;
 		return FALSE;
 	}
-	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 LPVOID
+	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 XPVOID
 	memcpy(ptszBuffer, lpszMsgBuffer, nMsgLen);
 
 	SetClipboardData(dwFormat, hGlobal);       //设置到剪贴板内容格式，然后是 数据的指针。
@@ -109,7 +109,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, DWORD dwFormat /* = 1 */)
+XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
 {
 	Help_IsErrorOccur = FALSE;
 
@@ -134,7 +134,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
 		return FALSE;
 	}
 
-	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
+	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
 	*pInt_MsgLen = (int)GlobalSize(hCliBd) - 1;                 //剪贴板内容大小
 
 	memcpy(ptszMsgBuffer, ptszBuffer, *pInt_MsgLen);
@@ -152,7 +152,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
+XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
 {
 	Help_IsErrorOccur = FALSE;
 

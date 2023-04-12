@@ -1,14 +1,14 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int nListCount)
+XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int nListCount)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	TCHAR tszURLKey[128];
-	TCHAR tszURLValue[128];
-	LPCTSTR lpszAPILogin = _T("login");
-	LPCTSTR lpszAPIUPDate = _T("update");
-	LPCTSTR lpszAPIClose = _T("close");
+	XCHAR tszSDBuffer[4096];
+	XCHAR tszURLKey[128];
+	XCHAR tszURLValue[128];
+	LPCXSTR lpszAPILogin = _T("login");
+	LPCXSTR lpszAPIUPDate = _T("update");
+	LPCXSTR lpszAPIClose = _T("close");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszURLKey, '\0', sizeof(tszURLKey));
@@ -18,9 +18,9 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 	if (0 == _tcsnicmp(lpszAPILogin, tszURLValue, _tcslen(lpszAPILogin)))
 	{
 		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=36
-		TCHAR tszUserName[128];
-		TCHAR tszUserPass[128];
-		TCHAR tszDeviceType[128];
+		XCHAR tszUserName[128];
+		XCHAR tszUserPass[128];
+		XCHAR tszDeviceType[128];
 		XNETHANDLE xhToken = 0;
 		AUTHREG_USERTABLE st_UserTable;
 
@@ -45,7 +45,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 			//启用三方验证
 			int nHTTPCode = 0;
 			int nHTTPLen = 0;
-			TCHAR* ptszMsgBuffer = NULL;
+			XCHAR* ptszMsgBuffer = NULL;
 			XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
 			memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
@@ -127,7 +127,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 				return FALSE;
 			}
 			//是否已经登录
-			TCHAR tszClientAddr[128];
+			XCHAR tszClientAddr[128];
 			if (Session_Authorize_GetAddrForUser(tszUserName, tszClientAddr))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User was login");
@@ -161,7 +161,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 	else if (0 == _tcsnicmp(lpszAPIUPDate, tszURLValue, _tcslen(lpszAPIUPDate)))
 	{
 		//http://app.xyry.org:5302/api?function=update&token=1000112345
-		TCHAR tszUserToken[128];
+		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
@@ -180,7 +180,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 	else if (0 == _tcsnicmp(lpszAPIClose, tszURLValue, _tcslen(lpszAPIClose)))
 	{
 		//http://app.xyry.org:5302/api?function=close&token=1000112345
-		TCHAR tszUserToken[128];
+		XCHAR tszUserToken[128];
 		AUTHREG_USERTABLE st_UserTable;
 
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
@@ -209,7 +209,7 @@ BOOL XEngine_AuthorizeHTTP_Token(LPCTSTR lpszClientAddr, TCHAR** pptszList, int 
 				if (st_AuthConfig.st_XLogin.bHTTPAuth)
 				{
 					int nSDLen = 0;
-					TCHAR tszSDBuffer[MAX_PATH];
+					XCHAR tszSDBuffer[MAX_PATH];
 					memset(tszSDBuffer, '\0', MAX_PATH);
 
 					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);

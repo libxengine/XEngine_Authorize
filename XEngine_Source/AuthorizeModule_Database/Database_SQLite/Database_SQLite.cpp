@@ -40,7 +40,7 @@ CDatabase_SQLite::~CDatabase_SQLite()
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange /* = TRUE */)
+XBOOL CDatabase_SQLite::Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange /* = TRUE */)
 {
     SQLPacket_IsErrorOccur = FALSE;
     m_bChange = bIsChange;
@@ -61,7 +61,7 @@ BOOL CDatabase_SQLite::Database_SQLite_Init(LPCTSTR lpszSQLFile, BOOL bIsChange 
   意思：是否销毁成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_Destroy()
+XBOOL CDatabase_SQLite::Database_SQLite_Destroy()
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -86,10 +86,10 @@ BOOL CDatabase_SQLite::Database_SQLite_Destroy()
   意思：是否删除成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCTSTR lpszUserName)
+XBOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCXSTR lpszUserName)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
     _stprintf_s(tszSQLStatement, _T("delete from Authorize_User where UserName = '%s'"), lpszUserName);
     //执行
@@ -114,10 +114,10 @@ BOOL CDatabase_SQLite::Database_SQLite_UserDelete(LPCTSTR lpszUserName)
   意思：是否插入成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
+XBOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     if (Database_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
@@ -153,10 +153,10 @@ BOOL CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
   意思：是否查询成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
+XBOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     char** ppszResult = NULL;
     int nRow = 0;
     int nColumn = 0;
@@ -234,13 +234,13 @@ BOOL CDatabase_SQLite::Database_SQLite_UserQuery(LPCTSTR lpszUserName, AUTHREG_U
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName, LPCTSTR lpszSerialName)
+XBOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     AUTHREG_SERIALTABLE st_SerialTable;
     AUTHREG_USERTABLE st_UserTable;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
     memset(&st_SerialTable, '\0', sizeof(st_SerialTable));
@@ -323,11 +323,11 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPay(LPCTSTR lpszUserName, LPCTSTR lps
   意思：是否处理成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
+XBOOL CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];       //SQL语句
+    XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
@@ -380,11 +380,11 @@ BOOL CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
+XBOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];       //SQL语句
+    XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     _stprintf_s(tszSQLStatement, _T("UPDATE Authorize_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
@@ -425,14 +425,14 @@ BOOL CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
+XBOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     int nRow = 0;
     int nColumn = 0;
     char** ppszResult = NULL;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_User LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
@@ -502,11 +502,11 @@ BOOL CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
   意思：是否插入成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
+XBOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     if (Database_SQLite_SerialQuery(lpszSerialNumber))
@@ -537,7 +537,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
     }
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
     {
-        TCHAR tszLeftTime[MAX_PATH];
+        XCHAR tszLeftTime[MAX_PATH];
         memset(tszLeftTime, '\0', MAX_PATH);
         _stprintf_s(tszLeftTime, _T("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
         _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
@@ -568,11 +568,11 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialInsert(LPCTSTR lpszSerialNumber)
   意思：是否删除成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
+XBOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
     _stprintf_s(tszSQLStatement, _T("delete from Authorize_Serial where SerialNumber = '%s'"), lpszSerialNumber);
     //执行
@@ -602,10 +602,10 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialDelete(LPCTSTR lpszSerialNumber)
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
+XBOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
 {
     SQLPacket_IsErrorOccur = FALSE;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     char** ppszResult = NULL;
     int nRow = 0;
     int nColumn = 0;
@@ -680,14 +680,14 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQuery(LPCTSTR lpszSerialNumber, LPA
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
+XBOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     int nRow = 0;
     int nColumn = 0;
     char** ppszResult = NULL;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
 
@@ -747,11 +747,11 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
+XBOOL CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
     if (Database_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
@@ -783,7 +783,7 @@ BOOL CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
+XBOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -793,7 +793,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
-    TCHAR tszSQLStatement[1024];
+    XCHAR tszSQLStatement[1024];
     AUTHREG_NETVER st_AuthVer;
 
     memset(tszSQLStatement, '\0', 1024);
@@ -830,7 +830,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
+XBOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -842,8 +842,8 @@ BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
     }
     int nRow = 0;
     int nColumn = 0;
-    CHAR** ppszResult = NULL;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR** ppszResult = NULL;
+    XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_NetVer WHERE VerSerial = '%s'"), pSt_AuthVer->tszVerSerial);
@@ -889,7 +889,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCTSTR lpszSerial)
+XBOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -899,7 +899,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCTSTR lpszSerial)
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
-    TCHAR tszSQLStatement[1024];
+    XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', 1024);
 
     _stprintf_s(tszSQLStatement, _T("DELETE * FROM Authorize_NetVer WHERE VerSerial = '%s'"), lpszSerial);
@@ -930,14 +930,14 @@ BOOL CDatabase_SQLite::Database_SQLite_TryDelete(LPCTSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
+XBOOL CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     int nRow = 0;
     int nColumn = 0;
-    CHAR** ppszResult = NULL;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR** ppszResult = NULL;
+    XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_NetVer"));
@@ -1024,11 +1024,11 @@ BOOL CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
+XBOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];
+    XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
     _stprintf_s(tszSQLStatement, _T("UPDATE Authorize_NetVer SET VerMode = '%d',TryTime = '%d',CreateTime = '%s' WHERE VerSerial = '%s'"), pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime, pSt_AuthVer->tszVerData, pSt_AuthVer->tszVerSerial);
@@ -1054,7 +1054,7 @@ BOOL CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
+XBOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -1069,7 +1069,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
     {
         return TRUE;
     }
-    TCHAR tszSQLStatement[1024];
+    XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
     //处理的类型
     if (_tcslen(pSt_Banned->tszUserName) > 0)
@@ -1102,7 +1102,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
+XBOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
@@ -1112,7 +1112,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return FALSE;
     }
-    TCHAR tszSQLStatement[1024];
+    XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', 1024);
     //处理的类型
     if (_tcslen(pSt_Banned->tszUserName) > 0)
@@ -1160,14 +1160,14 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount)
+XBOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
     int nRow = 0;
     int nColumn = 0;
-    CHAR** ppszResult = NULL;
-    TCHAR tszSQLStatement[1024];    //SQL语句
+    XCHAR** ppszResult = NULL;
+    XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
     _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr"));
@@ -1284,7 +1284,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
+XBOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = FALSE;
     //判断用域名是否存在
@@ -1292,8 +1292,8 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     {
         int nRow = 0;
         int nColumn = 0;
-        CHAR** ppszResult = NULL;
-        TCHAR tszSQLStatement[1024];
+        XCHAR** ppszResult = NULL;
+        XCHAR tszSQLStatement[1024];
         memset(tszSQLStatement, '\0', 1024);
 
         _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
@@ -1331,8 +1331,8 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     {
         int nRow = 0;
         int nColumn = 0;
-        CHAR** ppszResult = NULL;
-        TCHAR tszSQLStatement[1024];
+        XCHAR** ppszResult = NULL;
+        XCHAR tszSQLStatement[1024];
         memset(tszSQLStatement, '\0', 1024);
 
         _stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_BannedAddr WHERE tszIPAddr = '%s'"), pSt_Banned->tszIPAddr);
@@ -1375,7 +1375,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     if (_tcslen(pSt_Banned->tszLeftTime) > 0)
     {
 		__int64x nTimer = 0;
-		TCHAR tszStrTime[128];
+		XCHAR tszStrTime[128];
 		memset(tszStrTime, '\0', sizeof(tszStrTime));
 
 		BaseLib_OperatorTime_TimeToStr(tszStrTime);
@@ -1403,7 +1403,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
+XBOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
@@ -1413,7 +1413,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return FALSE;
 	}
-	TCHAR tszSQLStatement[1024];
+	XCHAR tszSQLStatement[1024];
 	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 	//处理的类型
 	if (_tcslen(pSt_Banned->tszUserName) > 0)
@@ -1446,7 +1446,7 @@ BOOL CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+XBOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
@@ -1456,7 +1456,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* 
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return FALSE;
 	}
-	TCHAR tszSQLStatement[8192];
+	XCHAR tszSQLStatement[8192];
 	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
     _stprintf_s(tszSQLStatement, _T("INSERT INTO Authorize_Announcement(tszContext,tszCreateTime) VALUES('%s',datetime('now', 'localtime'))"), pSt_Announcement->tszContext);
@@ -1482,7 +1482,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+XBOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
@@ -1492,7 +1492,7 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* 
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return FALSE;
 	}
-	TCHAR tszSQLStatement[1024];
+	XCHAR tszSQLStatement[1024];
 	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
     _stprintf_s(tszSQLStatement, _T("DELETE FROM Authorize_Announcement WHERE ID = %lld"), pSt_Announcement->nID);
@@ -1523,14 +1523,14 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* 
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
+XBOOL CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
 {
 	SQLPacket_IsErrorOccur = FALSE;
 
 	int nRow = 0;
 	int nColumn = 0;
-	CHAR** ppszResult = NULL;
-	TCHAR tszSQLStatement[1024];    //SQL语句
+	XCHAR** ppszResult = NULL;
+	XCHAR tszSQLStatement[1024];    //SQL语句
 
 	memset(tszSQLStatement, '\0', 1024);
 	_stprintf_s(tszSQLStatement, _T("SELECT * FROM Authorize_Announcement"));
@@ -1594,12 +1594,12 @@ BOOL CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
   意思：是否成功充值
 备注：
 *********************************************************************/
-BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR lpszUserTime, LPCTSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
+XBOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
 {
     SQLPacket_IsErrorOccur = FALSE;
 
-    TCHAR tszSQLStatement[1024];
-    TCHAR tszTimer[128];
+    XCHAR tszSQLStatement[1024];
+    XCHAR tszTimer[128];
 
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
     memset(tszTimer, '\0', sizeof(tszTimer));
@@ -1665,7 +1665,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
         break;
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
         {
-            TCHAR tszTime[128];
+            XCHAR tszTime[128];
             XENGINE_LIBTIMER st_AuthTime;
             ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
 
@@ -1730,7 +1730,7 @@ BOOL CDatabase_SQLite::Database_SQLite_UserPayTime(LPCTSTR lpszUserName, LPCTSTR
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
         {
             //自定义卡,无法相加
-            TCHAR tszTime[128];
+            XCHAR tszTime[128];
             XENGINE_LIBTIMER st_AuthTime;
             ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
 

@@ -10,4 +10,4 @@
 //    Purpose:     帮助函数类
 //    History:
 *********************************************************************/
-BOOL Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer);
+XBOOL Authorize_Help_LogPrint(LPCXSTR lpszLogBuffer);

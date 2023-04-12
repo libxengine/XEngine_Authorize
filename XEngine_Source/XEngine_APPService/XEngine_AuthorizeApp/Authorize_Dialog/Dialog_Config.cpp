@@ -52,7 +52,7 @@ END_MESSAGE_MAP()
 // CDialog_Config 消息处理程序
 
 
-BOOL CDialog_Config::OnInitDialog()
+XBOOL CDialog_Config::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -89,7 +89,7 @@ void CDialog_Config::OnBnClickedButton1()
 	CString m_StrUser;
 	CString m_StrPass;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -100,7 +100,7 @@ void CDialog_Config::OnBnClickedButton1()
 	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	//请求用户信息
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -110,7 +110,7 @@ void CDialog_Config::OnBnClickedButton1()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -156,7 +156,7 @@ void CDialog_Config::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -166,7 +166,7 @@ void CDialog_Config::OnBnClickedButton2()
 	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=close&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -176,7 +176,7 @@ void CDialog_Config::OnBnClickedButton2()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -217,7 +217,7 @@ void CDialog_Config::OnBnClickedButton5()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -227,7 +227,7 @@ void CDialog_Config::OnBnClickedButton5()
 	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=update&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -237,7 +237,7 @@ void CDialog_Config::OnBnClickedButton5()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);

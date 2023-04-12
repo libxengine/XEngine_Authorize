@@ -12,6 +12,7 @@
 #include <tchar.h>
 #include <commctrl.h>
 #endif //PCH_H
+#include <XEngine_Include/XEngine_CommHdr.h>
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
 /********************************************************************
@@ -25,8 +26,8 @@
 //    Purpose:     公用头文件
 //    History:
 *********************************************************************/
-extern BOOL Help_IsErrorOccur;
-extern DWORD Help_dwErrorCode;
+extern XBOOL Help_IsErrorOccur;
+extern XLONG Help_dwErrorCode;
 
 
 #ifdef _MSC_BUILD

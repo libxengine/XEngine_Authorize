@@ -15,11 +15,11 @@
 //////////////////////////////////////////////////////////////////////////
 //                           公有函数
 //////////////////////////////////////////////////////////////////////////
-BOOL Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
+XBOOL Authorize_Help_LogPrint(LPCXSTR lpszLogBuffer)
 {
-	TCHAR tszLogBuffer[8196];
-	TCHAR tszAddBuffer[8196];
-	TCHAR tszTimeStr[64];
+	XCHAR tszLogBuffer[8196];
+	XCHAR tszAddBuffer[8196];
+	XCHAR tszTimeStr[64];
 
 	memset(tszLogBuffer, '\0', sizeof(tszLogBuffer));
 	memset(tszAddBuffer, '\0', sizeof(tszAddBuffer));

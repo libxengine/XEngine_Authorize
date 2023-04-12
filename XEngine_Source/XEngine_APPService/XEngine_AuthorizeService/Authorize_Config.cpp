@@ -1,9 +1,9 @@
 ﻿#include "Authorize_Hdr.h"
 
-BOOL Authorize_Service_Parament(int argc, char** argv)
+XBOOL Authorize_Service_Parament(int argc, char** argv)
 {
-    LPCTSTR lpszFile = _T("./XEngine_Config/XEngine_Config.json");
-	LPCTSTR lpszSwitchFile = _T("./XEngine_Config/XEngine_SwitchConfig.json");
+    LPCXSTR lpszFile = _T("./XEngine_Config/XEngine_Config.json");
+	LPCXSTR lpszSwitchFile = _T("./XEngine_Config/XEngine_SwitchConfig.json");
 
 	if (!ModuleConfigure_Json_File(lpszFile, &st_AuthConfig))
 	{

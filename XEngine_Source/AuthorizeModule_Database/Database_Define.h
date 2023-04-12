@@ -13,7 +13,7 @@
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD DBModule_GetLastError(int *pInt_SysError = NULL);
+extern "C" XLONG DBModule_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
 /*                         数据库服务导出函数                           */
 /************************************************************************/
@@ -35,7 +35,7 @@ extern "C" DWORD DBModule_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-extern "C" BOOL Database_SQLite_Init(LPCSTR lpszSQLFile, BOOL bIsChange = TRUE);
+extern "C" XBOOL Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange = TRUE);
 /********************************************************************
 函数名称：Database_SQLite_Destroy
 函数功能：销毁数据库服务
@@ -44,7 +44,7 @@ extern "C" BOOL Database_SQLite_Init(LPCSTR lpszSQLFile, BOOL bIsChange = TRUE);
   意思：是否销毁成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_Destroy();
+extern "C" XBOOL Database_SQLite_Destroy();
 /********************************************************************
 函数名称：Database_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
@@ -58,7 +58,7 @@ extern "C" BOOL Database_SQLite_Destroy();
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserDelete(LPCSTR lpszUserName);
+extern "C" XBOOL Database_SQLite_UserDelete(LPCXSTR lpszUserName);
 /********************************************************************
 函数名称：Database_SQLite_UserRegister
 函数功能：用户注册处理数据库语句函数
@@ -72,7 +72,7 @@ extern "C" BOOL Database_SQLite_UserDelete(LPCSTR lpszUserName);
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
+extern "C" XBOOL Database_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
 /********************************************************************
 函数名称：Database_SQLite_UserQuery
 函数功能：查询用户相对应的值
@@ -91,7 +91,7 @@ extern "C" BOOL Database_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserQuery(LPCSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
+extern "C" XBOOL Database_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
 /********************************************************************
 函数名称：Database_SQLite_UserPay
 函数功能：用户充值函数
@@ -110,7 +110,7 @@ extern "C" BOOL Database_SQLite_UserQuery(LPCSTR lpszUserName,AUTHREG_USERTABLE 
   意思：是否成功充值
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserPay(LPCSTR lpszUserName,LPCSTR lpszSerialName);
+extern "C" XBOOL Database_SQLite_UserPay(LPCXSTR lpszUserName,LPCXSTR lpszSerialName);
 /********************************************************************
 函数名称：Database_SQLite_UserLeave
 函数功能：用户离开处理事件
@@ -124,7 +124,7 @@ extern "C" BOOL Database_SQLite_UserPay(LPCSTR lpszUserName,LPCSTR lpszSerialNam
   意思：是否处理成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtocol);
+extern "C" XBOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtocol);
 /********************************************************************
 函数名称：Database_SQLite_UserSet
 函数功能：设置用户信息
@@ -138,7 +138,7 @@ extern "C" BOOL Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtoc
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" XBOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
 /********************************************************************
 函数名称：Database_SQLite_UserList
 函数功能：获取用户列表
@@ -167,7 +167,7 @@ extern "C" BOOL Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
+extern "C" XBOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
 /********************************************************************
 函数名称：Database_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
@@ -181,7 +181,7 @@ extern "C" BOOL Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, in
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialInsert(LPCSTR lpszSerialNumber);
+extern "C" XBOOL Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber);
 /********************************************************************
 函数名称：Database_SQLite_SerialDelete
 函数功能：从数据库删除指定序列号
@@ -195,7 +195,7 @@ extern "C" BOOL Database_SQLite_SerialInsert(LPCSTR lpszSerialNumber);
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialDelete(LPCSTR lpszSerialNumber);
+extern "C" XBOOL Database_SQLite_SerialDelete(LPCXSTR lpszSerialNumber);
   /********************************************************************
 函数名称：Database_SQLite_SerialQuery
 函数功能：查询一个指定的序列号信息
@@ -214,7 +214,7 @@ extern "C" BOOL Database_SQLite_SerialDelete(LPCSTR lpszSerialNumber);
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialQuery(LPCSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable);
+extern "C" XBOOL Database_SQLite_SerialQuery(LPCXSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable);
 /********************************************************************
 函数名称：Database_SQLite_SerialQueryAll
 函数功能：查询序列卡表中的所有序列号
@@ -243,7 +243,7 @@ extern "C" BOOL Database_SQLite_SerialQuery(LPCSTR lpszSerialNumber,LPAUTHREG_SE
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);
+extern "C" XBOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);
 /********************************************************************
 函数名称：Database_SQLite_SerialPush
 函数功能：插入一条指定的序列号信息到服务器
@@ -257,7 +257,7 @@ extern "C" BOOL Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_Ser
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
+extern "C" XBOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
 /********************************************************************
 函数名称：Database_SQLite_TryInsert
 函数功能：网络使用模式插入一条数据
@@ -271,7 +271,7 @@ extern "C" BOOL Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" XBOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_TryQuery
 函数功能：试用序列号查询函数
@@ -285,7 +285,7 @@ extern "C" BOOL Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" XBOOL Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_TryDelete
 函数功能：删除一条指定的试用数据
@@ -299,7 +299,7 @@ extern "C" BOOL Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_TryDelete(LPCSTR lpszSerial);
+extern "C" XBOOL Database_SQLite_TryDelete(LPCXSTR lpszSerial);
 /********************************************************************
 函数名称：Database_SQLite_TryClear
 函数功能：清理函数,自动清理过期数据
@@ -318,7 +318,7 @@ extern "C" BOOL Database_SQLite_TryDelete(LPCSTR lpszSerial);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
+extern "C" XBOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
 /********************************************************************
 函数名称：Database_SQLite_TrySet
 函数功能：设置用户信息函数
@@ -332,7 +332,7 @@ extern "C" BOOL Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUT
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" XBOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_BannedInsert
 函数功能：黑名单列表插入
@@ -346,7 +346,7 @@ extern "C" BOOL Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
+extern "C" XBOOL Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
 /********************************************************************
 函数名称：Database_SQLite_BannedDelete
 函数功能：黑名单列表删除
@@ -360,7 +360,7 @@ extern "C" BOOL Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
+extern "C" XBOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
 /********************************************************************
 函数名称：Database_SQLite_BannedList
 函数功能：黑名单列表查询
@@ -389,7 +389,7 @@ extern "C" BOOL Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
+extern "C" XBOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
 /********************************************************************
 函数名称：Database_SQLite_BannedExist
 函数功能：名单是否存在黑名单列表
@@ -403,7 +403,7 @@ extern "C" BOOL Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, i
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
+extern "C" XBOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
 /********************************************************************
 函数名称：Database_SQLite_BannedUPDate
 函数功能：更新名单列表信息
@@ -417,7 +417,7 @@ extern "C" BOOL Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
+extern "C" XBOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
 /********************************************************************
 函数名称：Database_SQLite_AnnouncementInsert
 函数功能：公告插入
@@ -431,7 +431,7 @@ extern "C" BOOL Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+extern "C" XBOOL Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
 /********************************************************************
 函数名称：Database_SQLite_AnnouncementDelete
 函数功能：公告删除
@@ -445,7 +445,7 @@ extern "C" BOOL Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Ann
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+extern "C" XBOOL Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
 /********************************************************************
 函数名称：Database_SQLite_AnnouncementList
 函数功能：列举所有公告
@@ -464,4 +464,4 @@ extern "C" BOOL Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Ann
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);
+extern "C" XBOOL Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);

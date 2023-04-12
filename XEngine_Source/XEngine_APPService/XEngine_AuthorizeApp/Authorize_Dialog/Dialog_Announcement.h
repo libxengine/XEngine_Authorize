@@ -22,7 +22,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	CListCtrl m_ListAnnouncement;
 	afx_msg void OnBnClickedButton1();
 	CEdit m_EditNoticeStr;

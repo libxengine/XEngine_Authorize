@@ -27,7 +27,7 @@ public:
 	CButton m_RadioUser;
 	CStatic m_StaticTips;
 	afx_msg void OnBnClickedRadio2();
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	afx_msg void OnBnClickedButton2();
 	afx_msg void OnBnClickedButton4();
 	afx_msg void OnBnClickedButton3();

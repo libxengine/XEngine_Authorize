@@ -12,13 +12,13 @@
 //    Purpose:     导出函数实现
 //    History:
 *********************************************************************/
-BOOL Help_IsErrorOccur = FALSE;
-DWORD Help_dwErrorCode = 0;
+XBOOL Help_IsErrorOccur = FALSE;
+XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD AuthHelp_GetLastError(int* pInt_SysError)
+extern "C" XLONG AuthHelp_GetLastError(int* pInt_SysError)
 {
 	if (NULL != pInt_SysError)
 	{
@@ -30,26 +30,26 @@ extern "C" DWORD AuthHelp_GetLastError(int* pInt_SysError)
 /*                    剪贴板导出定义                                    */
 /************************************************************************/
 #ifdef _MSC_BUILD
-extern "C" BOOL AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, DWORD dwFormat)
+extern "C" XBOOL AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Set(lpszMsgBuffer, nMsgLen, dwFormat);
 }
-extern "C" BOOL AuthHelp_ClipBoard_Get(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, DWORD dwFormat)
+extern "C" XBOOL AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat)
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Get(ptszMsgBuffer, pInt_MsgLen, dwFormat);
 }
-extern "C" BOOL AuthHelp_ClipBoard_Clear()
+extern "C" XBOOL AuthHelp_ClipBoard_Clear()
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Clear();
 }
 /************************************************************************/
 /*                    窗口类导出定义                                    */
 /************************************************************************/
-extern "C" BOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree, int nDitheringCareer)
+extern "C" XBOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree, int nDitheringCareer)
 {
 	return m_HelpWindow.AuthHelp_Windows_Dithering(hWnd, nDitheringDegree, nDitheringCareer);
 }
-extern "C" BOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip)
+extern "C" XBOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
 {
 	return m_HelpWindow.AuthHelp_Windows_CreateTooltip(hWnd, lpszContextOfTip);
 }

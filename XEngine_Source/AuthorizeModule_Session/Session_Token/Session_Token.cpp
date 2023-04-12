@@ -44,7 +44,7 @@ CSession_Token::~CSession_Token()
   意思：是否初始化成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam /* = NULL */)
+XBOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, XPVOID lParam /* = NULL */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -78,7 +78,7 @@ BOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE
   意思：是否销毁成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Destroy()
+XBOOL CSession_Token::Session_Token_Destroy()
 {
     Session_IsErrorOccur = FALSE;
 
@@ -117,7 +117,7 @@ BOOL CSession_Token::Session_Token_Destroy()
   意思：是否允许登陆
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout /* = 0 */)
+XBOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout /* = 0 */)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -152,7 +152,7 @@ BOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
   意思：是否移除成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
+XBOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
 {
     Session_IsErrorOccur = FALSE;
 
@@ -179,7 +179,7 @@ BOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
+XBOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
 {
 	Session_IsErrorOccur = FALSE;
 
@@ -214,7 +214,7 @@ BOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable /* = NULL */)
+XBOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable /* = NULL */)
 {
 	Session_IsErrorOccur = FALSE;
 
@@ -257,7 +257,7 @@ BOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pS
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, XNETHANDLE* pxhToken)
+XBOOL CSession_Token::Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE* pxhToken)
 {
 	Session_IsErrorOccur = FALSE;
 
@@ -267,7 +267,7 @@ BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, X
 		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
 		return FALSE;
     }
-    BOOL bFound = FALSE;
+    XBOOL bFound = FALSE;
 	st_Locker.lock_shared();
 	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.begin();
     for (; stl_MapIterator != stl_MapToken.end(); stl_MapIterator++)
@@ -296,7 +296,7 @@ BOOL CSession_Token::Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, X
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CSession_Token::Session_Token_Thread(LPVOID lParam)
+XHTHREAD CSession_Token::Session_Token_Thread(XPVOID lParam)
 {
     CSession_Token *pClass_This = (CSession_Token *)lParam;
 	XENGINE_LIBTIMER st_LibTimer;

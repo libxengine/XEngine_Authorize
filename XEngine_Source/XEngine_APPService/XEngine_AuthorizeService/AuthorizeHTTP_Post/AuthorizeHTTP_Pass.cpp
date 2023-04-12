@@ -1,12 +1,12 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Pass(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszAPILogin = _T("login");
-	LPCTSTR lpszAPILogout = _T("logout");
-	LPCTSTR lpszAPITimeout = _T("timeout");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszAPILogin = _T("login");
+	LPCXSTR lpszAPILogout = _T("logout");
+	LPCXSTR lpszAPITimeout = _T("timeout");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 

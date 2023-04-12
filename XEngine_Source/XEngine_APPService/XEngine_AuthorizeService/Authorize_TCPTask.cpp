@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
+XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;
@@ -12,7 +12,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 			continue;
 		}
 		int nMsgLen = 2048;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		XENGINE_PROTOCOLHDR st_ProtocolHdr;
 
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
@@ -29,8 +29,8 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 			}
 			if (st_AuthConfig.st_XCrypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
 			{
-				TCHAR tszPassword[64];
-				TCHAR tszDeBuffer[2048];
+				XCHAR tszPassword[64];
+				XCHAR tszDeBuffer[2048];
 
 				memset(tszPassword, '\0', sizeof(tszPassword));
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
@@ -49,10 +49,10 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(LPVOID lParam)
 	return 0;
 }
 
-BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType)
+XBOOL XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType)
 {
 	int nSDLen = 0;
-	TCHAR tszSDBuffer[2048];
+	XCHAR tszSDBuffer[2048];
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
 	AUTHREG_BANNED st_Banned;
@@ -103,7 +103,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			//启用三方验证
 			int nHTTPCode = 0;
 			int nHTTPLen = 0;
-			TCHAR* ptszMsgBuffer = NULL;
+			XCHAR* ptszMsgBuffer = NULL;
 			Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
 			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
@@ -137,7 +137,7 @@ BOOL XEngine_Client_TCPTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int n
 			}
 		}
 		//是否已经登录
-		TCHAR tszClientAddr[128];
+		XCHAR tszClientAddr[128];
 		if (Session_Authorize_GetAddrForUser(st_AuthProtocol.tszUserName, tszClientAddr))
 		{
 			pSt_ProtocolHdr->wReserve = 253;

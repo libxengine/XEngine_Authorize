@@ -1,33 +1,33 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_HttpThread(LPVOID lParam)
+XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;
 
 	while (bIsRun)
 	{
-		if (!RfcComponents_HttpServer_EventWaitEx(xhHttpPacket, nThreadPos))
+		if (!HttpProtocol_Server_EventWaitEx(xhHttpPacket, nThreadPos))
 		{
 			continue;
 		}
 		int nListCount = 0;
 		RFCCOMPONENTS_HTTP_PKTCLIENT** ppSt_ListClient;
-		RfcComponents_HttpServer_GetPoolEx(xhHttpPacket, nThreadPos, &ppSt_ListClient, &nListCount);
+		HttpProtocol_Server_GetPoolEx(xhHttpPacket, nThreadPos, &ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
 			int nMsgLen = 0;
-			CHAR* ptszMsgBuffer = NULL;
+			XCHAR* ptszMsgBuffer = NULL;
 			RFCCOMPONENTS_HTTP_REQPARAM st_HTTPParament;
 
 			memset(&st_HTTPParament, '\0', sizeof(RFCCOMPONENTS_HTTP_REQPARAM));
 
-			if (RfcComponents_HttpServer_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament))
+			if (HttpProtocol_Server_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament))
 			{
 				if (st_AuthConfig.st_XCrypto.bEnable)
 				{
-					TCHAR tszPassword[64];
-					TCHAR tszDeBuffer[2048];
+					XCHAR tszPassword[64];
+					XCHAR tszDeBuffer[2048];
 
 					memset(tszPassword, '\0', sizeof(tszPassword));
 					memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
@@ -48,12 +48,12 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(LPVOID lParam)
 	return 0;
 }
 
-BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM *pSt_HTTPParament)
+XBOOL XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM *pSt_HTTPParament)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszMethodPost = _T("POST");
-	LPCTSTR lpszMethodGet = _T("GET");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszMethodPost = _T("POST");
+	LPCXSTR lpszMethodGet = _T("GET");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
@@ -72,25 +72,25 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 	}
 	if (0 == _tcsnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodPost)))
 	{
-		TCHAR tszAPIType[64];
-		TCHAR tszAPIVer[64];
-		TCHAR tszAPIName[64];
+		XCHAR tszAPIType[64];
+		XCHAR tszAPIVer[64];
+		XCHAR tszAPIName[64];
 		XNETHANDLE xhToken = 0;
-		LPCTSTR lpszAPIType = _T("auth");
-		LPCTSTR lpszAPIVerClient = _T("client");
-		LPCTSTR lpszAPIVerSerial = _T("serial");
-		LPCTSTR lpszAPIVerUser = _T("user");
-		LPCTSTR lpszAPIVerPass = _T("pass");
-		LPCTSTR lpszAPIVerSwitch = _T("switch");
-		LPCTSTR lpszAPIVerBanned = _T("banned");
-		LPCTSTR lpszAPIVerCDKey = _T("cdkey");
-		LPCTSTR lpszAPIVerNotice = _T("notice");
+		LPCXSTR lpszAPIType = _T("auth");
+		LPCXSTR lpszAPIVerClient = _T("client");
+		LPCXSTR lpszAPIVerSerial = _T("serial");
+		LPCXSTR lpszAPIVerUser = _T("user");
+		LPCXSTR lpszAPIVerPass = _T("pass");
+		LPCXSTR lpszAPIVerSwitch = _T("switch");
+		LPCXSTR lpszAPIVerBanned = _T("banned");
+		LPCXSTR lpszAPIVerCDKey = _T("cdkey");
+		LPCXSTR lpszAPIVerNotice = _T("notice");
 
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
 		memset(tszAPIName, '\0', sizeof(tszAPIName));
 
-		RfcComponents_HttpHelp_GetUrlApi(pSt_HTTPParament->tszHttpUri, tszAPIType, tszAPIVer, tszAPIName);
+		HttpProtocol_ServerHelp_GetUrlApi(pSt_HTTPParament->tszHttpUri, tszAPIType, tszAPIVer, tszAPIName);
 		if (0 != _tcsnicmp(lpszAPIType, tszAPIType, _tcslen(lpszAPIType)))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request url is incorrent");
@@ -225,13 +225,13 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 	else if (0 == _tcsnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcslen(lpszMethodGet)))
 	{
 		int nListCount = 0;
-		TCHAR** pptszList;
-		TCHAR tszUrlName[128];
-		LPCTSTR lpszFuncName = _T("api");
-		LPCTSTR lpszAPIVerNotice = _T("notice");
+		XCHAR** pptszList;
+		XCHAR tszUrlName[128];
+		LPCXSTR lpszFuncName = _T("api");
+		LPCXSTR lpszAPIVerNotice = _T("notice");
 
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
-		RfcComponents_HttpHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
+		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
 		if ((nListCount < 1) || (0 != _tcsnicmp(lpszFuncName, tszUrlName, _tcslen(lpszFuncName))))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request is failed");
@@ -240,8 +240,8 @@ BOOL XEngine_Client_HttpTask(LPCTSTR lpszClientAddr, LPCTSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,发送的URL请求参数不正确:%s"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return FALSE;
 		}
-		TCHAR tszURLKey[128];
-		TCHAR tszURLValue[128];
+		XCHAR tszURLKey[128];
+		XCHAR tszURLValue[128];
 
 		memset(tszURLKey, '\0', sizeof(tszURLKey));
 		memset(tszURLValue, '\0', sizeof(tszURLValue));

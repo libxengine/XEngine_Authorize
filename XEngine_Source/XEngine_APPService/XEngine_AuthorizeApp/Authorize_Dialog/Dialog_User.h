@@ -22,11 +22,11 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	BOOL bThread;
+	XBOOL bThread;
 	HANDLE hThread;
-	static DWORD WINAPI Dialog_User_Thread(LPVOID lParam);
+	static XLONG WINAPI Dialog_User_Thread(XPVOID lParam);
 public:
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	CListCtrl m_ListCtrlClient;
 	afx_msg void OnBnClickedButton1();
 	afx_msg void OnBnClickedButton2();

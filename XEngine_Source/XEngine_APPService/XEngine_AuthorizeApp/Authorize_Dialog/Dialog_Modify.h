@@ -22,7 +22,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	CEdit m_EditUser;
 	CEdit m_EditPass;
 	CEdit m_EditEMail;

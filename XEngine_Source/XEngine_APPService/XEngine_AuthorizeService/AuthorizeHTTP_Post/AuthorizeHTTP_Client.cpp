@@ -1,13 +1,13 @@
 ﻿#include "../Authorize_Hdr.h"
 
-BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen)
+XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 4096;
-	TCHAR tszSDBuffer[4096];
-	LPCTSTR lpszAPIGet = _T("get");
-	LPCTSTR lpszAPIList = _T("list");
-	LPCTSTR lpszAPIClose = _T("close");
-	LPCTSTR lpszAPIModify = _T("modify");
+	XCHAR tszSDBuffer[4096];
+	LPCXSTR lpszAPIGet = _T("get");
+	LPCXSTR lpszAPIList = _T("list");
+	LPCXSTR lpszAPIClose = _T("close");
+	LPCXSTR lpszAPIModify = _T("modify");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
@@ -34,11 +34,11 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 		int nOffCount = 0;
 		int nPosStart = 0;
 		int nPosEnd = 0;
-		BOOL bOnline = FALSE;
+		XBOOL bOnline = FALSE;
 		AUTHREG_USERTABLE** ppSt_UserInfo;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		
-		TCHAR* ptszMsgBuffer = (TCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "internal server error");
@@ -76,7 +76,7 @@ BOOL XEngine_AuthorizeHTTP_Client(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, L
 	}
 	else if (0 == _tcsnicmp(lpszAPIClose, lpszAPIName, _tcslen(lpszAPIClose)))
 	{
-		TCHAR tszClientAddr[128];
+		XCHAR tszClientAddr[128];
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
 		memset(tszClientAddr, '\0', sizeof(tszClientAddr));

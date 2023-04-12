@@ -36,8 +36,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
 #include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
 #include "../../XAuth_Protocol.h"
@@ -50,8 +50,8 @@ using namespace std;
 #include "../../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
 
-extern BOOL bIsRun;
-extern XLOG xhLog;
+extern XBOOL bIsRun;
+extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
 extern XHANDLE xhHttpSocket;
@@ -121,6 +121,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
-#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol.lib")
 #pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient.lib")
 #endif

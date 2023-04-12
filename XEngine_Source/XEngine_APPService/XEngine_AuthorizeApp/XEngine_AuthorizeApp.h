@@ -22,7 +22,7 @@ public:
 
 // 重写
 public:
-	virtual BOOL InitInstance();
+	virtual XBOOL InitInstance();
 
 // 实现
 

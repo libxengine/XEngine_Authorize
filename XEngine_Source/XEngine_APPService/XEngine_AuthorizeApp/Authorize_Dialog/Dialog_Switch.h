@@ -34,7 +34,7 @@ public:
 	CButton m_RadioPassOPen;
 	CButton m_RadioPassClose;
 	afx_msg void OnBnClickedButton2();
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	CButton m_BtnSetConfigure;
 	CButton m_BtnGetConfigure;
 	CButton m_RadioCDkeyOPen;

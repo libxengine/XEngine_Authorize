@@ -41,8 +41,8 @@ using namespace std;
 extern HWND hMainWnd;
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
-extern BOOL bCrypto;
-extern LPCSTR lpszStuType[2];
+extern XBOOL bCrypto;
+extern LPCXSTR lpszStuType[2];
 
 #ifdef _DEBUG
 #ifdef _WIN64

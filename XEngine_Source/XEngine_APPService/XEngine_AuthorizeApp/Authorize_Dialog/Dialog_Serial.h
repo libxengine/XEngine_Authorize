@@ -22,7 +22,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
+	virtual XBOOL OnInitDialog();
 	CListCtrl m_ListSerial;
 	CComboBox m_ComboSerialType;
 	CComboBox m_ComboNumber;
