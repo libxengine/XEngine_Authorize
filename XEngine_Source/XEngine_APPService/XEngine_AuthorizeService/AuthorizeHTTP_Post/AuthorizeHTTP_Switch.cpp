@@ -23,5 +23,5 @@ XBOOL XEngine_AuthorizeHTTP_Switch(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求设置功能开关成功,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d"), lpszClientAddr, st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice);
 	}
 	
-	return TRUE;
+	return XTRUE;
 }

@@ -89,11 +89,11 @@ XBOOL CDialog_Banned::OnInitDialog()
 	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	m_DataTime.EnableWindow(FALSE);
+	m_DataTime.EnableWindow(XFALSE);
 	m_RadioEnable.SetCheck(BST_CHECKED);
 	m_DataTime.SetFormat(_T("yyyy-mm-dd hh:mm:ss"));
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 
@@ -409,12 +409,12 @@ void CDialog_Banned::OnBnClickedCheck1()
 	// TODO: 在此添加控件通知处理程序代码
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(XTRUE);
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
 	}
 	else
 	{
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(XFALSE);
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
 	}
 }
@@ -567,13 +567,13 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(XTRUE);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(XFALSE);
 	}
 	*pResult = 0;
 }
@@ -625,13 +625,13 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(XTRUE);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(XFALSE);
 	}
 
 	*pResult = 0;

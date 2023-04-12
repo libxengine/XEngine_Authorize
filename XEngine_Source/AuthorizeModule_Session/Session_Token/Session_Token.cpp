@@ -13,7 +13,7 @@
 *********************************************************************/
 CSession_Token::CSession_Token()
 {
-    bIsRun = FALSE;
+    bIsRun = XFALSE;
 }
 CSession_Token::~CSession_Token()
 {
@@ -46,29 +46,29 @@ CSession_Token::~CSession_Token()
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, XPVOID lParam /* = NULL */)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if (NULL == fpCall_AuthEvent)
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     m_nTimeout = nTimeout;
     m_lParam = lParam;
     lpCall_AuthregEvents = fpCall_AuthEvent;
 
-    bIsRun = TRUE;
+    bIsRun = XTRUE;
     //创建线程
     pSTDThread_hActive = make_shared<std::thread>(Session_Token_Thread, this);
     if (!pSTDThread_hActive->joinable())
     {
-        bIsRun = FALSE;
-        Session_IsErrorOccur = TRUE;
+        bIsRun = XFALSE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_CREATETHREAD;
-        return FALSE;
+        return XFALSE;
     }
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Token_Destroy
@@ -80,9 +80,9 @@ XBOOL CSession_Token::Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZ
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_Destroy()
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
-    bIsRun = FALSE;        
+    bIsRun = XFALSE;        
     //结束线程
     if (NULL != pSTDThread_hActive)
     {
@@ -92,7 +92,7 @@ XBOOL CSession_Token::Session_Token_Destroy()
     st_Locker.lock();
     stl_MapToken.clear();
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_Insert
@@ -119,13 +119,13 @@ XBOOL CSession_Token::Session_Token_Destroy()
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout /* = 0 */)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if (NULL == pSt_UserTable)
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     AUTHSESSION_TOKENCLIENT st_TokenClient;
     memset(&st_TokenClient,'\0',sizeof(AUTHSESSION_TOKENCLIENT));
@@ -137,7 +137,7 @@ XBOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE
     st_Locker.lock();
     stl_MapToken.insert(make_pair(xhToken, st_TokenClient));
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Token_Delete
@@ -154,7 +154,7 @@ XBOOL CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     st_Locker.lock();
     unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
@@ -164,7 +164,7 @@ XBOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
         stl_MapToken.erase(stl_MapIterator);
     }
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Token_UPDate
@@ -181,20 +181,20 @@ XBOOL CSession_Token::Session_Token_Delete(XNETHANDLE xhToken)
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
 {
-	Session_IsErrorOccur = FALSE;
+	Session_IsErrorOccur = XFALSE;
 
 	st_Locker.lock_shared();
 	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
 	if (stl_MapIterator == stl_MapToken.end())
 	{
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
 	}
     BaseLib_OperatorTime_GetSysTime(&stl_MapIterator->second.st_LibTimer);
 	st_Locker.unlock_shared();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Token_Get
@@ -216,23 +216,23 @@ XBOOL CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable /* = NULL */)
 {
-	Session_IsErrorOccur = FALSE;
+	Session_IsErrorOccur = XFALSE;
 
 	st_Locker.lock_shared();
 	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
 	if (stl_MapIterator == stl_MapToken.end())
 	{
-		Session_IsErrorOccur = TRUE;
+		Session_IsErrorOccur = XTRUE;
 		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
 		st_Locker.unlock_shared();
-		return FALSE;
+		return XFALSE;
 	}
     if (NULL != pSt_UserTable)
     {
         *pSt_UserTable = stl_MapIterator->second.st_UserTable;
     }
 	st_Locker.unlock_shared();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Token_GetUser
@@ -259,15 +259,15 @@ XBOOL CSession_Token::Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* p
 *********************************************************************/
 XBOOL CSession_Token::Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE* pxhToken)
 {
-	Session_IsErrorOccur = FALSE;
+	Session_IsErrorOccur = XFALSE;
 
     if ((NULL == lpszUser) || (NULL == lpszPass))
     {
-		Session_IsErrorOccur = TRUE;
+		Session_IsErrorOccur = XTRUE;
 		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-		return FALSE;
+		return XFALSE;
     }
-    XBOOL bFound = FALSE;
+    XBOOL bFound = XFALSE;
 	st_Locker.lock_shared();
 	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.begin();
     for (; stl_MapIterator != stl_MapToken.end(); stl_MapIterator++)
@@ -279,7 +279,7 @@ XBOOL CSession_Token::Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, 
 			if (0 == _tcsncmp(lpszPass, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserPass, _tcslen(lpszPass)))
 			{
                 *pxhToken = stl_MapIterator->first;
-                bFound = TRUE;
+                bFound = XTRUE;
                 break;
 			}
         }
@@ -287,11 +287,11 @@ XBOOL CSession_Token::Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, 
     st_Locker.unlock_shared();
 	if (!bFound)
 	{
-		Session_IsErrorOccur = TRUE;
+		Session_IsErrorOccur = XTRUE;
 		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-		return FALSE;
+		return XFALSE;
 	}
-	return TRUE;
+	return XTRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数

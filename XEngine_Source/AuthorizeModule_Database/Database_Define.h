@@ -35,7 +35,7 @@ extern "C" XLONG DBModule_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-extern "C" XBOOL Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange = TRUE);
+extern "C" XBOOL Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange = XTRUE);
 /********************************************************************
 函数名称：Database_SQLite_Destroy
 函数功能：销毁数据库服务

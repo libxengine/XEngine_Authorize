@@ -126,7 +126,7 @@ XBOOL CDialog_Modify::OnInitDialog()
 			if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 			{
 				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
-				return FALSE;
+				return XFALSE;
 			}
 		}
 		else
@@ -134,7 +134,7 @@ XBOOL CDialog_Modify::OnInitDialog()
 			if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 			{
 				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
-				return FALSE;
+				return XFALSE;
 			}
 		}
 
@@ -162,11 +162,11 @@ XBOOL CDialog_Modify::OnInitDialog()
 
 		if (ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_ROOT == st_JsonObject["st_UserInfo"]["nUserLevel"].asInt())
 		{
-			m_ComboLeave.EnableWindow(FALSE);
+			m_ComboLeave.EnableWindow(XFALSE);
 		}
 	}
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 

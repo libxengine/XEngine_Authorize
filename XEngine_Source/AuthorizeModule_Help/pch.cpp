@@ -12,7 +12,7 @@
 //    Purpose:     导出函数实现
 //    History:
 *********************************************************************/
-XBOOL Help_IsErrorOccur = FALSE;
+XBOOL Help_IsErrorOccur = XFALSE;
 XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_ClipBoard m_HelpClipBoard;

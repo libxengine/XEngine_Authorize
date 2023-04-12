@@ -13,7 +13,7 @@
 *********************************************************************/
 CSession_Authorize::CSession_Authorize()
 {
-    bIsRun = FALSE;
+    bIsRun = XFALSE;
 }
 CSession_Authorize::~CSession_Authorize()
 {
@@ -41,28 +41,28 @@ CSession_Authorize::~CSession_Authorize()
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,XPVOID lParam /* = NULL */)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if (NULL == fpCall_AuthEvent)
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     m_lParam = lParam;
     lpCall_AuthregEvents = fpCall_AuthEvent;
 
-    bIsRun = TRUE;
+    bIsRun = XTRUE;
     //创建线程
     pSTDThread_hActive = make_shared<std::thread>(Session_Authorize_ActiveThread, this);
     if (!pSTDThread_hActive->joinable())
     {
-        bIsRun = FALSE;
-        Session_IsErrorOccur = TRUE;
+        bIsRun = XFALSE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_CREATETHREAD;
-        return FALSE;
+        return XFALSE;
     }
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_GetClient
@@ -89,13 +89,13 @@ XBOOL CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESS
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientAddr /* = NULL */)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if ((NULL == pppSt_ListClient) || (NULL == pInt_ListCount))
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     st_Locker.lock_shared();
     if (NULL == lpszClientAddr)
@@ -114,10 +114,10 @@ XBOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** p
         unordered_map<tstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszClientAddr);
         if (stl_MapIterator == stl_MapNetClient.cend())
         {
-            Session_IsErrorOccur = TRUE;
+            Session_IsErrorOccur = XTRUE;
             Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
             st_Locker.unlock_shared();
-            return FALSE;
+            return XFALSE;
         }
         BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_MapNetClient.size(), sizeof(AUTHSESSION_NETCLIENT));
 
@@ -128,11 +128,11 @@ XBOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** p
 
     if (0 == *pInt_ListCount)
     {
-		Session_IsErrorOccur = TRUE;
+		Session_IsErrorOccur = XTRUE;
 		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-		return FALSE;
+		return XFALSE;
     }
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_GetClientForUser
@@ -154,27 +154,27 @@ XBOOL CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** p
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if ((NULL == lpszUserName) || (NULL == pSt_Client))
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     st_Locker.lock_shared();
     unordered_map<tstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszUserName);
     if (stl_MapIterator == stl_MapNetClient.end())
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
     }
     *pSt_Client = stl_MapIterator->second;
     st_Locker.unlock_shared();
 
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_GetAddrForUser
@@ -196,27 +196,27 @@ XBOOL CSession_Authorize::Session_Authorize_GetClientForUser(LPCXSTR lpszUserNam
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser, XCHAR *ptszClientAddr)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if ((NULL == lpszClientUser) || (NULL == ptszClientAddr))
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     st_Locker.lock_shared();
     unordered_map<tstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszClientUser);
     if (stl_MapIterator == stl_MapNetClient.end())
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
     }
     _tcscpy(ptszClientAddr,stl_MapIterator->second.tszClientAddr);
     st_Locker.unlock_shared();
 
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_GetUserForAddr
@@ -238,36 +238,36 @@ XBOOL CSession_Authorize::Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUse
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR *ptszClientUser)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if ((NULL == lpszClientAddr) || (NULL == ptszClientUser))
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
-    XBOOL bIsFound = FALSE;
+    XBOOL bIsFound = XFALSE;
     st_Locker.lock_shared();
     unordered_map<tstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
     for (;stl_MapIterator != stl_MapNetClient.end();stl_MapIterator++)
     {
         if (0 == _tcsncmp(lpszClientAddr, stl_MapIterator->second.tszClientAddr, _tcslen(lpszClientAddr)))
         {
-            bIsFound = TRUE;
+            bIsFound = XTRUE;
             break;
         }
     }
     if (!bIsFound)
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
     }
     _tcscpy(ptszClientUser, stl_MapIterator->first.c_str());
     st_Locker.unlock_shared();
 
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_CloseClient
@@ -284,7 +284,7 @@ XBOOL CSession_Authorize::Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAdd
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_CloseClient(LPCXSTR lpszClientAddr)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     st_Locker.lock();
     unordered_map<tstring,AUTHSESSION_NETCLIENT>::iterator stl_MapIterator = stl_MapNetClient.find(lpszClientAddr);
@@ -294,7 +294,7 @@ XBOOL CSession_Authorize::Session_Authorize_CloseClient(LPCXSTR lpszClientAddr)
         stl_MapNetClient.erase(stl_MapIterator);
     }
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_Destroy
@@ -306,9 +306,9 @@ XBOOL CSession_Authorize::Session_Authorize_CloseClient(LPCXSTR lpszClientAddr)
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_Destroy()
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
-    bIsRun = FALSE;        
+    bIsRun = XFALSE;        
     //结束线程
     if (NULL != pSTDThread_hActive)
     {
@@ -318,7 +318,7 @@ XBOOL CSession_Authorize::Session_Authorize_Destroy()
     st_Locker.lock();
     stl_MapNetClient.clear();
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_Insert
@@ -345,23 +345,23 @@ XBOOL CSession_Authorize::Session_Authorize_Destroy()
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE *pSt_UserTable, int nNetType)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if ((NULL == lpszClientAddr) || (NULL == pSt_UserTable))
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     //验证是否登陆
     st_Locker.lock_shared();
     unordered_map<tstring,AUTHSESSION_NETCLIENT>::iterator stl_MapIterator = stl_MapNetClient.find(pSt_UserTable->st_UserInfo.tszUserName);
     if (stl_MapIterator != stl_MapNetClient.end())
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_ISLOGIN;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
     }
     st_Locker.unlock_shared();
 
@@ -376,7 +376,7 @@ XBOOL CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHR
     st_Locker.lock();
     stl_MapNetClient.insert(make_pair(pSt_UserTable->st_UserInfo.tszUserName, st_Client));
     st_Locker.unlock();
-    return TRUE;
+    return XTRUE;
 }
 /********************************************************************
 函数名称：Session_Authorize_SetUser
@@ -393,27 +393,27 @@ XBOOL CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHR
 *********************************************************************/
 XBOOL CSession_Authorize::Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable)
 {
-    Session_IsErrorOccur = FALSE;
+    Session_IsErrorOccur = XFALSE;
 
     if (NULL == pSt_UserTable)
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
-        return FALSE;
+        return XFALSE;
     }
     //验证是否登陆
     st_Locker.lock_shared();
     unordered_map<tstring, AUTHSESSION_NETCLIENT>::iterator stl_MapIterator = stl_MapNetClient.find(pSt_UserTable->st_UserInfo.tszUserName);
     if (stl_MapIterator == stl_MapNetClient.end())
     {
-        Session_IsErrorOccur = TRUE;
+        Session_IsErrorOccur = XTRUE;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
         st_Locker.unlock_shared();
-        return FALSE;
+        return XFALSE;
     }
     memcpy(&stl_MapIterator->second.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
     st_Locker.unlock_shared();
-    return TRUE;
+    return XTRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
@@ -450,7 +450,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 
                 st_TimeCal.wMinute = (int)nLeftTimer;
                 BaseLib_OperatorTimeSpan_CalForStu(&stl_MapIterator->second.st_LibTimer, &st_TimeCal);
-                BaseLib_OperatorTime_TimeToStr(stl_MapIterator->second.tszLeftTime, NULL, TRUE, &st_TimeCal);
+                BaseLib_OperatorTime_TimeToStr(stl_MapIterator->second.tszLeftTime, NULL, XTRUE, &st_TimeCal);
                 //赋值给管理器
                 if (nLeftTimer > nOnlineSpan)
                 {

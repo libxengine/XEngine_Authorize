@@ -22,7 +22,7 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求用户:%s 信息失败,错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
-			return FALSE;
+			return XFALSE;
 		}
 		Protocol_Packet_HttpClientInfo(tszSDBuffer, &nSDLen, &st_UserTable);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -34,7 +34,7 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 		int nOffCount = 0;
 		int nPosStart = 0;
 		int nPosEnd = 0;
-		XBOOL bOnline = FALSE;
+		XBOOL bOnline = XFALSE;
 		AUTHREG_USERTABLE** ppSt_UserInfo;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		
@@ -44,7 +44,7 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "internal server error");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
-			return FALSE;
+			return XFALSE;
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
@@ -54,7 +54,7 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "pos parament is not rigth");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求用户列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
-			return FALSE;
+			return XFALSE;
 		}
 		Protocol_Parse_HttpParseOnline(lpszMsgBuffer, nMsgLen, &bOnline);
 		//得到在线用户
@@ -88,7 +88,7 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求剔除用户:%s 没有找到,可能不在线"), lpszClientAddr, st_UserInfo.tszUserName);
-			return FALSE;
+			return XFALSE;
 		}
 		XEngine_CloseClient(tszClientAddr);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
@@ -106,12 +106,12 @@ XBOOL XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求修改用户信息失败:%s 错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
-			return FALSE;
+			return XFALSE;
 		}
 		Session_Authorize_SetUser(&st_UserTable);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求修改用户信息:%s 成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 	}
-	return TRUE;
+	return XTRUE;
 }

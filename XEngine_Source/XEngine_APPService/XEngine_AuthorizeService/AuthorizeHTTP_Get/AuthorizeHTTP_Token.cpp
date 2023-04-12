@@ -34,7 +34,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录失败，请求参数不正确"), lpszClientAddr);
-			return FALSE;
+			return XFALSE;
 		}
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
@@ -60,7 +60,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，三方验证失败,错误码:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, nHTTPCode);
-				return FALSE;
+				return XFALSE;
 			}
 			Protocol_Parse_HttpParseTable(ptszMsgBuffer, nHTTPLen, &st_UserTable);
 			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
@@ -72,14 +72,14 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，用户名不存在"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 			if ((_tcslen(tszUserPass) != _tcslen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsncmp(tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcslen(tszUserPass))))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，密码错误"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 		}
 		//用户是否存在会话,存在就返回
@@ -90,14 +90,14 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求登录发现会话已经存在,直接返回TOKEN:%lld 成功"), lpszClientAddr, xhToken);
-				return TRUE;
+				return XTRUE;
 			}
 			else
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user was login");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求登录发现会话已经存在,服务器不允许重读登录"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 		}
 		//是否被封禁
@@ -106,7 +106,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User was banned");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, tszUserName);
-			return FALSE;
+			return XFALSE;
 		}
 		//处理权限
 		if (st_UserTable.st_UserInfo.nUserLevel > 0)
@@ -116,7 +116,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "Function does not to enable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 			//普通用户
 			if (!st_AuthConfig.st_XLogin.bHTTPAuth)
@@ -124,7 +124,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User permission error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，登录失败，客户端权限不足"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 			//是否已经登录
 			XCHAR tszClientAddr[128];
@@ -133,7 +133,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User was login");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, tszUserName);
-				return FALSE;
+				return XFALSE;
 			}
 			//分析充值类型
 			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
@@ -141,7 +141,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User not time");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, tszUserName);
-				return FALSE;
+				return XFALSE;
 			}
 			st_UserTable.enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)_ttoi(tszDeviceType);
 			if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, XENGINE_AUTH_APP_NETTYPE_HTTP))
@@ -149,7 +149,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "server is error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, tszUserName);
-				return FALSE;
+				return XFALSE;
 			}
 		}
 		BaseLib_OperatorHandle_Create(&xhToken);
@@ -171,7 +171,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，更新TOKEN失败，不存在的Token:%s"), lpszClientAddr, tszUserToken);
-			return FALSE;
+			return XFALSE;
 		}
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, _ttoi64(tszUserToken), st_AuthConfig.st_XVerification.nTokenTimeout);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -228,5 +228,5 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 		}
 		Session_Token_Delete(_ttoi64(tszUserToken));
 	}
-	return TRUE;
+	return XTRUE;
 }

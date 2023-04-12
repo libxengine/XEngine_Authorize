@@ -19,7 +19,7 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
 		if (NULL == ptszMsgBuffer)
 		{
-			return FALSE;
+			return XFALSE;
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
 
@@ -29,7 +29,7 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "pos parament is not rigth");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求序列号列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
-			return FALSE;
+			return XFALSE;
 		}
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
 		Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
@@ -72,7 +72,7 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "time request is failed");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求插入序列卡失败,时间格式错误"), lpszClientAddr);
-				return FALSE;
+				return XFALSE;
 			}
 		}
 		else
@@ -80,7 +80,7 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 415, "not support serial types");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,请求插入序列卡失败,不支持的类型格式:%d"), lpszClientAddr, enSerialType);
-			return FALSE;
+			return XFALSE;
 		}
 		//生成卡
 		XCHAR** pptszSerialNumber;
@@ -90,7 +90,7 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "Internal Server Error");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端:%s,创建序列卡失败,错误码:%lX"), lpszClientAddr, Authorize_GetLastError());
-			return FALSE;
+			return XFALSE;
 		}
 		//导入序列卡
 		for (int i = 0; i < nSerialCount; i++)
@@ -132,5 +132,5 @@ XBOOL XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,请求推送自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);
 	}
-	return TRUE;
+	return XTRUE;
 }

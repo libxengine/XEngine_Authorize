@@ -12,7 +12,7 @@
 //    Purpose:     导出实现
 //    History:
 *********************************************************************/
-XBOOL Protocol_IsErrorOccur = FALSE;
+XBOOL Protocol_IsErrorOccur = XFALSE;
 XLONG Protocol_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CProtocol_Packet m_ProtocolPacket;

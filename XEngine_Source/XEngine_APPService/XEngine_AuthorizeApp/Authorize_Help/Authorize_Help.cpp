@@ -41,5 +41,5 @@ XBOOL Authorize_Help_LogPrint(LPCXSTR lpszLogBuffer)
 		_stprintf(tszLogBuffer, _T("%s\r\n%s:%s"), tszAddBuffer, tszTimeStr, lpszLogBuffer);
 	}
 	::SetDlgItemText(hMainWnd, IDC_EDIT1, tszLogBuffer);
-	return TRUE;
+	return XTRUE;
 }

@@ -11,7 +11,7 @@
 //    Purpose:     导出函数实现
 //    History:
 *********************************************************************/
-XBOOL SQLPacket_IsErrorOccur = FALSE;
+XBOOL SQLPacket_IsErrorOccur = XFALSE;
 XLONG SQLPacket_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CDatabase_SQLite m_SQLAuth;

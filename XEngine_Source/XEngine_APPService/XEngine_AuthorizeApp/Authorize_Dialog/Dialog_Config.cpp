@@ -63,21 +63,21 @@ XBOOL CDialog_Config::OnInitDialog()
 	m_EditUser.SetWindowText(_T("admin"));
 	m_EditPass.SetWindowText(_T("123123aa"));
 
-	m_BtnLogout.EnableWindow(FALSE);
-	m_BtnUpdate.EnableWindow(FALSE);
+	m_BtnLogout.EnableWindow(XFALSE);
+	m_BtnUpdate.EnableWindow(XFALSE);
 
 	m_CheckCodecEnable.SetCheck(BST_UNCHECKED);
 	m_CheckCodecDisable.SetCheck(BST_CHECKED);
 	m_ListEncrypto.AddString(_T("XCrypto(X加密)"));
 	m_ListEncrypto.SetCurSel(0);
-	m_ListEncrypto.EnableWindow(FALSE);
+	m_ListEncrypto.EnableWindow(XFALSE);
 
 	m_EditPassword.SetWindowText("123123");
-	m_EditPassword.EnableWindow(FALSE);
+	m_EditPassword.EnableWindow(XFALSE);
 
 	hConfigWnd = m_hWnd;
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 
@@ -144,9 +144,9 @@ void CDialog_Config::OnBnClickedButton1()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	Authorize_Help_LogPrint(_T("登录成功"));
 
-	m_BtnLogin.EnableWindow(FALSE);
-	m_BtnLogout.EnableWindow(TRUE);
-	m_BtnUpdate.EnableWindow(TRUE);
+	m_BtnLogin.EnableWindow(XFALSE);
+	m_BtnLogout.EnableWindow(XTRUE);
+	m_BtnUpdate.EnableWindow(XTRUE);
 }
 
 
@@ -205,9 +205,9 @@ void CDialog_Config::OnBnClickedButton2()
 	m_EditToken.SetWindowText("");
 	m_EditTimeout.SetWindowText("");
 
-	m_BtnLogin.EnableWindow(TRUE);
-	m_BtnLogout.EnableWindow(FALSE);
-	m_BtnUpdate.EnableWindow(FALSE);
+	m_BtnLogin.EnableWindow(XTRUE);
+	m_BtnLogout.EnableWindow(XFALSE);
+	m_BtnUpdate.EnableWindow(XFALSE);
 }
 
 
@@ -269,16 +269,16 @@ void CDialog_Config::OnBnClickedButton5()
 void CDialog_Config::OnBnClickedRadio2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ListEncrypto.EnableWindow(FALSE);
-	m_EditPassword.EnableWindow(FALSE);
-	bCrypto = FALSE;
+	m_ListEncrypto.EnableWindow(XFALSE);
+	m_EditPassword.EnableWindow(XFALSE);
+	bCrypto = XFALSE;
 }
 
 
 void CDialog_Config::OnBnClickedRadio1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ListEncrypto.EnableWindow(TRUE);
-	m_EditPassword.EnableWindow(TRUE);
-	bCrypto = TRUE;
+	m_ListEncrypto.EnableWindow(XTRUE);
+	m_EditPassword.EnableWindow(XTRUE);
+	bCrypto = XTRUE;
 }

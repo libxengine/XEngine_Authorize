@@ -12,7 +12,7 @@
 //    Purpose:     导出函数实现
 //    History:
 *********************************************************************/
-XBOOL Session_IsErrorOccur = FALSE;
+XBOOL Session_IsErrorOccur = XFALSE;
 XLONG Session_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CSession_Authorize m_SessionAuth;

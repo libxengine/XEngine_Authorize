@@ -11,7 +11,7 @@
 //    Purpose:     导出实现
 //    History:
 *********************************************************************/
-XBOOL Config_IsErrorOccur = FALSE;
+XBOOL Config_IsErrorOccur = XFALSE;
 XLONG Config_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CModuleConfigure_Json m_Config;

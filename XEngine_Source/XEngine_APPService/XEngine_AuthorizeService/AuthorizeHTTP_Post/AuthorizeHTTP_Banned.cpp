@@ -58,5 +58,5 @@ XBOOL XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, 
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,修改禁用列表成功,修改的用户:%s,修改的IP地址:%s"), lpszClientAddr, st_Banned.tszUserName, st_Banned.tszIPAddr);
 	}
-	return TRUE;
+	return XTRUE;
 }

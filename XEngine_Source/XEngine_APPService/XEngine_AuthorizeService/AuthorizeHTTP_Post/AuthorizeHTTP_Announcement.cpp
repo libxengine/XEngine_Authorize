@@ -15,7 +15,7 @@ XBOOL XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPI
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，公告系统协议处理失败，功能已经被服务器关闭!"), lpszClientAddr);
-		return FALSE;
+		return XFALSE;
 	}
 	if (0 == _tcsnicmp(lpszAPIInsert, lpszAPIName, _tcslen(lpszAPIInsert)))
 	{
@@ -50,5 +50,5 @@ XBOOL XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPI
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_Announcement, nListCount);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端:%s,查询公告列表成功,公告个数:%d"), lpszClientAddr, nListCount);
 	}
-	return TRUE;
+	return XTRUE;
 }

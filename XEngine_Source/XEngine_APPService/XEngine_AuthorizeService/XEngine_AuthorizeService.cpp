@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XBOOL bIsRun = FALSE;
+XBOOL bIsRun = XFALSE;
 XHANDLE xhLog = NULL;
 XHANDLE xhTCPSocket = NULL;
 XHANDLE xhWSSocket = NULL;
@@ -20,7 +20,7 @@ void ServiceApp_Stop(int signo)
 	if (bIsRun)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("网络验证服务器退出..."));
-		bIsRun = FALSE;
+		bIsRun = XFALSE;
 
 		int nListCount = 0;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
@@ -103,7 +103,7 @@ int main(int argc, char** argv)
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
-	bIsRun = TRUE;
+	bIsRun = XTRUE;
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
@@ -270,7 +270,7 @@ int main(int argc, char** argv)
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,密码验证:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_AuthConfig.st_XCrypto.bEnable);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("所有服务成功启动，网络验证服务运行中,XEngien版本:%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XGetStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
-	while (TRUE)
+	while (XTRUE)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
@@ -280,7 +280,7 @@ XENGINE_EXITAPP:
 	if (bIsRun)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("网络验证服务器退出..."));
-		bIsRun = FALSE;
+		bIsRun = XFALSE;
 
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);

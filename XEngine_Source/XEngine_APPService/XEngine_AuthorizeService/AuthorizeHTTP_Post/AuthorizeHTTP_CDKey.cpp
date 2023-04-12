@@ -18,7 +18,7 @@ XBOOL XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("HTTP客户端：%s，CDKey验证授权失败，功能已经被服务器关闭!"), lpszClientAddr);
-		return FALSE;
+		return XFALSE;
 	}
 	if (0 == _tcsnicmp(lpszAPICreate, lpszAPIName, _tcslen(lpszAPICreate)))
 	{
@@ -31,7 +31,7 @@ XBOOL XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 406, "Not Acceptable,write key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求创建CDKEY协议失败,服务器内部错误：%lX"), lpszClientAddr, Authorize_GetLastError());
-			return FALSE;
+			return XFALSE;
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, tszRVBuffer, nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求创建CDKEY成功,APP名:%s,APP版本:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer);
@@ -70,7 +70,7 @@ XBOOL XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized,cdkey is not authorized");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Authorize_GetLastError());
-			return FALSE;
+			return XFALSE;
 		}
 		Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
 		XEngine_Client_TaskSend(lpszClientAddr, tszRVBuffer, nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -82,5 +82,5 @@ XBOOL XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _T("HTTP客户端:%s,请求了一条未知的子协议：%s"), lpszClientAddr, lpszAPIName);
 	}
-	return TRUE;
+	return XTRUE;
 }

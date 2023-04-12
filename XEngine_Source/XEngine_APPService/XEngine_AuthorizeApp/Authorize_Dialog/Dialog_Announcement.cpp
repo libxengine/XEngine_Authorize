@@ -48,8 +48,8 @@ XBOOL CDialog_Announcement::OnInitDialog()
 	m_ListAnnouncement.InsertColumn(1, _T("公告内容"), LVCFMT_LEFT, 400);
 	m_ListAnnouncement.InsertColumn(2, _T("创建时间"), LVCFMT_LEFT, 150);
 	m_ListAnnouncement.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 

@@ -78,8 +78,8 @@ XBOOL CDialog_Serial::OnInitDialog()
 
 	m_ComboNumber.SetCurSel(0);
 	m_ComboSerialType.SetCurSel(0);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 
@@ -393,7 +393,7 @@ void CDialog_Serial::OnBnClickedButton6()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	XCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
-	CFileDialog m_FileDlg(TRUE, _T("txt"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	CFileDialog m_FileDlg(XTRUE, _T("txt"), NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
 	// 显示保存文件对话框   
 	if (IDOK != m_FileDlg.DoModal())
 	{
@@ -410,7 +410,7 @@ void CDialog_Serial::OnBnClickedButton6()
 		return;
 	}
 	list<AUTHREG_SERIALTABLE> stl_ListSerial;
-	while (TRUE)
+	while (XTRUE)
 	{
 		memset(tszMsgBuffer, '\0', MAX_PATH);
 		//一行一行读取
@@ -528,7 +528,7 @@ void CDialog_Serial::OnBnClickedButton7()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	XCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
-	CFileDialog m_FileDlg(FALSE, _T("txt"), _T("serial"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	CFileDialog m_FileDlg(XFALSE, _T("txt"), _T("serial"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
 	// 显示保存文件对话框   
 	if (IDOK != m_FileDlg.DoModal())
 	{

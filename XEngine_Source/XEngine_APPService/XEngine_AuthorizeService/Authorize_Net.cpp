@@ -4,7 +4,7 @@ XBOOL CALLBACK XEngine_Client_TCPAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket,
 {
 	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("TCP客户端：%s，进入服务器"), lpszClientAddr);
-	return TRUE;
+	return XTRUE;
 }
 void CALLBACK XEngine_Client_TCPRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
 {
@@ -22,11 +22,11 @@ XBOOL CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, 
 {
 	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("WS客户端：%s，进入服务器"), lpszClientAddr);
-	return TRUE;
+	return XTRUE;
 }
 void CALLBACK XEngine_Client_WSRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
 {
-	XBOOL bLogin = FALSE;
+	XBOOL bLogin = XFALSE;
 	RfcComponents_WSPacket_GetLoginEx(xhWSPacket, lpszClientAddr, &bLogin);
 	if (bLogin)
 	{
@@ -56,7 +56,7 @@ XBOOL CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket
 {
 	HttpProtocol_Server_CreateClientEx(xhHttpPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("HTTP客户端：%s，进入服务器"), lpszClientAddr);
-	return TRUE;
+	return XTRUE;
 }
 void CALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
 {
@@ -120,7 +120,7 @@ XBOOL XEngine_CloseClient(LPCXSTR lpszClientAddr)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("客户端：%s，离开服务器"), lpszClientAddr);
 	}
-	return TRUE;
+	return XTRUE;
 }
 //////////////////////////////////////////////////////////////////////////
 XBOOL XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType)
@@ -137,7 +137,7 @@ XBOOL XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int
 	{
 		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType);
 	}
-	return TRUE;
+	return XTRUE;
 }
 XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass)
 {
@@ -145,7 +145,7 @@ XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen
 	if (NULL == ptszMsgBuffer)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-		return FALSE;
+		return XFALSE;
 	}
 
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
@@ -160,9 +160,9 @@ XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-				return FALSE;
+				return XFALSE;
 			}
-			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszCodecBuffer, lpszPass);
+			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
 			RfcComponents_WSCodec_EncodeMsg(ptszCodecBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 			ptszCodecBuffer = NULL;
@@ -177,7 +177,7 @@ XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen
 		}
 		else
 		{
-			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszMsgBuffer, lpszPass);
+			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszMsgBuffer, lpszPass);
 			NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
 		}
 	}
@@ -187,7 +187,7 @@ XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen
 		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
 
 		st_HDRParam.nHttpCode = 200;
-		st_HDRParam.bIsClose = TRUE;
+		st_HDRParam.bIsClose = XTRUE;
 		if (NULL == lpszPass)
 		{
 			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nMsgLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
@@ -198,15 +198,15 @@ XBOOL XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-				return FALSE;
+				return XFALSE;
 			}
 
-			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (UCHAR*)ptszCodecBuffer, lpszPass);
+			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
 			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nMsgLen, &st_HDRParam, ptszCodecBuffer, nMsgLen);
 			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
 	}
 	ManagePool_Memory_Free(xhMemPool, ptszMsgBuffer);
-	return TRUE;
+	return XTRUE;
 }

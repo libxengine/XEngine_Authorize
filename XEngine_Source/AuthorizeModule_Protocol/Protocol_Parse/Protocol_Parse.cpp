@@ -47,13 +47,13 @@ CProtocol_Parse::~CProtocol_Parse()
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_ProtocolHdr))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -62,9 +62,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	pSt_ProtocolHdr->wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	pSt_ProtocolHdr->wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
@@ -72,7 +72,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseToken
@@ -99,13 +99,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pxhToken))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -114,18 +114,18 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int 
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	if (st_JsonRoot["xhToken"].isNull())
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	*pxhToken = st_JsonRoot["xhToken"].asUInt64();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseAuth
@@ -152,13 +152,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int 
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserAuth))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -167,9 +167,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int n
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserAuth"];
 
@@ -189,7 +189,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int n
 	{
 		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
@@ -216,13 +216,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int n
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserInfo))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -231,9 +231,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int n
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserInfo"];
 	if (!st_JsonProtocol["tszUserName"].isNull())
@@ -272,7 +272,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int n
 	{
 		pSt_UserInfo->nUserState = st_JsonProtocol["nUserState"].asInt();
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParsePay
@@ -299,13 +299,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int n
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserPay))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -314,9 +314,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nM
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserPay"];
 
@@ -328,7 +328,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nM
 	{
 		_tcscpy(pSt_UserPay->tszUserName, st_JsonProtocol["tszUserName"].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseTry
@@ -355,13 +355,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nM
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == ptszSerial))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -370,9 +370,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nM
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
 
@@ -380,7 +380,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nM
 	{
 		_tcscpy(ptszSerial, st_JsonProtocol["tszSerial"].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseTable
@@ -407,13 +407,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nM
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_UserTable))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -422,9 +422,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int 
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_UserTable = st_JsonRoot["st_UserTable"];
 	Json::Value st_UserInfo = st_UserTable["st_UserInfo"];
@@ -482,7 +482,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int 
 	{
 		pSt_UserTable->st_UserInfo.nUserState = st_UserInfo["nUserState"].asInt();
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSerial
@@ -514,13 +514,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int 
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pppSt_SerialTable))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -529,9 +529,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	*pInt_ListCount = st_JsonRoot["Array"].size();
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, st_JsonRoot["Array"].size(), sizeof(AUTHREG_SERIALTABLE));
@@ -563,7 +563,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int
 			_tcscpy((*pppSt_SerialTable)[i]->tszUserName, st_JsonArray[i]["tszUserName"].asCString());
 		}
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSerial2
@@ -605,13 +605,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == penSerialType))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -620,9 +620,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, in
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];
 
@@ -630,7 +630,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, in
 	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
 	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
 	_tcscpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseOnline
@@ -657,13 +657,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, in
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, XBOOL* pbOnline)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pbOnline))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -672,13 +672,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 
 	*pbOnline = st_JsonRoot["Online"].asBool();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseTime
@@ -705,13 +705,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_ProtocolTime))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -720,9 +720,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int n
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTime"];
 
@@ -758,7 +758,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int n
 	{
 		_tcscpy(pSt_ProtocolTime->tszUserName, st_JsonProtocol["tszUserName"].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSwitch
@@ -785,13 +785,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int n
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_FunSwitch))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -800,9 +800,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_SwitchInfo"];
 
@@ -814,7 +814,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int
 	pSt_FunSwitch->bSwitchCDKey = st_JsonObject["bSwitchCDKey"].asBool();
 	pSt_FunSwitch->bSwitchNotice = st_JsonObject["bSwitchNotice"].asBool();
 
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParsePos
@@ -846,13 +846,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pInt_PosStart))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -861,14 +861,14 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nM
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 
 	*pInt_PosStart = st_JsonRoot["PosStart"].asInt();
 	*pInt_PosEnd = st_JsonRoot["PosEnd"].asInt();
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseBanned
@@ -895,13 +895,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nM
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_AuthBanned))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -910,9 +910,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_Banned"];
 
@@ -940,7 +940,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int
 	{
 		_tcscpy(pSt_AuthBanned->tszUserName, st_JsonObject["tszUserName"].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseCDKey
@@ -967,13 +967,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Authorize))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -982,9 +982,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int 
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 
 	if (!st_JsonRoot["tszAddr"].isNull())
@@ -1073,7 +1073,7 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int 
 	{
 		_tcscpy(pSt_Authorize->st_AuthUserInfo.tszCustom, st_JsonUserInfo["tszCustom"].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseAnnouncement
@@ -1100,13 +1100,13 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int 
 *********************************************************************/
 XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Announcement))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -1115,9 +1115,9 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffe
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = XTRUE;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_Notice"];
 
@@ -1133,5 +1133,5 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffe
 	{
 		pSt_Announcement->nID = st_JsonObject["nID"].asInt64();
 	}
-	return TRUE;
+	return XTRUE;
 }

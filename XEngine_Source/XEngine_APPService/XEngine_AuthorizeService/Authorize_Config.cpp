@@ -8,12 +8,12 @@ XBOOL Authorize_Service_Parament(int argc, char** argv)
 	if (!ModuleConfigure_Json_File(lpszFile, &st_AuthConfig))
 	{
 		printf("解析配置文件失败,Configure_IniFile_Read:%lX\n", Config_GetLastError());
-		return FALSE;
+		return XFALSE;
 	}
 	if (!ModuleConfigure_Json_Switch(lpszSwitchFile, &st_FunSwitch))
 	{
 		printf("解析配置文件失败,ModuleConfigure_Json_Switch:%lX\n", Config_GetLastError());
-		return FALSE;
+		return XFALSE;
 	}
 
     for (int i = 0;i < argc;i++)
@@ -21,7 +21,7 @@ XBOOL Authorize_Service_Parament(int argc, char** argv)
 		if ((0 == _tcscmp("-h", argv[i])) || (0 == _tcscmp("-H", argv[i])))
 		{
 			Authorize_Service_ParamentHelp();
-			return FALSE;
+			return XFALSE;
 		}
 		else if (0 == _tcscmp("-d", argv[i]))
 		{
@@ -29,7 +29,7 @@ XBOOL Authorize_Service_Parament(int argc, char** argv)
 		}
     }
 
-    return TRUE;
+    return XTRUE;
 }
 
 void Authorize_Service_ParamentHelp()

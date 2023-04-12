@@ -67,8 +67,8 @@ XBOOL CDialog_User::OnInitDialog()
 	m_EditPosStart.SetWindowText("0");
 	m_EditPosEnd.SetWindowText("50");
 	hUserWnd = m_hWnd;
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }
 
 
@@ -384,12 +384,12 @@ void CDialog_User::OnBnClickedCheck2()
 	// TODO: 在此添加控件通知处理程序代码
 	if (BST_CHECKED == m_CheckAuto.GetCheck())
 	{
-		bThread = TRUE;
+		bThread = XTRUE;
 		hThread = CreateThread(NULL, 0, Dialog_User_Thread, this, 0, NULL);
 	}
 	else
 	{
-		bThread = FALSE;
+		bThread = XFALSE;
 		XLONG dwRet = WaitForSingleObject(hThread, INFINITE);
 		if (WAIT_OBJECT_0 != dwRet)
 		{

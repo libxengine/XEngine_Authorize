@@ -195,7 +195,7 @@ void CDialog_Switch::OnBnClickedButton1()
 			m_RadioNoticeOPen.SetCheck(BST_UNCHECKED);
 			m_RadioNoticeClose.SetCheck(BST_CHECKED);
 		}
-		m_BtnSetConfigure.EnableWindow(TRUE);
+		m_BtnSetConfigure.EnableWindow(XTRUE);
 	}
 	else
 	{
@@ -351,7 +351,7 @@ XBOOL CDialog_Switch::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_BtnSetConfigure.EnableWindow(FALSE);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	m_BtnSetConfigure.EnableWindow(XFALSE);
+	return XTRUE;  // return XTRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 XFALSE
 }

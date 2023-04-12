@@ -49,31 +49,31 @@ XBOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDeg
 	//获得窗口边框
 	if (!GetWindowRect(hWnd, &st_Rect))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = XTRUE;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_GETRECT;
-		return FALSE;
+		return XFALSE;
 	}
 	for (int i = 0; i < nDitheringDegree; i++)
 	{
 		Sleep(nDitheringCareer);//延迟。
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, XTRUE);
 	}
 	MoveWindow(hWnd, st_Rect.left, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, 1);//归为
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：AuthHelp_Windows_CreateTooltip
@@ -95,7 +95,7 @@ XBOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDeg
 *********************************************************************/
 XBOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
 {
-	Help_IsErrorOccur = FALSE;
+	Help_IsErrorOccur = XFALSE;
 
 	TOOLINFO tInfo;
 	RECT st_Rect = { '\0' };
@@ -103,15 +103,15 @@ XBOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszC
 	HWND hWndEx = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, 0, WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hWnd, 0, GetModuleHandle(NULL), 0);
 	if (NULL == hWndEx)
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = XTRUE;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_CREATEWINDOW;
-		return FALSE;
+		return XFALSE;
 	}
 	if (!SetWindowPos(hWndEx, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = XTRUE;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_SETWINDOW;
-		return FALSE;
+		return XFALSE;
 	}
 	GetClientRect(hWnd, &st_Rect);
 
@@ -123,5 +123,5 @@ XBOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszC
 	tInfo.lpszText = (LPTSTR)lpszContextOfTip;
 	tInfo.rect = st_Rect;
 	SendMessage(hWndEx, TTM_ADDTOOL, 0, (LPARAM)&tInfo);
-	return TRUE;
+	return XTRUE;
 }

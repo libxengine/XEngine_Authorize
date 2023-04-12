@@ -42,13 +42,13 @@ CModuleConfigure_Json::~CModuleConfigure_Json()
 *********************************************************************/
 XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG* pSt_ServerConfig)
 {
-	Config_IsErrorOccur = FALSE;
+	Config_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszConfigFile) || (NULL == pSt_ServerConfig))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -57,9 +57,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	FILE* pSt_File = _tfopen(lpszConfigFile, _T("rb"));
 	if (NULL == pSt_File)
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_OPENFILE;
-		return FALSE;
+		return XFALSE;
 	}
 	size_t nCount = 0;
 	XCHAR tszMsgBuffer[4096];
@@ -77,9 +77,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_JsonBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nCount, &st_JsonRoot, &st_JsonError))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	pSt_ServerConfig->nTCPPort = st_JsonRoot["nTCPPort"].asInt();
 	pSt_ServerConfig->nWSPort = st_JsonRoot["nWSPort"].asInt();
@@ -89,9 +89,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//最大配置
 	if (st_JsonRoot["XMax"].empty() || (6 != st_JsonRoot["XMax"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XMAX;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXMax = st_JsonRoot["XMax"];
 	pSt_ServerConfig->st_XMax.nMaxClient = st_JsonXMax["nMaxClient"].asInt();
@@ -103,9 +103,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//验证配置
 	if (st_JsonRoot["XVerification"].empty() || (6 != st_JsonRoot["XVerification"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXVerification = st_JsonRoot["XVerification"];
 	pSt_ServerConfig->st_XVerification.nUserTimeout = st_JsonXVerification["nUserTimeout"].asInt();
@@ -117,9 +117,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//登录配置
 	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXLogin = st_JsonRoot["XLogin"];
 	pSt_ServerConfig->st_XLogin.bMultiLogin = st_JsonXLogin["bMultiLogin"].asBool();
@@ -134,9 +134,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XCRYPTO;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
@@ -144,18 +144,18 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//数据库配置
 	if (st_JsonRoot["XSQL"].empty() || (1 != st_JsonRoot["XSQL"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XSQL;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXSQL = st_JsonRoot["XSQL"];
 	_tcscpy(pSt_ServerConfig->st_XSql.tszSQLite, st_JsonXSQL["tszSQLFile"].asCString());
 	//日志配置
 	if (st_JsonRoot["XLog"].empty() || (4 != st_JsonRoot["XLog"].size()))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XLOG;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXLog = st_JsonRoot["XLog"];
 	pSt_ServerConfig->st_XLog.nMaxSize = st_JsonXLog["MaxSize"].asInt();
@@ -165,23 +165,23 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	//版本列表
 	if (st_JsonRoot["XVer"].empty())
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonXVer = st_JsonRoot["XVer"];
 	pSt_ServerConfig->st_XVer.pStl_ListVer = new list<string>;
 	if (NULL == pSt_ServerConfig->st_XVer.pStl_ListVer)
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_MALLOC;
-		return FALSE;
+		return XFALSE;
 	}
 	for (unsigned int i = 0; i < st_JsonXVer.size(); i++)
 	{
 		pSt_ServerConfig->st_XVer.pStl_ListVer->push_back(st_JsonXVer[i].asCString());
 	}
-	return TRUE;
+	return XTRUE;
 }
 /********************************************************************
 函数名称：ModuleConfigure_Json_Switch
@@ -203,13 +203,13 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 *********************************************************************/
 XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH* pSt_ServerConfig)
 {
-	Config_IsErrorOccur = FALSE;
+	Config_IsErrorOccur = XFALSE;
 
 	if ((NULL == lpszConfigFile) || (NULL == pSt_ServerConfig))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARAMENT;
-		return FALSE;
+		return XFALSE;
 	}
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -218,9 +218,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile,
 	FILE* pSt_File = _tfopen(lpszConfigFile, _T("rb"));
 	if (NULL == pSt_File)
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_OPENFILE;
-		return FALSE;
+		return XFALSE;
 	}
 	size_t nCount = 0;
 	XCHAR tszMsgBuffer[4096];
@@ -238,9 +238,9 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile,
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_JsonBuilder.newCharReader());
 	if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nCount, &st_JsonRoot, &st_JsonError))
 	{
-		Config_IsErrorOccur = TRUE;
+		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARSE;
-		return FALSE;
+		return XFALSE;
 	}
 	pSt_ServerConfig->bSwitchDelete = st_JsonRoot["bSwitchDelete"].asBool();
 	pSt_ServerConfig->bSwitchRegister = st_JsonRoot["bSwitchRegister"].asBool();
@@ -251,5 +251,5 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile,
 	pSt_ServerConfig->bSwitchCDKey = st_JsonRoot["bSwitchCDKey"].asBool();
 	pSt_ServerConfig->bSwitchNotice = st_JsonRoot["bSwitchNotice"].asBool();
 
-	return TRUE;
+	return XTRUE;
 }

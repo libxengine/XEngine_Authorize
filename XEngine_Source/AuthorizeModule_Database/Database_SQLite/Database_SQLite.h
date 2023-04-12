@@ -20,7 +20,7 @@ public:
     CDatabase_SQLite();
     ~CDatabase_SQLite();
 public:
-    XBOOL Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange = TRUE);                           //初始化
+    XBOOL Database_SQLite_Init(LPCXSTR lpszSQLFile, XBOOL bIsChange = XTRUE);                           //初始化
     XBOOL Database_SQLite_Destroy();                                                                  //销毁
 public:
     XBOOL Database_SQLite_UserDelete(LPCXSTR lpszUserName);                                           //删除用户
