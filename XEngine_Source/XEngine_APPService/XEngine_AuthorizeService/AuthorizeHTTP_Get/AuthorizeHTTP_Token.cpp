@@ -39,6 +39,35 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
 		BaseLib_OperatorString_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
+		//是否启用了动态码
+		if (st_FunSwitch.bSwitchDCode)
+		{
+			//+ &token=1000112345&dcode=123456
+			if (nListCount != 5)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s,登录失败,登录参数错误,验证码或者TOKEN未填写"), lpszClientAddr);
+				return XFALSE;
+			}
+			XCHAR tszTokenStr[128];
+			XCHAR tszDCodeStr[128];
+
+			memset(tszTokenStr, '\0', sizeof(tszTokenStr));
+			memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
+
+			BaseLib_OperatorString_GetKeyValue(pptszList[4], "=", tszURLKey, tszTokenStr);
+			BaseLib_OperatorString_GetKeyValue(pptszList[5], "=", tszURLKey, tszDCodeStr);
+
+			xhToken = _ttoi64(tszTokenStr);
+			if (!AuthHelp_DynamicCode_Get(xhToken, _ttoi(tszDCodeStr)))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s,登录失败,验证动态码失败,句柄:%llu,动态码;%s,错误码:%lX"), lpszClientAddr, xhToken, tszDCodeStr, AuthHelp_GetLastError());
+				return XFALSE;
+			}
+		}
 		//是否使用了第三方验证
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{

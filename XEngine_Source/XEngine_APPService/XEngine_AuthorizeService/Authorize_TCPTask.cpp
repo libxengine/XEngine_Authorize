@@ -98,6 +98,18 @@ XBOOL XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，没有填写设备类型,无法继续"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return XFALSE;
 		}
+		//是否启用了动态码
+		if (st_FunSwitch.bSwitchDCode)
+		{
+			if (!AuthHelp_DynamicCode_Get(pSt_ProtocolHdr->xhToken, _ttoi(st_AuthProtocol.tszDCode)))
+			{
+				pSt_ProtocolHdr->wReserve = 257;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，用户名：%s，登录失败，验证动态码失败,句柄:%llu,动态码;%s,错误码:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName, pSt_ProtocolHdr->xhToken, st_AuthProtocol.tszDCode, AuthHelp_GetLastError());
+				return XFALSE;
+			}
+		}
 		//是否使用了第三方验证
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{

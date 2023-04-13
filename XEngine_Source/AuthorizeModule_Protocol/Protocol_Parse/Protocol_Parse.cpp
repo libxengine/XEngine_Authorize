@@ -181,6 +181,10 @@ XBOOL CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int n
 	{
 		_tcscpy(pSt_UserAuth->tszUserPass, st_JsonProtocol["tszUserPass"].asCString());
 	}
+	if (!st_JsonProtocol["tszDCode"].isNull())
+	{
+		_tcscpy(pSt_UserAuth->tszDCode, st_JsonProtocol["tszDCode"].asCString());
+	}
 	if (!st_JsonProtocol["enClientType"].isNull())
 	{
 		pSt_UserAuth->enClientType = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["enClientType"].asInt();
