@@ -503,12 +503,17 @@ XBOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int
   类型：整数型
   可空：N
   意思：输入超时时间
+ 参数.五：nDCode
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入动态验证码
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-XBOOL CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+XBOOL CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode /* = 0 */)
 {
 	Protocol_IsErrorOccur = XFALSE;
 
@@ -538,6 +543,10 @@ XBOOL CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["nTimeout"] = nTimeout;
 	st_JsonRoot["tszTimeStart"] = tszTimeStart;
 	st_JsonRoot["tszTimeEnd"] = tszTimeEnd;
+	if (nDCode > 0)
+	{
+		st_JsonRoot["nDynamicCode"] = nDCode;
+	}
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);

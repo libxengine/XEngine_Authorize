@@ -238,12 +238,17 @@ extern "C" XBOOL Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_
   类型：整数型
   可空：N
   意思：输入超时时间
+ 参数.五：nDCode
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入动态验证码
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout);
+extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode = 0);
 /********************************************************************
 函数名称：Protocol_Packet_HttpSwitch
 函数功能：打包开关功能选项

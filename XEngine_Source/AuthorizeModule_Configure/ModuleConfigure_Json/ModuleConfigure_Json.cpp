@@ -101,7 +101,7 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (6 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (7 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = XTRUE;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -110,6 +110,7 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, X
 	Json::Value st_JsonXVerification = st_JsonRoot["XVerification"];
 	pSt_ServerConfig->st_XVerification.nUserTimeout = st_JsonXVerification["nUserTimeout"].asInt();
 	pSt_ServerConfig->st_XVerification.nTokenTimeout = st_JsonXVerification["nTokenTimeout"].asInt();
+	pSt_ServerConfig->st_XVerification.nDynamicTimeout = st_JsonXVerification["nDynamicTimeout"].asInt();
 	pSt_ServerConfig->st_XVerification.nVerTime = st_JsonXVerification["nVerTime"].asInt();
 	pSt_ServerConfig->st_XVerification.nVerMode = st_JsonXVerification["nVerMode"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryTime = st_JsonXVerification["nTryTime"].asInt();
@@ -250,6 +251,6 @@ XBOOL CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile,
 	pSt_ServerConfig->bSwitchTime = st_JsonRoot["bSwitchTime"].asBool();
 	pSt_ServerConfig->bSwitchCDKey = st_JsonRoot["bSwitchCDKey"].asBool();
 	pSt_ServerConfig->bSwitchNotice = st_JsonRoot["bSwitchNotice"].asBool();
-
+	pSt_ServerConfig->bSwitchDCode = st_JsonRoot["bSwitchDCode"].asBool();
 	return XTRUE;
 }

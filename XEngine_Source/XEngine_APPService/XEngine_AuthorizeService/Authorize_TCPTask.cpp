@@ -69,6 +69,7 @@ XBOOL XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
 		return XFALSE;
 	}
+
 	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;

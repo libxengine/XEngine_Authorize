@@ -25,6 +25,12 @@
     <Filter Include="源文件\AuthHelp_Windows">
       <UniqueIdentifier>{4a1f4a92-dfc7-4a5a-bd47-85349ebdc583}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\AuthHelp_DynamicCode">
+      <UniqueIdentifier>{0e7fb41b-48a3-4c07-b19c-4fa914d3f814}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthHelp_DynamicCode">
+      <UniqueIdentifier>{4df65f23-98dc-4355-8843-fbe5041766c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -45,6 +51,9 @@
     <ClInclude Include="AuthHelp_Windows\AuthHelp_Windows.h">
       <Filter>头文件\AuthHelp_Windows</Filter>
     </ClInclude>
+    <ClInclude Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.h">
+      <Filter>头文件\AuthHelp_DynamicCode</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -58,6 +67,9 @@
     </ClCompile>
     <ClCompile Include="AuthHelp_Windows\AuthHelp_Windows.cpp">
       <Filter>源文件\AuthHelp_Windows</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.cpp">
+      <Filter>源文件\AuthHelp_DynamicCode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

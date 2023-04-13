@@ -59,9 +59,9 @@ extern "C" XBOOL Protocol_Packet_HttpSerialList(XCHAR * ptszMsgBuffer, int* pInt
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpSerialList(ptszMsgBuffer, pInt_MsgLen, pppSt_SerialList, nListCount);
 }
-extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode)
 {
-	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout);
+	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout, nDCode);
 }
 extern "C" XBOOL Protocol_Packet_HttpSwitch(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch)
 {

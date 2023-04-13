@@ -33,6 +33,7 @@ typedef struct
 	{
 		int nUserTimeout;                                   //用户登录超时时间
 		int nTokenTimeout;                                  //TOKEN登录超时时间
+		int nDynamicTimeout;                                //动态码超时时间
 		int nVerTime;                                       //验证时间
 		int nVerMode;                                       //验证模式
 		int nTryTime;                                       //验证时间
@@ -83,6 +84,7 @@ typedef struct
 	XBOOL bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
 	XBOOL bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
 	XBOOL bSwitchNotice;                                     //是否开启公告系统
+	XBOOL bSwitchDCode;                                      //动态验证码
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

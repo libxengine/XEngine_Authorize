@@ -62,6 +62,7 @@ void ServiceApp_Stop(int signo)
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		AuthHelp_DynamicCode_Destory();
 		Database_SQLite_Destroy();
 		exit(0);
 	}
@@ -170,6 +171,13 @@ int main(int argc, char** argv)
 		goto XENGINE_EXITAPP;
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化会话TOKEN服务成功"));
+
+	if (!AuthHelp_DynamicCode_Init(st_AuthConfig.st_XVerification.nDynamicTimeout))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _T("启动服务中，初始化动态验证码服务失败，错误：%lX"), AuthHelp_GetLastError());
+		goto XENGINE_EXITAPP;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("启动服务中，初始化动态验证码服务成功,超时时间:%d"), st_AuthConfig.st_XVerification.nDynamicTimeout);
 	//是否开启TCP服务
 	if (st_AuthConfig.nTCPPort > 0)
 	{
@@ -298,6 +306,7 @@ XENGINE_EXITAPP:
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		AuthHelp_DynamicCode_Destory();
 		Database_SQLite_Destroy();
 		exit(0);
 	}

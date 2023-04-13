@@ -49,6 +49,8 @@ using namespace std;
 #include "../../AuthorizeModule_Session/Session_Error.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Define.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 
 extern XBOOL bIsRun;
 extern XHANDLE xhLog;
@@ -85,19 +87,22 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Announcement.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
+#include "AuthorizeHTTP_Get/AuthorizeHTTP_DynamicCode.h"
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
 #else
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
 #endif
 #else
 #ifdef _WIN64
@@ -105,11 +110,13 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
 #else
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
 #endif
 #endif
 #pragma comment(lib,"Ws2_32.lib")

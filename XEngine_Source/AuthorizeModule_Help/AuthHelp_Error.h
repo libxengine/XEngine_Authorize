@@ -28,3 +28,10 @@
 #define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_INIT 0x0050011                 //初始化窗口失败
 #define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_CREATEWINDOW 0x0050012         //创建窗口失败
 #define ERROR_AUTHORIZE_MODULE_HELP_WINDOW_SETWINDOW 0x0050013            //设置窗口失败
+/************************************************************************/
+/*                     动态码                                           */
+/************************************************************************/
+#define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_THREAD 0x0050020              //线程创建失败
+#define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_PARAMENT 0x0050021            //参数错误
+#define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_NOTFOUND 0x0050022            //没有找到
+#define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_NOTMATCH 0x0050023            //动态码不匹配

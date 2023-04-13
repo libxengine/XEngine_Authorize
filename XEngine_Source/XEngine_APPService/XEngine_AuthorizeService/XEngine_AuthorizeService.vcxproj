@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -150,6 +150,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_DynamicCode.cpp" />
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Announcement.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.cpp" />
@@ -168,6 +169,7 @@
     <ClCompile Include="XEngine_AuthorizeService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_DynamicCode.h" />
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Announcement.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.h" />

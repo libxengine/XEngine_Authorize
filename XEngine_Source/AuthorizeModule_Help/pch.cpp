@@ -1,4 +1,5 @@
 ﻿#include "pch.h"
+#include "AuthHelp_DynamicCode/AuthHelp_DynamicCode.h"
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
 #include "AuthHelp_Windows/AuthHelp_Windows.h"
 /********************************************************************
@@ -15,6 +16,7 @@
 XBOOL Help_IsErrorOccur = XFALSE;
 XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
+CAuthHelp_DynamicCode m_HelpDynamic;
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
 //////////////////////////////////////////////////////////////////////////
@@ -25,6 +27,25 @@ extern "C" XLONG AuthHelp_GetLastError(int* pInt_SysError)
 		*pInt_SysError = errno;
 	}
 	return Help_dwErrorCode;
+}
+/************************************************************************/
+/*                    动态码导出定义                                    */
+/************************************************************************/
+extern "C" XBOOL AuthHelp_DynamicCode_Init(int nSecond)
+{
+	return m_HelpDynamic.AuthHelp_DynamicCode_Init(nSecond);
+}
+extern "C" XBOOL AuthHelp_DynamicCode_Destory()
+{
+	return m_HelpDynamic.AuthHelp_DynamicCode_Destory();
+}
+extern "C" XBOOL AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, int* pInt_DynamicCode)
+{
+	return m_HelpDynamic.AuthHelp_DynamicCode_Create(pxhToken, pInt_DynamicCode);
+}
+extern "C" XBOOL AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
+{
+	return m_HelpDynamic.AuthHelp_DynamicCode_Get(xhToken, nDynamicCode);
 }
 /************************************************************************/
 /*                    剪贴板导出定义                                    */

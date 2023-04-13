@@ -229,6 +229,7 @@ XBOOL XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int
 		XCHAR tszUrlName[128];
 		LPCXSTR lpszFuncName = _T("api");
 		LPCXSTR lpszAPIVerNotice = _T("notice");
+		LPCXSTR lpszAPIVerDCode = _T("dcode");
 
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
@@ -250,6 +251,10 @@ XBOOL XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int
 		if (0 == _tcsnicmp(lpszAPIVerNotice, tszURLValue, _tcslen(lpszAPIVerNotice)))
 		{
 			XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, "list", lpszMsgBuffer, nMsgLen);
+		}
+		else if (0 == _tcsnicmp(lpszAPIVerDCode, tszURLValue, _tcslen(lpszAPIVerDCode)))
+		{
+			XEngine_AuthorizeHTTP_DynamicCode(lpszClientAddr, pptszList, nListCount);
 		}
 		else
 		{
