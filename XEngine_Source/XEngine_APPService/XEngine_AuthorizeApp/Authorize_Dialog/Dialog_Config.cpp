@@ -37,6 +37,7 @@ void CDialog_Config::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO2, m_CheckCodecDisable);
 	DDX_Control(pDX, IDC_COMBO2, m_ListEncrypto);
 	DDX_Control(pDX, IDC_EDIT6, m_EditPassword);
+	DDX_Control(pDX, IDC_EDIT11, m_EditDCode);
 }
 
 
@@ -46,6 +47,7 @@ BEGIN_MESSAGE_MAP(CDialog_Config, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON5, &CDialog_Config::OnBnClickedButton5)
 	ON_BN_CLICKED(IDC_RADIO2, &CDialog_Config::OnBnClickedRadio2)
 	ON_BN_CLICKED(IDC_RADIO1, &CDialog_Config::OnBnClickedRadio1)
+	ON_BN_CLICKED(IDC_BUTTON8, &CDialog_Config::OnBnClickedButton8)
 END_MESSAGE_MAP()
 
 
@@ -89,6 +91,7 @@ void CDialog_Config::OnBnClickedButton1()
 	CString m_StrUser;
 	CString m_StrPass;
 	CString m_StrToken;
+	CString m_StrDCode;
 	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
@@ -96,8 +99,17 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditUser.GetWindowText(m_StrUser);
 	m_EditPass.GetWindowText(m_StrPass);
+	m_EditDCode.GetWindowText(m_StrDCode);
 	
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
+	if (m_StrDCode.GetLength() > 0)
+	{
+		m_EditToken.GetWindowText(m_StrToken);
+		_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
+	}
+	else
+	{
+		_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
+	}
 	//请求用户信息
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
@@ -281,4 +293,67 @@ void CDialog_Config::OnBnClickedRadio1()
 	m_ListEncrypto.EnableWindow(XTRUE);
 	m_EditPassword.EnableWindow(XTRUE);
 	bCrypto = XTRUE;
+}
+
+
+void CDialog_Config::OnBnClickedButton8()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	CString m_StrIPAddr;
+	CString m_StrIPPort;
+	XCHAR tszUrlAddr[MAX_PATH];
+	memset(tszUrlAddr, '\0', MAX_PATH);
+	//组合请求URL
+	m_EditIPAddr.GetWindowText(m_StrIPAddr);
+	m_EditIPPort.GetWindowText(m_StrIPPort);
+
+	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=dcode&user=get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	//请求用户信息
+	int nMsgLen = 0;
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
+	{
+		CString m_StrCodecPass;
+		XCHAR tszMsgBuffer[2048];
+		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+
+		m_EditPassword.GetWindowText(m_StrCodecPass);
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
+			return;
+		}
+	}
+	else
+	{
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
+			return;
+		}
+	}
+	if (0 != st_JsonRoot["code"].asInt())
+	{
+		Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
+		return;
+	}
+	XCHAR tszDCodeStr[64];
+	XCHAR tszTokenStr[64];
+
+	memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
+	memset(tszTokenStr, '\0', sizeof(tszTokenStr));
+
+	_stprintf(tszDCodeStr, _T("%d"), st_JsonRoot["nDynamicCode"].asUInt());
+	_stprintf(tszTokenStr, _T("%llu"), st_JsonRoot["xhToken"].asUInt64());
+
+	m_EditToken.SetWindowText(tszTokenStr);
+	m_EditDCode.SetWindowText(tszDCodeStr);
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }

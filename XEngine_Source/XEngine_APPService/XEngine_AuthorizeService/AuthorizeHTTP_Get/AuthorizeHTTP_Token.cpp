@@ -17,7 +17,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 
 	if (0 == _tcsnicmp(lpszAPILogin, tszURLValue, _tcslen(lpszAPILogin)))
 	{
-		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=36
+		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=1
 		XCHAR tszUserName[128];
 		XCHAR tszUserPass[128];
 		XCHAR tszDeviceType[128];
@@ -43,7 +43,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 		if (st_FunSwitch.bSwitchDCode)
 		{
 			//+ &token=1000112345&dcode=123456
-			if (nListCount != 5)
+			if (nListCount != 6)
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request parament is incorrent");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -111,7 +111,7 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				return XFALSE;
 			}
 		}
-		//用户是否存在会话,存在就返回
+		//用户是否存在会话,存在就返回,并且更新TOKEN
 		if (Session_Token_GetUser(tszUserName, tszUserPass, &xhToken))
 		{
 			if (st_AuthConfig.st_XLogin.bMultiLogin)
@@ -181,7 +181,10 @@ XBOOL XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int
 				return XFALSE;
 			}
 		}
-		BaseLib_OperatorHandle_Create(&xhToken);
+		if (0 == xhToken)
+		{
+			BaseLib_OperatorHandle_Create(&xhToken);
+		}
 		Session_Token_Insert(xhToken, &st_UserTable, st_UserTable.st_UserInfo.nUserLevel > 0 ? st_AuthConfig.st_XLogin.nHTTPAuthTime : 0);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
