@@ -18,8 +18,8 @@ typedef struct
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
 	int nHTTPPort;                                          //HTTP管理端口
-	XBOOL bDeamon;                                           //守护进程,LINUX
-	XBOOL bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
+	bool bDeamon;                                           //守护进程,LINUX
+	bool bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct
 	{
 		int nMaxClient;                                     //最大客户端个数
@@ -41,9 +41,9 @@ typedef struct
 	}st_XVerification;
 	struct 
 	{
-		XBOOL bMultiLogin;                                   //是否允许多端登录
-		XBOOL bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
-		XBOOL bPassAuth;                                     //是否启用三方认证
+		bool bMultiLogin;                                   //是否允许多端登录
+		bool bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
+		bool bPassAuth;                                     //是否启用三方认证
 		int nHTTPAuthTime;                                  //HTTP验证超时时间,单位秒
 		struct  
 		{
@@ -54,7 +54,7 @@ typedef struct
 	}st_XLogin;
 	struct  
 	{
-		XBOOL bEnable;                                       //是否启用加密传输 
+		bool bEnable;                                       //是否启用加密传输 
 		int nPassword;                                      //密码
 	}st_XCrypto;
 	struct
@@ -76,15 +76,15 @@ typedef struct
 //功能开关
 typedef struct
 {
-	XBOOL bSwitchDelete;                                     //删除开关
-	XBOOL bSwitchRegister;                                   //注册开关
-	XBOOL bSwitchLogin;                                      //登录开关
-	XBOOL bSwitchPay;                                        //充值开关
-	XBOOL bSwitchPass;                                       //找回密码开关
-	XBOOL bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
-	XBOOL bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
-	XBOOL bSwitchNotice;                                     //是否开启公告系统
-	XBOOL bSwitchDCode;                                      //动态验证码
+	bool bSwitchDelete;                                     //删除开关
+	bool bSwitchRegister;                                   //注册开关
+	bool bSwitchLogin;                                      //登录开关
+	bool bSwitchPay;                                        //充值开关
+	bool bSwitchPass;                                       //找回密码开关
+	bool bSwitchTime;                                       //计时开关,关闭后客户端不会消耗时间(仅分钟卡有效)
+	bool bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
+	bool bSwitchNotice;                                     //是否开启公告系统
+	bool bSwitchDCode;                                      //动态验证码
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
@@ -111,7 +111,7 @@ extern "C" XLONG Config_GetLastError(int* pInt_SysError = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
+extern "C" bool ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
 /********************************************************************
 函数名称：ModuleConfigure_Json_Switch
 函数功能：功能开关配置文件
@@ -130,4 +130,4 @@ extern "C" XBOOL ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVI
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig);
+extern "C" bool ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig);

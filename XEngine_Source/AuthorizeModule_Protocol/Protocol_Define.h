@@ -45,7 +45,7 @@ extern "C" XLONG  Protocol_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType);
+extern "C" bool Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType);
 /********************************************************************
 函数名称：Protocol_Packet_HttpComm
 函数功能：HTTP通用消息打包
@@ -74,7 +74,7 @@ extern "C" XBOOL Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode = 0, LPCXSTR lpszMsgBuffer = NULL);
+extern "C" bool Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode = 0, LPCXSTR lpszMsgBuffer = NULL);
 /********************************************************************
 函数名称：Protocol_Packet_HttpUserPass
 函数功能：HTTP客户端验证数据打包函数
@@ -98,7 +98,7 @@ extern "C" XBOOL Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth);
+extern "C" bool Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Packet_HttpUserTime
 函数功能：用户时间打包函数
@@ -122,7 +122,7 @@ extern "C" XBOOL Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_Ms
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime);
+extern "C" bool Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime);
 /********************************************************************
 函数名称：Protocol_Packet_HttpClientInfo
 函数功能：HTTP客户端包装函数
@@ -146,7 +146,7 @@ extern "C" XBOOL Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_Ms
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" bool Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable);
 /********************************************************************
 函数名称：Protocol_Packet_HttpClientList
 函数功能：HTTP客户端列表包装函数
@@ -185,7 +185,7 @@ extern "C" XBOOL Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT *** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
+extern "C" bool Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT *** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
 /********************************************************************
 函数名称：Protocol_Packet_HttpSerialList
 函数功能：HTTP序列号打包函数
@@ -214,7 +214,7 @@ extern "C" XBOOL Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount);
+extern "C" bool Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount);
 /********************************************************************
 函数名称：Protocol_Packet_HttpToken
 函数功能：TOKEN创建打包函数
@@ -248,7 +248,7 @@ extern "C" XBOOL Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode = 0);
+extern "C" bool Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode = 0);
 /********************************************************************
 函数名称：Protocol_Packet_HttpSwitch
 函数功能：打包开关功能选项
@@ -272,7 +272,7 @@ extern "C" XBOOL Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
+extern "C" bool Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
 /********************************************************************
 函数名称：Protocol_Packet_HttpBanned
 函数功能：HTTP客户端禁用名单包装函数
@@ -311,7 +311,7 @@ extern "C" XBOOL Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount);
+extern "C" bool Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount);
 /********************************************************************
 函数名称：Protocol_Packet_HttpAnnouncement
 函数功能：打包公告列表
@@ -340,7 +340,7 @@ extern "C" XBOOL Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount);
+extern "C" bool Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount);
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -367,7 +367,7 @@ extern "C" XBOOL Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr);
+extern "C" bool Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseToken
 函数功能：解析TOKEN
@@ -391,7 +391,7 @@ extern "C" XBOOL Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGIN
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken);
+extern "C" bool Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen, XNETHANDLE* pxhToken);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseAuth
 函数功能：用户验证解析协议
@@ -415,7 +415,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLe
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth);
+extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户信息
@@ -439,7 +439,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo);
+extern "C" bool Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParsePay
 函数功能：解析用户表信息
@@ -463,7 +463,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseUser(LPCXSTR lpszMsgBuffer, int nMsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay);
+extern "C" bool Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_USERPAY* pSt_UserPay);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseTry
 函数功能：解析用户表信息
@@ -487,7 +487,7 @@ extern "C" XBOOL Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial);
+extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户表信息
@@ -511,7 +511,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable);
+extern "C" bool Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE* pSt_UserTable);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSerial
 函数功能：解析HTTP序列号信息
@@ -540,7 +540,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLe
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount);
+extern "C" bool Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSerial2
 函数功能：解析HTTP序列号
@@ -579,7 +579,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR * ptszHasTime);
+extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR * ptszHasTime);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseOnline
 函数功能：解析在线列表
@@ -603,7 +603,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsg
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, XBOOL* pbOnline);
+extern "C" bool Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, bool* pbOnline);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseTime
 函数功能：解析时间信息结构
@@ -627,7 +627,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime);
+extern "C" bool Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseSwitch
 函数功能：开关选项解析函数
@@ -651,7 +651,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nMsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch);
+extern "C" bool Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_FUNCTIONSWITCH * pSt_FunSwitch);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParsePos
 函数功能：解析开始结束字段
@@ -680,7 +680,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int nMsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd);
+extern "C" bool Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_PosStart, int* pInt_PosEnd);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseBanned
 函数功能：解析黑名单协议
@@ -704,7 +704,7 @@ extern "C" XBOOL Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned);
+extern "C" bool Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseCDKey
 函数功能：解析CDKEY
@@ -728,7 +728,7 @@ extern "C" XBOOL Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgL
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize);
+extern "C" bool Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseAnnouncement
 函数功能：解析公告信息
@@ -752,4 +752,4 @@ extern "C" XBOOL Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLe
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement);

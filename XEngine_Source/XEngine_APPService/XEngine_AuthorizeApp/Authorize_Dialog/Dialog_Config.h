@@ -22,7 +22,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual XBOOL OnInitDialog();
+	virtual BOOL OnInitDialog();
 	CEdit m_EditIPAddr;
 	CEdit m_EditIPPort;
 	afx_msg void OnBnClickedButton1();

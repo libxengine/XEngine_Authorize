@@ -41,13 +41,13 @@ using namespace std;
 //    Purpose:     公有头文件
 //    History:
 *********************************************************************/
-extern XBOOL SQLPacket_IsErrorOccur;
+extern bool SQLPacket_IsErrorOccur;
 extern XLONG SQLPacket_dwErrorCode;
 
 #ifdef _UNICODE
-typedef std::wstring tstring;
+typedef std::wstring xstring;
 #else
-typedef std::string tstring;
+typedef std::string xstring;
 #endif
 
 #ifdef _WINDOWS

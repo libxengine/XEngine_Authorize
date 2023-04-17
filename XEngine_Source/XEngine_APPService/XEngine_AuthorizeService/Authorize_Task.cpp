@@ -25,13 +25,13 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 			st_AuthTime.nTimeLeft = nLeftTimer;
 			st_AuthTime.nTimeONLine = nOnlineTimer;
 			st_AuthTime.enSerialType = enSerialType;
-			_tcscpy(st_AuthTime.tszUserName, lpszUserName);
-			_tcscpy(st_AuthTime.tszLeftTime, lpszLeftDate);
-			_tcscpy(st_AuthTime.tszUserAddr, lpszUserAddr);
+			_tcsxcpy(st_AuthTime.tszUserName, lpszUserName);
+			_tcsxcpy(st_AuthTime.tszLeftTime, lpszLeftDate);
+			_tcsxcpy(st_AuthTime.tszUserAddr, lpszUserAddr);
 
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 			Protocol_Packet_HttpUserTime(tszMsgBuffer, &nMsgLen, &st_AuthTime);
-			APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
+			APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassTimeout, tszMsgBuffer);
 		}
 		if (XENGINE_AUTH_APP_NETTYPE_HTTP != nNetType)
 		{
@@ -43,7 +43,7 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 		{
 			XEngine_CloseClient(lpszUserAddr);
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
 	}
 }
 void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
@@ -65,9 +65,9 @@ void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 			st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
 			st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
 			st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-			_tcscpy(st_AuthTime.tszUserName, st_UserTable.st_UserInfo.tszUserName);
-			_tcscpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
-			_tcscpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
+			_tcsxcpy(st_AuthTime.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+			_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
+			_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
 
 			if (st_AuthConfig.st_XLogin.bHTTPAuth)
 			{
@@ -76,16 +76,16 @@ void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 				memset(tszSDBuffer, '\0', MAX_PATH);
 
 				Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-				APIClient_Http_Request(_T("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
+				APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 			}
 			Database_SQLite_UserLeave(&st_AuthTime);
 		}
 		Session_Authorize_CloseClient(st_UserTable.st_UserInfo.tszUserName);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("Token：%lld，用户名：%s，离开服务器,在线时长:%d"), xhToken, st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token：%lld，用户名：%s，离开服务器,在线时长:%d"), xhToken, st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
 	}
 	else
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _T("Token:%lld,已经超时,被移除服务器"), xhToken);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%lld,已经超时,被移除服务器"), xhToken);
 	}
 	Session_Token_Delete(xhToken);
 }

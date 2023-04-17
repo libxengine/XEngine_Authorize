@@ -30,7 +30,7 @@ extern "C" XLONG AuthHelp_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_DynamicCode_Init(int nSecond);
+extern "C" bool AuthHelp_DynamicCode_Init(int nSecond);
 /********************************************************************
 函数名称：AuthHelp_DynamicCode_Destory
 函数功能：销毁
@@ -39,7 +39,7 @@ extern "C" XBOOL AuthHelp_DynamicCode_Init(int nSecond);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_DynamicCode_Destory();
+extern "C" bool AuthHelp_DynamicCode_Destory();
 /********************************************************************
 函数名称：AuthHelp_DynamicCode_Create
 函数功能：创建一个动态码
@@ -58,7 +58,7 @@ extern "C" XBOOL AuthHelp_DynamicCode_Destory();
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode);
+extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode);
 /********************************************************************
 函数名称：AuthHelp_DynamicCode_Get
 函数功能：获取句柄和动态码绑定信息
@@ -77,7 +77,7 @@ extern "C" XBOOL AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_Dyn
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
+extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 /************************************************************************/
 /*                    剪贴板导出定义                                    */
 /************************************************************************/
@@ -105,7 +105,7 @@ extern "C" XBOOL AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Get
 函数功能：获取剪贴板内容
@@ -129,7 +129,7 @@ extern "C" XBOOL AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLON
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Clear
 函数功能：清空剪贴板
@@ -138,7 +138,7 @@ extern "C" XBOOL AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_ClipBoard_Clear();
+extern "C" bool AuthHelp_ClipBoard_Clear();
 /************************************************************************/
 /*                    窗口类导出定义                                    */
 /************************************************************************/
@@ -165,7 +165,7 @@ extern "C" XBOOL AuthHelp_ClipBoard_Clear();
   意思：是否成功抖动
 备注：仿造QQ抖动，支持抖动后播放声音或者不播放，不播放传递NULL
 *********************************************************************/
-extern "C" XBOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
+extern "C" bool AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
 /********************************************************************
 函数名称：AuthHelp_Windows_CreateTooltip
 函数功能：为控件句柄添加提示
@@ -184,5 +184,5 @@ extern "C" XBOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4,
   意思：是否成功添加
 备注：
 *********************************************************************/
-extern "C" XBOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip);
+extern "C" bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip);
 #endif

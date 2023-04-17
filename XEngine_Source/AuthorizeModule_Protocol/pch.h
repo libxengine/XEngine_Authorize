@@ -43,7 +43,7 @@ using namespace std;
 //    Purpose:     公用头文件
 //    History:
 *********************************************************************/
-extern XBOOL Protocol_IsErrorOccur;
+extern bool Protocol_IsErrorOccur;
 extern XLONG Protocol_dwErrorCode;
 
 #ifdef _MSC_BUILD

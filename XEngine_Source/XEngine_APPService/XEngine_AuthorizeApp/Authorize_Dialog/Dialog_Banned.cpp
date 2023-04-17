@@ -67,7 +67,7 @@ void CDialog_Banned::OnBnClickedRadio2()
 }
 
 
-XBOOL CDialog_Banned::OnInitDialog()
+BOOL CDialog_Banned::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -89,11 +89,11 @@ XBOOL CDialog_Banned::OnInitDialog()
 	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	m_DataTime.EnableWindow(XFALSE);
+	m_DataTime.EnableWindow(false);
 	m_RadioEnable.SetCheck(BST_CHECKED);
 	m_DataTime.SetFormat(_T("yyyy-mm-dd hh:mm:ss"));
-	return XTRUE;  // return XTRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 XFALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -113,15 +113,15 @@ void CDialog_Banned::OnBnClickedButton2()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
 		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
@@ -144,12 +144,12 @@ void CDialog_Banned::OnBnClickedButton2()
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -166,7 +166,7 @@ void CDialog_Banned::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -213,21 +213,21 @@ void CDialog_Banned::OnBnClickedButton4()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -244,7 +244,7 @@ void CDialog_Banned::OnBnClickedButton4()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -265,7 +265,7 @@ void CDialog_Banned::OnBnClickedButton4()
 
 	for (unsigned int i = 0; i < st_JsonRoot["ArrayAddr"].size(); i++)
 	{
-		XCHAR tszIndex[10];
+		TCHAR tszIndex[10];
 		memset(tszIndex, '\0', 10);
 		_itot_s(i, tszIndex, 10);
 
@@ -287,7 +287,7 @@ void CDialog_Banned::OnBnClickedButton4()
 	}
 	for (unsigned int i = 0; i < st_JsonRoot["ArrayUser"].size(); i++)
 	{
-		XCHAR tszIndex[10];
+		TCHAR tszIndex[10];
 		memset(tszIndex, '\0', 10);
 		_itot_s(i, tszIndex, 10);
 
@@ -334,7 +334,7 @@ void CDialog_Banned::OnBnClickedButton3()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -342,19 +342,19 @@ void CDialog_Banned::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	TCHAR* ptszMsgBuffer = NULL;
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -371,7 +371,7 @@ void CDialog_Banned::OnBnClickedButton3()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -409,12 +409,12 @@ void CDialog_Banned::OnBnClickedCheck1()
 	// TODO: 在此添加控件通知处理程序代码
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
-		m_DataTime.EnableWindow(XTRUE);
+		m_DataTime.EnableWindow(true);
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
 	}
 	else
 	{
-		m_DataTime.EnableWindow(XFALSE);
+		m_DataTime.EnableWindow(false);
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
 	}
 }
@@ -436,15 +436,15 @@ void CDialog_Banned::OnBnClickedButton5()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
 		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
@@ -467,12 +467,12 @@ void CDialog_Banned::OnBnClickedButton5()
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -489,7 +489,7 @@ void CDialog_Banned::OnBnClickedButton5()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -535,7 +535,7 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 	CString m_StrUser = m_ListUser.GetItemText(nItemCount, 2);
 	CString m_StrTime = m_ListUser.GetItemText(nItemCount, 3);
 
-	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	if (0 == _tcsxnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
 	{
 		m_RadioEnable.SetCheck(BST_CHECKED);
 		m_RadioDisable.SetCheck(BST_UNCHECKED);
@@ -567,13 +567,13 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(XTRUE);
+		m_DataTime.EnableWindow(true);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(XFALSE);
+		m_DataTime.EnableWindow(false);
 	}
 	*pResult = 0;
 }
@@ -593,7 +593,7 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 	CString m_StrUser = m_ListAddr.GetItemText(nItemCount, 2);
 	CString m_StrTime = m_ListAddr.GetItemText(nItemCount, 3);
 
-	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	if (0 == _tcsxnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
 	{
 		m_RadioEnable.SetCheck(BST_CHECKED);
 		m_RadioDisable.SetCheck(BST_UNCHECKED);
@@ -625,13 +625,13 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(XTRUE);
+		m_DataTime.EnableWindow(true);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(XFALSE);
+		m_DataTime.EnableWindow(false);
 	}
 
 	*pResult = 0;

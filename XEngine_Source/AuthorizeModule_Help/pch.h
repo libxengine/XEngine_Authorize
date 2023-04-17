@@ -36,7 +36,7 @@ using namespace std;
 //    Purpose:     公用头文件
 //    History:
 *********************************************************************/
-extern XBOOL Help_IsErrorOccur;
+extern bool Help_IsErrorOccur;
 extern XLONG Help_dwErrorCode;
 
 

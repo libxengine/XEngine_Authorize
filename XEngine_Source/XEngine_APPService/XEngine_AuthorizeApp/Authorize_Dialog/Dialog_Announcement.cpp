@@ -39,7 +39,7 @@ END_MESSAGE_MAP()
 // CDialog_Announcement 消息处理程序
 
 
-XBOOL CDialog_Announcement::OnInitDialog()
+BOOL CDialog_Announcement::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -48,8 +48,8 @@ XBOOL CDialog_Announcement::OnInitDialog()
 	m_ListAnnouncement.InsertColumn(1, _T("公告内容"), LVCFMT_LEFT, 400);
 	m_ListAnnouncement.InsertColumn(2, _T("创建时间"), LVCFMT_LEFT, 150);
 	m_ListAnnouncement.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	return XTRUE;  // return XTRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 XFALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -67,24 +67,24 @@ void CDialog_Announcement::OnBnClickedButton1()
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 	m_EditNoticeStr.GetWindowText(m_StrNotice);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	Json::StreamWriterBuilder st_JsonBuilder;
 	st_JsonBuilder["emitUTF8"] = true;
 
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	
 	st_JsonObject["tszContext"] = m_StrNotice.GetBuffer();
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
-	XCHAR tszCodecBuffer[2048];
-	XCHAR tszPassBuffer[64];
+	TCHAR tszCodecBuffer[2048];
+	TCHAR tszPassBuffer[64];
 
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -94,7 +94,7 @@ void CDialog_Announcement::OnBnClickedButton1()
 	BaseLib_OperatorCharset_AnsiToUTF(Json::writeString(st_JsonBuilder, st_JsonRoot).c_str(), tszCodecBuffer, &nMsgLen);
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Encoder(tszCodecBuffer, &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
@@ -110,7 +110,7 @@ void CDialog_Announcement::OnBnClickedButton1()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -164,25 +164,25 @@ void CDialog_Announcement::OnBnClickedButton2()
 	}
 	m_StrNotice = m_ListAnnouncement.GetItemText(nSelect, 0);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 
-	st_JsonObject["nID"] = _ttoi64(m_StrNotice.GetBuffer());
+	st_JsonObject["nID"] = _ttxoll(m_StrNotice.GetBuffer());
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -199,7 +199,7 @@ void CDialog_Announcement::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -245,22 +245,22 @@ void CDialog_Announcement::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
-	XCHAR tszPassBuffer[64];
+	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
@@ -277,7 +277,7 @@ void CDialog_Announcement::OnBnClickedButton3()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
@@ -300,8 +300,8 @@ void CDialog_Announcement::OnBnClickedButton3()
 	{
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 
-		XCHAR tszMsgBuffer[2048];
-		XCHAR tszIndex[64];
+		TCHAR tszMsgBuffer[2048];
+		TCHAR tszIndex[64];
 
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 		memset(tszIndex, '\0', 64);

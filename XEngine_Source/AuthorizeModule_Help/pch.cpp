@@ -13,7 +13,7 @@
 //    Purpose:     导出函数实现
 //    History:
 *********************************************************************/
-XBOOL Help_IsErrorOccur = XFALSE;
+bool Help_IsErrorOccur = false;
 XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_DynamicCode m_HelpDynamic;
@@ -31,19 +31,19 @@ extern "C" XLONG AuthHelp_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                    动态码导出定义                                    */
 /************************************************************************/
-extern "C" XBOOL AuthHelp_DynamicCode_Init(int nSecond)
+extern "C" bool AuthHelp_DynamicCode_Init(int nSecond)
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Init(nSecond);
 }
-extern "C" XBOOL AuthHelp_DynamicCode_Destory()
+extern "C" bool AuthHelp_DynamicCode_Destory()
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Destory();
 }
-extern "C" XBOOL AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, int* pInt_DynamicCode)
+extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, int* pInt_DynamicCode)
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Create(pxhToken, pInt_DynamicCode);
 }
-extern "C" XBOOL AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
+extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Get(xhToken, nDynamicCode);
 }
@@ -51,26 +51,26 @@ extern "C" XBOOL AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
 /*                    剪贴板导出定义                                    */
 /************************************************************************/
 #ifdef _MSC_BUILD
-extern "C" XBOOL AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
+extern "C" bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Set(lpszMsgBuffer, nMsgLen, dwFormat);
 }
-extern "C" XBOOL AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat)
+extern "C" bool AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat)
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Get(ptszMsgBuffer, pInt_MsgLen, dwFormat);
 }
-extern "C" XBOOL AuthHelp_ClipBoard_Clear()
+extern "C" bool AuthHelp_ClipBoard_Clear()
 {
 	return m_HelpClipBoard.AuthHelp_ClipBoard_Clear();
 }
 /************************************************************************/
 /*                    窗口类导出定义                                    */
 /************************************************************************/
-extern "C" XBOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree, int nDitheringCareer)
+extern "C" bool AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree, int nDitheringCareer)
 {
 	return m_HelpWindow.AuthHelp_Windows_Dithering(hWnd, nDitheringDegree, nDitheringCareer);
 }
-extern "C" XBOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
+extern "C" bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
 {
 	return m_HelpWindow.AuthHelp_Windows_CreateTooltip(hWnd, lpszContextOfTip);
 }

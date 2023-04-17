@@ -54,7 +54,7 @@ END_MESSAGE_MAP()
 // CDialog_Config 消息处理程序
 
 
-XBOOL CDialog_Config::OnInitDialog()
+BOOL CDialog_Config::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 
@@ -65,21 +65,21 @@ XBOOL CDialog_Config::OnInitDialog()
 	m_EditUser.SetWindowText(_T("admin"));
 	m_EditPass.SetWindowText(_T("123123aa"));
 
-	m_BtnLogout.EnableWindow(XFALSE);
-	m_BtnUpdate.EnableWindow(XFALSE);
+	m_BtnLogout.EnableWindow(false);
+	m_BtnUpdate.EnableWindow(false);
 
 	m_CheckCodecEnable.SetCheck(BST_UNCHECKED);
 	m_CheckCodecDisable.SetCheck(BST_CHECKED);
 	m_ListEncrypto.AddString(_T("XCrypto(X加密)"));
 	m_ListEncrypto.SetCurSel(0);
-	m_ListEncrypto.EnableWindow(XFALSE);
+	m_ListEncrypto.EnableWindow(false);
 
 	m_EditPassword.SetWindowText("123123");
-	m_EditPassword.EnableWindow(XFALSE);
+	m_EditPassword.EnableWindow(false);
 
 	hConfigWnd = m_hWnd;
-	return XTRUE;  // return XTRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 XFALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -92,7 +92,7 @@ void CDialog_Config::OnBnClickedButton1()
 	CString m_StrPass;
 	CString m_StrToken;
 	CString m_StrDCode;
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -104,15 +104,15 @@ void CDialog_Config::OnBnClickedButton1()
 	if (m_StrDCode.GetLength() > 0)
 	{
 		m_EditToken.GetWindowText(m_StrToken);
-		_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
+		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
 	}
 	else
 	{
-		_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
+		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	}
 	//请求用户信息
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -122,7 +122,7 @@ void CDialog_Config::OnBnClickedButton1()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -156,9 +156,9 @@ void CDialog_Config::OnBnClickedButton1()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	Authorize_Help_LogPrint(_T("登录成功"));
 
-	m_BtnLogin.EnableWindow(XFALSE);
-	m_BtnLogout.EnableWindow(XTRUE);
-	m_BtnUpdate.EnableWindow(XTRUE);
+	m_BtnLogin.EnableWindow(false);
+	m_BtnLogout.EnableWindow(true);
+	m_BtnUpdate.EnableWindow(true);
 }
 
 
@@ -168,17 +168,17 @@ void CDialog_Config::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditToken.GetWindowText(m_StrToken);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=close&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=close&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -188,7 +188,7 @@ void CDialog_Config::OnBnClickedButton2()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -217,9 +217,9 @@ void CDialog_Config::OnBnClickedButton2()
 	m_EditToken.SetWindowText("");
 	m_EditTimeout.SetWindowText("");
 
-	m_BtnLogin.EnableWindow(XTRUE);
-	m_BtnLogout.EnableWindow(XFALSE);
-	m_BtnUpdate.EnableWindow(XFALSE);
+	m_BtnLogin.EnableWindow(true);
+	m_BtnLogout.EnableWindow(false);
+	m_BtnUpdate.EnableWindow(false);
 }
 
 
@@ -229,17 +229,17 @@ void CDialog_Config::OnBnClickedButton5()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditToken.GetWindowText(m_StrToken);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=update&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=update&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -249,7 +249,7 @@ void CDialog_Config::OnBnClickedButton5()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -281,18 +281,18 @@ void CDialog_Config::OnBnClickedButton5()
 void CDialog_Config::OnBnClickedRadio2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ListEncrypto.EnableWindow(XFALSE);
-	m_EditPassword.EnableWindow(XFALSE);
-	bCrypto = XFALSE;
+	m_ListEncrypto.EnableWindow(false);
+	m_EditPassword.EnableWindow(false);
+	bCrypto = false;
 }
 
 
 void CDialog_Config::OnBnClickedRadio1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_ListEncrypto.EnableWindow(XTRUE);
-	m_EditPassword.EnableWindow(XTRUE);
-	bCrypto = XTRUE;
+	m_ListEncrypto.EnableWindow(true);
+	m_EditPassword.EnableWindow(true);
+	bCrypto = true;
 }
 
 
@@ -301,16 +301,16 @@ void CDialog_Config::OnBnClickedButton8()
 	// TODO: 在此添加控件通知处理程序代码
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/api?function=dcode&user=get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=dcode&user=get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//请求用户信息
 	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
@@ -320,7 +320,7 @@ void CDialog_Config::OnBnClickedButton8()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
@@ -344,14 +344,14 @@ void CDialog_Config::OnBnClickedButton8()
 		Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
 		return;
 	}
-	XCHAR tszDCodeStr[64];
-	XCHAR tszTokenStr[64];
+	TCHAR tszDCodeStr[64];
+	TCHAR tszTokenStr[64];
 
 	memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
 	memset(tszTokenStr, '\0', sizeof(tszTokenStr));
 
-	_stprintf(tszDCodeStr, _T("%d"), st_JsonRoot["nDynamicCode"].asUInt());
-	_stprintf(tszTokenStr, _T("%llu"), st_JsonRoot["xhToken"].asUInt64());
+	_xstprintf(tszDCodeStr, _T("%d"), st_JsonRoot["nDynamicCode"].asUInt());
+	_xstprintf(tszTokenStr, _T("%llu"), st_JsonRoot["xhToken"].asUInt64());
 
 	m_EditToken.SetWindowText(tszTokenStr);
 	m_EditDCode.SetWindowText(tszDCodeStr);

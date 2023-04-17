@@ -43,37 +43,37 @@ CAuthHelp_ClipBoard::~CAuthHelp_ClipBoard()
   意思：是否成功
 备注：
 *********************************************************************/
-XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
-	Help_IsErrorOccur = XTRUE;
+	Help_IsErrorOccur = true;
 
 	if (NULL == lpszMsgBuffer)
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
-		return XFALSE;
+		return false;
 	}
 	//判断先我们可否打开剪贴板，如果可以
 	if (!OpenClipboard(NULL))
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
-		return XFALSE;
+		return false;
 	}
 	if (!EmptyClipboard())
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OWNER;
-		return XFALSE;
+		return false;
 	}
 	HANDLE hGlobal = INVALID_HANDLE_VALUE;
 	//GlobalAlloc 是分配指定的内存空间 单位为字节
 	hGlobal = GlobalAlloc(GHND, nMsgLen + 1);
 	if (NULL == hGlobal)
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC;
-		return XFALSE;
+		return false;
 	}
 	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 XPVOID
 	memcpy(ptszBuffer, lpszMsgBuffer, nMsgLen);
@@ -84,7 +84,7 @@ XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMs
 	GlobalFree(hGlobal);                       //释放这个申请的空间
 	CloseClipboard();                          //关闭这个剪贴板 其他进程才能操作！
 
-	return XTRUE;
+	return true;
 }
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Get
@@ -109,29 +109,29 @@ XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
 {
-	Help_IsErrorOccur = XFALSE;
+	Help_IsErrorOccur = false;
 
 	if (NULL == ptszMsgBuffer)
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
-		return XFALSE;
+		return false;
 	}
 	if (!OpenClipboard(NULL))
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
-		return XFALSE;
+		return false;
 	}
 
 	HANDLE hCliBd = INVALID_HANDLE_VALUE;
 	if (NULL == (hCliBd = GetClipboardData(dwFormat)))
 	{
-		Help_IsErrorOccur = XTRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_GETDATA;
-		return XFALSE;
+		return false;
 	}
 
 	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
@@ -142,7 +142,7 @@ XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pIn
 	GlobalUnlock(hCliBd);
 	CloseClipboard();
 
-	return XTRUE;
+	return true;
 }
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Clear
@@ -152,12 +152,12 @@ XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-XBOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
 {
-	Help_IsErrorOccur = XFALSE;
+	Help_IsErrorOccur = false;
 
 	OpenClipboard(NULL);
 	EmptyClipboard();
 	CloseClipboard();
-	return XTRUE;
+	return true;
 }

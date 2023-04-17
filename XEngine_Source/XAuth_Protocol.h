@@ -68,7 +68,7 @@ typedef struct tag_AuthReg_SerialTable
 	XCHAR tszSerialNumber[128];                                            //序列号
 	XCHAR tszMaxTime[64];                                                  //使用时间
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;               //充值卡类型
-	XBOOL bIsUsed;                                                         //是否已经使用
+	bool bIsUsed;                                                         //是否已经使用
 	XCHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表
@@ -87,7 +87,7 @@ typedef struct
 	XCHAR tszIPAddr[128];                                                  //IP
 	XCHAR tszLeftTime[64];                                                 //过期时间
 	XCHAR tszCreateTime[64];                                               //创建时间
-	XBOOL bEnable;                                                         //是否启用
+	bool bEnable;                                                         //是否启用
 }AUTHREG_BANNED, * LPAUTHREG_BANNED;
 //公告信息
 typedef struct

@@ -52,7 +52,7 @@ using namespace std;
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 
-extern XBOOL bIsRun;
+extern bool bIsRun;
 extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
