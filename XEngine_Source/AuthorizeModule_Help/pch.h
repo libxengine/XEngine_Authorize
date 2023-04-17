@@ -12,9 +12,9 @@
 #include "framework.h"
 #include <tchar.h>
 #include <commctrl.h>
-#else
 #endif
 #endif //PCH_H
+#include <string.h>
 #include <thread>
 #include <memory>
 #include <shared_mutex>

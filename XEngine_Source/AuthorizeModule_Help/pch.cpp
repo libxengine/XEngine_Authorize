@@ -1,7 +1,9 @@
 ﻿#include "pch.h"
 #include "AuthHelp_DynamicCode/AuthHelp_DynamicCode.h"
+#ifdef _MSC_BUILD
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
 #include "AuthHelp_Windows/AuthHelp_Windows.h"
+#endif
 /********************************************************************
 //    Created:     2022/08/12  14:14:11
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Help\pch.cpp
@@ -17,8 +19,10 @@ bool Help_IsErrorOccur = false;
 XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_DynamicCode m_HelpDynamic;
+#ifdef _MSC_BUILD
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
+#endif
 //////////////////////////////////////////////////////////////////////////
 extern "C" XLONG AuthHelp_GetLastError(int* pInt_SysError)
 {
