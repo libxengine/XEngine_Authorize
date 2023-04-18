@@ -1542,6 +1542,11 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 		return false;
 	}
     *pInt_ListCount = nRow;
+    if (NULL == ppppSt_Announcement)
+    {
+        return true;
+    }
+   
     BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
 	int nFliedValue = nColumn;

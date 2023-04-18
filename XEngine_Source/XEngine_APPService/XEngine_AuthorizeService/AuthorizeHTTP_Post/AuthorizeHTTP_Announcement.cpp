@@ -19,9 +19,18 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 	}
 	if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
+		int nListCount = 0;
 		AUTHREG_ANNOUNCEMENT st_Announcement;
 		memset(&st_Announcement, '\0', sizeof(AUTHREG_ANNOUNCEMENT));
 
+		Database_SQLite_AnnouncementList(NULL, &nListCount);
+		if (nListCount > 10)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 510, "server limited");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，公告系统协议处理失败，超过了服务器限制的公告数量!"), lpszClientAddr);
+			return false;
+		}
 		Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, &st_Announcement);
 		Database_SQLite_AnnouncementInsert(&st_Announcement);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
