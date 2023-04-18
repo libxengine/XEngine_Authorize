@@ -45,7 +45,7 @@ public:
 public:
     bool Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
     bool Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
-    bool Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
+    bool Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd);
     bool Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned);
     bool Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned);
 public:

@@ -1155,12 +1155,22 @@ bool CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
   类型：整数型指针
   可空：N
   意思：输出地址禁用列表个数
+ 参数.五：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查找起始位置
+ 参数.六：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查找结束位置
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount)
+bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1170,7 +1180,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
     XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedAddr"));
+    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedAddr LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
     if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
@@ -1208,7 +1218,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
     nRow = 0;
     nColumn = 0;
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedUser"));
+    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedUser LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
     if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {

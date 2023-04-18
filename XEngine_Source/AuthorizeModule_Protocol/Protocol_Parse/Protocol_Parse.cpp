@@ -948,6 +948,67 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int 
 	return true;
 }
 /********************************************************************
+函数名称：Protocol_Parse_HttpParseBanned2
+函数功能：解析HTTP的禁用协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pInt_POSStart
+  In/Out：In
+  类型：整数型指针
+  可空：N
+  意思：输出解析到的起始位置
+ 参数.四：pInt_POSEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输出解析到的结束位置
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Parse::Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_POSStart, int* pInt_POSEnd)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pInt_POSStart))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return false;
+	}
+	Json::Value st_JsonObject = st_JsonRoot["st_Banned"];
+
+	if (!st_JsonObject["nPosStart"].isNull())
+	{
+		*pInt_POSStart = st_JsonObject["nPosStart"].asInt();
+	}
+	if (!st_JsonObject["nPosEnd"].isNull())
+	{
+		*pInt_POSEnd = st_JsonObject["nPosEnd"].asInt();
+	}
+	return true;
+}
+/********************************************************************
 函数名称：Protocol_Parse_HttpParseCDKey
 函数功能：解析CDKEY
  参数.一：lpszMsgBuffer

@@ -37,10 +37,14 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	{
 		int nCountAddr = 0;
 		int nCountUser = 0;
+		int nPosStart = 0;
+		int nPosEnd = 0;
 		AUTHREG_BANNED** ppSt_BannedUser;
 		AUTHREG_BANNED** ppSt_BannedAddr;
 
-		Database_SQLite_BannedList(&ppSt_BannedUser, &nCountUser, &ppSt_BannedAddr, &nCountAddr);
+		Protocol_Parse_HttpParseBanned2(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
+
+		Database_SQLite_BannedList(&ppSt_BannedUser, &nCountUser, &ppSt_BannedAddr, &nCountAddr, nPosStart, nPosEnd);
 		Protocol_Packet_HttpBanned(tszSDBuffer, &nSDLen, &ppSt_BannedUser, nCountUser, &ppSt_BannedAddr, nCountAddr);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_BannedAddr, nCountAddr);

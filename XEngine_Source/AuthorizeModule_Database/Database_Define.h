@@ -384,12 +384,22 @@ extern "C" bool Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);
   类型：整数型指针
   可空：N
   意思：输出地址禁用列表个数
+ 参数.五：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查找起始位置
+ 参数.六：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查找结束位置
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount);
+extern "C" bool Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd);
 /********************************************************************
 函数名称：Database_SQLite_BannedExist
 函数功能：名单是否存在黑名单列表

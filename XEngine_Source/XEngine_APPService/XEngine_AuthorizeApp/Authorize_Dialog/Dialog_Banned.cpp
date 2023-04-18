@@ -34,6 +34,8 @@ void CDialog_Banned::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_BtnCheckTime);
 	DDX_Control(pDX, IDC_RADIO4, m_RadioEnable);
 	DDX_Control(pDX, IDC_RADIO6, m_RadioDisable);
+	DDX_Control(pDX, IDC_EDIT8, m_EditPosEnd);
+	DDX_Control(pDX, IDC_EDIT3, m_EditPosStart);
 }
 
 
@@ -88,6 +90,9 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
 	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+
+	m_EditPosStart.SetWindowText(_T("0"));
+	m_EditPosEnd.SetWindowText(_T("50"));
 
 	m_DataTime.EnableWindow(false);
 	m_RadioEnable.SetCheck(BST_CHECKED);
@@ -207,11 +212,16 @@ void CDialog_Banned::OnBnClickedButton4()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+	CString m_StrPosStart;
+	CString m_StrPosEnd;
 
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
+
+	m_EditPosStart.GetWindowText(m_StrPosStart);
+	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -220,6 +230,12 @@ void CDialog_Banned::OnBnClickedButton4()
 	int nMsgLen = 0;
 	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
+	Json::Value st_JsonObject;
+
+	st_JsonObject["nPosStart"] = _ttoi(m_StrPosStart.GetBuffer());
+	st_JsonObject["nPosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
+
+	st_JsonRoot["st_Banned"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];

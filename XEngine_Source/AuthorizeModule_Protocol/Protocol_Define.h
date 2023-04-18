@@ -706,6 +706,35 @@ extern "C" bool Protocol_Parse_HttpParsePos(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 *********************************************************************/
 extern "C" bool Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned);
 /********************************************************************
+函数名称：Protocol_Parse_HttpParseBanned2
+函数功能：解析HTTP的禁用协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：pInt_POSStart
+  In/Out：In
+  类型：整数型指针
+  可空：N
+  意思：输出解析到的起始位置
+ 参数.四：pInt_POSEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输出解析到的结束位置
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_POSStart, int* pInt_POSEnd);
+/********************************************************************
 函数名称：Protocol_Parse_HttpParseCDKey
 函数功能：解析CDKEY
  参数.一：lpszMsgBuffer

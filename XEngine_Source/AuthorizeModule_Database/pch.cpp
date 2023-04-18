@@ -113,9 +113,9 @@ extern "C" bool Database_SQLite_BannedDelete(AUTHREG_BANNED * pSt_Banned)
 {
 	return m_SQLAuth.Database_SQLite_BannedDelete(pSt_Banned);
 }
-extern "C" bool Database_SQLite_BannedList(AUTHREG_BANNED * **pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED * **pppSt_BannedAddr, int* pInt_AddrCount)
+extern "C" bool Database_SQLite_BannedList(AUTHREG_BANNED * **pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED * **pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd)
 {
-	return m_SQLAuth.Database_SQLite_BannedList(pppSt_BannedUser, pInt_UserCount, pppSt_BannedAddr, pInt_AddrCount);
+	return m_SQLAuth.Database_SQLite_BannedList(pppSt_BannedUser, pInt_UserCount, pppSt_BannedAddr, pInt_AddrCount, nPosStart, nPosEnd);
 }
 extern "C" bool Database_SQLite_BannedExist(AUTHREG_BANNED * pSt_Banned)
 {
