@@ -2,8 +2,8 @@
 
 bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
-	int nSDLen = 4096;
-	XCHAR tszSDBuffer[4096];
+	int nSDLen = 8196;
+	XCHAR tszSDBuffer[8196];
 	LPCXSTR lpszAPILogin = _X("login");
 	LPCXSTR lpszAPILogout = _X("logout");
 	LPCXSTR lpszAPITimeout = _X("timeout");

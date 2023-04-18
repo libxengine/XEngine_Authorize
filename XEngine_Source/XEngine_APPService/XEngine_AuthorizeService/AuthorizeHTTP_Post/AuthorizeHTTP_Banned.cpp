@@ -2,8 +2,8 @@
 
 bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
-	int nSDLen = 4096;
-	XCHAR tszSDBuffer[4096];
+	int nSDLen = 8196;
+	XCHAR tszSDBuffer[8196];
 	LPCXSTR lpszAPIInsert = _X("insert");
 	LPCXSTR lpszAPIDelete = _X("delete");
 	LPCXSTR lpszAPIList = _X("list");

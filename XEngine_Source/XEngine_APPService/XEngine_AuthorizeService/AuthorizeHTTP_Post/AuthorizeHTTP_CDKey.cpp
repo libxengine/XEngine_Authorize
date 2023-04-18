@@ -2,10 +2,10 @@
 
 bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
-	int nSDLen = 4096;
-	int nRVLen = 4096;
-	XCHAR tszSDBuffer[4096];
-	XCHAR tszRVBuffer[4096];
+	int nSDLen = 8196;
+	int nRVLen = 8196;
+	XCHAR tszSDBuffer[8196];
+	XCHAR tszRVBuffer[8196];
 	LPCXSTR lpszAPICreate = _X("create");
 	LPCXSTR lpszAPIAuth = _X("auth");
 	LPCXSTR lpszAPIVer = _X("ver");
