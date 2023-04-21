@@ -6,5 +6,6 @@
     "bSwitchPass":true,
     "bSwitchTime":true,
     "bSwitchCDKey":true,
-    "bSwitchNotice":true
+    "bSwitchNotice":true,
+    "bSwitchDCode":false
 }
