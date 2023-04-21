@@ -43,6 +43,7 @@ feature list:
 15. black list management
 16. local cdkey support
 17. announecement management
+18. support dynamic verifaction code
 
 ## install
 
@@ -77,6 +78,10 @@ make FLAGS=InstallAll Install File
 make FLAGS=CleanAll Clear Complie  
 
 ## how to use
+
+#### upgrade
+If it is an upgrade installation, after downloading the new version and modifying the configuration file, it can be run directly  
+database update need to open the database matching fields and tables are consistent
 #### server(management)
 Windows:complie complete,copy VSCopy_x86 or VSCopy_x64 to your complie dir,should copy depend module when execution complete,and copy XEngine_Release dir all file to complie dir  
 Linux or macos:it can be execution....
@@ -97,6 +102,7 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
 
 ## Participate in contribution
 

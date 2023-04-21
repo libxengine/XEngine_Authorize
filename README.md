@@ -43,6 +43,7 @@ V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程�
 15. 黑名单管理
 16. 本地cdkey生成验证支持
 17. 支持功公告管理
+18. 支持动态验证码登录
 
 ## 安装教程
 
@@ -77,6 +78,10 @@ make FLAGS=InstallAll 安装库程序
 make FLAGS=CleanAll 清理编译  
 
 ## 如何使用
+
+#### 升级
+如果是升级安装,下载新版本后修改配置文件就可以直接运行了  
+数据库升级需要打开数据库匹配字段和表是否一致  
 #### 服务端(管理端)
 Windows:编译成功后,拷贝VSCopy_x86或者VSCopy_x64 到你的编译目录,执行自动拷贝依赖的模块,然后把XEngine_Release下的文件全部拷贝到编译目录即可  
 Linux or macos:直接运行即可  
@@ -97,6 +102,7 @@ Linux or macos:直接运行即可
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
 
 ## 参与贡献
 
@@ -126,9 +132,7 @@ V3版本为全新版本,为了适应过多环境要求开发
 
 ## 开发计划 
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
-动态验证码  
 短信登录,扫码登录  
-消息公告  
 支持多端登录  
 多端登录合并用时  
 生成会话TOKEN分布式鉴权  
@@ -138,11 +142,11 @@ token 自动续期
 http basic和disgt支持  
 支持OAuth验证  
 mysql支持  
-列表数据分割,用于大型服务器  
 支持用户和硬件绑定同时验证  
 统计用户所有在线时间  
 持久层,redis,memcached等支持  
 支持代理端(序列号分发,权限控制)  
+支持设置用户可以使用IP地址段  
 支持绑定自定义内容  
 自动售卡(支付宝,微信)  
 MQTT协议支持,让你的嵌入式设备也用上授时验证  
