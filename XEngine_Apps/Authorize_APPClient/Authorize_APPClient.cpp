@@ -1,4 +1,4 @@
-﻿#ifdef _WINDOWS
+﻿#ifdef _MSC_BUILD
 #include <Windows.h>
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32.lib")
@@ -32,16 +32,19 @@ using namespace std;
 //Linux::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp,--disable-new-dtags
 //Macos::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp
 
-BOOL bRun = TRUE;
-BOOL bLogin = TRUE;
-BOOL bTimeOut = TRUE;
-BOOL bEncrypto = FALSE;
+#define _DYNAMIC_CODE
+bool bRun = true;
+bool bLogin = true;
+bool bTimeOut = true;
+bool bEncrypto = false;
+XNETHANDLE xhToken = 0;
+int nDYCode = 0;
 
-SOCKET m_Socket = 0;
-LPCTSTR lpszUser = _T("123123aa");
-LPCTSTR lpszPass = _T("123123");
-LPCTSTR lpszSerial = _T("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
-LPCTSTR lpszEmail = _T("486179@qq.com");
+XSOCKET m_Socket = 0;
+LPCXSTR lpszUser = _T("123123aa");
+LPCXSTR lpszPass = _T("123123");
+LPCXSTR lpszSerial = _T("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
+LPCXSTR lpszEmail = _T("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
 
@@ -50,13 +53,13 @@ XHTHREAD AuthClient_Thread()
 	while (bRun)
 	{
 		int nMsgLen = 0;
-		TCHAR *ptszMsgBuffer;
+		XCHAR *ptszMsgBuffer;
 		XENGINE_PROTOCOLHDR st_ProtocolHdr;
 
 		memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 		if (XClient_TCPSelect_RecvPkt(m_Socket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
 		{
-			TCHAR tszMsgBuffer[4096];
+			XCHAR tszMsgBuffer[4096];
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 			if (nMsgLen > 0 && bEncrypto)
@@ -71,7 +74,7 @@ XHTHREAD AuthClient_Thread()
 			
 			if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN == st_ProtocolHdr.unOperatorCode)
 			{
-				bLogin = FALSE;
+				bLogin = false;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
 					printf(_T("登录成功\n"));
@@ -83,7 +86,7 @@ XHTHREAD AuthClient_Thread()
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
 			{
-				bTimeOut = FALSE;
+				bTimeOut = false;
 				printf(_T("用户过期\n"));
 			}
 			else
@@ -102,7 +105,7 @@ int AuthClient_Register()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonUserInfo;
 	Json::Value st_JsonUserTable;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/register");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/register");
 
 	st_JsonUserInfo["tszUserName"] = lpszUser;
 	st_JsonUserInfo["tszUserPass"] = lpszPass;
@@ -129,7 +132,7 @@ int AuthClient_Pay()
 	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pay");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pay");
 
 	st_JsonObject["tszSerialNumber"] = lpszSerial;
 	st_JsonObject["tszUserName"] = lpszUser;
@@ -144,9 +147,39 @@ int AuthClient_Pay()
 
 	return 0;
 }
+int AuthClient_DynamicCode()
+{
+	int nHTTPCode = 0;
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=dcode&user=get");
+
+	int nMsgLen = 0;
+	CHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_T("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	printf("AuthClient_DynamicCode:\n%s\n", ptszMsgBuffer);
+
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		return 0;
+	}
+	XCHAR tszDCodeStr[64];
+	XCHAR tszTokenStr[64];
+
+	memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
+	memset(tszTokenStr, '\0', sizeof(tszTokenStr));
+
+	nDYCode = st_JsonRoot["nDynamicCode"].asUInt();
+	xhToken = st_JsonRoot["xhToken"].asUInt64();
+	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+
+	return 0;
+}
 int AuthClient_Login()
 {
-	TCHAR tszMsgBuffer[2048];
+	XCHAR tszMsgBuffer[2048];
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;                    //协议头
 	XENGINE_PROTOCOL_USERAUTH st_AuthUser;
 	
@@ -164,14 +197,20 @@ int AuthClient_Login()
 	strcpy(st_AuthUser.tszUserName, lpszUser);
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
 
+	if (nDYCode > 0)
+	{
+		st_ProtocolHdr.xhToken = xhToken;
+		_stprintf(st_AuthUser.tszDCode, _T("%d"), nDYCode);
+	}
+
 	int nMsgLen = 0;
 	if (bEncrypto)
 	{
-		TCHAR tszCodecBuffer[2048];
+		XCHAR tszCodecBuffer[2048];
 		memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
 		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
-		OPenSsl_XCrypto_Encoder((LPCTSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (UCHAR*)tszCodecBuffer, lpszPass);
+		OPenSsl_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (UCHAR*)tszCodecBuffer, lpszPass);
 
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszCodecBuffer, st_ProtocolHdr.unPacketSize);
@@ -200,7 +239,7 @@ int AuthClient_Login()
 int AuthClient_Notice()
 {
 	int nHTTPCode = 0;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=notice");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=notice");
 
 	int nMsgLen = 0;
 	CHAR* ptszMsgBuffer = NULL;
@@ -217,7 +256,7 @@ int AuthClient_Notice()
 	}
 	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 
@@ -234,7 +273,7 @@ int AuthClient_GetPass()
 	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pass");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pass");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszEMailAddr"] = lpszEmail;
@@ -256,7 +295,7 @@ int AuthClient_GetTime()
 	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/time");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/time");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
@@ -275,7 +314,7 @@ int AuthClient_Delete()
 	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/delete");
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/delete");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
@@ -298,8 +337,8 @@ int AuthClient_Try()
 	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCTSTR lpszSerialNet = _T("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
-	LPCTSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/try");
+	LPCXSTR lpszSerialNet = _T("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
+	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/try");
 
 	st_JsonObject["tszSerial"] = lpszSerialNet;
 	st_JsonRoot["st_UserTry"] = st_JsonObject;
@@ -314,12 +353,12 @@ int AuthClient_Try()
 }
 int main()
 {
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
 	int nPort = 5300;
-	LPCTSTR lpszAddr = _T("127.0.0.1");
+	LPCXSTR lpszAddr = _T("127.0.0.1");
 
 	if (!XClient_TCPSelect_Create(&m_Socket, lpszAddr, nPort))
 	{
@@ -330,6 +369,9 @@ int main()
 
 	AuthClient_Register();
 	AuthClient_Pay();
+#ifdef _DYNAMIC_CODE
+	AuthClient_DynamicCode();
+#endif
 	AuthClient_Login();
 	AuthClient_Notice();
 	AuthClient_GetPass();
@@ -337,11 +379,11 @@ int main()
 	AuthClient_Delete();
 	AuthClient_Try();
 
-	bRun = FALSE;
+	bRun = false;
 	XClient_TCPSelect_Close(m_Socket);
 	pSTDThread.join();
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 	WSACleanup();
 #endif
 	return 0;

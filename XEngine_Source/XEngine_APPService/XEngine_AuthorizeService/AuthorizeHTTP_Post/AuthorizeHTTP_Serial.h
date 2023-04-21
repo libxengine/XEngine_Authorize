@@ -1,3 +1,3 @@
 ﻿#pragma once
 
-BOOL XEngine_AuthorizeHTTP_Serial(LPCTSTR lpszClientAddr, LPCTSTR lpszAPIName, LPCTSTR lpszMsgBuffer, int nMsgLen);
+bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen);

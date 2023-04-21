@@ -6,11 +6,11 @@ FILEEXT =
 LIBFLAG = 
 RELEASE = 0
 UNICODE = 0
-LOADHDR = -I ./ 
-LOADSO = -L 
-LIB = 
+LOADHDR = -I ./ -I ../XEngine_ThirdPart/jsoncpp
+LOADSO = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L ../XEngine_ThirdPart/jsoncpp
+LIB = -lXEngine_BaseLib -ljsoncpp
 LIBEX = 
-OBJECTS = json_reader.o json_value.o json_writer.o
+OBJECTS = AuthHelp_DynamicCode.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -49,18 +49,16 @@ else ifeq ($(PLATFORM),mac)
 endif
 
 all:$(OBJECTS)
-	$(CC) $(DEBUG) $(OBJECTS) -o libjsoncpp.$(FILEEXT) $(LIBFLAG) $(LIB) $(LIBEX) $(LOADSO) $(LOADBIN)
+	$(CC) $(DEBUG) $(OBJECTS) -o libAuthorizeModule_Help.$(FILEEXT) $(LIBFLAG) $(LIB) $(LIBEX) $(LOADSO) $(LOADBIN)
 
-json_reader.o:json_reader.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) json_reader.cpp
-json_value.o:json_value.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) json_value.cpp
-json_writer.o:json_writer.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) json_writer.cpp
+AuthHelp_DynamicCode.o:./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
+pch.o:pch.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp
 
 InstallAll:InstallSo
-InstallSo:./libjsoncpp.$(FILEEXT)
-	cp ./libjsoncpp.$(FILEEXT) ../../../XEngine_Release/libjsoncpp.$(FILEEXT)
+InstallSo:./libAuthorizeModule_Help.$(FILEEXT)
+	cp ./libAuthorizeModule_Help.$(FILEEXT) ../../XEngine_Release/libAuthorizeModule_Help.$(FILEEXT)
 
 
 

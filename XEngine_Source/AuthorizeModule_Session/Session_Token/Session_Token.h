@@ -24,21 +24,21 @@ public:
     CSession_Token();
     ~CSession_Token();
 public:
-    BOOL Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, LPVOID lParam = NULL);
-    BOOL Session_Token_Destroy();
-    BOOL Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
-    BOOL Session_Token_Delete(XNETHANDLE xhToken);
-    BOOL Session_Token_UPDate(XNETHANDLE xhToken);
-    BOOL Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
-    BOOL Session_Token_GetUser(LPCTSTR lpszUser, LPCTSTR lpszPass, XNETHANDLE* pxhToken);
+    bool Session_Token_Init(int nTimeout, CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS fpCall_AuthEvent, XPVOID lParam = NULL);
+    bool Session_Token_Destroy();
+    bool Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout = 0);
+    bool Session_Token_Delete(XNETHANDLE xhToken);
+    bool Session_Token_UPDate(XNETHANDLE xhToken);
+    bool Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
+    bool Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE* pxhToken);
 protected:
-    static XHTHREAD Session_Token_Thread(LPVOID lParam);            
+    static XHTHREAD Session_Token_Thread(XPVOID lParam);            
 private:
     int m_nTimeout;
-    BOOL bIsRun;                      
+    bool bIsRun;                      
     shared_ptr<std::thread> pSTDThread_hActive;            
 private:
-    LPVOID m_lParam;
+    XPVOID m_lParam;
     CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS lpCall_AuthregEvents;
 private:
     shared_mutex st_Locker;

@@ -31,7 +31,7 @@
 
 //#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
 
-LPCTSTR lpszPasswd = _T("123123");
+LPCXSTR lpszPasswd = _T("123123");
 
 int main()
 {
@@ -63,8 +63,8 @@ int main()
 	st_JsonRoot["st_AuthRegInfo"] = st_JsonREGInfo;
 	st_JsonRoot["st_AuthUserInfo"] = st_JsonUserInfo;
 
-	TCHAR* ptszCreateBuffer = NULL;
-	LPCTSTR lpszCreateUrl = _T("http://192.168.1.10:5302/auth/cdkey/create");
+	XCHAR* ptszCreateBuffer = NULL;
+	LPCXSTR lpszCreateUrl = _T("http://192.168.1.10:5302/auth/cdkey/create");
 	//1. 创建CDKEY
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//加密
@@ -82,7 +82,7 @@ int main()
 		return 0;
 	}
 	
-	TCHAR tszMsgBuffer[4096];
+	XCHAR tszMsgBuffer[4096];
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//解密
@@ -98,8 +98,8 @@ int main()
 #endif
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszCreateBuffer);
 	//2. 授权CDKEY
-	TCHAR* ptszAuthBuffer = NULL;
-	LPCTSTR lpszAuthUrl = _T("http://192.168.1.10:5302/auth/cdkey/auth");
+	XCHAR* ptszAuthBuffer = NULL;
+	LPCXSTR lpszAuthUrl = _T("http://192.168.1.10:5302/auth/cdkey/auth");
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//加密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
@@ -127,8 +127,8 @@ int main()
 #endif
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszAuthBuffer);
 	//3. 验证CDKEY
-	TCHAR* ptszVerBuffer = NULL;
-	LPCTSTR lpszVerUrl = _T("http://192.168.1.10:5302/auth/cdkey/ver");
+	XCHAR* ptszVerBuffer = NULL;
+	LPCXSTR lpszVerUrl = _T("http://192.168.1.10:5302/auth/cdkey/ver");
 
 	XENGINE_AUTHORIZE_LOCAL st_Authorize;
 	memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));

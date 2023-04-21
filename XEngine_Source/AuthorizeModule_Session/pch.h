@@ -43,14 +43,10 @@ using namespace std;
 //    Purpose:     公有头文件
 //    History:
 *********************************************************************/
-extern BOOL Session_IsErrorOccur;
-extern DWORD Session_dwErrorCode;
+extern bool Session_IsErrorOccur;
+extern XLONG Session_dwErrorCode;
 
-#ifdef _UNICODE
-typedef std::wstring tstring;
-#else
-typedef std::string tstring;
-#endif
+typedef std::string xstring;
 
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")

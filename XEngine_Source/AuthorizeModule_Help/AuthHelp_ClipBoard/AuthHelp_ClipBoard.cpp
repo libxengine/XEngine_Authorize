@@ -43,39 +43,39 @@ CAuthHelp_ClipBoard::~CAuthHelp_ClipBoard()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, DWORD dwFormat)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
-	Help_IsErrorOccur = TRUE;
+	Help_IsErrorOccur = true;
 
 	if (NULL == lpszMsgBuffer)
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
-		return FALSE;
+		return false;
 	}
 	//判断先我们可否打开剪贴板，如果可以
 	if (!OpenClipboard(NULL))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
-		return FALSE;
+		return false;
 	}
 	if (!EmptyClipboard())
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OWNER;
-		return FALSE;
+		return false;
 	}
 	HANDLE hGlobal = INVALID_HANDLE_VALUE;
 	//GlobalAlloc 是分配指定的内存空间 单位为字节
 	hGlobal = GlobalAlloc(GHND, nMsgLen + 1);
 	if (NULL == hGlobal)
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC;
-		return FALSE;
+		return false;
 	}
-	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 LPVOID
+	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 XPVOID
 	memcpy(ptszBuffer, lpszMsgBuffer, nMsgLen);
 
 	SetClipboardData(dwFormat, hGlobal);       //设置到剪贴板内容格式，然后是 数据的指针。
@@ -84,7 +84,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
 	GlobalFree(hGlobal);                       //释放这个申请的空间
 	CloseClipboard();                          //关闭这个剪贴板 其他进程才能操作！
 
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Get
@@ -109,32 +109,32 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsg
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, DWORD dwFormat /* = 1 */)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
 {
-	Help_IsErrorOccur = FALSE;
+	Help_IsErrorOccur = false;
 
 	if (NULL == ptszMsgBuffer)
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_PARRAMENT;
-		return FALSE;
+		return false;
 	}
 	if (!OpenClipboard(NULL))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_OPEN;
-		return FALSE;
+		return false;
 	}
 
 	HANDLE hCliBd = INVALID_HANDLE_VALUE;
 	if (NULL == (hCliBd = GetClipboardData(dwFormat)))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_GETDATA;
-		return FALSE;
+		return false;
 	}
 
-	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
+	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
 	*pInt_MsgLen = (int)GlobalSize(hCliBd) - 1;                 //剪贴板内容大小
 
 	memcpy(ptszMsgBuffer, ptszBuffer, *pInt_MsgLen);
@@ -142,7 +142,7 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
 	GlobalUnlock(hCliBd);
 	CloseClipboard();
 
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Clear
@@ -152,12 +152,12 @@ BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Clear()
 {
-	Help_IsErrorOccur = FALSE;
+	Help_IsErrorOccur = false;
 
 	OpenClipboard(NULL);
 	EmptyClipboard();
 	CloseClipboard();
-	return TRUE;
+	return true;
 }

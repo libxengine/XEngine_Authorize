@@ -15,7 +15,7 @@
 //////////////////////////////////////////////////////////////////////////
 //                           公有函数
 //////////////////////////////////////////////////////////////////////////
-BOOL Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
+bool Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 {
 	TCHAR tszLogBuffer[8196];
 	TCHAR tszAddBuffer[8196];
@@ -26,7 +26,7 @@ BOOL Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 	memset(tszTimeStr, '\0', sizeof(tszTimeStr));
 
 	::GetDlgItemText(hMainWnd, IDC_EDIT1, tszAddBuffer, sizeof(tszAddBuffer));
-	
+
 	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
 	if (_tcslen(tszAddBuffer) <= 0)
 	{
@@ -41,5 +41,5 @@ BOOL Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 		_stprintf(tszLogBuffer, _T("%s\r\n%s:%s"), tszAddBuffer, tszTimeStr, lpszLogBuffer);
 	}
 	::SetDlgItemText(hMainWnd, IDC_EDIT1, tszLogBuffer);
-	return TRUE;
+	return true;
 }

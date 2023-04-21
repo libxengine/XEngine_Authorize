@@ -7,11 +7,22 @@
 #ifndef PCH_H
 #define PCH_H
 
+#ifdef _MSC_BUILD
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <tchar.h>
 #include <commctrl.h>
+#endif
 #endif //PCH_H
+#include <string.h>
+#include <thread>
+#include <memory>
+#include <shared_mutex>
+#include <unordered_map>
+using namespace std;
+#include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
+#include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
 /********************************************************************
@@ -25,10 +36,11 @@
 //    Purpose:     公用头文件
 //    History:
 *********************************************************************/
-extern BOOL Help_IsErrorOccur;
-extern DWORD Help_dwErrorCode;
+extern bool Help_IsErrorOccur;
+extern XLONG Help_dwErrorCode;
 
 
 #ifdef _MSC_BUILD
 #pragma comment(lib,"Comctl32.lib")
+#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #endif

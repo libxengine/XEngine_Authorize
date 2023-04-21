@@ -15,6 +15,7 @@
 #include <list>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
@@ -41,8 +42,8 @@ using namespace std;
 extern HWND hMainWnd;
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
-extern BOOL bCrypto;
-extern LPCSTR lpszStuType[2];
+extern bool bCrypto;
+extern LPCXSTR lpszStuType[2];
 
 #ifdef _DEBUG
 #ifdef _WIN64

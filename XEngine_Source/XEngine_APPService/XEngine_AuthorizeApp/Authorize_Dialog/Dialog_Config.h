@@ -41,4 +41,6 @@ public:
 	afx_msg void OnBnClickedRadio2();
 	afx_msg void OnBnClickedRadio1();
 	CEdit m_EditPassword;
+	CEdit m_EditDCode;
+	afx_msg void OnBnClickedButton8();
 };

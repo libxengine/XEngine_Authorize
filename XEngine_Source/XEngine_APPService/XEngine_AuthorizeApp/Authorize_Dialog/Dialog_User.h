@@ -22,9 +22,9 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	BOOL bThread;
+	bool bThread;
 	HANDLE hThread;
-	static DWORD WINAPI Dialog_User_Thread(LPVOID lParam);
+	static XLONG WINAPI Dialog_User_Thread(XPVOID lParam);
 public:
 	virtual BOOL OnInitDialog();
 	CListCtrl m_ListCtrlClient;

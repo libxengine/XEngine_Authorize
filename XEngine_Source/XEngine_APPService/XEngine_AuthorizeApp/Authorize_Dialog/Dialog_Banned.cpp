@@ -34,6 +34,8 @@ void CDialog_Banned::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHECK1, m_BtnCheckTime);
 	DDX_Control(pDX, IDC_RADIO4, m_RadioEnable);
 	DDX_Control(pDX, IDC_RADIO6, m_RadioDisable);
+	DDX_Control(pDX, IDC_EDIT8, m_EditPosEnd);
+	DDX_Control(pDX, IDC_EDIT3, m_EditPosStart);
 }
 
 
@@ -89,11 +91,14 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	m_DataTime.EnableWindow(FALSE);
+	m_EditPosStart.SetWindowText(_T("0"));
+	m_EditPosEnd.SetWindowText(_T("50"));
+
+	m_DataTime.EnableWindow(false);
 	m_RadioEnable.SetCheck(BST_CHECKED);
 	m_DataTime.SetFormat(_T("yyyy-mm-dd hh:mm:ss"));
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -116,12 +121,12 @@ void CDialog_Banned::OnBnClickedButton2()
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
 		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
@@ -207,20 +212,31 @@ void CDialog_Banned::OnBnClickedButton4()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+	CString m_StrPosStart;
+	CString m_StrPosEnd;
 
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
+	m_EditPosStart.GetWindowText(m_StrPosStart);
+	m_EditPosEnd.GetWindowText(m_StrPosEnd);
+
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	Json::Value st_JsonObject;
+
+	st_JsonObject["nPosStart"] = _ttoi(m_StrPosStart.GetBuffer());
+	st_JsonObject["nPosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
+
+	st_JsonRoot["st_Banned"] = st_JsonObject;
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -342,11 +358,11 @@ void CDialog_Banned::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	TCHAR* ptszMsgBuffer = NULL;
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -409,12 +425,12 @@ void CDialog_Banned::OnBnClickedCheck1()
 	// TODO: 在此添加控件通知处理程序代码
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(true);
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
 	}
 	else
 	{
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(false);
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
 	}
 }
@@ -439,12 +455,12 @@ void CDialog_Banned::OnBnClickedButton5()
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/banned/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
 		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
@@ -535,7 +551,7 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 	CString m_StrUser = m_ListUser.GetItemText(nItemCount, 2);
 	CString m_StrTime = m_ListUser.GetItemText(nItemCount, 3);
 
-	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	if (0 == _tcsxnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
 	{
 		m_RadioEnable.SetCheck(BST_CHECKED);
 		m_RadioDisable.SetCheck(BST_UNCHECKED);
@@ -567,13 +583,13 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(true);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(false);
 	}
 	*pResult = 0;
 }
@@ -593,7 +609,7 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 	CString m_StrUser = m_ListAddr.GetItemText(nItemCount, 2);
 	CString m_StrTime = m_ListAddr.GetItemText(nItemCount, 3);
 
-	if (0 == _tcsnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
+	if (0 == _tcsxnicmp(m_StrEnable.GetBuffer(), _T("启用"), m_StrEnable.GetLength()))
 	{
 		m_RadioEnable.SetCheck(BST_CHECKED);
 		m_RadioDisable.SetCheck(BST_UNCHECKED);
@@ -625,13 +641,13 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 		st_SysTime.wSecond = st_LibTime.wSecond;
 
 		m_BtnCheckTime.SetCheck(BST_CHECKED);
-		m_DataTime.EnableWindow(TRUE);
+		m_DataTime.EnableWindow(true);
 		m_DataTime.SetTime(&st_SysTime);
 	}
 	else
 	{
 		m_BtnCheckTime.SetCheck(BST_UNCHECKED);
-		m_DataTime.EnableWindow(FALSE);
+		m_DataTime.EnableWindow(false);
 	}
 
 	*pResult = 0;

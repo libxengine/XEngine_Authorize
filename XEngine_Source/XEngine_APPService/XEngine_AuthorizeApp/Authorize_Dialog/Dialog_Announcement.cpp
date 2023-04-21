@@ -48,8 +48,8 @@ BOOL CDialog_Announcement::OnInitDialog()
 	m_ListAnnouncement.InsertColumn(1, _T("公告内容"), LVCFMT_LEFT, 400);
 	m_ListAnnouncement.InsertColumn(2, _T("创建时间"), LVCFMT_LEFT, 150);
 	m_ListAnnouncement.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -70,15 +70,15 @@ void CDialog_Announcement::OnBnClickedButton1()
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	Json::StreamWriterBuilder st_JsonBuilder;
 	st_JsonBuilder["emitUTF8"] = true;
 
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	
 	st_JsonObject["tszContext"] = m_StrNotice.GetBuffer();
 	st_JsonRoot["st_Notice"] = st_JsonObject;
@@ -167,14 +167,14 @@ void CDialog_Announcement::OnBnClickedButton2()
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 
-	st_JsonObject["nID"] = _ttoi64(m_StrNotice.GetBuffer());
+	st_JsonObject["nID"] = _ttxoll(m_StrNotice.GetBuffer());
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -248,12 +248,12 @@ void CDialog_Announcement::OnBnClickedButton3()
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));

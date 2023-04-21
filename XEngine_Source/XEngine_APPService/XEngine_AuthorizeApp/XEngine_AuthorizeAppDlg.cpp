@@ -49,14 +49,14 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 
 	// 设置此对话框的图标。  当应用程序主窗口不是对话框时，框架将自动
 	//  执行此操作
-	SetIcon(m_hIcon, TRUE);			// 设置大图标
-	SetIcon(m_hIcon, FALSE);		// 设置小图标
+	SetIcon(m_hIcon, true);			// 设置大图标
+	SetIcon(m_hIcon, false);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	HANDLE hMutex = CreateMutex(NULL, TRUE, _T("XEngine_AuthorizeApp"));
+	HANDLE hMutex = CreateMutex(NULL, true, _T("XEngine_AuthorizeApp"));
 	if (NULL != hMutex)
 	{
-		DWORD dwRet = GetLastError();
+		XLONG dwRet = GetLastError();
 		if (dwRet == ERROR_ALREADY_EXISTS)
 		{
 			AfxMessageBox(_T("程序已经运行,无法继续!"));
@@ -95,19 +95,19 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	m_DlgSerial.MoveWindow(&st_Rect);
 	m_DlgBanned.MoveWindow(&st_Rect);
 	//分别设置隐藏和显示 
-	m_DlgConfig.ShowWindow(TRUE);
-	m_DlgSwitch.ShowWindow(FALSE);
-	m_DlgUser.ShowWindow(FALSE);
-	m_DlgAnnouncement.ShowWindow(FALSE);
-	m_DlgSerial.ShowWindow(FALSE);
-	m_DlgBanned.ShowWindow(FALSE);
+	m_DlgConfig.ShowWindow(true);
+	m_DlgSwitch.ShowWindow(false);
+	m_DlgUser.ShowWindow(false);
+	m_DlgAnnouncement.ShowWindow(false);
+	m_DlgSerial.ShowWindow(false);
+	m_DlgBanned.ShowWindow(false);
 	m_TabWindows.SetCurSel(0);
 
 	hMainWnd = m_hWnd;
 
 	AuthHelp_Windows_CreateTooltip(m_BtnLogSave.m_hWnd, _T("保存日志为文件"));
 	AuthHelp_Windows_CreateTooltip(m_BtnLogClear.m_hWnd, _T("清空日志窗口"));
-	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
+	return TRUE;  // 除非将焦点设置到控件，否则返回 true
 }
 
 // 如果向对话框添加最小化按钮，则需要下面的代码
@@ -154,52 +154,52 @@ void CXEngineAuthorizeAppDlg::OnTcnSelchangeTab1(NMHDR* pNMHDR, LRESULT* pResult
 	switch (m_TabWindows.GetCurSel())
 	{
 	case 0:
-		m_DlgConfig.ShowWindow(TRUE);
-		m_DlgSwitch.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgAnnouncement.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgBanned.ShowWindow(FALSE);
+		m_DlgConfig.ShowWindow(true);
+		m_DlgSwitch.ShowWindow(false);
+		m_DlgUser.ShowWindow(false);
+		m_DlgAnnouncement.ShowWindow(false);
+		m_DlgSerial.ShowWindow(false);
+		m_DlgBanned.ShowWindow(false);
 		break;
 	case 1:
-		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(TRUE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgAnnouncement.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgBanned.ShowWindow(FALSE);
+		m_DlgConfig.ShowWindow(false);
+		m_DlgSwitch.ShowWindow(true);
+		m_DlgUser.ShowWindow(false);
+		m_DlgAnnouncement.ShowWindow(false);
+		m_DlgSerial.ShowWindow(false);
+		m_DlgBanned.ShowWindow(false);
 		break;
 	case 2:
-		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(TRUE);
-		m_DlgAnnouncement.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgBanned.ShowWindow(FALSE);
+		m_DlgConfig.ShowWindow(false);
+		m_DlgSwitch.ShowWindow(false);
+		m_DlgUser.ShowWindow(true);
+		m_DlgAnnouncement.ShowWindow(false);
+		m_DlgSerial.ShowWindow(false);
+		m_DlgBanned.ShowWindow(false);
 		break;
 	case 3:
-		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgAnnouncement.ShowWindow(TRUE);
-		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgBanned.ShowWindow(FALSE);
+		m_DlgConfig.ShowWindow(false);
+		m_DlgSwitch.ShowWindow(false);
+		m_DlgUser.ShowWindow(false);
+		m_DlgAnnouncement.ShowWindow(true);
+		m_DlgSerial.ShowWindow(false);
+		m_DlgBanned.ShowWindow(false);
 		break;
 	case 4:
-		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgAnnouncement.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(TRUE);
-		m_DlgBanned.ShowWindow(FALSE);
+		m_DlgConfig.ShowWindow(false);
+		m_DlgSwitch.ShowWindow(false);
+		m_DlgUser.ShowWindow(false);
+		m_DlgAnnouncement.ShowWindow(false);
+		m_DlgSerial.ShowWindow(true);
+		m_DlgBanned.ShowWindow(false);
 		break;
 	case 5:
-		m_DlgConfig.ShowWindow(FALSE);
-		m_DlgSwitch.ShowWindow(FALSE);
-		m_DlgUser.ShowWindow(FALSE);
-		m_DlgAnnouncement.ShowWindow(FALSE);
-		m_DlgSerial.ShowWindow(FALSE);
-		m_DlgBanned.ShowWindow(TRUE);
+		m_DlgConfig.ShowWindow(false);
+		m_DlgSwitch.ShowWindow(false);
+		m_DlgUser.ShowWindow(false);
+		m_DlgAnnouncement.ShowWindow(false);
+		m_DlgSerial.ShowWindow(false);
+		m_DlgBanned.ShowWindow(true);
 		break;
 	default:
 		break;
@@ -214,7 +214,7 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 	// TODO: 在此添加控件通知处理程序代码
 	TCHAR tszFilter[] = _T("文本文件(*.txt)|*.txt|所有文件(*.*)|*.*||");
 	// 构造保存文件对话框   
-	CFileDialog m_FileDlg(FALSE, _T("txt"), _T("log"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
+	CFileDialog m_FileDlg(false, _T("txt"), _T("log"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, tszFilter, this);
 	
 	// 显示保存文件对话框   
 	if (IDOK == m_FileDlg.DoModal())
@@ -233,5 +233,5 @@ void CXEngineAuthorizeAppDlg::OnBnClickedButton1()
 void CXEngineAuthorizeAppDlg::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	m_EditLog.SetWindowText("");
+	m_EditLog.SetWindowText(_T(""));
 }

@@ -50,15 +50,15 @@ CProtocol_Packet::~CProtocol_Packet()
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType)
+bool CProtocol_Packet::Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int enDeviceType)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	if (0 == enDeviceType)
 	{
@@ -78,7 +78,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_M
 		*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 		memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	}
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpComm
@@ -108,15 +108,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HDRComm(TCHAR* ptszMsgBuffer, int* pInt_M
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode /* = 0 */, LPCTSTR lpszMsgBuffer /* = NULL */)
+bool CProtocol_Packet::Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, int nCode /* = 0 */, LPCXSTR lpszMsgBuffer /* = NULL */)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
@@ -133,7 +133,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpUserPass
@@ -158,15 +158,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpComm(TCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+bool CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonUser;
@@ -182,7 +182,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* p
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpUserTime
@@ -207,15 +207,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserPass(TCHAR* ptszMsgBuffer, int* p
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
+bool CProtocol_Packet::Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
@@ -233,7 +233,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* p
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpClientInfo
@@ -258,15 +258,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpUserTime(TCHAR* ptszMsgBuffer, int* p
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable)
+bool CProtocol_Packet::Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
@@ -296,7 +296,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpClientList
@@ -336,15 +336,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientInfo(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
+bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
@@ -377,13 +377,13 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 	}
 	for (int i = 0; i < nOffCount; i++)
 	{
-		BOOL bFound = FALSE;
+		bool bFound = false;
 		//查找是否在线,在线就跳过
 		for (int j = 0; j < nOnCount; j++)
 		{
-			if (0 == _tcsncmp((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcslen((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName)))
+			if (0 == _tcsxncmp((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName, (*pppSt_OffClient)[i]->st_UserInfo.tszUserName, _tcsxlen((*pppSt_OnClient)[j]->st_UserTable.st_UserInfo.tszUserName)))
 			{
-				bFound = TRUE;
+				bFound = true;
 				break;
 			}
 		}
@@ -418,7 +418,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpSerialList
@@ -448,15 +448,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpClientList(TCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount)
+bool CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
@@ -478,7 +478,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpToken
@@ -503,23 +503,28 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSerialList(TCHAR* ptszMsgBuffer, int*
   类型：整数型
   可空：N
   意思：输入超时时间
+ 参数.五：nDCode
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入动态验证码
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout)
+bool CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode /* = 0 */)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
-	TCHAR tszTimeStart[128];
-	TCHAR tszTimeEnd[128];
+	XCHAR tszTimeStart[128];
+	XCHAR tszTimeEnd[128];
 	XENGINE_LIBTIMER st_TimeOut;
 	Json::Value st_JsonRoot;
 
@@ -528,9 +533,9 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIMER));
 
 	BaseLib_OperatorTime_TimeToStr(tszTimeStart);
-	_stprintf(tszTimeEnd, _T("0-0-0 0:0:%d"), nTimeout);
+	_xstprintf(tszTimeEnd, _X("0-0-0 0:0:%d"), nTimeout);
 	BaseLib_OperatorTimeSpan_CalForStr(tszTimeStart, tszTimeEnd, &st_TimeOut);
-	BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, TRUE, &st_TimeOut);
+	BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeOut);
 
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
@@ -538,10 +543,14 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
 	st_JsonRoot["nTimeout"] = nTimeout;
 	st_JsonRoot["tszTimeStart"] = tszTimeStart;
 	st_JsonRoot["tszTimeEnd"] = tszTimeEnd;
+	if (nDCode > 0)
+	{
+		st_JsonRoot["nDynamicCode"] = nDCode;
+	}
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpSwitch
@@ -566,15 +575,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpToken(TCHAR* ptszMsgBuffer, int* pInt
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
+bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 
@@ -587,10 +596,11 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchRegister"] = pSt_FunSwitch->bSwitchRegister;
 	st_JsonRoot["bSwitchCDKey"] = pSt_FunSwitch->bSwitchCDKey;
 	st_JsonRoot["bSwitchNotice"] = pSt_FunSwitch->bSwitchNotice;
+	st_JsonRoot["bSwitchDCode"] = pSt_FunSwitch->bSwitchDCode;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpBanned
@@ -630,15 +640,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpSwitch(TCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount)
+bool CProtocol_Packet::Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonUser;
@@ -673,7 +683,7 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：Protocol_Packet_HttpAnnouncement
@@ -703,15 +713,15 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpBanned(TCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-BOOL CProtocol_Packet::Protocol_Packet_HttpAnnouncement(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount)
+bool CProtocol_Packet::Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount)
 {
-	Protocol_IsErrorOccur = FALSE;
+	Protocol_IsErrorOccur = false;
 
 	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
 	{
-		Protocol_IsErrorOccur = TRUE;
+		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return FALSE;
+		return false;
 	}
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
@@ -731,5 +741,5 @@ BOOL CProtocol_Packet::Protocol_Packet_HttpAnnouncement(TCHAR* ptszMsgBuffer, in
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
-	return TRUE;
+	return true;
 }

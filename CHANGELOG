@@ -1,3 +1,19 @@
+XEngine_Authorize V3.7.0.1001
+
+添加:登录支持动态验证码功能
+添加:禁用列表查询数量限制功能
+更新:扩展HTTP缓冲区大小
+更新:支持XEngine V8.x版本了
+修改:公告协议现在有数量限制了
+修正:获取公告功能开关错误
+
+added:dynamic verfication code for login
+added:limit query count for banned function
+update:extend http buffer size
+update:support xengine 8.x
+modify:The number of announcements has been limited
+fixed:get notice switch is incorrent
+================================================================
 XEngine_Authorize V3.6.0.1001
 
 添加:公告功能支持

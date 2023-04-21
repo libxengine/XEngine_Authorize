@@ -15,6 +15,7 @@
     "XVerification":{
         "nUserTimeout":30,
         "nTokenTimeout":3600,
+        "nDynamicTimeout":30,
         "nVerTime":5,
         "nVerMode":1,
         "nTryTime":5,
@@ -45,6 +46,7 @@
         "LogLeave":32
     },
     "XVer":[
+        "V3.7.0.1001 Build20230421",
         "V3.6.0.1001 Build20230224",
         "V3.5.0.1001 Build20230203",
         "V3.4.0.1001 Build20221230",

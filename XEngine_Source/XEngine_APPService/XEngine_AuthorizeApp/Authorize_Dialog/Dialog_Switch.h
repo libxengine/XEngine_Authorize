@@ -41,4 +41,6 @@ public:
 	CButton m_RadioCDKeyClose;
 	CButton m_RadioNoticeOPen;
 	CButton m_RadioNoticeClose;
+	CButton m_RadioDCodeOPen;
+	CButton m_RadioDCodeClose;
 };

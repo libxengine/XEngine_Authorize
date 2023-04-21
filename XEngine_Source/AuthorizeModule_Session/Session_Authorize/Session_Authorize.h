@@ -17,26 +17,26 @@ public:
     CSession_Authorize();
     ~CSession_Authorize();
 public:
-    BOOL Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,LPVOID lParam = NULL);
-    BOOL Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCTSTR lpszClientAddr = NULL);
-    BOOL Session_Authorize_GetClientForUser(LPCTSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client);
-    BOOL Session_Authorize_GetAddrForUser(LPCTSTR lpszClientUser,TCHAR *ptszClientAddr);
-    BOOL Session_Authorize_GetUserForAddr(LPCTSTR lpszClientAddr, TCHAR *ptszClientUser);
-    BOOL Session_Authorize_CloseClient(LPCTSTR lpszClientAddr);
-    BOOL Session_Authorize_Destroy();
+    bool Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS fpCall_AuthEvent,XPVOID lParam = NULL);
+    bool Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientAddr = NULL);
+    bool Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT* pSt_Client);
+    bool Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser,XCHAR *ptszClientAddr);
+    bool Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR *ptszClientUser);
+    bool Session_Authorize_CloseClient(LPCXSTR lpszClientAddr);
+    bool Session_Authorize_Destroy();
 public:
-    BOOL Session_Authorize_Insert(LPCTSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, int nNetType = 0);
-    BOOL Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
+    bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, int nNetType = 0);
+    bool Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
 protected:
-    static XHTHREAD Session_Authorize_ActiveThread(LPVOID lParam);            //计时器线程
+    static XHTHREAD Session_Authorize_ActiveThread(XPVOID lParam);            //计时器线程
 private:
-    BOOL bIsRun;                          //运行标志
+    bool bIsRun;                          //运行标志
     shared_ptr<std::thread> pSTDThread_hActive;                 //时间计算器线程句柄
 private:
-    LPVOID m_lParam;
+    XPVOID m_lParam;
     CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS lpCall_AuthregEvents;
 private:
     shared_mutex st_Locker;
 private:
-    unordered_map<tstring, AUTHSESSION_NETCLIENT> stl_MapNetClient;
+    unordered_map<xstring, AUTHSESSION_NETCLIENT> stl_MapNetClient;
 };

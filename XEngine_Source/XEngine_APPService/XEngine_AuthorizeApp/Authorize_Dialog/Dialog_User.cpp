@@ -67,8 +67,8 @@ BOOL CDialog_User::OnInitDialog()
 	m_EditPosStart.SetWindowText("0");
 	m_EditPosEnd.SetWindowText("50");
 	hUserWnd = m_hWnd;
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }
 
 
@@ -94,13 +94,13 @@ void CDialog_User::OnBnClickedButton1()
 	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
 	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
 
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/list"), tszIPAddr, tszIPPort);
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/client/list"), tszIPAddr, tszIPPort);
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttoi64(tszToken);
-	st_JsonRoot["PosStart"] = _ttoi(m_StrPosStart.GetBuffer());
-	st_JsonRoot["PosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(tszToken);
+	st_JsonRoot["PosStart"] = _ttxoi(m_StrPosStart.GetBuffer());
+	st_JsonRoot["PosEnd"] = _ttxoi(m_StrPosEnd.GetBuffer());
 	if (BST_CHECKED == m_CheckOnlineList.GetCheck())
 	{
 		st_JsonRoot["Online"] = true;
@@ -172,7 +172,7 @@ void CDialog_User::OnBnClickedButton1()
 			memset(tszTimeStr, '\0', sizeof(tszTimeStr));
 
 			__int64x nTime = st_JsonArray["nOnlineTime"].asUInt64();
-			_stprintf(tszTimeStr, _T("%lld"), nTime);
+			_xstprintf(tszTimeStr, _T("%lld"), nTime);
 			m_ListCtrlClient.SetItemText(i, 3, tszTimeStr);
 		}
 		m_ListCtrlClient.SetItemText(i, 4, st_JsonArray["tszLeftTime"].asCString());
@@ -207,18 +207,18 @@ void CDialog_User::OnBnClickedButton2()
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/close"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/client/close"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
 	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 
 	//是否加密
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
@@ -297,17 +297,17 @@ void CDialog_User::OnBnClickedButton3()
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/client/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/client/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
 	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 	//是否加密
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
+	TCHAR* ptszMsgBuffer = NULL;
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
@@ -384,13 +384,13 @@ void CDialog_User::OnBnClickedCheck2()
 	// TODO: 在此添加控件通知处理程序代码
 	if (BST_CHECKED == m_CheckAuto.GetCheck())
 	{
-		bThread = TRUE;
+		bThread = true;
 		hThread = CreateThread(NULL, 0, Dialog_User_Thread, this, 0, NULL);
 	}
 	else
 	{
-		bThread = FALSE;
-		DWORD dwRet = WaitForSingleObject(hThread, INFINITE);
+		bThread = false;
+		XLONG dwRet = WaitForSingleObject(hThread, INFINITE);
 		if (WAIT_OBJECT_0 != dwRet)
 		{
 			TerminateThread(hThread, -1);
@@ -399,7 +399,7 @@ void CDialog_User::OnBnClickedCheck2()
 	}
 }
 
-DWORD CDialog_User::Dialog_User_Thread(LPVOID lParam)
+XLONG CDialog_User::Dialog_User_Thread(XPVOID lParam)
 {
 	CDialog_User* pClass_This = (CDialog_User*)lParam;
 	time_t nTimeStart = time(NULL);

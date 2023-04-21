@@ -43,37 +43,37 @@ CAuthHelp_Windows::~CAuthHelp_Windows()
   意思：是否成功抖动
 备注：仿造QQ抖动，支持抖动后播放声音或者不播放，不播放传递NULL
 *********************************************************************/
-BOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree /* = 4 */, int nDitheringCareer /* = 30 */)
+bool CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree /* = 4 */, int nDitheringCareer /* = 30 */)
 {
 	RECT st_Rect = { '\0' };//定义一个矩形
 	//获得窗口边框
 	if (!GetWindowRect(hWnd, &st_Rect))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_GETRECT;
-		return FALSE;
+		return false;
 	}
 	for (int i = 0; i < nDitheringDegree; i++)
 	{
 		Sleep(nDitheringCareer);//延迟。
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left - 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top + 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left + 1, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 		Sleep(nDitheringCareer);
-		MoveWindow(hWnd, st_Rect.left, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, TRUE);
+		MoveWindow(hWnd, st_Rect.left, st_Rect.top - 1, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, true);
 	}
 	MoveWindow(hWnd, st_Rect.left, st_Rect.top, st_Rect.right - st_Rect.left, st_Rect.bottom - st_Rect.top, 1);//归为
-	return TRUE;
+	return true;
 }
 /********************************************************************
 函数名称：AuthHelp_Windows_CreateTooltip
@@ -93,9 +93,9 @@ BOOL CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegr
   意思：是否成功添加
 备注：
 *********************************************************************/
-BOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip)
+bool CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
 {
-	Help_IsErrorOccur = FALSE;
+	Help_IsErrorOccur = false;
 
 	TOOLINFO tInfo;
 	RECT st_Rect = { '\0' };
@@ -103,15 +103,15 @@ BOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszCo
 	HWND hWndEx = CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, 0, WS_POPUP | TTS_NOPREFIX | TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, hWnd, 0, GetModuleHandle(NULL), 0);
 	if (NULL == hWndEx)
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_CREATEWINDOW;
-		return FALSE;
+		return false;
 	}
 	if (!SetWindowPos(hWndEx, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE))
 	{
-		Help_IsErrorOccur = TRUE;
+		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_WINDOW_SETWINDOW;
-		return FALSE;
+		return false;
 	}
 	GetClientRect(hWnd, &st_Rect);
 
@@ -123,5 +123,5 @@ BOOL CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszCo
 	tInfo.lpszText = (LPTSTR)lpszContextOfTip;
 	tInfo.rect = st_Rect;
 	SendMessage(hWndEx, TTM_ADDTOOL, 0, (LPARAM)&tInfo);
-	return TRUE;
+	return true;
 }

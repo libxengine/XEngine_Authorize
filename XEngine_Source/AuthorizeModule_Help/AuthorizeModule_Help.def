@@ -3,6 +3,11 @@ LIBRARY
 EXPORTS
 	AuthHelp_GetLastError
 
+	AuthHelp_DynamicCode_Init
+	AuthHelp_DynamicCode_Destory
+	AuthHelp_DynamicCode_Create
+	AuthHelp_DynamicCode_Get
+
 	AuthHelp_ClipBoard_Set
 	AuthHelp_ClipBoard_Get
 	AuthHelp_ClipBoard_Clear

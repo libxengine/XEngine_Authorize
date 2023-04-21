@@ -40,6 +40,8 @@ void CDialog_Switch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO12, m_RadioCDKeyClose);
 	DDX_Control(pDX, IDC_RADIO13, m_RadioNoticeOPen);
 	DDX_Control(pDX, IDC_RADIO14, m_RadioNoticeClose);
+	DDX_Control(pDX, IDC_RADIO15, m_RadioDCodeOPen);
+	DDX_Control(pDX, IDC_RADIO16, m_RadioDCodeClose);
 }
 
 
@@ -67,11 +69,11 @@ void CDialog_Switch::OnBnClickedButton1()
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	TCHAR* ptszMsgBuffer = NULL;
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -195,7 +197,18 @@ void CDialog_Switch::OnBnClickedButton1()
 			m_RadioNoticeOPen.SetCheck(BST_UNCHECKED);
 			m_RadioNoticeClose.SetCheck(BST_CHECKED);
 		}
-		m_BtnSetConfigure.EnableWindow(TRUE);
+
+		if (st_JsonRoot["bSwitchDCode"].asBool())
+		{
+			m_RadioDCodeOPen.SetCheck(BST_CHECKED);
+			m_RadioDCodeClose.SetCheck(BST_UNCHECKED);
+		}
+		else
+		{
+			m_RadioDCodeOPen.SetCheck(BST_UNCHECKED);
+			m_RadioDCodeClose.SetCheck(BST_CHECKED);
+		}
+		m_BtnSetConfigure.EnableWindow(true);
 	}
 	else
 	{
@@ -285,12 +298,21 @@ void CDialog_Switch::OnBnClickedButton2()
 		st_JsonObject["bSwitchNotice"] = false;
 	}
 
+	if (BST_CHECKED == m_RadioDCodeOPen.GetCheck())
+	{
+		st_JsonObject["bSwitchDCode"] = true;
+	}
+	else
+	{
+		st_JsonObject["bSwitchDCode"] = false;
+	}
+
 	st_JsonRoot["st_SwitchInfo"] = st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttoi64(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	_stprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/set"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	TCHAR* ptszMsgBuffer = NULL;
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/switch/set"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -351,7 +373,7 @@ BOOL CDialog_Switch::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_BtnSetConfigure.EnableWindow(FALSE);
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	m_BtnSetConfigure.EnableWindow(false);
+	return TRUE;  // return true unless you set the focus to a control
+	// 异常: OCX 属性页应返回 false
 }

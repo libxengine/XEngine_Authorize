@@ -13,7 +13,71 @@
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD AuthHelp_GetLastError(int *pInt_SysError = NULL);
+extern "C" XLONG AuthHelp_GetLastError(int *pInt_SysError = NULL);
+/************************************************************************/
+/*                    动态码导出定义                                    */
+/************************************************************************/
+/********************************************************************
+函数名称：AuthHelp_DynamicCode_Init
+函数功能：初始化动态码
+ 参数.一：nSecond
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：动态码超时时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthHelp_DynamicCode_Init(int nSecond);
+/********************************************************************
+函数名称：AuthHelp_DynamicCode_Destory
+函数功能：销毁
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthHelp_DynamicCode_Destory();
+/********************************************************************
+函数名称：AuthHelp_DynamicCode_Create
+函数功能：创建一个动态码
+ 参数.一：pxhToken
+  In/Out：Out
+  类型：句柄
+  可空：N
+  意思：输出动态码绑定的句柄
+ 参数.二：pInt_DynamicCode
+  In/Out：Out
+  类型：整数型
+  可空：N
+  意思：输出动态码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode);
+/********************************************************************
+函数名称：AuthHelp_DynamicCode_Get
+函数功能：获取句柄和动态码绑定信息
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：输入操作的句柄
+ 参数.二：nDynamicCode
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入绑定的动态码
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 /************************************************************************/
 /*                    剪贴板导出定义                                    */
 /************************************************************************/
@@ -41,7 +105,7 @@ extern "C" DWORD AuthHelp_GetLastError(int *pInt_SysError = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthHelp_ClipBoard_Set(LPCSTR lpszMsgBuffer, int nMsgLen, DWORD dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Get
 函数功能：获取剪贴板内容
@@ -65,7 +129,7 @@ extern "C" BOOL AuthHelp_ClipBoard_Set(LPCSTR lpszMsgBuffer, int nMsgLen, DWORD 
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthHelp_ClipBoard_Get(CHAR * ptszMsgBuffer, int* pInt_MsgLen, DWORD dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Clear
 函数功能：清空剪贴板
@@ -74,7 +138,7 @@ extern "C" BOOL AuthHelp_ClipBoard_Get(CHAR * ptszMsgBuffer, int* pInt_MsgLen, D
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" BOOL AuthHelp_ClipBoard_Clear();
+extern "C" bool AuthHelp_ClipBoard_Clear();
 /************************************************************************/
 /*                    窗口类导出定义                                    */
 /************************************************************************/
@@ -101,7 +165,7 @@ extern "C" BOOL AuthHelp_ClipBoard_Clear();
   意思：是否成功抖动
 备注：仿造QQ抖动，支持抖动后播放声音或者不播放，不播放传递NULL
 *********************************************************************/
-extern "C" BOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
+extern "C" bool AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
 /********************************************************************
 函数名称：AuthHelp_Windows_CreateTooltip
 函数功能：为控件句柄添加提示
@@ -120,5 +184,5 @@ extern "C" BOOL AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, 
   意思：是否成功添加
 备注：
 *********************************************************************/
-extern "C" BOOL AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip);
+extern "C" bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip);
 #endif

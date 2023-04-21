@@ -11,14 +11,14 @@
 //    Purpose:     导出实现
 //    History:
 *********************************************************************/
-BOOL Config_IsErrorOccur = FALSE;
-DWORD Config_dwErrorCode = 0;
+bool Config_IsErrorOccur = false;
+XLONG Config_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CModuleConfigure_Json m_Config;
 //////////////////////////////////////////////////////////////////////////
 //                      导出函数
 //////////////////////////////////////////////////////////////////////////
-extern "C" DWORD Config_GetLastError(int* pInt_SysError)
+extern "C" XLONG Config_GetLastError(int* pInt_SysError)
 {
 	if (NULL != pInt_SysError)
 	{
@@ -29,11 +29,11 @@ extern "C" DWORD Config_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                              配置文件导出函数                        */
 /************************************************************************/
-extern "C" BOOL ModuleConfigure_Json_File(LPCTSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig)
+extern "C" bool ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig)
 {
 	return m_Config.ModuleConfigure_Json_File(lpszConfigFile, pSt_ServerConfig);
 }
-extern "C" BOOL ModuleConfigure_Json_Switch(LPCTSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig)
+extern "C" bool ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, XENGINE_FUNCTIONSWITCH * pSt_ServerConfig)
 {
 	return m_Config.ModuleConfigure_Json_Switch(lpszConfigFile, pSt_ServerConfig);
 }

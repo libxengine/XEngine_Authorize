@@ -36,8 +36,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Define.h>
-#include <XEngine_Include/XEngine_RfcComponents/HttpServer_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
 #include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
 #include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
 #include "../../XAuth_Protocol.h"
@@ -49,9 +49,11 @@ using namespace std;
 #include "../../AuthorizeModule_Session/Session_Error.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Define.h"
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Define.h"
+#include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 
-extern BOOL bIsRun;
-extern XLOG xhLog;
+extern bool bIsRun;
+extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
 extern XHANDLE xhHttpSocket;
@@ -85,19 +87,22 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Announcement.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
+#include "AuthorizeHTTP_Get/AuthorizeHTTP_DynamicCode.h"
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 #ifdef _DEBUG
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
 #else
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
 #endif
 #else
 #ifdef _WIN64
@@ -105,11 +110,13 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
 #else
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
 #endif
 #endif
 #pragma comment(lib,"Ws2_32.lib")
@@ -121,6 +128,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
-#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpServer.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol.lib")
 #pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient.lib")
 #endif
