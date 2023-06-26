@@ -129,57 +129,13 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 				return false;
 			}
 		}
-		//是否被封禁
-		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
+		//权限是否正确
+		if (0 == st_UserTable.st_UserInfo.nUserLevel)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User was banned");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User Permission Verification is failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, tszUserName);
 			return false;
-		}
-		//处理权限
-		if (st_UserTable.st_UserInfo.nUserLevel > 0)
-		{
-			if (!st_FunSwitch.bSwitchLogin)
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "Function does not to enable");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
-				return false;
-			}
-			//普通用户
-			if (!st_AuthConfig.st_XLogin.bHTTPAuth)
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User permission error");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，登录失败，客户端权限不足"), lpszClientAddr);
-				return false;
-			}
-			//是否已经登录
-			XCHAR tszClientAddr[128];
-			if (Session_Authorize_GetAddrForUser(tszUserName, tszClientAddr))
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User was login");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, tszUserName);
-				return false;
-			}
-			//分析充值类型
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User not time");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, tszUserName);
-				return false;
-			}
-			st_UserTable.enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)_ttxoi(tszDeviceType);
-			if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, XENGINE_AUTH_APP_NETTYPE_HTTP))
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "server is error");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, tszUserName);
-				return false;
-			}
 		}
 		if (0 == xhToken)
 		{
@@ -213,52 +169,14 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 	{
 		//http://app.xyry.org:5302/api?function=close&token=1000112345
 		XCHAR tszUserToken[128];
-		AUTHREG_USERTABLE st_UserTable;
-
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
-		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
-		//主动关闭,更新用户时间
-		Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable);
-		if (st_UserTable.st_UserInfo.nUserLevel > 1)
-		{
-			//如果权限是普通用户
-			AUTHREG_PROTOCOL_TIME st_AuthTime;
-			AUTHSESSION_NETCLIENT st_NETClient;
-			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-			memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
-			//需要设置时间并且关闭会话
-			if (Session_Authorize_GetClientForUser(st_UserTable.st_UserInfo.tszUserName, &st_NETClient))
-			{
-				st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
-				st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
-				st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-				_tcsxcpy(st_AuthTime.tszUserName, st_UserTable.st_UserInfo.tszUserName);
-				_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
-				_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
-				//是否需要通知
-				if (st_AuthConfig.st_XLogin.bHTTPAuth)
-				{
-					int nSDLen = 0;
-					XCHAR tszSDBuffer[MAX_PATH];
-					memset(tszSDBuffer, '\0', MAX_PATH);
-
-					Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
-					APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
-				}
-				Database_SQLite_UserLeave(&st_AuthTime);
-			}
-			Session_Authorize_CloseClient(st_UserTable.st_UserInfo.tszUserName);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token：%s，用户名：%s，主动关闭,在线时长:%d"), tszUserToken, st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
-		}
-		else
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
-		}
+		//主动关闭
 		Session_Token_Delete(_ttxoll(tszUserToken));
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
 	}
 	return true;
 }
