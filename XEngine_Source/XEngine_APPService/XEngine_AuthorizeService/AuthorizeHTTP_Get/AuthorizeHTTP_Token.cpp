@@ -114,20 +114,10 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		//用户是否存在会话,存在就返回,并且更新TOKEN
 		if (Session_Token_GetUser(tszUserName, tszUserPass, &xhToken))
 		{
-			if (st_AuthConfig.st_XLogin.bMultiLogin)
-			{
-				Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录发现会话已经存在,直接返回TOKEN:%lld 成功"), lpszClientAddr, xhToken);
-				return true;
-			}
-			else
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user was login");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录发现会话已经存在,服务器不允许重读登录"), lpszClientAddr);
-				return false;
-			}
+			Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录发现会话已经存在,直接返回TOKEN:%lld 成功"), lpszClientAddr, xhToken);
+			return true;
 		}
 		//权限是否正确
 		if (0 == st_UserTable.st_UserInfo.nUserLevel)
