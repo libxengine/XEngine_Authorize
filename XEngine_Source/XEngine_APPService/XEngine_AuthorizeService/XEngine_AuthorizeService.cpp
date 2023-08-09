@@ -22,30 +22,6 @@ void ServiceApp_Stop(int signo)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("网络验证服务器退出..."));
 		bIsRun = false;
 
-		int nListCount = 0;
-		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
-		for (int i = 0; i < nListCount; i++)
-		{
-			AUTHREG_PROTOCOL_TIME st_AuthTime;
-			AUTHSESSION_NETCLIENT st_NETClient;
-
-			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-			memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
-
-			if (Session_Authorize_GetClientForUser(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName, &st_NETClient))
-			{
-				st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
-				st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
-				st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-				_tcsxcpy(st_AuthTime.tszUserName, ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
-				_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
-				_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
-
-				Database_SQLite_UserLeave(&st_AuthTime);
-			}
-			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
-		}
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);

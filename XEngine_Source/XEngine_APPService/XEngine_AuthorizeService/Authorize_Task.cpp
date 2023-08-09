@@ -45,6 +45,20 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
 	}
+	else
+	{
+		AUTHREG_PROTOCOL_TIME st_AuthTime;
+		memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+
+		st_AuthTime.nTimeLeft = nLeftTimer;
+		st_AuthTime.nTimeONLine = nOnlineTimer;
+		st_AuthTime.enSerialType = enSerialType;
+		_tcsxcpy(st_AuthTime.tszLeftTime, lpszLeftDate);
+		_tcsxcpy(st_AuthTime.tszUserName, lpszUserName);
+		_tcsxcpy(st_AuthTime.tszUserAddr, lpszUserAddr);
+
+		Database_SQLite_UserLeave(&st_AuthTime);
+	}
 }
 void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 {
