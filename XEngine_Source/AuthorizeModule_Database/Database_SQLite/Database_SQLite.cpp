@@ -350,7 +350,7 @@ bool CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
     {
         //次数卡不需要在线时间,直接减去一次就可以了
-        _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%lld' WHERE UserName = '%s'"), _ttxoll(pSt_TimeProtocol->tszLeftTime) - 1, pSt_TimeProtocol->tszUserName);
+        _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%lld' WHERE UserName = '%s'"), _ttxoll(pSt_TimeProtocol->tszLeftTime), pSt_TimeProtocol->tszUserName);
     }
     else
     {

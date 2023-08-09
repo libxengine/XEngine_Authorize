@@ -221,6 +221,14 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return false;
 		}
+		//如果是次数卡,需要优先处理
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+		{
+			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
+			_xtprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
+
+			Database_SQLite_UserSet(&st_UserTable);
+		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, nNetType))
 		{
