@@ -163,6 +163,7 @@
     <ClInclude Include="AuthHelp_Define.h" />
     <ClInclude Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.h" />
     <ClInclude Include="AuthHelp_Error.h" />
+    <ClInclude Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.h" />
     <ClInclude Include="AuthHelp_Windows\AuthHelp_Windows.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
@@ -170,6 +171,7 @@
   <ItemGroup>
     <ClCompile Include="AuthHelp_ClipBoard\AuthHelp_ClipBoard.cpp" />
     <ClCompile Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.cpp" />
+    <ClCompile Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.cpp" />
     <ClCompile Include="AuthHelp_Windows\AuthHelp_Windows.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">

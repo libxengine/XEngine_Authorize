@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "AuthHelp_DynamicCode/AuthHelp_DynamicCode.h"
+#include "AuthHelp_MultiLogin/AuthHelp_MultiLogin.h"
 #ifdef _MSC_BUILD
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
 #include "AuthHelp_Windows/AuthHelp_Windows.h"
@@ -19,6 +20,7 @@ bool Help_IsErrorOccur = false;
 XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_DynamicCode m_HelpDynamic;
+CAuthHelp_MultiLogin m_HelpLogin;
 #ifdef _MSC_BUILD
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
@@ -50,6 +52,13 @@ extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, int* pInt_Dyn
 extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Get(xhToken, nDynamicCode);
+}
+/************************************************************************/
+/*                    多端登录导出定义                                  */
+/************************************************************************/
+extern "C" bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType)
+{
+	return m_HelpLogin.AuthHelp_MultiLogin_GetRange(nClientDevice, pInt_IDType);
 }
 /************************************************************************/
 /*                    剪贴板导出定义                                    */

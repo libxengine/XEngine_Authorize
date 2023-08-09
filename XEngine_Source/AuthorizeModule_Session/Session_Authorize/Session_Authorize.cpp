@@ -87,7 +87,7 @@ bool CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSI
   意思：是否获取成功
 备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
 *********************************************************************/
-bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientAddr /* = NULL */)
+bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientUser /* = NULL */, int nDeviceMode /* = 0 */)
 {
     Session_IsErrorOccur = false;
 
@@ -98,7 +98,7 @@ bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
         return false;
     }
     st_Locker.lock_shared();
-    if (NULL == lpszClientAddr)
+    if (NULL == lpszClientUser)
     {
         BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_MapNetClient.size(), sizeof(AUTHSESSION_NETCLIENT));
 
@@ -111,18 +111,32 @@ bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
     }
     else
     {
-        unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszClientAddr);
-        if (stl_MapIterator == stl_MapNetClient.cend())
+        list<AUTHSESSION_NETCLIENT> stl_ListClient;
+        unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
+        for (; stl_MapIterator != stl_MapNetClient.end(); stl_MapIterator++)
         {
-            Session_IsErrorOccur = true;
-            Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-            st_Locker.unlock_shared();
-            return false;
+            if (nDeviceMode > 0)
+            {
+                if ((0 == _tcsxnicmp(lpszClientUser, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName, _tcsxlen(stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName))) && (nDeviceMode == stl_MapIterator->second.st_UserTable.enDeviceType))
+				{
+					stl_ListClient.push_back(stl_MapIterator->second);
+				}
+            }
+            else
+            {
+				if (0 == _tcsxnicmp(lpszClientUser, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName, _tcsxlen(stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName)))
+				{
+					stl_ListClient.push_back(stl_MapIterator->second);
+				}
+            }
         }
-        BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_MapNetClient.size(), sizeof(AUTHSESSION_NETCLIENT));
-
-        *(*pppSt_ListClient)[0] = stl_MapIterator->second;
-        *pInt_ListCount = 1;
+        BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_ListClient.size(), sizeof(AUTHSESSION_NETCLIENT));
+        auto stl_ListIterator = stl_ListClient.begin();
+        for (int i = 0; stl_ListIterator != stl_ListClient.end(); stl_ListIterator++, i++)
+        {
+            *(*pppSt_ListClient)[i] = *stl_ListIterator;
+        }
+        *pInt_ListCount = stl_ListClient.size();
     }
     st_Locker.unlock_shared();
 
@@ -162,18 +176,26 @@ bool CSession_Authorize::Session_Authorize_GetClientForUser(LPCXSTR lpszUserName
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return false;
     }
+    bool bFound = false;
     st_Locker.lock_shared();
-    unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszUserName);
-    if (stl_MapIterator == stl_MapNetClient.end())
+	unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
+    for (; stl_MapIterator != stl_MapNetClient.end(); stl_MapIterator++)
+	{
+        if (0 == _tcsxnicmp(lpszUserName, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName, _tcsxlen(stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName)))
+        {
+            bFound = true;
+            *pSt_Client = stl_MapIterator->second;
+            break;
+        }
+	}
+    st_Locker.unlock_shared();
+    if (!bFound)
     {
         Session_IsErrorOccur = true;
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-        st_Locker.unlock_shared();
         return false;
     }
-    *pSt_Client = stl_MapIterator->second;
-    st_Locker.unlock_shared();
-
+    
     return true;
 }
 /********************************************************************
@@ -204,17 +226,25 @@ bool CSession_Authorize::Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return false;
     }
-    st_Locker.lock_shared();
-    unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszClientUser);
-    if (stl_MapIterator == stl_MapNetClient.end())
-    {
-        Session_IsErrorOccur = true;
-        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-        st_Locker.unlock_shared();
-        return false;
-    }
-    _tcsxcpy(ptszClientAddr,stl_MapIterator->second.tszClientAddr);
-    st_Locker.unlock_shared();
+	bool bFound = false;
+	st_Locker.lock_shared();
+	unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
+	for (; stl_MapIterator != stl_MapNetClient.end(); stl_MapIterator++)
+	{
+		if (0 == _tcsxnicmp(lpszClientUser, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName, _tcsxlen(stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName)))
+		{
+			bFound = true;
+            _tcsxcpy(ptszClientAddr, stl_MapIterator->first.c_str());
+			break;
+		}
+	}
+	st_Locker.unlock_shared();
+	if (!bFound)
+	{
+		Session_IsErrorOccur = true;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
+		return false;
+	}
 
     return true;
 }
@@ -246,25 +276,16 @@ bool CSession_Authorize::Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr
         Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
         return false;
     }
-    bool bIsFound = false;
     st_Locker.lock_shared();
-    unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.begin();
-    for (;stl_MapIterator != stl_MapNetClient.end();stl_MapIterator++)
+    unordered_map<xstring, AUTHSESSION_NETCLIENT>::const_iterator stl_MapIterator = stl_MapNetClient.find(lpszClientAddr);
+    if (stl_MapIterator == stl_MapNetClient.end())
     {
-        if (0 == _tcsxncmp(lpszClientAddr, stl_MapIterator->second.tszClientAddr, _tcsxlen(lpszClientAddr)))
-        {
-            bIsFound = true;
-            break;
-        }
-    }
-    if (!bIsFound)
-    {
-        Session_IsErrorOccur = true;
-        Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
-        st_Locker.unlock_shared();
-        return false;
-    }
-    _tcsxcpy(ptszClientUser, stl_MapIterator->first.c_str());
+		Session_IsErrorOccur = true;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_NOTFOUND;
+		st_Locker.unlock_shared();
+		return false;
+	}
+    _tcsxcpy(ptszClientUser, stl_MapIterator->second.st_UserTable.st_UserInfo.tszUserName);
     st_Locker.unlock_shared();
 
     return true;
@@ -276,7 +297,7 @@ bool CSession_Authorize::Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr
   In/Out：In
   类型：常量字符指针
   可空：N
-  意思：要移除的用户名
+  意思：要移除的地址
 返回值
   类型：逻辑型
   意思：是否移除成功
@@ -355,7 +376,7 @@ bool CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHRE
     }
     //验证是否登陆
     st_Locker.lock_shared();
-    unordered_map<xstring,AUTHSESSION_NETCLIENT>::iterator stl_MapIterator = stl_MapNetClient.find(pSt_UserTable->st_UserInfo.tszUserName);
+    unordered_map<xstring,AUTHSESSION_NETCLIENT>::iterator stl_MapIterator = stl_MapNetClient.find(lpszClientAddr);
     if (stl_MapIterator != stl_MapNetClient.end())
     {
         Session_IsErrorOccur = true;

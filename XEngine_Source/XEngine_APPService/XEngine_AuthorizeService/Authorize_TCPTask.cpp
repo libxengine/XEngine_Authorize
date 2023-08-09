@@ -150,14 +150,58 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 		//是否已经登录
-		XCHAR tszClientAddr[128];
-		if (Session_Authorize_GetAddrForUser(st_AuthProtocol.tszUserName, tszClientAddr))
+		if (st_AuthConfig.st_XLogin.bMultiLogin)
 		{
-			pSt_ProtocolHdr->wReserve = 253;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return false;
+			bool bLogin = false;
+			int nListCount = 0;
+			AUTHSESSION_NETCLIENT** ppSt_ListClient;
+
+			Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_AuthProtocol.tszUserName);
+			for (int i = 0; i < nListCount; i++)
+			{
+				//找到客户端,支持的模式
+				if (0 == st_AuthConfig.st_XLogin.nMultiMode)
+				{
+					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
+					{
+						bLogin = true;
+						break;
+					}
+				}
+				else
+				{
+					int nSourceType = 0;
+					int nDestType = 0;
+					AuthHelp_MultiLogin_GetRange(ppSt_ListClient[i]->st_UserTable.enDeviceType, &nSourceType);
+					AuthHelp_MultiLogin_GetRange(st_AuthProtocol.enDeviceType, &nDestType);
+
+					if (nSourceType == nDestType)
+					{
+						bLogin = true;
+						break;
+					}
+				}
+			}
+			if (bLogin)
+			{
+				pSt_ProtocolHdr->wReserve = 253;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，多端登录失败，用户已经登录,类型:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.enDeviceType);
+				return false;
+			}
+		}
+		else
+		{
+			XCHAR tszClientAddr[128];
+			if (Session_Authorize_GetAddrForUser(st_AuthProtocol.tszUserName, tszClientAddr))
+			{
+				pSt_ProtocolHdr->wReserve = 253;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				return false;
+			}
 		}
 		//是否被封禁
 		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
