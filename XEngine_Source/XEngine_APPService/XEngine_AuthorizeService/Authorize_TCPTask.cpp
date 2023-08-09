@@ -19,7 +19,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 		memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
 		int nListCount = 0;
-		HELPCOMPONENT_PACKET_CLIENT** ppSt_ListClient;
+		XENGINE_MANAGEPOOL_TASKEVENT** ppSt_ListClient;
 		HelpComponents_Datas_GetPoolEx(xhTCPPacket, nThreadPos, &ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{

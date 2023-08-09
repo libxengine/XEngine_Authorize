@@ -12,7 +12,7 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 			continue;
 		}
 		int nListCount = 0;
-		RFCCOMPONENTS_HTTP_PKTCLIENT** ppSt_ListClient;
+		XENGINE_MANAGEPOOL_TASKEVENT** ppSt_ListClient;
 		HttpProtocol_Server_GetPoolEx(xhHttpPacket, nThreadPos, &ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{
