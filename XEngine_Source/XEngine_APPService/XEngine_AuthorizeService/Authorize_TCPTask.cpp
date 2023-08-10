@@ -182,6 +182,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 					}
 				}
 			}
+			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 			if (bLogin)
 			{
 				pSt_ProtocolHdr->wReserve = 253;
@@ -193,10 +194,12 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else
 		{
-			XCHAR tszClientAddr[128];
-			if (Session_Authorize_GetAddrForUser(st_AuthProtocol.tszUserName, tszClientAddr))
+			int nListCount = 0;
+			AUTHSESSION_NETCLIENT** ppSt_ListClient;
+			if (Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_AuthProtocol.tszUserName))
 			{
 				pSt_ProtocolHdr->wReserve = 253;
+				BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, st_AuthProtocol.tszUserName);

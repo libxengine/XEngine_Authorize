@@ -185,6 +185,67 @@ bool CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* p
 	return true;
 }
 /********************************************************************
+函数名称：Protocol_Packet_UserTime
+函数功能：用户时间打包函数
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出打好包的数据
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出数据大小
+ 参数.三：pppSt_ListClient
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要打包的附加数据
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型指针
+  可空：N
+  意思：输入数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Packet::Protocol_Packet_UserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_ListClient, int nListCount)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["tszUserName"] = (*pppSt_ListClient)[i]->st_UserTable.st_UserInfo.tszUserName;
+		st_JsonObject["tszUserAddr"] = (*pppSt_ListClient)[i]->tszClientAddr;
+		st_JsonObject["tszLeftTime"] = (*pppSt_ListClient)[i]->tszLeftTime;
+		st_JsonObject["nTimeLeft"] = (Json::Value::Int64)(*pppSt_ListClient)[i]->nLeftTime;
+		st_JsonObject["nTimeONLine"] = (Json::Value::Int64)(*pppSt_ListClient)[i]->nOnlineTime;
+		st_JsonObject["enDeviceType"] = (*pppSt_ListClient)[i]->st_UserTable.enDeviceType;
+		st_JsonObject["enSerialType"] = (*pppSt_ListClient)[i]->st_UserTable.enSerialType;
+		st_JsonObject["nNetType"] = (*pppSt_ListClient)[i]->nNetType;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["st_UserTime"] = st_JsonArray;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return true;
+}
+/********************************************************************
 函数名称：Protocol_Packet_HttpUserTime
 函数功能：用户时间打包函数
  参数.一：ptszMsgBuffer

@@ -77,44 +77,6 @@ extern "C" bool Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
 *********************************************************************/
 extern "C" bool Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientUser = NULL);
 /********************************************************************
-函数名称：Session_Authorize_GetClientForUser
-函数功能：获取客户端信息
- 参数.一：lpszUserName
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：输入要查找用户名
- 参数.二：pSt_Client
-  In/Out：Out
-  类型：数据结构指针
-  可空：N
-  意思：用户信息结构体
-返回值
-  类型：逻辑型
-  意思：是否获取成功
-备注：通过卡类型来判断导出的时间是分钟还是天
-*********************************************************************/
-extern "C" bool Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client);
-/********************************************************************
-函数名称：Session_Authorize_GetAddrForUser
-函数功能：通过用户名获取对应地址
- 参数.一：lpszClientUser
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：输入用户名
- 参数.二：ptszClientAddr
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：导出获取到的用户套接字地址
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-extern "C" bool Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser,XCHAR *ptszClientAddr);
-/********************************************************************
 函数名称：Session_Authorize_GetUserForAddr
 函数功能：通过IP地址获取对应用户名
  参数.一：lpszClientAddr
@@ -122,31 +84,31 @@ extern "C" bool Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser,XCHAR *p
   类型：常量字符指针
   可空：N
   意思：输入IP地址端口
- 参数.二：ptszClientUser
+ 参数.二：pSt_Client
   In/Out：Out
-  类型：字符指针
+  类型：数据结构指针
   可空：N
-  意思：导出获取到的用户名
+  意思：导出获取到的信息
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR *ptszClientUser);
+extern "C" bool Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, AUTHSESSION_NETCLIENT * pSt_Client = NULL);
 /********************************************************************
-函数名称：Session_Authorize_CloseClient
+函数名称：Session_Authorize_CloseAddr
 函数功能：移除一个客户端
- 参数.一：lpszClientUser
+ 参数.一：lpszClientAddr
   In/Out：In
   类型：常量字符指针
   可空：N
-  意思：要移除的用户名
+  意思：要移除的地址
 返回值
   类型：逻辑型
   意思：是否移除成功
-备注：此函数会自动调用AuthRegService_Sql_UserLeave来处理离开时间
+备注：
 *********************************************************************/
-extern "C" bool Session_Authorize_CloseClient(LPCXSTR lpszClientUser);
+extern "C" bool Session_Authorize_CloseAddr(LPCXSTR lpszClientAddr);
 /********************************************************************
 函数名称：Session_Authorize_Destroy
 函数功能：销毁网络服务

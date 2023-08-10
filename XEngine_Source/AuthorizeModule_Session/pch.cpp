@@ -39,21 +39,13 @@ extern "C" bool Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_List
 {
 	return m_SessionAuth.Session_Authorize_GetClient(pppSt_ListClient, pInt_ListCount, lpszClientAddr);
 }
-extern "C" bool Session_Authorize_GetClientForUser(LPCXSTR lpszUserName, AUTHSESSION_NETCLIENT * pSt_Client)
+extern "C" bool Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, AUTHSESSION_NETCLIENT * pSt_Client)
 {
-	return m_SessionAuth.Session_Authorize_GetClientForUser(lpszUserName, pSt_Client);
+	return m_SessionAuth.Session_Authorize_GetUserForAddr(lpszClientAddr, pSt_Client);
 }
-extern "C" bool Session_Authorize_GetAddrForUser(LPCXSTR lpszClientUser, XCHAR * ptszClientAddr)
+extern "C" bool Session_Authorize_CloseAddr(LPCXSTR lpszClientAddr)
 {
-	return m_SessionAuth.Session_Authorize_GetAddrForUser(lpszClientUser, ptszClientAddr);
-}
-extern "C" bool Session_Authorize_GetUserForAddr(LPCXSTR lpszClientAddr, XCHAR * ptszClientUser)
-{
-	return m_SessionAuth.Session_Authorize_GetUserForAddr(lpszClientAddr, ptszClientUser);
-}
-extern "C" bool Session_Authorize_CloseClient(LPCXSTR lpszClientUser)
-{
-	return m_SessionAuth.Session_Authorize_CloseClient(lpszClientUser);
+	return m_SessionAuth.Session_Authorize_CloseAddr(lpszClientAddr);
 }
 extern "C" bool Session_Authorize_Destroy()
 {

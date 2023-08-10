@@ -43,7 +43,11 @@ extern "C" bool Protocol_Packet_HttpUserPass(XCHAR * ptszMsgBuffer, int* pInt_Ms
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth);
 }
-extern "C" bool Protocol_Packet_HttpUserTime(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME * pSt_ProtocolTime)
+extern "C" bool Protocol_Packet_UserTime(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT * **pppSt_ListClient, int nListCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_UserTime(ptszMsgBuffer, pInt_MsgLen, pppSt_ListClient, nListCount);
+}
+extern "C" bool Protocol_Packet_HttpUserTime(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_PROTOCOL_TIME* pSt_ProtocolTime)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpUserTime(ptszMsgBuffer, pInt_MsgLen, pSt_ProtocolTime);
 }

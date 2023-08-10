@@ -76,24 +76,27 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	}
 	else if (0 == _tcsxnicmp(lpszAPIClose, lpszAPIName, _tcsxlen(lpszAPIClose)))
 	{
-		XCHAR tszClientAddr[128];
+		int nListCount = 0;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-
-		memset(tszClientAddr, '\0', sizeof(tszClientAddr));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
-		if (!Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr))
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求剔除用户:%s 没有找到,可能不在线"), lpszClientAddr, st_UserInfo.tszUserName);
 			return false;
 		}
-		XEngine_CloseClient(tszClientAddr);
+		for (int i = 0; i < nListCount; i++)
+		{
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求剔除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求剔除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIModify, lpszAPIName, _tcsxlen(lpszAPIModify)))
 	{

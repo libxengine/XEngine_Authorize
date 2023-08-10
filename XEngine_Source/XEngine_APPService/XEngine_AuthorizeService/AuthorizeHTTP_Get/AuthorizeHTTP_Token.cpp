@@ -91,11 +91,11 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 			return true;
 		}
 		//权限是否正确
-		if (0 == st_UserTable.st_UserInfo.nUserLevel)
+		if (0 != st_UserTable.st_UserInfo.nUserLevel)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "User Permission Verification is failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，登录失败，客户端权限不足够"), lpszClientAddr, tszUserName);
 			return false;
 		}
 		if (0 == xhToken)
