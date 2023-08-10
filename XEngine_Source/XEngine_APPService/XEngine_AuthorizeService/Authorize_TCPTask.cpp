@@ -162,7 +162,12 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				//找到客户端,支持的模式
 				if (0 == st_AuthConfig.st_XLogin.nMultiMode)
 				{
-					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
+					int nSourceType = 0;
+					int nDestType = 0;
+					AuthHelp_MultiLogin_GetRange(ppSt_ListClient[i]->st_UserTable.enDeviceType, &nSourceType);
+					AuthHelp_MultiLogin_GetRange(st_AuthProtocol.enDeviceType, &nDestType);
+
+					if (nSourceType == nDestType)
 					{
 						bLogin = true;
 						break;
@@ -170,12 +175,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 				else
 				{
-					int nSourceType = 0;
-					int nDestType = 0;
-					AuthHelp_MultiLogin_GetRange(ppSt_ListClient[i]->st_UserTable.enDeviceType, &nSourceType);
-					AuthHelp_MultiLogin_GetRange(st_AuthProtocol.enDeviceType, &nDestType);
-
-					if (nSourceType == nDestType)
+					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
 					{
 						bLogin = true;
 						break;

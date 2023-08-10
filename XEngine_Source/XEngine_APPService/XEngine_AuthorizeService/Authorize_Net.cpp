@@ -80,9 +80,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr)
 	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 	NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
 
-	XCHAR tszClientUser[64];
 	AUTHSESSION_NETCLIENT st_NETClient;
-	memset(tszClientUser, '\0', sizeof(tszClientUser));
 	memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
 
 	if (Session_Authorize_GetUserForAddr(lpszClientAddr, &st_NETClient))
@@ -93,7 +91,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr)
 		st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
 		st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
 		st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-		_tcsxcpy(st_AuthTime.tszUserName, tszClientUser);
+		_tcsxcpy(st_AuthTime.tszUserName, st_NETClient.st_UserTable.st_UserInfo.tszUserName);
 		_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
 		_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
 
@@ -107,7 +105,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr)
 			APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, tszClientUser, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
 	}
 	else
 	{

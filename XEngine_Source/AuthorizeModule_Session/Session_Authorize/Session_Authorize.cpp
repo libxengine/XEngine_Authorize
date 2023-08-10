@@ -481,10 +481,13 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 			{
 				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == stl_ListIterator->st_UserTable.enSerialType)
 				{
-                    //通告结束
-					if (nTimeCount > stl_ListIterator->nLeftTime)
+					for (auto stl_ListNotifyIterator = stl_ListNotify.begin(); stl_ListNotifyIterator != stl_ListNotify.end(); stl_ListNotifyIterator++)
 					{
-                        stl_ListIterator->nLeftTime = 0;
+                        if (0 == _tcsxnicmp(stl_ListNotifyIterator->tszUserAddr, stl_ListIterator->tszClientAddr, _tcsxlen(stl_ListNotifyIterator->tszUserAddr)))
+                        {
+                            stl_ListNotifyIterator->nTimeLeft -= nTimeCount;
+                            break;
+                        }
 					}
 				}
 			}
