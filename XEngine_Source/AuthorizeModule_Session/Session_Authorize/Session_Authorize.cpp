@@ -113,14 +113,13 @@ bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
         BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_ListClient.size(), sizeof(AUTHSESSION_NETCLIENT));
 
         auto stl_ListIterator = stl_ListClient.begin();
-        for (int i = 0; stl_ListIterator != stl_ListClient.end(); stl_ListIterator++)
+        for (int i = 0; stl_ListIterator != stl_ListClient.end(); stl_ListIterator++, i++)
         {
             *(*pppSt_ListClient)[i] = *stl_ListIterator;
         }
     }
     else
     {
-        list<AUTHSESSION_NETCLIENT> stl_ListClient;
         auto stl_MapIterator = stl_MapNetClient.find(lpszClientUser);
         if (stl_MapIterator != stl_MapNetClient.end())
         {
@@ -445,6 +444,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
                     break;
 				}
 				default:
+                {
 					//天卡，自定义 都是用相同的函数处理
 					__int64x nLeftTime = 0;                                          //剩余时间
 					XENGINE_LIBTIMER st_TimeLeft;
@@ -472,7 +472,8 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					_tcsxcpy(st_ProtocolTimer.tszLeftTime, stl_ListIterator->st_UserTable.tszLeftTime);
 					_tcsxcpy(st_ProtocolTimer.tszUserAddr, stl_ListIterator->tszClientAddr);
 					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
-                    break;
+					break;
+                }
 				}
                 stl_ListNotify.push_back(st_ProtocolTimer);
             }
