@@ -150,7 +150,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 		//是否已经登录
-		if (st_AuthConfig.st_XLogin.bMultiLogin)
+		if (st_FunSwitch.bSwitchMulti)
 		{
 			bool bLogin = false;
 			int nListCount = 0;
