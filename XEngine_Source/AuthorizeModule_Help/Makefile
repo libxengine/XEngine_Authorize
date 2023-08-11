@@ -10,7 +10,7 @@ LOADHDR = -I ./ -I ../XEngine_ThirdPart/jsoncpp
 LOADSO = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L ../XEngine_ThirdPart/jsoncpp
 LIB = -lXEngine_BaseLib -ljsoncpp
 LIBEX = 
-OBJECTS = AuthHelp_DynamicCode.o pch.o
+OBJECTS = AuthHelp_DynamicCode.o AuthHelp_MultiLogin.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -53,6 +53,9 @@ all:$(OBJECTS)
 
 AuthHelp_DynamicCode.o:./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
+AuthHelp_MultiLogin.o:./AuthHelp_MultiLogin/AuthHelp_MultiLogin.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_MultiLogin/AuthHelp_MultiLogin.cpp
+
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp
 

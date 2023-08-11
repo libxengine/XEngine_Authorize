@@ -134,10 +134,10 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	_tcsxcpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassTimeout, st_JsonXLoginUrl["tszPassTimeout"].asCString());
 
 	Json::Value st_JsonMulitLogin = st_JsonXLogin["st_MulitLogin"];
-	pSt_ServerConfig->st_XLogin.st_MulitLogin.bCustom, st_JsonMulitLogin["bCustom"].asBool();
-	pSt_ServerConfig->st_XLogin.st_MulitLogin.bDay, st_JsonMulitLogin["bDay"].asBool();
-	pSt_ServerConfig->st_XLogin.st_MulitLogin.bMinute, st_JsonMulitLogin["bMinute"].asBool();
-	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime, st_JsonMulitLogin["bTime"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bCustom = st_JsonMulitLogin["bCustom"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bDay = st_JsonMulitLogin["bDay"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bMinute = st_JsonMulitLogin["bMinute"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
