@@ -45,7 +45,7 @@ BOOL CDialog_Announcement::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	m_ListAnnouncement.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 60);
-	m_ListAnnouncement.InsertColumn(1, _T("公告内容"), LVCFMT_LEFT, 400);
+	m_ListAnnouncement.InsertColumn(1, _T("公告内容"), LVCFMT_LEFT, 500);
 	m_ListAnnouncement.InsertColumn(2, _T("创建时间"), LVCFMT_LEFT, 150);
 	m_ListAnnouncement.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	return TRUE;  // return true unless you set the focus to a control

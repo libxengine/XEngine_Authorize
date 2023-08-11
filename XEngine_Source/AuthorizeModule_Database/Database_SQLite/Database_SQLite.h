@@ -24,7 +24,7 @@ public:
     bool Database_SQLite_Destroy();                                                                  //销毁
 public:
     bool Database_SQLite_UserDelete(LPCXSTR lpszUserName);                                           //删除用户
-    bool Database_SQLite_UserRegister(AUTHREG_USERTABLE*pSt_UserInfo);                             //用户注册
+    bool Database_SQLite_UserRegister(AUTHREG_USERTABLE*pSt_UserInfo);                               //用户注册
     bool Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo = NULL);    //用户查询
     bool Database_SQLite_UserPay(LPCXSTR lpszUserName,LPCXSTR lpszSerialName);                       //充值卡充值
     bool Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol);            //用户离开更新表

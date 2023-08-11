@@ -1,3 +1,25 @@
+XEngine_Authorize V3.8.0.1001
+
+添加:管理端用户地址列表支持
+增加:多端登录支持以及合并用时
+更新:匹配XEngine V8.15
+修改:次数卡类型用户登录后就修改了
+修改:不在允许管理用户三方验证了
+修改:管理接口不在限制单点登录了
+修改:会话模块内部代码重构
+修改:功能开关支持多端登录了
+删除:普通用户http登录接口
+
+added:client addr for user list of the management app
+added:mulit device login supported and Merge Time
+update:match xengine v8.15
+modify:login to modify number of time for time serial type
+modify:does not allow http hook for admin user
+modify:the management interface does not limit single login now
+modify:refator code for session module
+modify:function switch supported multi login
+delete:http login for normal user
+================================================================
 XEngine_Authorize V3.7.0.1001
 
 添加:登录支持动态验证码功能

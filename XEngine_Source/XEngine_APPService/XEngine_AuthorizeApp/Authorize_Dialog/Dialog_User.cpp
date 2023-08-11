@@ -55,12 +55,13 @@ BOOL CDialog_User::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	m_ListCtrlClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
 	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
-	m_ListCtrlClient.InsertColumn(2, _T("级别"), LVCFMT_LEFT, 70);
-	m_ListCtrlClient.InsertColumn(3, _T("在线时间(分钟)"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(4, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
-	m_ListCtrlClient.InsertColumn(5, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(6, _T("设备类型"), LVCFMT_LEFT, 60);
-	m_ListCtrlClient.InsertColumn(7, _T("是否在线"), LVCFMT_LEFT, 60);
+	m_ListCtrlClient.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 100);
+	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 70);
+	m_ListCtrlClient.InsertColumn(4, _T("在线时间(分钟)"), LVCFMT_LEFT, 100);
+	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
+	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 60);
+	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText("1");
@@ -164,7 +165,11 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.InsertItem(i, _T(""));
 		m_ListCtrlClient.SetItemText(i, 0, tszIndex);
 		m_ListCtrlClient.SetItemText(i, 1, st_JsonObject["tszUserName"].asCString());
-		m_ListCtrlClient.SetItemText(i, 2, lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]);
+		if (!st_JsonArray["tszClientAddr"].isNull())
+		{
+			m_ListCtrlClient.SetItemText(i, 2, st_JsonArray["tszClientAddr"].asCString());
+		}
+		m_ListCtrlClient.SetItemText(i, 3, lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]);
 
 		if (1 == st_JsonObject["nUserState"].asInt())
 		{
@@ -173,12 +178,12 @@ void CDialog_User::OnBnClickedButton1()
 
 			__int64x nTime = st_JsonArray["nOnlineTime"].asUInt64();
 			_xstprintf(tszTimeStr, _T("%lld"), nTime);
-			m_ListCtrlClient.SetItemText(i, 3, tszTimeStr);
+			m_ListCtrlClient.SetItemText(i, 4, tszTimeStr);
 		}
-		m_ListCtrlClient.SetItemText(i, 4, st_JsonArray["tszLeftTime"].asCString());
-		m_ListCtrlClient.SetItemText(i, 5, lpszXSerialType[st_JsonArray["enSerialType"].asInt()]);
-		m_ListCtrlClient.SetItemText(i, 6, lpszXDevType[st_JsonArray["enDeviceType"].asInt()]);
-		m_ListCtrlClient.SetItemText(i, 7, lpszStuType[st_JsonObject["nUserState"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 5, st_JsonArray["tszLeftTime"].asCString());
+		m_ListCtrlClient.SetItemText(i, 6, lpszXSerialType[st_JsonArray["enSerialType"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 7, lpszXDevType[st_JsonArray["enDeviceType"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 8, lpszStuType[st_JsonObject["nUserState"].asInt()]);
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	UpdateWindow();

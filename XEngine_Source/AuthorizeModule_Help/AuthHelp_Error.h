@@ -35,3 +35,7 @@
 #define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_PARAMENT 0x0050021            //参数错误
 #define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_NOTFOUND 0x0050022            //没有找到
 #define ERROR_AUTHORIZE_MODULE_HELP_DYNAMIC_NOTMATCH 0x0050023            //动态码不匹配
+/************************************************************************/
+/*                     多端登录                                         */
+/************************************************************************/
+#define ERROR_AUTHORIZE_MODULE_HELP_MULTI_NOTSUPPORT 0x0050030            //不支持

@@ -7,5 +7,6 @@
     "bSwitchTime":true,
     "bSwitchCDKey":true,
     "bSwitchNotice":true,
-    "bSwitchDCode":false
+    "bSwitchDCode":false,
+    "bSwitchMulti":false
 }

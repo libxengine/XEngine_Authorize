@@ -8,6 +8,8 @@ EXPORTS
 	AuthHelp_DynamicCode_Create
 	AuthHelp_DynamicCode_Get
 
+	AuthHelp_MultiLogin_GetRange
+
 	AuthHelp_ClipBoard_Set
 	AuthHelp_ClipBoard_Get
 	AuthHelp_ClipBoard_Clear

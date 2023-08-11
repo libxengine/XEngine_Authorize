@@ -116,22 +116,28 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XVerification.nTryTime = st_JsonXVerification["nTryTime"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryMode = st_JsonXVerification["nTryMode"].asInt();
 	//登录配置
-	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
+	if (st_JsonRoot["XLogin"].empty() || (6 != st_JsonRoot["XLogin"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
 		return false;
 	}
 	Json::Value st_JsonXLogin = st_JsonRoot["XLogin"];
-	pSt_ServerConfig->st_XLogin.bMultiLogin = st_JsonXLogin["bMultiLogin"].asBool();
 	pSt_ServerConfig->st_XLogin.bHTTPAuth = st_JsonXLogin["bHTTPAuth"].asBool();
 	pSt_ServerConfig->st_XLogin.bPassAuth = st_JsonXLogin["bPassAuth"].asBool();
 	pSt_ServerConfig->st_XLogin.nHTTPAuthTime = st_JsonXLogin["nHTTPAuthTime"].asInt();
+	pSt_ServerConfig->st_XLogin.nMultiMode = st_JsonXLogin["nMultiMode"].asInt();
 
 	Json::Value st_JsonXLoginUrl = st_JsonXLogin["st_PassUrl"];
 	_tcsxcpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogin, st_JsonXLoginUrl["tszPassLogin"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassLogout, st_JsonXLoginUrl["tszPassLogout"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XLogin.st_PassUrl.tszPassTimeout, st_JsonXLoginUrl["tszPassTimeout"].asCString());
+
+	Json::Value st_JsonMulitLogin = st_JsonXLogin["st_MulitLogin"];
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bCustom = st_JsonMulitLogin["bCustom"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bDay = st_JsonMulitLogin["bDay"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bMinute = st_JsonMulitLogin["bMinute"].asBool();
+	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
@@ -252,5 +258,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchCDKey = st_JsonRoot["bSwitchCDKey"].asBool();
 	pSt_ServerConfig->bSwitchNotice = st_JsonRoot["bSwitchNotice"].asBool();
 	pSt_ServerConfig->bSwitchDCode = st_JsonRoot["bSwitchDCode"].asBool();
+	pSt_ServerConfig->bSwitchMulti = st_JsonRoot["bSwitchMulti"].asBool();
 	return true;
 }

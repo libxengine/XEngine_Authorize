@@ -16,7 +16,7 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		int nListCount = 0;
-		RFCCOMPONENTS_WSPKT_CLIENT** ppSt_ListClient;
+		XENGINE_MANAGEPOOL_TASKEVENT** ppSt_ListClient;
 		RfcComponents_WSPacket_GetPoolEx(xhWSPacket, nThreadPos, &ppSt_ListClient, &nListCount);
 		for (int i = 0; i < nListCount; i++)
 		{

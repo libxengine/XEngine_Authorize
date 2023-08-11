@@ -6,6 +6,7 @@ EXPORTS
 	Protocol_Packet_HDRComm
 	Protocol_Packet_HttpComm
 	Protocol_Packet_HttpUserPass
+	Protocol_Packet_UserTime
 	Protocol_Packet_HttpUserTime
 	Protocol_Packet_HttpClientInfo
 	Protocol_Packet_HttpClientList

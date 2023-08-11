@@ -26,7 +26,7 @@ V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程�
 ## 软件特性
 基于XEngine开发并实现的一套简洁高性能跨平台网络验证授权服务器  
 软件特性:  
-1. 支持HTTP,TCP,WEBSOCKET协议
+1. 支持TCP,WEBSOCKET协议
 2. 支持加密通信
 3. 支持用户管理
 4. 支持序列卡管理
@@ -44,11 +44,12 @@ V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程�
 16. 本地cdkey生成验证支持
 17. 支持功公告管理
 18. 支持动态验证码登录
+19. 支持多端登录和合并用时
 
 ## 安装教程
 
 #### XEngine环境
-必须安装XEngine,版本需要V7.46或者以上版本,安装XEngine可以参考其Readme文档  
+必须安装XEngine,版本需要V8.15或者以上版本,安装XEngine可以参考其Readme文档  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
 
@@ -64,11 +65,11 @@ macos执行:./XEngine_LINEnv.sh -i 3
 XEngine_AuthorizeApp为PC端管理工具
 
 #### Linux
-Linux使用Makefile编译,UBUNTU20.04 x64或者CENTOS8 x64  
+Linux使用Makefile编译,UBUNTU22.04 x64或者RockyLinux 9 x64  
 在控制台运行,使用XEngine_AuthorizeService
 
 #### Macos
-使用makefile编译,控制台运行,需要mac 12以及以上版本  
+使用makefile编译,控制台运行,需要mac 13以及以上版本  
 在控制台运行,使用XEngine_AuthorizeService
 
 ##### 编译命令
@@ -132,9 +133,9 @@ V3版本为全新版本,为了适应过多环境要求开发
 
 ## 开发计划 
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
+天数卡按照使用天数计费,不使用不计费  
+多端登录注册类型开关  
 短信登录,扫码登录  
-支持多端登录  
-多端登录合并用时  
 生成会话TOKEN分布式鉴权  
 token 自动续期  
 密码加密  

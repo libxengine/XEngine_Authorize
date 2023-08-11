@@ -41,16 +41,24 @@ typedef struct
 	}st_XVerification;
 	struct 
 	{
-		bool bMultiLogin;                                   //是否允许多端登录
 		bool bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
 		bool bPassAuth;                                     //是否启用三方认证
 		int nHTTPAuthTime;                                  //HTTP验证超时时间,单位秒
+		int nMultiMode;                                     //多端登录模式,0按照平台(PC,WEB,PAD,PHONE 4种),1按照类型(每种都可以)
 		struct  
 		{
 			XCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
 			XCHAR tszPassLogout[MAX_PATH];                  //三方认证登出通知
 			XCHAR tszPassTimeout[MAX_PATH];                 //三方认证超时通知
 		}st_PassUrl;
+		//多端登录支持的计时方式
+		struct  
+		{
+			bool bMinute;
+			bool bDay;
+			bool bTime;
+			bool bCustom;                                   
+		}st_MulitLogin;
 	}st_XLogin;
 	struct  
 	{
@@ -85,6 +93,7 @@ typedef struct
 	bool bSwitchCDKey;                                      //是否允许本地CDKEY创建使用
 	bool bSwitchNotice;                                     //是否开启公告系统
 	bool bSwitchDCode;                                      //动态验证码
+	bool bSwitchMulti;                                      //多端登录开关
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

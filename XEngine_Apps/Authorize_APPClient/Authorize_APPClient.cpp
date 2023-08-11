@@ -32,7 +32,7 @@ using namespace std;
 //Linux::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp,--disable-new-dtags
 //Macos::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp
 
-#define _DYNAMIC_CODE
+//#define _DYNAMIC_CODE
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
@@ -376,6 +376,8 @@ int main()
 	AuthClient_Notice();
 	AuthClient_GetPass();
 	AuthClient_GetTime();
+
+	std::this_thread::sleep_for(std::chrono::seconds(60));
 	AuthClient_Delete();
 	AuthClient_Try();
 

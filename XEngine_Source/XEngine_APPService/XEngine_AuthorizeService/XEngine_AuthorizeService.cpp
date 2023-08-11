@@ -22,30 +22,6 @@ void ServiceApp_Stop(int signo)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("网络验证服务器退出..."));
 		bIsRun = false;
 
-		int nListCount = 0;
-		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount);
-		for (int i = 0; i < nListCount; i++)
-		{
-			AUTHREG_PROTOCOL_TIME st_AuthTime;
-			AUTHSESSION_NETCLIENT st_NETClient;
-
-			memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-			memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
-
-			if (Session_Authorize_GetClientForUser(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName, &st_NETClient))
-			{
-				st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
-				st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
-				st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-				_tcsxcpy(st_AuthTime.tszUserName, ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
-				_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
-				_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
-
-				Database_SQLite_UserLeave(&st_AuthTime);
-			}
-			Session_Authorize_CloseClient(ppSt_ListClient[i]->st_UserTable.st_UserInfo.tszUserName);
-		}
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
@@ -275,7 +251,7 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nHTTPThread);
 	}
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,密码验证:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_AuthConfig.st_XCrypto.bEnable);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,密码验证:%d,多端登录:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_AuthConfig.st_XCrypto.bEnable, st_FunSwitch.bSwitchMulti);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XNumberStr(), BaseLib_OperatorVer_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)

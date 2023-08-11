@@ -15,10 +15,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 
 	if (0 == _tcsxnicmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
 	{
-		XCHAR tszClientAddr[128];
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-
-		memset(tszClientAddr, '\0', sizeof(tszClientAddr));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
 
 		if (!st_FunSwitch.bSwitchDelete)
@@ -29,13 +26,20 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+		//关闭链接
+		int nListCount = 0;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
+		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName);
+		for (int i = 0; i < nListCount; i++)
+		{
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 
-		Session_Authorize_GetAddrForUser(st_UserInfo.tszUserName, tszClientAddr);
-		XEngine_CloseClient(tszClientAddr);
 		Database_SQLite_UserDelete(st_UserInfo.tszUserName);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功"), lpszClientAddr, st_UserInfo.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIRegister, _tcsxlen(lpszAPIName)))
 	{
@@ -161,32 +165,24 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITime, _tcsxlen(lpszAPIName)))
 	{
-		AUTHREG_PROTOCOL_TIME st_AuthTime;
-		AUTHSESSION_NETCLIENT st_NETClient;
+		int nListCount = 0;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
 
-		memset(&st_AuthTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-		memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 
 		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		if (!Session_Authorize_GetClientForUser(st_UserAuth.tszUserName, &st_NETClient))
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserAuth.tszUserName))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_AuthTime.tszUserName, Session_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_UserAuth.tszUserName, Session_GetLastError());
 			return false;
 		}
-		st_AuthTime.nTimeLeft = st_NETClient.nLeftTime;
-		st_AuthTime.nTimeONLine = st_NETClient.nOnlineTime;
-		st_AuthTime.enSerialType = st_NETClient.st_UserTable.enSerialType;
-		_tcsxcpy(st_AuthTime.tszUserName, st_UserAuth.tszUserName);
-		_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
-		_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
-
-		Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
+		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，类型：%d，在线时间：%lld，剩余时间：%lld"), lpszClientAddr, st_AuthTime.tszUserName, st_AuthTime.enSerialType, st_AuthTime.nTimeONLine, st_AuthTime.nTimeLeft);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserAuth.tszUserName, nListCount);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITry, _tcsxlen(lpszAPIName)))
 	{

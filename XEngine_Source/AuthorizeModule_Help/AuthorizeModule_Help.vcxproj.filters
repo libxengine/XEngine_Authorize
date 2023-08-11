@@ -31,6 +31,12 @@
     <Filter Include="源文件\AuthHelp_DynamicCode">
       <UniqueIdentifier>{4df65f23-98dc-4355-8843-fbe5041766c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\AuthHelp_MultiLogin">
+      <UniqueIdentifier>{61a1ebc3-5193-4c3e-a5b6-fe076b84c758}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthHelp_MultiLogin">
+      <UniqueIdentifier>{92e4cc9f-02d7-4e6d-92a1-86e433e38fd2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -54,6 +60,9 @@
     <ClInclude Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.h">
       <Filter>头文件\AuthHelp_DynamicCode</Filter>
     </ClInclude>
+    <ClInclude Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.h">
+      <Filter>头文件\AuthHelp_MultiLogin</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -70,6 +79,9 @@
     </ClCompile>
     <ClCompile Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.cpp">
       <Filter>源文件\AuthHelp_DynamicCode</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.cpp">
+      <Filter>源文件\AuthHelp_MultiLogin</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
