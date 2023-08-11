@@ -26,7 +26,7 @@ V2 Version can be update to V3,V3 DB Compatible with V2 Databse
 ## Software feature
 A simple and high-performance cross-platform network authentication and authorization server developed and implemented based on XEngine  
 feature list:  
-1. support tcp,http.websocket protocols
+1. support http.websocket protocols
 2. Support Encrypto communication
 3. Support User Management
 4. Support Serial Management
@@ -44,11 +44,12 @@ feature list:
 16. local cdkey support
 17. announecement management
 18. support dynamic verifaction code
+19. support mulit login and merge time
 
 ## install
 
 #### XEngine Evn
-you must install XEngine,need V7.46 or above,install XEngine can be refer to xengine Readme docment  
+you must install XEngine,need V8.15 or above,install XEngine can be refer to xengine Readme docment  
 GITEE:https://gitee.com/xyry/libxengine  
 GITHUB:https://github.com/libxengine/xengine
 
@@ -64,11 +65,11 @@ Just Run it,use XEngine_AuthorizeService
 XEngine_AuthorizeApp is pc management tools
 
 #### Linux
-use makefile compile,UBUNTU20.04 x64 or CENTOS8 x64  
+use makefile compile,UBUNTU22.04 x64 or RockyLinux 9 x64  
 Run it on the terminal,use XEngine_AuthorizeService
 
 #### Macos
-use makefile compile,mac 12 and above  
+use makefile compile,mac 13 and above  
 Run it on the terminal,use XEngine_AuthorizeService
 
 ##### compile command
