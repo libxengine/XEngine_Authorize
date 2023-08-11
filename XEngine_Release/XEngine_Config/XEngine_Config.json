@@ -18,18 +18,24 @@
         "nDynamicTimeout":30,
         "nVerTime":5,
         "nVerMode":1,
-        "nTryTime":5,
+        "nTryTime":30,
         "nTryMode":1
     },
     "XLogin":{
-        "bMultiLogin":true,
         "bHTTPAuth":false,
         "bPassAuth":false,
         "nHTTPAuthTime":10,
+        "nMultiMode":0,
         "st_PassUrl":{
             "tszPassLogin":"http://127.0.0.1:5303/auth/pass/login",
             "tszPassLogout":"http://127.0.0.1:5303/auth/pass/logout",
             "tszPassTimeout":"http://127.0.0.1:5303/auth/pass/timeout"
+        },
+        "st_MulitLogin":{
+            "bMinute":true,
+            "bDay":true,
+            "bTime":true,
+            "bCustom":true
         }
     },
     "XCrypto":{
@@ -46,6 +52,7 @@
         "LogLeave":32
     },
     "XVer":[
+        "V3.8.0.1001 Build20230811",
         "V3.7.0.1001 Build20230421",
         "V3.6.0.1001 Build20230224",
         "V3.5.0.1001 Build20230203",
