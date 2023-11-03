@@ -173,13 +173,17 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 						break;
 					}
 				}
-				else
+				else if (1 == st_AuthConfig.st_XLogin.nMultiMode)
 				{
 					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
 					{
 						bLogin = true;
 						break;
 					}
+				}
+				else
+				{
+
 				}
 			}
 			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
