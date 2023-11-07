@@ -53,9 +53,9 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 
 		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime);
 		//解析类型
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == enSerialType)
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == enSerialType)
 		{
-			st_AuthTimer.wMinute = _ttxoi(tszHasTime);
+			st_AuthTimer.wSecond = _ttxoi(tszHasTime);
 		}
 		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enSerialType)
 		{

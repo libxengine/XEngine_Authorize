@@ -400,18 +400,18 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
                 //获取现在的系统时间
 				BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                 
 				//用户登录了多少分钟
-				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_MINUTE);
+				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
                 nTimeCount += nOnlineSpan;
 				//登陆成功的。我们要处理他过期
 				switch (stl_ListIterator->st_UserTable.enSerialType)
 				{
-				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
+				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
 				{
 					//分钟处理
 					XENGINE_LIBTIMER st_TimeCal;
 					memset(&st_TimeCal, '\0', sizeof(XENGINE_LIBTIMER));
 
-					st_TimeCal.wMinute = (int)stl_ListIterator->nLeftTime;
+					st_TimeCal.wSecond = (int)stl_ListIterator->nLeftTime;
 					BaseLib_OperatorTimeSpan_CalForStu(&stl_ListIterator->st_LibTimer, &st_TimeCal);
 					BaseLib_OperatorTime_TimeToStr(stl_ListIterator->tszLeftTime, NULL, true, &st_TimeCal);
 
@@ -480,7 +480,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 			//处理多端登录情况
 			for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
 			{
-				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == stl_ListIterator->st_UserTable.enSerialType)
+				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == stl_ListIterator->st_UserTable.enSerialType)
 				{
 					for (auto stl_ListNotifyIterator = stl_ListNotify.begin(); stl_ListNotifyIterator != stl_ListNotify.end(); stl_ListNotifyIterator++)
 					{
@@ -505,7 +505,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
         }
         //清理元素
         stl_ListNotify.clear();
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     return 0;
 }

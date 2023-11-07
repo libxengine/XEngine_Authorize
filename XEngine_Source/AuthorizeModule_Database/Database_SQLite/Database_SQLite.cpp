@@ -272,7 +272,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
     //分析插入方式
     switch (st_SerialTable.enSerialType)
     {
-    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
+    case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
         if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
@@ -338,7 +338,7 @@ bool CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '0' WHERE UserName = '%s'"), pSt_TimeProtocol->tszUserName);
         }
     }
-    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == pSt_TimeProtocol->enSerialType)
+    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == pSt_TimeProtocol->enSerialType)
     {
         //分钟卡必须要有在线时间才能计算
         if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -523,9 +523,9 @@ bool CDatabase_SQLite::Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
     {
         return false;
     }
-    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == enAuthSerialType)
+    if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == enAuthSerialType)
     {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wMinute, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType);
     }
     else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enAuthSerialType)
     {
@@ -1645,7 +1645,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
         //处理卡类型
         switch (en_AuthSerialType)
         {
-        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
         {
             //如果是分钟卡
             //如果当前的充值卡类型不匹配，那么他以前的充值内容全部都会被删除！
@@ -1704,7 +1704,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
     {
         switch (en_AuthSerialType)
         {
-        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
+        case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
         {
             int nCardTime = _ttxoi(lpszCardTime);
             nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
