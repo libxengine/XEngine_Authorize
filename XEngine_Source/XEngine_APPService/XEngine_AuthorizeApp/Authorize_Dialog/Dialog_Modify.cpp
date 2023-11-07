@@ -59,7 +59,7 @@ BOOL CDialog_Modify::OnInitDialog()
 	{
 		m_ComboSerial.InsertString(i, lpszXSerialType[i]);
 	}
-	for (int i = 0; i < 7; i++)
+	for (int i = 0; i < 21; i++)
 	{
 		m_ComboLeave.InsertString(i, lpszXLevelType[i]);
 	}

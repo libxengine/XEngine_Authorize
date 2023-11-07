@@ -68,12 +68,15 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		//填充写入数据
-		_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
-		st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
+		{
+			_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
+			st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
+		}
 		//禁止权限0和1注册
 		if (st_UserTable.st_UserInfo.nUserLevel <= 1)
 		{
-			st_UserTable.st_UserInfo.nUserLevel = 5;
+			st_UserTable.st_UserInfo.nUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 		}
 		if (_tcsxlen(st_UserTable.st_UserInfo.tszUserName) <= 0 || _tcsxlen(st_UserTable.st_UserInfo.tszUserPass) <= 0)
 		{
