@@ -423,12 +423,6 @@ XLONG CDialog_User::Dialog_User_Thread(XPVOID lParam)
 void CDialog_User::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION pSt_Sition = m_ListCtrlClient.GetFirstSelectedItemPosition();
-	int nItemCount = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
-	if (nItemCount >= 0)
-	{
-		m_ListCtrlClient.SetItemState(nItemCount, 0, -1);
-	}
 	CDialog_Modify m_DlgModify;
 	m_DlgModify.DoModal();
 }
