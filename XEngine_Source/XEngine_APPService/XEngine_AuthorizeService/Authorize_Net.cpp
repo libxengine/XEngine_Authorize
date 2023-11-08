@@ -105,7 +105,6 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr)
 			APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		Database_SQLite_UserLeave(&st_AuthTime);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
 	}
 	else

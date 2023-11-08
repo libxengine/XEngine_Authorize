@@ -389,14 +389,14 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
         for (auto stl_MapIterator = pClass_This->stl_MapNetClient.begin(); stl_MapIterator != pClass_This->stl_MapNetClient.end(); stl_MapIterator++)
         {
             __int64x nTimeCount = 0;
+            AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
+            
             for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
             {
                 __int64x nOnlineSpan = 0;                                        //在线时间
 				XENGINE_LIBTIMER st_LibTimer;
-				AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
-
 				memset(&st_LibTimer, '\0', sizeof(XENGINE_LIBTIMER));
-				memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+                memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
                 //获取现在的系统时间
 				BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                 
 				//用户登录了多少分钟
@@ -475,23 +475,13 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					break;
                 }
 				}
-                stl_ListNotify.push_back(st_ProtocolTimer);
             }
-			//处理多端登录情况
-			for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
-			{
-				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == stl_ListIterator->st_UserTable.enSerialType)
-				{
-					for (auto stl_ListNotifyIterator = stl_ListNotify.begin(); stl_ListNotifyIterator != stl_ListNotify.end(); stl_ListNotifyIterator++)
-					{
-                        if (0 == _tcsxnicmp(stl_ListNotifyIterator->tszUserAddr, stl_ListIterator->tszClientAddr, _tcsxlen(stl_ListNotifyIterator->tszUserAddr)))
-                        {
-                            stl_ListNotifyIterator->nTimeLeft -= nTimeCount;
-                            break;
-                        }
-					}
-				}
-			}
+            //处理多端登录情况
+            if (nTimeCount > 0)
+            {
+                st_ProtocolTimer.nTimeLeft -= nTimeCount;
+            }
+            stl_ListNotify.push_back(st_ProtocolTimer);
         }
         pClass_This->st_Locker.unlock_shared();
         //返回数据
