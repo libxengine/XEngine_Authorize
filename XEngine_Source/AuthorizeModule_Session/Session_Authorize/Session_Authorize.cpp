@@ -443,9 +443,14 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
                     break;
 				}
+				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+				{
+					//天数卡处理,天数卡需要特殊处理
+					break;
+				}
 				default:
                 {
-					//天卡，自定义 都是用相同的函数处理
+					//自定义
 					__int64x nLeftTime = 0;                                          //剩余时间
 					XENGINE_LIBTIMER st_TimeLeft;
 					memset(&st_TimeLeft, '\0', sizeof(XENGINE_LIBTIMER));
@@ -454,8 +459,8 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					{
 						break;
 					}
-					//剩余天数,通过分钟来处理
-					BaseLib_OperatorTimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_MINUTE);
+					//剩余天数,通过秒钟来处理
+					BaseLib_OperatorTimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 					//获取过期时间
 					stl_ListIterator->nLeftTime = nLeftTime;
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
