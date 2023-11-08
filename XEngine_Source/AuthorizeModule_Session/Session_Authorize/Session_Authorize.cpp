@@ -407,14 +407,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				{
 				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
 				{
-					//分钟处理
-					XENGINE_LIBTIMER st_TimeCal;
-					memset(&st_TimeCal, '\0', sizeof(XENGINE_LIBTIMER));
-
-					st_TimeCal.wSecond = (int)stl_ListIterator->nLeftTime;
-					BaseLib_OperatorTimeSpan_CalForStu(&stl_ListIterator->st_LibTimer, &st_TimeCal);
-					BaseLib_OperatorTime_TimeToStr(stl_ListIterator->tszLeftTime, NULL, true, &st_TimeCal);
-
+					//秒钟处理
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
 					//赋值给回调函数
 					st_ProtocolTimer.nTimeONLine = nOnlineSpan;
@@ -485,6 +478,10 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
             if (nTimeCount > 0)
             {
                 st_ProtocolTimer.nTimeLeft -= nTimeCount;
+                for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
+                {
+                    _xstprintf(stl_ListIterator->tszLeftTime, _X("%lld"), st_ProtocolTimer.nTimeLeft);
+                }
             }
             stl_ListNotify.push_back(st_ProtocolTimer);
         }
