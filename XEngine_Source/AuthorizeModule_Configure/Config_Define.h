@@ -54,7 +54,7 @@ typedef struct
 		//多端登录支持的计时方式
 		struct  
 		{
-			bool bMinute;
+			bool bSecond;
 			bool bDay;
 			bool bTime;
 			bool bCustom;                                   
