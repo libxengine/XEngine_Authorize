@@ -377,7 +377,7 @@ int main()
 	AuthClient_GetPass();
 	AuthClient_GetTime();
 
-	std::this_thread::sleep_for(std::chrono::seconds(60));
+	std::this_thread::sleep_for(std::chrono::seconds(600));
 	AuthClient_Delete();
 	AuthClient_Try();
 
