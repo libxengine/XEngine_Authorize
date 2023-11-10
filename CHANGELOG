@@ -1,3 +1,31 @@
+XEngine_Authorize V3.9.0.1001
+
+优化:管理程序的用户列表刷新代码
+优化:会话模块的秒钟时间统计方法
+修改:多端登录可以不限制登录设备类型了
+修改:分钟时间修改为秒钟,时间更加精准
+修改:管理程序展示所有用户级别了
+修改:当启动失败后服务需要按下按钮关闭
+修改:自定义卡和天数卡背分开处理了
+修改:秒钟时间类型现在展示的剩余时间了
+修改:加密传输的启动日志
+修改:多端登录的类型判断支持
+修复:注册协议设置用户级别和时间错误
+删除:管理程序添加用户的时候没用的代码
+
+improved:user list flush for app
+improved:time second count way for sessoion module
+modify:does not limit login type for mutil login
+modify:minute time modified to second time,Timing is more accurate
+modify:show all user level for management app
+modify:button push key for close service when service start is failed
+modify:custom and day type handle separately
+modify:second time type show left  time and not left date
+modify:crypto transport start log
+modify:Mulit Login type handle is supported
+fixed:register protocol set user level and time is incorrent
+delete:unused when add user for manage app
+================================================================
 XEngine_Authorize V3.8.0.1001
 
 添加:管理端用户地址列表支持
