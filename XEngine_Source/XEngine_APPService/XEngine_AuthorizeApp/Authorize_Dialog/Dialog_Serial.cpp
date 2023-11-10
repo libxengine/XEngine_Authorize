@@ -60,7 +60,7 @@ BOOL CDialog_Serial::OnInitDialog()
 	m_ListSerial.InsertColumn(5, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListSerial.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		m_ComboSerialType.InsertString(i, lpszXSerialType[i]);
 	}
@@ -182,6 +182,11 @@ void CDialog_Serial::OnBnClickedButton1()
 void CDialog_Serial::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (2 == m_ComboSerialType.GetCurSel())
+	{
+		AfxMessageBox(_T("生成失败,天数卡暂时不支持"));
+		return;
+	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;

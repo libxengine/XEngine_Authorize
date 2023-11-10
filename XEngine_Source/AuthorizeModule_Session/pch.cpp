@@ -70,9 +70,9 @@ extern "C" bool Session_Token_Destroy()
 {
 	return m_SessionToken.Session_Token_Destroy();
 }
-extern "C" bool Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE * pSt_UserTable, int nTimeout)
+extern "C" bool Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE * pSt_UserTable)
 {
-	return m_SessionToken.Session_Token_Insert(xhToken, pSt_UserTable, nTimeout);
+	return m_SessionToken.Session_Token_Insert(xhToken, pSt_UserTable);
 }
 extern "C" bool Session_Token_Delete(XNETHANDLE xhToken)
 {

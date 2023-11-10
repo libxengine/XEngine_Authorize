@@ -43,7 +43,6 @@ typedef struct
 	{
 		bool bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
 		bool bPassAuth;                                     //是否启用三方认证
-		int nHTTPAuthTime;                                  //HTTP验证超时时间,单位秒
 		int nMultiMode;                                     //多端登录模式,0按照平台(PC,WEB,PAD,PHONE 4种),1按照类型(每种都可以)
 		struct  
 		{

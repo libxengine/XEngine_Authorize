@@ -1,3 +1,15 @@
+XEngine_Authorize V3.9.1.1001
+
+修改:管理程序禁用了天数卡生成选项
+修正:删除用户崩溃的问题
+修正:管理程序无法生成自定义序列号的问题
+删除:http验证超时时间配置
+
+modify:management disable to day serial generate
+fixed:crashed when delete user
+fixed:not custom serial for management app
+delete:http auth time in configure
+================================================================
 XEngine_Authorize V3.9.0.1001
 
 优化:管理程序的用户列表刷新代码
