@@ -60,7 +60,7 @@ BOOL CDialog_Serial::OnInitDialog()
 	m_ListSerial.InsertColumn(5, _T("创建日期"), LVCFMT_LEFT, 120);
 	m_ListSerial.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 5; i++)
 	{
 		m_ComboSerialType.InsertString(i, lpszXSerialType[i]);
 	}
