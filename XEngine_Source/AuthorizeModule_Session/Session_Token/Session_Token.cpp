@@ -107,17 +107,12 @@ bool CSession_Token::Session_Token_Destroy()
   类型：数据结构指针
   可空：N
   意思：用户信息表
- 参数.三：nTimeout
-  In/Out：In
-  类型：整数型
-  可空：Y
-  意思：大于0单独指定TOKEN超时时间
 返回值
   类型：逻辑型
   意思：是否允许登陆
 备注：
 *********************************************************************/
-bool CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable, int nTimeout /* = 0 */)
+bool CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable)
 {
     Session_IsErrorOccur = false;
 
@@ -130,7 +125,6 @@ bool CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
     AUTHSESSION_TOKENCLIENT st_TokenClient;
     memset(&st_TokenClient,'\0',sizeof(AUTHSESSION_TOKENCLIENT));
 
-    st_TokenClient.nOnlineTime = nTimeout;
     BaseLib_OperatorTime_GetSysTime(&st_TokenClient.st_LibTimer);
     memcpy(&st_TokenClient.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
 

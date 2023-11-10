@@ -102,7 +102,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		{
 			BaseLib_OperatorHandle_Create(&xhToken);
 		}
-		Session_Token_Insert(xhToken, &st_UserTable, st_UserTable.st_UserInfo.nUserLevel > 0 ? st_AuthConfig.st_XLogin.nHTTPAuthTime : 0);
+		Session_Token_Insert(xhToken, &st_UserTable);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录获得TOKEN:%lld 成功,用户级别:%d"), lpszClientAddr, xhToken, st_UserTable.st_UserInfo.nUserLevel);
