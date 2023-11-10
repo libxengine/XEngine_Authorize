@@ -389,32 +389,25 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
         for (auto stl_MapIterator = pClass_This->stl_MapNetClient.begin(); stl_MapIterator != pClass_This->stl_MapNetClient.end(); stl_MapIterator++)
         {
             __int64x nTimeCount = 0;
+            AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
+            
             for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
             {
                 __int64x nOnlineSpan = 0;                                        //在线时间
 				XENGINE_LIBTIMER st_LibTimer;
-				AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
-
 				memset(&st_LibTimer, '\0', sizeof(XENGINE_LIBTIMER));
-				memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
+                memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
                 //获取现在的系统时间
 				BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                 
 				//用户登录了多少分钟
-				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_MINUTE);
+				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
                 nTimeCount += nOnlineSpan;
 				//登陆成功的。我们要处理他过期
 				switch (stl_ListIterator->st_UserTable.enSerialType)
 				{
-				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE:
+				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
 				{
-					//分钟处理
-					XENGINE_LIBTIMER st_TimeCal;
-					memset(&st_TimeCal, '\0', sizeof(XENGINE_LIBTIMER));
-
-					st_TimeCal.wMinute = (int)stl_ListIterator->nLeftTime;
-					BaseLib_OperatorTimeSpan_CalForStu(&stl_ListIterator->st_LibTimer, &st_TimeCal);
-					BaseLib_OperatorTime_TimeToStr(stl_ListIterator->tszLeftTime, NULL, true, &st_TimeCal);
-
+					//秒钟处理
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
 					//赋值给回调函数
 					st_ProtocolTimer.nTimeONLine = nOnlineSpan;
@@ -443,9 +436,14 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
                     break;
 				}
+				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+				{
+					//天数卡处理,天数卡需要特殊处理
+					break;
+				}
 				default:
                 {
-					//天卡，自定义 都是用相同的函数处理
+					//自定义
 					__int64x nLeftTime = 0;                                          //剩余时间
 					XENGINE_LIBTIMER st_TimeLeft;
 					memset(&st_TimeLeft, '\0', sizeof(XENGINE_LIBTIMER));
@@ -454,8 +452,8 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					{
 						break;
 					}
-					//剩余天数,通过分钟来处理
-					BaseLib_OperatorTimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_MINUTE);
+					//剩余天数,通过秒钟来处理
+					BaseLib_OperatorTimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 					//获取过期时间
 					stl_ListIterator->nLeftTime = nLeftTime;
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
@@ -475,23 +473,17 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					break;
                 }
 				}
-                stl_ListNotify.push_back(st_ProtocolTimer);
             }
-			//处理多端登录情况
-			for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
-			{
-				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_MINUTE == stl_ListIterator->st_UserTable.enSerialType)
-				{
-					for (auto stl_ListNotifyIterator = stl_ListNotify.begin(); stl_ListNotifyIterator != stl_ListNotify.end(); stl_ListNotifyIterator++)
-					{
-                        if (0 == _tcsxnicmp(stl_ListNotifyIterator->tszUserAddr, stl_ListIterator->tszClientAddr, _tcsxlen(stl_ListNotifyIterator->tszUserAddr)))
-                        {
-                            stl_ListNotifyIterator->nTimeLeft -= nTimeCount;
-                            break;
-                        }
-					}
-				}
-			}
+            //处理多端登录情况
+            if (nTimeCount > 0)
+            {
+                st_ProtocolTimer.nTimeLeft -= nTimeCount;
+                for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
+                {
+                    _xstprintf(stl_ListIterator->tszLeftTime, _X("%lld"), st_ProtocolTimer.nTimeLeft);
+                }
+            }
+            stl_ListNotify.push_back(st_ProtocolTimer);
         }
         pClass_This->st_Locker.unlock_shared();
         //返回数据
@@ -505,7 +497,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
         }
         //清理元素
         stl_ListNotify.clear();
-        std::this_thread::sleep_for(std::chrono::seconds(5));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     return 0;
 }

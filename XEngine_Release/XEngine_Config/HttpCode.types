@@ -2,6 +2,12 @@
 100:HTTP/1.1 100 Continue
 101:HTTP/1.1 101 Switching Protocols
 102:HTTP/1.1 102 Processing
+103:HTTP/1.1 103 Early Hints
+110:HTTP/1.1 110 (obsoleted) Response is Stale
+111:HTTP/1.1 111 (obsoleted) Revalidation Failed
+112:HTTP/1.1 112 (obsoleted) Disconnected Operation
+113:HTTP/1.1 113 (obsoleted) Heuristic Expiration
+199:HTTP/1.1 199 (obsoleted) Miscellaneous Warning
 //CodeSuccess
 200:HTTP/1.1 200 OK
 201:HTTP/1.1 201 Created
@@ -10,18 +16,25 @@
 204:HTTP/1.1 204 No Content
 205:HTTP/1.1 205 Reset Content
 206:HTTP/1.1 206 Partial Content
+207:HTTP/1.1 207 Multi-Status
+208:HTTP/1.1 208 Already Reported
+214:HTTP/1.1 214 (obsoleted) Transformation Applied
+226:HTTP/1.1 226 IM Used
+299:HTTP/1.1 299 (obsoleted) Miscellaneous Persistent Warning
 //CodeRedirect
 300:HTTP/1.1 300 Multiple Choices
 301:HTTP/1.1 301 Moved Permanently
-302:HTTP/1.1 302 Move temporarily
+302:HTTP/1.1 302 Moved temporarily
 303:HTTP/1.1 303 See Other
 304:HTTP/1.1 304 Not Modified
 305:HTTP/1.1 305 Use Proxy
 306:HTTP/1.1 306 Switch Proxy
+307:HTTP/1.1 307 Temporary Redirect
+308:HTTP/1.1 308 Permanent Redirect
 //CodeRequestFail
 400:HTTP/1.1 400 Bad Request
-401:HTTP/1.1 401 Payment Required
-402:HTTP/1.1 402 Unauthorized
+401:HTTP/1.1 401 Unauthorized
+402:HTTP/1.1 402 Payment Required
 403:HTTP/1.1 403 Forbidden
 404:HTTP/1.1 404 Not Found
 405:HTTP/1.1 405 Method Not Allowed
@@ -37,14 +50,32 @@
 415:HTTP/1.1 415 Unsupported Media Type
 416:HTTP/1.1 416 Requested Range Not Satisfiable
 417:HTTP/1.1 417 Expectation Failed
+418:HTTP/1.1 418 I'm a teapot
+419:HTTP/1.1 419 (Unofficial) Page Expired
+420:HTTP/1.1 420 (Unofficial) Method Failure
 421:HTTP/1.1 421 too many connections
 422:HTTP/1.1 422 Unprocessable Entity
 423:HTTP/1.1 423 Locked
 424:HTTP/1.1 424 Failed Dependency
 425:HTTP/1.1 425 Unordered Collection
 426:HTTP/1.1 426 Upgrade Required
-449:HTTP/1.1 449 Retry With
-451:HTTP/1.1 451 Unavailable For Legal Reasons
+428:HTTP/1.1 428 Precondition Required
+429:HTTP/1.1 429 Too Many Requests
+430:HTTP/1.1 430 (Unofficial) Request Header Fields Too Large
+431:HTTP/1.1 431 Request Header Fields Too Large
+440:HTTP/1.1 440 (IIS) Login Time-out
+444:HTTP/1.1 444 (nginx) No Response
+449:HTTP/1.1 449 (IIS) Retry With
+450:HTTP/1.1 450 (Unofficial) Blocked by Windows Parental Controls
+451:HTTP/1.1 451 (IIS) Redirect
+460:HTTP/1.1 460 (AWS)
+463:HTTP/1.1 463 (AWS)
+494:HTTP/1.1 494 (nginx) Request header too large
+495:HTTP/1.1 495 (nginx) SSL Certificate Error
+496:HTTP/1.1 496 (nginx) SSL Certificate Required
+497:HTTP/1.1 497 (nginx) HTTP Request Sent to HTTPS Port
+498:HTTP/1.1 498 (Unofficial) Invalid Token
+499:HTTP/1.1 499 (nginx) Token Required
 //CodeServerFail
 500:HTTP/1.1 500 Internal Server Error
 501:HTTP/1.1 501 Not Implemented
@@ -54,8 +85,24 @@
 505:HTTP/1.1 505 HTTP Version Not Supported
 506:HTTP/1.1 506 Variant Also Negotiates
 507:HTTP/1.1 507 Insufficient Storage
-508:HTTP/1.1 509 Bandwidth Limit Exceeded
+508:HTTP/1.1 508 Loop Detected
+509:HTTP/1.1 509 (Unofficial) Bandwidth Limit Exceeded
+510:HTTP/1.1 510 Not Extended
+511:HTTP/1.1 511 Network Authentication Required
+520:HTTP/1.1 520 (Cloudflare) Web Server Returned an Unknown Error
+521:HTTP/1.1 521 (Cloudflare) Web Server Is Down
+522:HTTP/1.1 522 (Cloudflare) Connection Timed Out
+523:HTTP/1.1 523 (Cloudflare) Origin Is Unreachable
+524:HTTP/1.1 524 (Cloudflare) A Timeout Occurred
+525:HTTP/1.1 525 (Cloudflare) SSL Handshake Failed
+526:HTTP/1.1 526 (Cloudflare) Invalid SSL Certificate
+527:HTTP/1.1 527 (Cloudflare) Railgun Error
+529:HTTP/1.1 529 (Unofficial) Site is overloaded
+530:HTTP/1.1 530 (Cloudflare) Site is frozen
+561:HTTP/1.1 561 (AWS) Unauthorized
+598:HTTP/1.1 598 (Unofficial) Network read timeout error
+599:HTTP/1.1 599 (Unofficial) Network Connect Timeout Error
 600:HTTP/1.1 600 Unparseable Response Headers
-//CodeUser
+//XEngine Code
 1001:HTTP/1.1 1001 XEngine Auth Ok
 1002:HTTP/1.1 1002 XEngine Auth Failed

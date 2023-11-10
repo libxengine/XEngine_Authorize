@@ -57,7 +57,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
 	m_ListCtrlClient.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 100);
 	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 70);
-	m_ListCtrlClient.InsertColumn(4, _T("在线时间(分钟)"), LVCFMT_LEFT, 100);
+	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 100);
 	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
 	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 60);
@@ -407,7 +407,6 @@ void CDialog_User::OnBnClickedCheck2()
 XLONG CDialog_User::Dialog_User_Thread(XPVOID lParam)
 {
 	CDialog_User* pClass_This = (CDialog_User*)lParam;
-	time_t nTimeStart = time(NULL);
 	CString m_StrTime;
 	
 	pClass_This->m_EditFlushTime.GetWindowText(m_StrTime);
@@ -415,13 +414,8 @@ XLONG CDialog_User::Dialog_User_Thread(XPVOID lParam)
 
 	while (pClass_This->bThread)
 	{
-		time_t nTimeEnd = time(NULL);
-		if ((nTimeEnd - nTimeStart) > nTimeSecond)
-		{
-			pClass_This->OnBnClickedButton1();
-			nTimeStart = time(NULL);
-		}
-		Sleep(100);
+		pClass_This->OnBnClickedButton1();
+		Sleep(nTimeSecond * 1000);
 	}
 	return 0;
 }
@@ -429,12 +423,6 @@ XLONG CDialog_User::Dialog_User_Thread(XPVOID lParam)
 void CDialog_User::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	POSITION pSt_Sition = m_ListCtrlClient.GetFirstSelectedItemPosition();
-	int nItemCount = m_ListCtrlClient.GetNextSelectedItem(pSt_Sition);
-	if (nItemCount >= 0)
-	{
-		m_ListCtrlClient.SetItemState(nItemCount, 0, -1);
-	}
 	CDialog_Modify m_DlgModify;
 	m_DlgModify.DoModal();
 }

@@ -173,7 +173,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 						break;
 					}
 				}
-				else
+				else if (1 == st_AuthConfig.st_XLogin.nMultiMode)
 				{
 					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
 					{
@@ -181,8 +181,42 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 						break;
 					}
 				}
+				else
+				{
+
+				}
 			}
 			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+			//对多端登录的类型进行验证
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
+			{
+				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
+				{
+					bLogin = true;
+				}
+			}
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			{
+				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
+				{
+					bLogin = true;
+				}
+			}
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			{
+				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
+				{
+					bLogin = true;
+				}
+			}
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			{
+				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
+				{
+					bLogin = true;
+				}
+			}
+			//判断这次登录是否允许
 			if (bLogin)
 			{
 				pSt_ProtocolHdr->wReserve = 253;
@@ -221,7 +255,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			pSt_ProtocolHdr->wReserve = 255;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端类型错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端时间已经耗尽,需要充值才能使用"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return false;
 		}
 		//如果是次数卡,需要优先处理
