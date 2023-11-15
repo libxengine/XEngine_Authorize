@@ -1,0 +1,262 @@
+﻿#include "pch.h"
+#include "AuthClient_Connector.h"
+/********************************************************************
+//    Created:     2023/11/15  10:36:04
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Client\AuthClient_Connector\AuthClient_Connector.cpp
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Client\AuthClient_Connector
+//    File Base:   AuthClient_Connector
+//    File Ext:    cpp
+//    Project:     XEngine(网络通信引擎)
+//    Author:      qyt
+//    Purpose:     验证客户端示例模块
+//    History:
+*********************************************************************/
+CAuthClient_Connector::CAuthClient_Connector()
+{
+}
+CAuthClient_Connector::~CAuthClient_Connector()
+{
+}
+//////////////////////////////////////////////////////////////////////////
+//                      公有函数
+//////////////////////////////////////////////////////////////////////////
+/********************************************************************
+函数名称：AuthClient_Connector_Connect
+函数功能：链接到服务器
+ 参数.一：lpszClientAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：服务器地址
+ 参数.二：nPort
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：服务器端口
+ 参数.三：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：服务器密码，如果没有填空
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CAuthClient_Connector::AuthClient_Connector_Connect(LPCXSTR lpszClientAddr, int nPort, LPCXSTR lpszPass /* = NULL */)
+{
+	AuthClient_IsErrorOccur = true;
+
+	if (NULL == lpszClientAddr)
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
+		return false;
+	}
+	if (!XClient_TCPSelect_Create(&m_hSocket, lpszClientAddr, nPort, 2))
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = XClient_GetLastError();
+		return false;
+	}
+	if (NULL != lpszPass)
+	{
+		_tcsxcpy(tszPassStr, lpszPass);
+	}
+	return true;
+}
+/********************************************************************
+函数名称：AuthClient_Connector_Close
+函数功能：销毁关闭客户端
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CAuthClient_Connector::AuthClient_Connector_Close()
+{
+	AuthClient_IsErrorOccur = false;
+
+	if (NULL != pSTDThread)
+	{
+		m_bRun = false;
+		pSTDThread->join();
+	}
+	m_bLogin = false;
+	XClient_TCPSelect_Close(m_hSocket);
+	return true;
+}
+/********************************************************************
+函数名称：AuthClient_Connector_GetAuth
+函数功能：验证用户是否登录或者超时
+返回值
+  类型：逻辑型
+  意思：是否验证成功
+备注：
+*********************************************************************/
+bool CAuthClient_Connector::AuthClient_Connector_GetAuth()
+{
+	AuthClient_IsErrorOccur = false;
+	
+	return m_bLogin;
+}
+/********************************************************************
+函数名称：AuthClient_Connector_Login
+函数功能：登录到服务器
+ 参数.一：lpszUser
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入用户名
+ 参数.二：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入密码
+ 参数.三：nDYCode
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入动态码
+ 参数.四：xhToken
+  In/Out：In
+  类型：句柄型
+  可空：Y
+  意思：输入动态码绑定的句柄
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */)
+{
+	AuthClient_IsErrorOccur = false;
+
+	if ((NULL == lpszUser) || (NULL == lpszPass))
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
+		return false;
+	}
+	XCHAR tszMsgBuffer[2048] = {};
+	XENGINE_PROTOCOLHDR st_ProtocolHdr = {};                   
+	XENGINE_PROTOCOL_USERAUTH st_AuthUser = {};
+	//协议头
+	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
+	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
+	st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN;
+	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
+	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
+
+	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
+	_tcsxcpy(st_AuthUser.tszUserName, lpszUser);
+	_tcsxcpy(st_AuthUser.tszUserPass, lpszPass);
+	//是否有动态码
+	if (nDYCode > 0)
+	{
+		st_ProtocolHdr.xhToken = xhToken;
+		_xstprintf(st_AuthUser.tszDCode, _X("%d"), nDYCode);
+	}
+	//是否加密
+	int nMsgLen = 0;
+	if (_tcsxlen(tszPassStr) > 0)
+	{
+		XCHAR tszCodecBuffer[2048] = {};
+
+		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
+		OPenSsl_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (XBYTE*)tszCodecBuffer, tszPassStr);
+
+		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszCodecBuffer, st_ProtocolHdr.unPacketSize);
+
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + st_ProtocolHdr.unPacketSize;
+	}
+	else
+	{
+		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), &st_AuthUser, st_ProtocolHdr.unPacketSize);
+
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(XENGINE_PROTOCOL_USERAUTH);
+	}
+	//发送数据
+	if (!XClient_TCPSelect_SendMsg(m_hSocket, tszMsgBuffer, nMsgLen))
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_SEND;
+		return false;
+	}
+
+	nMsgLen = 0;
+	XCHAR* ptszMsgBuffer;
+	st_ProtocolHdr = {};
+	//接受数据
+	if (!XClient_TCPSelect_RecvPkt(m_hSocket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_RECV;
+		return false;
+	}
+	//判断是否登录协议
+	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN != st_ProtocolHdr.unOperatorCode)
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_LOGIN;
+		return false;
+	}
+	//登录失败，错误码
+	if (0 != st_ProtocolHdr.wReserve)
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = st_ProtocolHdr.wReserve;
+		return false;
+	}
+	m_bRun = true;
+	m_bLogin = true;
+	//登录成功，创建线程
+	pSTDThread = make_shared<thread>(AuthClient_Connector_Thread, this);
+	if (NULL == pSTDThread)
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_THREAD;
+		return false;
+	}
+	return true;
+}
+//////////////////////////////////////////////////////////////////////////
+//                      保护函数
+//////////////////////////////////////////////////////////////////////////
+XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
+{
+	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
+
+	while (pClass_This->m_bRun)
+	{
+		int nMsgLen = 0;
+		XCHAR* ptszMsgBuffer;
+		XENGINE_PROTOCOLHDR st_ProtocolHdr = {};
+
+		if (!XClient_TCPSelect_RecvPkt(pClass_This->m_hSocket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
+		{
+			pClass_This->m_bLogin = false;
+			break;
+		}
+		XCHAR tszMsgBuffer[4096] = {};
+		if (nMsgLen > 0 && _tcsxlen(pClass_This->tszPassStr) > 0)
+		{
+			//只有有后续数据的情况才需要解密
+			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, pClass_This->tszPassStr);
+		}
+		else
+		{
+			memcpy(tszMsgBuffer, ptszMsgBuffer, nMsgLen);
+		}
+
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
+		{
+			pClass_This->m_bLogin = false;
+			break;
+		}
+		std::this_thread::sleep_for(std::chrono::seconds(1));
+	}
+	return 0;
+}

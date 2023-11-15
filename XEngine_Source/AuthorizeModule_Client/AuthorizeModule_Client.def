@@ -1,0 +1,9 @@
+LIBRARY
+
+EXPORTS
+	AuthClient_GetLastError
+
+	AuthClient_Connector_Connect
+	AuthClient_Connector_Close
+	AuthClient_Connector_GetAuth
+	AuthClient_Connector_Login

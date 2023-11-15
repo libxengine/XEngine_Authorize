@@ -10,11 +10,12 @@ AUTH_DATABASE_PATH = ./AuthorizeModule_Database
 AUTH_PROTOCOL_PATH = ./AuthorizeModule_Protocol
 AUTH_CONFIGURE_PATH = ./AuthorizeModule_Configure
 AUTH_HELP_PATH = ./AuthorizeModule_Help
+AUTH_CLIENT_PATH = ./AuthorizeModule_Client
 
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
 XENGINE_MODULES = libjsoncpp.so                                                                                        \
-          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so    \
+          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
 	      XEngine_AuthorizeApp.exe 
 
 .PHONY:MakeAll 
@@ -33,6 +34,8 @@ libAuthorizeModule_Configure.so:
 	make -C $(AUTH_CONFIGURE_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 libAuthorizeModule_Help.so:
 	make -C $(AUTH_HELP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
-		
+libAuthorizeModule_Client.so:
+	make -C $(AUTH_CLIENT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+
 XEngine_AuthorizeApp.exe:
 	make -C $(AUTH_APP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
