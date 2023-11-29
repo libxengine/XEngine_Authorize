@@ -89,15 +89,24 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
 /********************************************************************
 函数名称：AuthClient_Connector_GetAuth
 函数功能：验证用户是否登录或者超时
+ 参数.一：pbAuth
+  In/Out：Out
+  类型：逻辑型指针
+  可空：Y
+  意思：输出是否验证,如果登录成功但是参数为假.说明没有剩余时间了
 返回值
   类型：逻辑型
-  意思：是否验证成功
+  意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_Connector::AuthClient_Connector_GetAuth()
+bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL */)
 {
 	AuthClient_IsErrorOccur = false;
 	
+	if (NULL != pbAuth)
+	{
+		*pbAuth = m_bAuth;
+	}
 	return m_bLogin;
 }
 /********************************************************************
@@ -212,6 +221,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 	}
 	m_bRun = true;
 	m_bLogin = true;
+	m_bAuth = true;
 	//登录成功，创建线程
 	pSTDThread = make_shared<thread>(AuthClient_Connector_Thread, this);
 	if (NULL == pSTDThread)
@@ -253,8 +263,7 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
 		{
-			pClass_This->m_bLogin = false;
-			break;
+			pClass_This->m_bAuth = false;
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}

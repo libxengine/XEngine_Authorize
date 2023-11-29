@@ -37,9 +37,9 @@ extern "C" bool AuthClient_Connector_Close()
 {
 	return m_Connector.AuthClient_Connector_Close();
 }
-extern "C" bool AuthClient_Connector_GetAuth()
+extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth)
 {
-	return m_Connector.AuthClient_Connector_GetAuth();
+	return m_Connector.AuthClient_Connector_GetAuth(pbAuth);
 }
 extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode, XNETHANDLE xhToken)
 {

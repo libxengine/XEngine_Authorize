@@ -53,12 +53,17 @@ extern "C" bool AuthClient_Connector_Close();
 /********************************************************************
 函数名称：AuthClient_Connector_GetAuth
 函数功能：验证用户是否登录或者超时
+ 参数.一：pbAuth
+  In/Out：Out
+  类型：逻辑型指针
+  可空：Y
+  意思：输出是否验证,如果登录成功但是参数为假.说明没有剩余时间了
 返回值
   类型：逻辑型
-  意思：是否验证成功
+  意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthClient_Connector_GetAuth();
+extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 /********************************************************************
 函数名称：AuthClient_Connector_Login
 函数功能：登录到服务器
