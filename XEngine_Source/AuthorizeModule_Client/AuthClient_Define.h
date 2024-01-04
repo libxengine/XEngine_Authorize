@@ -98,6 +98,7 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TRY)
 /********************************************************************
 函数名称：AuthClient_HTTPVer_TryRequest
 函数功能：试用版请求
@@ -112,3 +113,4 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);
+#endif

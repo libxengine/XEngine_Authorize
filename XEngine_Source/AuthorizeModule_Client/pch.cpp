@@ -52,7 +52,9 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TRY)
 extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
 {
 	return m_HTTPVer.AuthClient_HTTPVer_TryRequest(lpszURLAddr);
 }
+#endif
