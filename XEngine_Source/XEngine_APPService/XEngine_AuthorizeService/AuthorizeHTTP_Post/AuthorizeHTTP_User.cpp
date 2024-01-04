@@ -199,6 +199,9 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			//根据方式来计算剩余时间
 			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
 			{
+				//次数卡需要更新才可以
+				st_AuthVer.nTryTime--;
+				Database_SQLite_TrySet(&st_AuthVer);
 				nTimeSpan = st_AuthVer.nTryTime;
 			}
 			else
@@ -217,24 +220,19 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 				BaseLib_OperatorTime_TimeToStr(tszTimeStart);
 				BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
 			}
-
 			//是否超过
-			if (nTimeSpan <= 0)
+			if (nTimeSpan > 0)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, lpszXSerialType[st_AuthVer.enVerMode], nTimeSpan);
+			}
+			else
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，序列号：%s，临时验证失败，此序列号已经试用到期"), lpszClientAddr, st_AuthVer.tszVerSerial);
 			}
-			
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
-			{
-				//次数卡需要更新才可以
-				st_AuthVer.nTryTime++;
-				Database_SQLite_TrySet(&st_AuthVer);
-			}
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证成功，已用时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
 		}
 		else
 		{
