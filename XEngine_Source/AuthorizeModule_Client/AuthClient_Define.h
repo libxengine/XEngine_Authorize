@@ -17,6 +17,7 @@ extern "C" XLONG AuthClient_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
 /*                         验证客户端导出函数                           */
 /************************************************************************/
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 /********************************************************************
 函数名称：AuthClient_Connector_Connect
 函数功能：链接到服务器
@@ -93,3 +94,4 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
+#endif

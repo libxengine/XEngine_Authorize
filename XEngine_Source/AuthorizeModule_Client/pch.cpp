@@ -29,6 +29,7 @@ extern "C" XLONG AuthClient_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                         验证客户端导出函数                           */
 /************************************************************************/
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 extern "C" bool AuthClient_Connector_Connect(LPCXSTR lpszClientAddr, int nPort, LPCXSTR lpszPass)
 {
 	return m_Connector.AuthClient_Connector_Connect(lpszClientAddr, nPort, lpszPass);
@@ -45,3 +46,4 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 {
 	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken);
 }
+#endif

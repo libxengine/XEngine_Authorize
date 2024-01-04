@@ -5,6 +5,7 @@ VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_File", "XEngine_File", "{D3A33095-8584-4EFB-9411-EBC38407E7B9}"
 	ProjectSection(SolutionItems) = preProject
+		XAuth_BuildSwitch.h = XAuth_BuildSwitch.h
 		XAuth_Protocol.h = XAuth_Protocol.h
 	EndProjectSection
 EndProject

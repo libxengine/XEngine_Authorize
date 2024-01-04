@@ -19,6 +19,12 @@
     <Filter Include="源文件\AuthClient_Connector">
       <UniqueIdentifier>{af74d4d4-f721-4060-b98b-6f9d5eda9354}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\AuthClient_HTTPVer">
+      <UniqueIdentifier>{4a9a85f2-55f9-47e4-9049-14245fc56628}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthClient_HTTPVer">
+      <UniqueIdentifier>{a5434c6b-9493-4a10-ae83-7dc2f1f6d489}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,6 +42,9 @@
     <ClInclude Include="AuthClient_Error.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="AuthClient_HTTPVer\AuthClient_HTTPVer.h">
+      <Filter>头文件\AuthClient_HTTPVer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -46,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="AuthClient_Connector\AuthClient_Connector.cpp">
       <Filter>源文件\AuthClient_Connector</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthClient_HTTPVer\AuthClient_HTTPVer.cpp">
+      <Filter>源文件\AuthClient_HTTPVer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

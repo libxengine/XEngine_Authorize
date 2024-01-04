@@ -75,7 +75,7 @@
     <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(XEngine_Include);$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_ThirdPart/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,11 +162,13 @@
     <ClInclude Include="AuthClient_Connector\AuthClient_Connector.h" />
     <ClInclude Include="AuthClient_Define.h" />
     <ClInclude Include="AuthClient_Error.h" />
+    <ClInclude Include="AuthClient_HTTPVer\AuthClient_HTTPVer.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AuthClient_Connector\AuthClient_Connector.cpp" />
+    <ClCompile Include="AuthClient_HTTPVer\AuthClient_HTTPVer.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

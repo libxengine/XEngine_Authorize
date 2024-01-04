@@ -53,6 +53,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Connect(LPCXSTR lpszClientAddr,
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
 		return false;
 	}
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 	if (!XClient_TCPSelect_Create(&m_hSocket, lpszClientAddr, nPort, 2))
 	{
 		AuthClient_IsErrorOccur = true;
@@ -63,6 +64,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Connect(LPCXSTR lpszClientAddr,
 	{
 		_tcsxcpy(tszPassStr, lpszPass);
 	}
+#endif
 	return true;
 }
 /********************************************************************
@@ -77,6 +79,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
 {
 	AuthClient_IsErrorOccur = false;
 
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 	if (NULL != pSTDThread)
 	{
 		m_bRun = false;
@@ -84,6 +87,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
 	}
 	m_bLogin = false;
 	XClient_TCPSelect_Close(m_hSocket);
+#endif
 	return true;
 }
 /********************************************************************
@@ -103,10 +107,12 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
 {
 	AuthClient_IsErrorOccur = false;
 	
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 	if (NULL != pbAuth)
 	{
 		*pbAuth = m_bAuth;
 	}
+#endif
 	return m_bLogin;
 }
 /********************************************************************
@@ -147,6 +153,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
 		return false;
 	}
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 	XCHAR tszMsgBuffer[2048] = {};
 	XENGINE_PROTOCOLHDR st_ProtocolHdr = {};                   
 	XENGINE_PROTOCOL_USERAUTH st_AuthUser = {};
@@ -230,6 +237,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_THREAD;
 		return false;
 	}
+#endif
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -239,6 +247,7 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 {
 	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
 
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
 	while (pClass_This->m_bRun)
 	{
 		int nMsgLen = 0;
@@ -267,5 +276,6 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
+#endif
 	return 0;
 }
