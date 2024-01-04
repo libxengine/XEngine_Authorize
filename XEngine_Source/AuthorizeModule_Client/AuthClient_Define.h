@@ -95,3 +95,20 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 *********************************************************************/
 extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
 #endif
+/************************************************************************/
+/*                         临时验证函数                                 */
+/************************************************************************/
+/********************************************************************
+函数名称：AuthClient_HTTPVer_TryRequest
+函数功能：试用版请求
+ 参数.一：lpszURLAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：服务器地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);

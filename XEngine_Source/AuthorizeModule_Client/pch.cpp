@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "AuthClient_Connector/AuthClient_Connector.h"
+#include "AuthClient_HTTPVer/AuthClient_HTTPVer.h"
 /********************************************************************
 //    Created:     2023/11/15  11:28:22
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Client\pch.cpp
@@ -15,6 +16,7 @@ bool AuthClient_IsErrorOccur = false;
 XLONG AuthClient_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthClient_Connector m_Connector;
+CAuthClient_HTTPVer m_HTTPVer;
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
@@ -47,3 +49,10 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken);
 }
 #endif
+/************************************************************************/
+/*                         临时验证函数                                 */
+/************************************************************************/
+extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
+{
+	return m_HTTPVer.AuthClient_HTTPVer_TryRequest(lpszURLAddr);
+}
