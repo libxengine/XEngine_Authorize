@@ -17,7 +17,7 @@
         "nTokenTimeout":3600,
         "nDynamicTimeout":30,
         "nVerTime":5,
-        "nVerMode":1,
+        "nVerMode":2,
         "nTryTime":30,
         "nTryMode":1
     },
