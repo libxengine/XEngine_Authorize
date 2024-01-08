@@ -192,6 +192,13 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		AUTHREG_NETVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_NETVER));
 
+		if (!st_FunSwitch.bSwitchTry)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "user not found");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求临时试用失败，服务器关闭了此服务"), lpszClientAddr);
+			return false;
+		}
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, st_AuthVer.tszVerSerial);
 		if (Database_SQLite_TryQuery(&st_AuthVer))
 		{

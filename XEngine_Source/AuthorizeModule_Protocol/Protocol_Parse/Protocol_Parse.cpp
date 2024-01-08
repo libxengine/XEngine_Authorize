@@ -819,6 +819,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchNotice = st_JsonObject["bSwitchNotice"].asBool();
 	pSt_FunSwitch->bSwitchDCode = st_JsonObject["bSwitchDCode"].asBool();
 	pSt_FunSwitch->bSwitchMulti = st_JsonObject["bSwitchMulti"].asBool();
+	pSt_FunSwitch->bSwitchTry = st_JsonObject["bSwitchTry"].asBool();
 
 	return true;
 }
