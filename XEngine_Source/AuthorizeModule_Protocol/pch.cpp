@@ -79,6 +79,10 @@ extern "C" bool Protocol_Packet_HttpAnnouncement(XCHAR * ptszMsgBuffer, int* pIn
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpAnnouncement(ptszMsgBuffer, pInt_MsgLen, pppSt_Announcement, nListCount);
 }
+extern "C" bool Protocol_Packet_HttpTryList(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_NETVER * **pppSt_TryList, int nListCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpTryList(ptszMsgBuffer, pInt_MsgLen, pppSt_TryList, nListCount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -102,9 +106,9 @@ extern "C" bool Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, pSt_UserPay);
 }
-extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR * ptszSerial)
+extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_NETVER * pSt_NETTry)
 {
-	return m_ProtocolParse.Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, ptszSerial);
+	return m_ProtocolParse.Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, pSt_NETTry);
 }
 extern "C" bool Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_USERTABLE * pSt_UserTable)
 {

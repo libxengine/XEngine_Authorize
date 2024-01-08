@@ -6,6 +6,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 	XCHAR tszSDBuffer[8196];
 
 	LPCXSTR lpszAPIInsert = _X("insert");
+	LPCXSTR lpszAPIList = _X("list");
 	LPCXSTR lpszAPIDelete = _X("delete");
 	LPCXSTR lpszAPIModify = _X("modify");
 
@@ -23,7 +24,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求临时试用失败，服务器关闭了此服务"), lpszClientAddr);
 			return false;
 		}
-		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, st_AuthVer.tszVerSerial);
+		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_AuthVer);
 		if (Database_SQLite_TryQuery(&st_AuthVer))
 		{
 			__int64x nTimeSpan = 0;
@@ -89,5 +90,32 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_AuthVer.tszVerSerial);
 		}
 	}
+	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIList, _tcsxlen(lpszAPIName)))
+	{
+		int nPosStart = 0;
+		int nPosEnd = 0;
+
+		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+		if (NULL == ptszMsgBuffer)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "internal server error");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
+			return false;
+		}
+		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
+		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
+
+		int nListCount = 0;
+		AUTHREG_NETVER** ppSt_AuthVer;
+		Database_SQLite_TryList(&ppSt_AuthVer, &nListCount);
+		Protocol_Packet_HttpTryList(ptszMsgBuffer, &nSDLen, &ppSt_AuthVer, nListCount);
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_AuthVer, nListCount);
+		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		free(ptszMsgBuffer);
+		ptszMsgBuffer = NULL;
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证获取列表成功,列表个数:%d"), lpszClientAddr, nListCount);
+	}
+	
 	return true;
 }

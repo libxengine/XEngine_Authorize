@@ -334,6 +334,35 @@ extern "C" bool Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUT
 *********************************************************************/
 extern "C" bool Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
 /********************************************************************
+函数名称：Database_SQLite_TryList
+函数功能：请求试用期列表
+ 参数.一：pppSt_AuthVer
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出获取到的列表
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出列表个数
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查询起始编号
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查询结束编号
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
+/********************************************************************
 函数名称：Database_SQLite_BannedInsert
 函数功能：黑名单列表插入
  参数.一：pSt_Banned

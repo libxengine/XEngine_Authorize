@@ -347,7 +347,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMs
   类型：整数型
   可空：N
   意思：输入要解析的大小
- 参数.三：pSt_UserPay
+ 参数.三：pSt_NETTry
   In/Out：Out
   类型：数据结构指针
   可空：N
@@ -357,11 +357,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial)
+bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_NETVER* pSt_NETTry)
 {
 	Protocol_IsErrorOccur = false;
 
-	if ((NULL == lpszMsgBuffer) || (NULL == ptszSerial))
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_NETTry))
 	{
 		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
@@ -380,9 +380,25 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
 
-	if (!st_JsonProtocol["tszSerial"].isNull())
+	if (!st_JsonProtocol["enVerMode"].isNull())
 	{
-		_tcsxcpy(ptszSerial, st_JsonProtocol["tszSerial"].asCString());
+		pSt_NETTry->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonProtocol["enVerMode"].asInt();
+	}
+	if (!st_JsonProtocol["nID"].isNull())
+	{
+		pSt_NETTry->nID = st_JsonProtocol["nID"].asInt64();
+	}
+	if (!st_JsonProtocol["nTryTime"].isNull())
+	{
+		pSt_NETTry->nTryTime = st_JsonProtocol["nTryTime"].asInt();
+	}
+	if (!st_JsonProtocol["tszVerSerial"].isNull())
+	{
+		_tcsxcpy(pSt_NETTry->tszVerSerial, st_JsonProtocol["tszVerSerial"].asCString());
+	}
+	if (!st_JsonProtocol["tszVerData"].isNull())
+	{
+		_tcsxcpy(pSt_NETTry->tszVerData, st_JsonProtocol["tszVerData"].asCString());
 	}
 	return true;
 }

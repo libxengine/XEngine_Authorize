@@ -74,6 +74,7 @@ typedef struct tag_AuthReg_SerialTable
 //网络临时验证表
 typedef struct tag_AuthReg_NetVer
 {
+	__int64x nID;
 	XCHAR tszVerSerial[256];                                               //验证序列号
 	XCHAR tszVerData[64];                                                  //验证时间
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode;                  //验证方式

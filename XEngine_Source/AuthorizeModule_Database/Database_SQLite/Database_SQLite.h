@@ -42,6 +42,7 @@ public:
     bool Database_SQLite_TryDelete(LPCXSTR lpszSerial);
     bool Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
     bool Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+    bool Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
 public:
     bool Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned);
     bool Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned);

@@ -1042,6 +1042,77 @@ bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
     return true;
 }
 /********************************************************************
+函数名称：Database_SQLite_TryList
+函数功能：请求试用期列表
+ 参数.一：pppSt_AuthVer
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出获取到的列表
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出列表个数
+ 参数.三：nPosStart
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查询起始编号
+ 参数.四：nPosEnd
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入查询结束编号
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	int nRow = 0;
+	int nColumn = 0;
+	XCHAR** ppszResult = NULL;
+	XCHAR tszSQLStr[1024];    //SQL语句
+
+	memset(tszSQLStr, '\0', 1024);
+	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_NetVer LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
+
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStr, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, nRow, sizeof(AUTHREG_NETVER));
+	int nFliedValue = nColumn;
+	//轮训所有内容
+	for (int i = 0; i < nRow; i++)
+	{
+		//ID
+        (*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//是否启用
+        _tcsxcpy((*pppSt_AuthVer)[i]->tszVerSerial, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//类型
+        (*pppSt_AuthVer)[i]->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//时间
+        (*pppSt_AuthVer)[i]->nTryTime = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//注册时间
+		_tcsxcpy((*pppSt_AuthVer)[i]->tszVerData, ppszResult[nFliedValue]);
+		nFliedValue++;
+	}
+    *pInt_ListCount = nRow;
+	DataBase_SQLite_FreeTable(ppszResult);
+    return true;
+}
+/********************************************************************
 函数名称：Database_SQLite_BannedInsert
 函数功能：黑名单列表插入
  参数.一：pSt_Banned

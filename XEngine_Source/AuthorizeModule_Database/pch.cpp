@@ -105,6 +105,10 @@ extern "C" bool Database_SQLite_TrySet(AUTHREG_NETVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TrySet(pSt_AuthVer);
 }
+extern "C" bool Database_SQLite_TryList(AUTHREG_NETVER * **pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
+{
+	return m_SQLAuth.Database_SQLite_TryList(pppSt_AuthVer, pInt_ListCount, nPosStart, nPosEnd);
+}
 extern "C" bool Database_SQLite_BannedInsert(AUTHREG_BANNED * pSt_Banned)
 {
 	return m_SQLAuth.Database_SQLite_BannedInsert(pSt_Banned);
