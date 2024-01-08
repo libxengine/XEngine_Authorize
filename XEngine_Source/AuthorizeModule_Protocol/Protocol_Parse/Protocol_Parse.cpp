@@ -378,7 +378,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return false;
 	}
-	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
+	Json::Value st_JsonProtocol = st_JsonRoot["st_VERTemp"];
 
 	if (!st_JsonProtocol["enVMode"].isNull())
 	{

@@ -10,5 +10,5 @@
 //    Purpose:     编译选项
 //    History:
 *********************************************************************/
-#define _XAUTH_BUILD_SWITCH_CLIENT_NETWORK 0
+#define _XAUTH_BUILD_SWITCH_CLIENT_NETWORK 1
 #define _XAUTH_BUILD_SWITCH_CLIENT_TRY 1

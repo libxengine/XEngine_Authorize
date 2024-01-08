@@ -114,8 +114,29 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证获取列表成功,列表个数:%d"), lpszClientAddr, nListCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，临时验证获取列表成功,列表个数:%d"), lpszClientAddr, nListCount);
 	}
-	
+	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
+	{
+		AUTHREG_TEMPVER st_VERTemp;
+		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
+
+		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
+		Database_SQLite_TryDelete(st_VERTemp.tszVSerial);
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证删除成功"), lpszClientAddr, st_VERTemp.tszVSerial);
+	}
+	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIModify, _tcsxlen(lpszAPIName)))
+	{
+		AUTHREG_TEMPVER st_VERTemp;
+		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
+
+		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
+		Database_SQLite_TrySet(&st_VERTemp);
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证修改成功"), lpszClientAddr, st_VERTemp.tszVSerial);
+	}
 	return true;
 }

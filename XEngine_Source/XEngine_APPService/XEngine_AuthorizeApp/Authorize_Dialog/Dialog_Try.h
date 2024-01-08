@@ -27,4 +27,5 @@ public:
 	CListCtrl m_ListTry;
 	CEdit m_EditPosStart;
 	CEdit m_EditPosEnd;
+	afx_msg void OnBnClickedButton2();
 };
