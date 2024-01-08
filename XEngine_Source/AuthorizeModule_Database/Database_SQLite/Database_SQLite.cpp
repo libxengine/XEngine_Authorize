@@ -902,7 +902,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
     XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', 1024);
 
-    _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), lpszSerial);
+    _xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_TempVer WHERE tszVSerial = '%s'"), lpszSerial);
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -982,7 +982,7 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
             if (nThanValue > stl_ListIterator->nVTime)
             {
                 memset(tszSQLStatement, '\0', 1024);
-                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
+                _xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
 
                 if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
                 {
@@ -997,7 +997,7 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
             if (enVMode == stl_ListIterator->enVMode)
             {
                 memset(tszSQLStatement, '\0', 1024);
-                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
+                _xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
 
                 if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
                 {
