@@ -271,7 +271,7 @@ extern "C" bool Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" bool Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_TryQuery
 函数功能：试用序列号查询函数
@@ -285,7 +285,7 @@ extern "C" bool Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" bool Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_TryDelete
 函数功能：删除一条指定的试用数据
@@ -332,7 +332,7 @@ extern "C" bool Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUT
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
+extern "C" bool Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer);
 /********************************************************************
 函数名称：Database_SQLite_TryList
 函数功能：请求试用期列表
@@ -361,7 +361,7 @@ extern "C" bool Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
+extern "C" bool Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
 /********************************************************************
 函数名称：Database_SQLite_BannedInsert
 函数功能：黑名单列表插入

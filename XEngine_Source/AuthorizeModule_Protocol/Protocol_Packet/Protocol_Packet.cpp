@@ -834,7 +834,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, in
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_NETVER*** pppSt_TryList, int nListCount)
+bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER*** pppSt_TryList, int nListCount)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -851,10 +851,10 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 	{
 		Json::Value st_JsonObject;
 		st_JsonObject["nID"] = (*pppSt_TryList)[i]->nID;
-		st_JsonObject["nTryTime"] = (*pppSt_TryList)[i]->nTryTime;
-		st_JsonObject["enVerMode"] = (*pppSt_TryList)[i]->enVerMode;
-		st_JsonObject["tszVerData"] = (*pppSt_TryList)[i]->tszVerData;
-		st_JsonObject["tszVerSerial"] = (*pppSt_TryList)[i]->tszVerSerial;
+		st_JsonObject["nVTime"] = (*pppSt_TryList)[i]->nVTime;
+		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
+		st_JsonObject["tszVDate"] = (*pppSt_TryList)[i]->tszVDate;
+		st_JsonObject["tszVSerial"] = (*pppSt_TryList)[i]->tszVSerial;
 		st_JsonArray.append(st_JsonObject);
 	}
 	st_JsonRoot["msg"] = "success";

@@ -783,7 +783,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
+bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -794,13 +794,13 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
         return false;
     }
     XCHAR tszSQLStatement[1024];
-    AUTHREG_NETVER st_AuthVer;
+    AUTHREG_TEMPVER st_AuthVer;
 
     memset(tszSQLStatement, '\0', 1024);
-    memset(&st_AuthVer, '\0', sizeof(AUTHREG_NETVER));
+    memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
 
     //验证是否存在
-    _tcsxcpy(st_AuthVer.tszVerSerial, pSt_AuthVer->tszVerSerial);
+    _tcsxcpy(st_AuthVer.tszVSerial, pSt_AuthVer->tszVSerial);
     if (Database_SQLite_TryQuery(&st_AuthVer))
     {
         SQLPacket_IsErrorOccur = true;
@@ -808,7 +808,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
         return false;
     }
     //插入数据库
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_NetVer(VerSerial,VerMode,TryTime,CreateTime) VALUES('%s',%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVerSerial, pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_TempVer(tszVSerial,nVMode,nVTime,CreateTime) VALUES('%s',%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enVMode, pSt_AuthVer->nVTime);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -830,7 +830,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_NETVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
+bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -846,7 +846,7 @@ bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
     XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_NetVer WHERE VerSerial = '%s'"), pSt_AuthVer->tszVerSerial);
+    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), pSt_AuthVer->tszVSerial);
 
     if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
@@ -866,13 +866,13 @@ bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_NETVER* pSt_AuthVer)
     //序列号
     nFliedValue++;
     //试用类型
-    pSt_AuthVer->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+    pSt_AuthVer->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
     nFliedValue++;
     //试用时间
-    pSt_AuthVer->nTryTime = _ttxoi(ppszResult[nFliedValue]);
+    pSt_AuthVer->nVTime = _ttxoi(ppszResult[nFliedValue]);
     nFliedValue++;
     //注册时间
-    _tcsxcpy(pSt_AuthVer->tszVerData, ppszResult[nFliedValue]);
+    _tcsxcpy(pSt_AuthVer->tszVDate, ppszResult[nFliedValue]);
     DataBase_SQLite_FreeTable(ppszResult);
     return true;
 }
@@ -902,7 +902,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
     XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', 1024);
 
-    _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_NetVer WHERE VerSerial = '%s'"), lpszSerial);
+    _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), lpszSerial);
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -920,7 +920,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
   类型：整数型
   可空：N
   意思：清理用于判断需要大于此的值
- 参数.二：enVerMode
+ 参数.二：enVMode
   In/Out：In
   类型：枚举型
   可空：Y
@@ -930,7 +930,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
+bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -940,7 +940,7 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
     XCHAR tszSQLStatement[1024];    //SQL语句
 
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_NetVer"));
+    _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_TempVer"));
 
     if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
@@ -949,40 +949,40 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
         return false;
     }
     int nFliedValue = nColumn;
-    list<AUTHREG_NETVER> stl_ListVer;
+    list<AUTHREG_TEMPVER> stl_ListVer;
     //轮训所有内容
     for (int i = 0; i < nRow; i++)
     {
-        AUTHREG_NETVER st_AuthVer;
-        memset(&st_AuthVer, '\0', sizeof(AUTHREG_NETVER));
+        AUTHREG_TEMPVER st_AuthVer;
+        memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
         //ID
         nFliedValue++;
         //序列号
-        _tcsxcpy(st_AuthVer.tszVerSerial, ppszResult[nFliedValue]);
+        _tcsxcpy(st_AuthVer.tszVSerial, ppszResult[nFliedValue]);
         nFliedValue++;
         //模式
-        st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        st_AuthVer.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //测试时间
-        st_AuthVer.nTryTime = _ttxoi(ppszResult[nFliedValue]);
+        st_AuthVer.nVTime = _ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //注册时间
-        _tcsxcpy(st_AuthVer.tszVerData, ppszResult[nFliedValue]);
+        _tcsxcpy(st_AuthVer.tszVDate, ppszResult[nFliedValue]);
 
         stl_ListVer.push_back(st_AuthVer);
     }
     DataBase_SQLite_FreeTable(ppszResult);
     //清理
-    list<AUTHREG_NETVER>::const_iterator stl_ListIterator = stl_ListVer.begin();
+    list<AUTHREG_TEMPVER>::const_iterator stl_ListIterator = stl_ListVer.begin();
     for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
     {
         //判断是不是不关心注册的模式直接清理
-        if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == enVerMode)
+        if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == enVMode)
         {
-            if (nThanValue > stl_ListIterator->nTryTime)
+            if (nThanValue > stl_ListIterator->nVTime)
             {
                 memset(tszSQLStatement, '\0', 1024);
-                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_NetVer WHERE VerSerial = '%s'"), stl_ListIterator->tszVerSerial);
+                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
 
                 if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
                 {
@@ -994,10 +994,10 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
         }
         else
         {
-            if (enVerMode == stl_ListIterator->enVerMode)
+            if (enVMode == stl_ListIterator->enVMode)
             {
                 memset(tszSQLStatement, '\0', 1024);
-                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_NetVer WHERE VerSerial = '%s'"), stl_ListIterator->tszVerSerial);
+                _xstprintf(tszSQLStatement, _X("DELETE * FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
 
                 if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
                 {
@@ -1024,14 +1024,14 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
+bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_NetVer SET VerMode = '%d',TryTime = '%d',CreateTime = '%s' WHERE VerSerial = '%s'"), pSt_AuthVer->enVerMode, pSt_AuthVer->nTryTime, pSt_AuthVer->tszVerData, pSt_AuthVer->tszVerSerial);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_TempVer SET nVMode = '%d',nVTime = '%d',CreateTime = '%s' WHERE tszVSerial = '%s'"), pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->tszVDate, pSt_AuthVer->tszVSerial);
     //更新用户表
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -1069,7 +1069,7 @@ bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_NETVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
+bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1079,7 +1079,7 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, 
 	XCHAR tszSQLStr[1024];    //SQL语句
 
 	memset(tszSQLStr, '\0', 1024);
-	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_NetVer LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
+	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_TempVer LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
 	if (!DataBase_SQLite_GetTable(xhData, tszSQLStr, &ppszResult, &nRow, &nColumn))
 	{
@@ -1087,7 +1087,7 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, 
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
 		return false;
 	}
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, nRow, sizeof(AUTHREG_NETVER));
+    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, nRow, sizeof(AUTHREG_TEMPVER));
 	int nFliedValue = nColumn;
 	//轮训所有内容
 	for (int i = 0; i < nRow; i++)
@@ -1096,16 +1096,16 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_NETVER*** pppSt_AuthVer, 
         (*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//是否启用
-        _tcsxcpy((*pppSt_AuthVer)[i]->tszVerSerial, ppszResult[nFliedValue]);
+        _tcsxcpy((*pppSt_AuthVer)[i]->tszVSerial, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//类型
-        (*pppSt_AuthVer)[i]->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_AuthVer)[i]->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//时间
-        (*pppSt_AuthVer)[i]->nTryTime = _ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_AuthVer)[i]->nVTime = _ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//注册时间
-		_tcsxcpy((*pppSt_AuthVer)[i]->tszVerData, ppszResult[nFliedValue]);
+		_tcsxcpy((*pppSt_AuthVer)[i]->tszVDate, ppszResult[nFliedValue]);
 		nFliedValue++;
 	}
     *pInt_ListCount = nRow;

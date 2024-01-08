@@ -398,7 +398,7 @@ extern "C" bool Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_NETVER*** pppSt_TryList, int nListCount);
+extern "C" bool Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER*** pppSt_TryList, int nListCount);
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -545,7 +545,7 @@ extern "C" bool Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, 
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_NETVER * pSt_NETTry);
+extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_TEMPVER * pSt_NETTry);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户表信息

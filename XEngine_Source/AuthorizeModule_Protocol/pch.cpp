@@ -79,7 +79,7 @@ extern "C" bool Protocol_Packet_HttpAnnouncement(XCHAR * ptszMsgBuffer, int* pIn
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpAnnouncement(ptszMsgBuffer, pInt_MsgLen, pppSt_Announcement, nListCount);
 }
-extern "C" bool Protocol_Packet_HttpTryList(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_NETVER * **pppSt_TryList, int nListCount)
+extern "C" bool Protocol_Packet_HttpTryList(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER * **pppSt_TryList, int nListCount)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpTryList(ptszMsgBuffer, pInt_MsgLen, pppSt_TryList, nListCount);
 }
@@ -106,7 +106,7 @@ extern "C" bool Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMsgLen, 
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, pSt_UserPay);
 }
-extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_NETVER * pSt_NETTry)
+extern "C" bool Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_TEMPVER * pSt_NETTry)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, pSt_NETTry);
 }

@@ -85,11 +85,11 @@ extern "C" bool Database_SQLite_SerialPush(AUTHREG_SERIALTABLE * pSt_SerialTable
 {
 	return m_SQLAuth.Database_SQLite_SerialPush(pSt_SerialTable);
 }
-extern "C" bool Database_SQLite_TryInsert(AUTHREG_NETVER * pSt_AuthVer)
+extern "C" bool Database_SQLite_TryInsert(AUTHREG_TEMPVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TryInsert(pSt_AuthVer);
 }
-extern "C" bool Database_SQLite_TryQuery(AUTHREG_NETVER * pSt_AuthVer)
+extern "C" bool Database_SQLite_TryQuery(AUTHREG_TEMPVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TryQuery(pSt_AuthVer);
 }
@@ -101,11 +101,11 @@ extern "C" bool Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUT
 {
 	return m_SQLAuth.Database_SQLite_TryClear(nThanValue, enVerMode);
 }
-extern "C" bool Database_SQLite_TrySet(AUTHREG_NETVER * pSt_AuthVer)
+extern "C" bool Database_SQLite_TrySet(AUTHREG_TEMPVER * pSt_AuthVer)
 {
 	return m_SQLAuth.Database_SQLite_TrySet(pSt_AuthVer);
 }
-extern "C" bool Database_SQLite_TryList(AUTHREG_NETVER * **pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
+extern "C" bool Database_SQLite_TryList(AUTHREG_TEMPVER * **pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
 	return m_SQLAuth.Database_SQLite_TryList(pppSt_AuthVer, pInt_ListCount, nPosStart, nPosEnd);
 }

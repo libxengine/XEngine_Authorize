@@ -30,7 +30,7 @@ public:
 	bool Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
 	bool Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount);
 	bool Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount);
-	bool Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_NETVER*** pppSt_TryList, int nListCount);
+	bool Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER*** pppSt_TryList, int nListCount);
 protected:
 private:
 };

@@ -357,7 +357,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_NETVER* pSt_NETTry)
+bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_TEMPVER* pSt_NETTry)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -380,25 +380,25 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 	}
 	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
 
-	if (!st_JsonProtocol["enVerMode"].isNull())
+	if (!st_JsonProtocol["enVMode"].isNull())
 	{
-		pSt_NETTry->enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonProtocol["enVerMode"].asInt();
+		pSt_NETTry->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
 	}
 	if (!st_JsonProtocol["nID"].isNull())
 	{
 		pSt_NETTry->nID = st_JsonProtocol["nID"].asInt64();
 	}
-	if (!st_JsonProtocol["nTryTime"].isNull())
+	if (!st_JsonProtocol["nVTime"].isNull())
 	{
-		pSt_NETTry->nTryTime = st_JsonProtocol["nTryTime"].asInt();
+		pSt_NETTry->nVTime = st_JsonProtocol["nVTime"].asInt();
 	}
-	if (!st_JsonProtocol["tszVerSerial"].isNull())
+	if (!st_JsonProtocol["tszVSerial"].isNull())
 	{
-		_tcsxcpy(pSt_NETTry->tszVerSerial, st_JsonProtocol["tszVerSerial"].asCString());
+		_tcsxcpy(pSt_NETTry->tszVSerial, st_JsonProtocol["tszVSerial"].asCString());
 	}
-	if (!st_JsonProtocol["tszVerData"].isNull())
+	if (!st_JsonProtocol["tszVDate"].isNull())
 	{
-		_tcsxcpy(pSt_NETTry->tszVerData, st_JsonProtocol["tszVerData"].asCString());
+		_tcsxcpy(pSt_NETTry->tszVDate, st_JsonProtocol["tszVDate"].asCString());
 	}
 	return true;
 }
