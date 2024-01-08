@@ -258,5 +258,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchNotice = st_JsonRoot["bSwitchNotice"].asBool();
 	pSt_ServerConfig->bSwitchDCode = st_JsonRoot["bSwitchDCode"].asBool();
 	pSt_ServerConfig->bSwitchMulti = st_JsonRoot["bSwitchMulti"].asBool();
+	pSt_ServerConfig->bSwitchTry = st_JsonRoot["bSwitchTry"].asBool();
 	return true;
 }
