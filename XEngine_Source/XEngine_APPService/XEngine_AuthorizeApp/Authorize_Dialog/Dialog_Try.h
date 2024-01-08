@@ -28,4 +28,10 @@ public:
 	CEdit m_EditPosStart;
 	CEdit m_EditPosEnd;
 	afx_msg void OnBnClickedButton2();
+	afx_msg void OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult);
+	CEdit m_EditSerial;
+	CEdit m_EditTime;
+	CEdit m_EditDate;
+	CComboBox m_ComboType;
+	afx_msg void OnBnClickedButton3();
 };
