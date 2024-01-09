@@ -8,5 +8,6 @@
     "bSwitchCDKey":true,
     "bSwitchNotice":true,
     "bSwitchDCode":false,
-    "bSwitchMulti":true
+    "bSwitchMulti":true,
+    "bSwitchTry":true
 }
