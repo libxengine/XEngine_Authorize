@@ -72,13 +72,15 @@ typedef struct tag_AuthReg_SerialTable
 	XCHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表
-typedef struct tag_AuthReg_NetVer
+typedef struct
 {
-	XCHAR tszVerSerial[256];                                               //验证序列号
-	XCHAR tszVerData[64];                                                  //验证时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode;                  //验证方式
-	int nTryTime;                                                         //试用时间
-}AUTHREG_NETVER, * LPAUTHREG_NETVER;
+	XCHAR tszVSerial[256];                                               //验证序列号
+	XCHAR tszVDate[64];                                                  //验证时间
+	__int64x nID;                                                        //ID
+	int nVTime;                                                          //试用时间
+	int nLTime;                                                          //剩余时间
+	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode;                   //验证方式
+}AUTHREG_TEMPVER;
 //禁止列表
 typedef struct 
 {

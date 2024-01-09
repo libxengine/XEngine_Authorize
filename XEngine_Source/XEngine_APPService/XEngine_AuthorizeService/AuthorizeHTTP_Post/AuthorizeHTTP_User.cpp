@@ -189,68 +189,82 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITry, _tcsxlen(lpszAPIName)))
 	{
-		AUTHREG_NETVER st_AuthVer;
-		memset(&st_AuthVer, '\0', sizeof(AUTHREG_NETVER));
+		AUTHREG_TEMPVER st_VERTemp;
+		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
 
-		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, st_AuthVer.tszVerSerial);
-		if (Database_SQLite_TryQuery(&st_AuthVer))
+		if (!st_FunSwitch.bSwitchTry)
 		{
-			XCHAR tszEndTime[64];
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "user not found");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求临时试用失败，服务器关闭了此服务"), lpszClientAddr);
+			return false;
+		}
+		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
+		if (Database_SQLite_TryQuery(&st_VERTemp))
+		{
 			__int64x nTimeSpan = 0;
-			memset(tszEndTime, '\0', sizeof(tszEndTime));
 			//根据方式来计算剩余时间
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
+			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
 			{
-				nTimeSpan = st_AuthVer.nTryTime;
+				//次数卡需要更新才可以
+				st_VERTemp.nLTime--;
+				nTimeSpan = st_VERTemp.nLTime;
 			}
 			else
 			{
+				XENGINE_LIBTIMER st_TimeStart = {};
+				XENGINE_LIBTIMER st_TimeEnd = {};
+				XCHAR tszTimeStart[128] = {};
+				XCHAR tszTimeEnd[128] = {};
+				//时间戳转换
+				BaseLib_OperatorTime_StrToTime(st_VERTemp.tszVDate, &st_TimeStart);
+				st_TimeEnd.wDay = st_VERTemp.nVTime;
+				//得到超时时间
+				BaseLib_OperatorTimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
+				BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
 				//计算时间差
-				BaseLib_OperatorTime_TimeToStr(tszEndTime);
-				BaseLib_OperatorTimeSpan_GetForStr(st_AuthVer.tszVerData, tszEndTime, &nTimeSpan, 2);
+				BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+				BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
+
+				st_VERTemp.nLTime = nTimeSpan;
 			}
 			//是否超过
-			if (nTimeSpan > st_AuthConfig.st_XVerification.nVerTime)
+			if (nTimeSpan >= 0)
 			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
+				Database_SQLite_TrySet(&st_VERTemp);
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，序列号：%s，临时验证失败，此序列号已经试用到期"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_VERTemp.tszVSerial, lpszXSerialType[st_VERTemp.enVMode], nTimeSpan);
 			}
 			else
 			{
-				if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_AuthVer.enVerMode)
-				{
-					//次数卡需要更新才可以
-					st_AuthVer.nTryTime++;
-					Database_SQLite_TrySet(&st_AuthVer);
-				}
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "timeout");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证成功，已用时间:%lld"), lpszClientAddr, st_AuthVer.tszVerSerial, nTimeSpan);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，序列号：%s，临时验证失败，此序列号已经试用到期"), lpszClientAddr, st_VERTemp.tszVSerial);
 			}
 		}
 		else
 		{
 			//填充写入数据
-			st_AuthVer.nTryTime = st_AuthConfig.st_XVerification.nVerTime;
-			st_AuthVer.enVerMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
+			st_VERTemp.nVTime = st_AuthConfig.st_XVerification.nVerTime;
+			st_VERTemp.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能,不支持分钟,因为不登录
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_AuthVer.enVerMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_AuthVer.enVerMode) || (st_AuthVer.nTryTime <= 0))
+			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_AuthVer.tszVerSerial);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_VERTemp.tszVSerial);
 				return false;
 			}
-			if (!Database_SQLite_TryInsert(&st_AuthVer))
+			if (!Database_SQLite_TryInsert(&st_VERTemp))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "Internal Server Error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_AuthVer.tszVerSerial, DBModule_GetLastError());
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，无法继续，错误：%X"), lpszClientAddr, st_VERTemp.tszVSerial, DBModule_GetLastError());
 			}
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_AuthVer.tszVerSerial);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证插入成功"), lpszClientAddr, st_VERTemp.tszVSerial);
 		}
 	}
 	return true;

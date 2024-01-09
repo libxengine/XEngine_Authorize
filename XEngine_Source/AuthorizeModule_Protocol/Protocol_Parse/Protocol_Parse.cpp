@@ -347,7 +347,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMs
   类型：整数型
   可空：N
   意思：输入要解析的大小
- 参数.三：pSt_UserPay
+ 参数.三：pSt_NETTry
   In/Out：Out
   类型：数据结构指针
   可空：N
@@ -357,11 +357,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParsePay(LPCXSTR lpszMsgBuffer, int nMs
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszSerial)
+bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_TEMPVER* pSt_NETTry)
 {
 	Protocol_IsErrorOccur = false;
 
-	if ((NULL == lpszMsgBuffer) || (NULL == ptszSerial))
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_NETTry))
 	{
 		Protocol_IsErrorOccur = true;
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
@@ -378,11 +378,31 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
 		return false;
 	}
-	Json::Value st_JsonProtocol = st_JsonRoot["st_UserTry"];
+	Json::Value st_JsonProtocol = st_JsonRoot["st_VERTemp"];
 
-	if (!st_JsonProtocol["tszSerial"].isNull())
+	if (!st_JsonProtocol["enVMode"].isNull())
 	{
-		_tcsxcpy(ptszSerial, st_JsonProtocol["tszSerial"].asCString());
+		pSt_NETTry->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
+	}
+	if (!st_JsonProtocol["nID"].isNull())
+	{
+		pSt_NETTry->nID = st_JsonProtocol["nID"].asInt64();
+	}
+	if (!st_JsonProtocol["nVTime"].isNull())
+	{
+		pSt_NETTry->nVTime = st_JsonProtocol["nVTime"].asInt();
+	}
+	if (!st_JsonProtocol["nLTime"].isNull())
+	{
+		pSt_NETTry->nLTime = st_JsonProtocol["nLTime"].asInt();
+	}
+	if (!st_JsonProtocol["tszVSerial"].isNull())
+	{
+		_tcsxcpy(pSt_NETTry->tszVSerial, st_JsonProtocol["tszVSerial"].asCString());
+	}
+	if (!st_JsonProtocol["tszVDate"].isNull())
+	{
+		_tcsxcpy(pSt_NETTry->tszVDate, st_JsonProtocol["tszVDate"].asCString());
 	}
 	return true;
 }
@@ -819,6 +839,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchNotice = st_JsonObject["bSwitchNotice"].asBool();
 	pSt_FunSwitch->bSwitchDCode = st_JsonObject["bSwitchDCode"].asBool();
 	pSt_FunSwitch->bSwitchMulti = st_JsonObject["bSwitchMulti"].asBool();
+	pSt_FunSwitch->bSwitchTry = st_JsonObject["bSwitchTry"].asBool();
 
 	return true;
 }

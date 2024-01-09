@@ -37,6 +37,7 @@ using namespace std;
 #include "Authorize_Dialog/Dialog_Switch.h"
 #include "Authorize_Dialog/Dialog_Banned.h"
 #include "Authorize_Dialog/Dialog_Announcement.h"
+#include "Authorize_Dialog/Dialog_Try.h"
 #include "Authorize_Help/Authorize_Help.h"
 
 extern HWND hMainWnd;

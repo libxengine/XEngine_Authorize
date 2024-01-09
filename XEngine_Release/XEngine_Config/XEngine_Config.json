@@ -17,7 +17,7 @@
         "nTokenTimeout":3600,
         "nDynamicTimeout":30,
         "nVerTime":5,
-        "nVerMode":1,
+        "nVerMode":2,
         "nTryTime":30,
         "nTryMode":1
     },
@@ -51,6 +51,7 @@
         "LogLeave":32
     },
     "XVer":[
+        "V3.10.0.1001 Build20240109",
         "V3.9.1.1001 Build20231110",
         "V3.9.0.1001 Build20231110",
         "V3.8.0.1001 Build20230811",

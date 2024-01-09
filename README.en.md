@@ -125,7 +125,9 @@ After modification, directly copy the database to the new version to overwrite, 
 Use this software must be open source and indicate the source,If you want closed source and commercial,Then need to be authorized by the author.
 
 ## Follow us
-If you think this software is helpful to you, please give us a START
+If you think this software is helpful to you, please give us a START  
+and wechat qr scan to follow us  
+![qrcode](https://www.xyry.org/qrcode.jpg)
 
 ## post issues
 

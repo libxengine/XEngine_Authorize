@@ -659,6 +659,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchNotice"] = pSt_FunSwitch->bSwitchNotice;
 	st_JsonRoot["bSwitchDCode"] = pSt_FunSwitch->bSwitchDCode;
 	st_JsonRoot["bSwitchMulti"] = pSt_FunSwitch->bSwitchMulti;
+	st_JsonRoot["bSwitchTry"] = pSt_FunSwitch->bSwitchTry;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
@@ -794,6 +795,83 @@ bool CProtocol_Packet::Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, in
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_Announcement)[i]->nID;
 		st_JsonObject["tszContext"] = (*pppSt_Announcement)[i]->tszContext;
 		st_JsonObject["tszCreateTime"] = (*pppSt_Announcement)[i]->tszCreateTime;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["Count"] = st_JsonArray.size();
+	st_JsonRoot["Array"] = st_JsonArray;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return true;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpTryList
+函数功能：临时试用列表打包
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_TryList
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的列表
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER*** pppSt_TryList, int nListCount)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_TryList)[i]->nID;
+		st_JsonObject["nVTime"] = (*pppSt_TryList)[i]->nVTime;
+		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == (*pppSt_TryList)[i]->enVMode)
+		{
+			XENGINE_LIBTIMER st_TimeStart = {};
+			XENGINE_LIBTIMER st_TimeEnd = {};
+			XCHAR tszTimeStart[128] = {};
+			XCHAR tszTimeEnd[128] = {};
+			//时间戳转换
+			BaseLib_OperatorTime_StrToTime((*pppSt_TryList)[i]->tszVDate, &st_TimeStart);
+			st_TimeEnd.wDay = (*pppSt_TryList)[i]->nVTime;
+			//得到超时时间
+			BaseLib_OperatorTimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
+			BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
+			//计算时间差
+			BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, (__int64x *)&(*pppSt_TryList)[i]->nLTime);
+		}
+		st_JsonObject["nLTime"] = (*pppSt_TryList)[i]->nLTime;
+		st_JsonObject["tszVDate"] = (*pppSt_TryList)[i]->tszVDate;
+		st_JsonObject["tszVSerial"] = (*pppSt_TryList)[i]->tszVSerial;
 		st_JsonArray.append(st_JsonObject);
 	}
 	st_JsonRoot["msg"] = "success";

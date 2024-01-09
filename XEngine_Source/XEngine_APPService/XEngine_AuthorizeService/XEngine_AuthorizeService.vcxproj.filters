@@ -78,6 +78,9 @@
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_DynamicCode.cpp">
       <Filter>源文件\AuthorizeHTTP_Get</Filter>
     </ClCompile>
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Try.cpp">
+      <Filter>源文件\AuthorizeHTTP_Post</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_DynamicCode.h">
       <Filter>头文件\AuthorizeHTTP_Get</Filter>
+    </ClInclude>
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Try.h">
+      <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

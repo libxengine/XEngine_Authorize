@@ -197,6 +197,7 @@
     <ClInclude Include="Authorize_Dialog\Dialog_Modify.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Serial.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Switch.h" />
+    <ClInclude Include="Authorize_Dialog\Dialog_Try.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_User.h" />
     <ClInclude Include="Authorize_Help\Authorize_Help.h" />
     <ClInclude Include="framework.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Serial.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Switch.cpp" />
+    <ClCompile Include="Authorize_Dialog\Dialog_Try.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_User.cpp" />
     <ClCompile Include="Authorize_Help\Authorize_Help.cpp" />
     <ClCompile Include="pch.cpp">
