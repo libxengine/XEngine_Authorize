@@ -1,3 +1,27 @@
+XEngine_Authorize V3.10.0.1001
+
+增加:临时验证超时时间字段支持
+增加:临时验证TOKEN权限检查
+增加:临时验证增加管理代码,支持枚举,删除和修改
+增加:编译选项支持客户端链接和客户端临时验证
+增加:验证客户端模块,支持网络授权和临时试用
+修正:超时时间一直为1的问题
+修正:超时时间处理不正确的问题
+修正:试用时间类型不正确并且修改过期时间
+修正:试用删除数据库语法错误
+修正:临时验证过期时间计算方法不正确
+
+added:temp ver left time field supported
+added:temporary verification token ver supported
+added:mangement code for temporary verification 
+added:build switch supported and added client connect and temp ver supported
+added:auth client module
+fixed:The remaining time after timeout is 1
+fixed:try type time handle is incorrent
+fixed:try time type is incorrent and modify to left time
+fixed:try delete sql syntax is incorrent
+fixed:temp ver left time cal is incorrent
+================================================================
 XEngine_Authorize V3.9.1.1001
 
 修改:管理程序禁用了天数卡生成选项
