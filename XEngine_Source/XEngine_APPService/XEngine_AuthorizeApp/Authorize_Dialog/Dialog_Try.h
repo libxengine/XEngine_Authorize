@@ -34,4 +34,5 @@ public:
 	CEdit m_EditDate;
 	CComboBox m_ComboType;
 	afx_msg void OnBnClickedButton3();
+	CEdit m_EditLeftTime;
 };

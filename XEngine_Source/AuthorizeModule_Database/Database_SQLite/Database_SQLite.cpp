@@ -808,7 +808,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
         return false;
     }
     //插入数据库
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_TempVer(tszVSerial,nVMode,nVTime,CreateTime) VALUES('%s',%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enVMode, pSt_AuthVer->nVTime);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_TempVer(tszVSerial,nVMode,nVTime,nLTime,CreateTime) VALUES('%s',%d,%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->nVTime);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -871,6 +871,9 @@ bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
     //试用时间
     pSt_AuthVer->nVTime = _ttxoi(ppszResult[nFliedValue]);
     nFliedValue++;
+	//剩余时间
+	pSt_AuthVer->nLTime = _ttxoi(ppszResult[nFliedValue]);
+	nFliedValue++;
     //注册时间
     _tcsxcpy(pSt_AuthVer->tszVDate, ppszResult[nFliedValue]);
     DataBase_SQLite_FreeTable(ppszResult);
@@ -966,6 +969,9 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
         //测试时间
         st_AuthVer.nVTime = _ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
+		//测试时间
+		st_AuthVer.nLTime = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
         //注册时间
         _tcsxcpy(st_AuthVer.tszVDate, ppszResult[nFliedValue]);
 
@@ -1031,7 +1037,7 @@ bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
     XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_TempVer SET nVMode = '%d',nVTime = '%d',CreateTime = '%s' WHERE tszVSerial = '%s'"), pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->tszVDate, pSt_AuthVer->tszVSerial);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_TempVer SET nVMode = '%d',nVTime = '%d',nLTime = '%d',CreateTime = '%s' WHERE tszVSerial = '%s'"), pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->nLTime, pSt_AuthVer->tszVDate, pSt_AuthVer->tszVSerial);
     //更新用户表
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -1103,6 +1109,9 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
 		nFliedValue++;
 		//时间
         (*pppSt_AuthVer)[i]->nVTime = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		//时间
+		(*pppSt_AuthVer)[i]->nLTime = _ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//注册时间
 		_tcsxcpy((*pppSt_AuthVer)[i]->tszVDate, ppszResult[nFliedValue]);

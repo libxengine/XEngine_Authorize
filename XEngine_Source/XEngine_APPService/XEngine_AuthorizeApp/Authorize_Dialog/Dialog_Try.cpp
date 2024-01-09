@@ -31,6 +31,7 @@ void CDialog_Try::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT12, m_EditTime);
 	DDX_Control(pDX, IDC_EDIT13, m_EditDate);
 	DDX_Control(pDX, IDC_COMBO1, m_ComboType);
+	DDX_Control(pDX, IDC_EDIT14, m_EditLeftTime);
 }
 
 
@@ -154,6 +155,8 @@ void CDialog_Try::OnBnClickedButton1()
 		m_ListTry.SetItemText(i, 2, lpszXSerialType[st_JsonArray["enVMode"].asInt()]);
 		_xstprintf(tszTmpStr, _X("%d"), st_JsonArray["nVTime"].asInt());
 		m_ListTry.SetItemText(i, 3, tszTmpStr);
+		_xstprintf(tszTmpStr, _X("%d"), st_JsonArray["nLTime"].asInt());
+		m_ListTry.SetItemText(i, 4, tszTmpStr);
 		m_ListTry.SetItemText(i, 5, st_JsonArray["tszVDate"].asCString());
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
@@ -262,10 +265,12 @@ void CDialog_Try::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 	CString m_StrSerial = m_ListTry.GetItemText(nItemCount, 1);
 	CString m_StrType = m_ListTry.GetItemText(nItemCount, 2);
 	CString m_StrTime = m_ListTry.GetItemText(nItemCount, 3);
+	CString m_StrLeft = m_ListTry.GetItemText(nItemCount, 4);
 	CString m_StrDate = m_ListTry.GetItemText(nItemCount, 5);
 
 	m_EditSerial.SetWindowText(m_StrSerial.GetBuffer());
 	m_EditTime.SetWindowText(m_StrTime.GetBuffer());
+	m_EditLeftTime.SetWindowText(m_StrLeft.GetBuffer());
 	m_EditDate.SetWindowText(m_StrDate.GetBuffer());
 
 	for (int i = 0; i < m_ComboType.GetCount(); i++)
@@ -309,16 +314,19 @@ void CDialog_Try::OnBnClickedButton3()
 	Json::Value st_JsonObject;
 
 	CString m_StrTime;
+	CString m_StrLeft;
 	CString m_StrDate;
 	CString m_StrID = m_ListTry.GetItemText(nSelect, 0);
 	CString m_StrSerail = m_ListTry.GetItemText(nSelect, 1);
 
 	m_EditTime.GetWindowText(m_StrTime);
+	m_EditLeftTime.GetWindowText(m_StrLeft);
 	m_EditDate.GetWindowText(m_StrDate);
 
 	st_JsonObject["nID"] = _ttoi64(m_StrID.GetBuffer());
 	st_JsonObject["enVMode"] = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)m_ComboType.GetCurSel();
 	st_JsonObject["nVTime"] = _ttoi(m_StrTime.GetBuffer());
+	st_JsonObject["nLTime"] = _ttoi(m_StrLeft.GetBuffer());
 	st_JsonObject["tszVSerial"] = m_StrSerail.GetBuffer();
 	st_JsonObject["tszVDate"] = m_StrDate.GetBuffer();
 	st_JsonRoot["st_VERTemp"] = st_JsonObject;

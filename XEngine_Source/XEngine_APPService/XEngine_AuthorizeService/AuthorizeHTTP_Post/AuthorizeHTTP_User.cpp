@@ -207,9 +207,8 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
 			{
 				//次数卡需要更新才可以
-				st_VERTemp.nVTime--;
-				Database_SQLite_TrySet(&st_VERTemp);
-				nTimeSpan = st_VERTemp.nVTime;
+				st_VERTemp.nLTime--;
+				nTimeSpan = st_VERTemp.nLTime;
 			}
 			else
 			{
@@ -226,10 +225,13 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 				//计算时间差
 				BaseLib_OperatorTime_TimeToStr(tszTimeStart);
 				BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
+
+				st_VERTemp.nLTime = nTimeSpan;
 			}
 			//是否超过
-			if (nTimeSpan > 0)
+			if (nTimeSpan >= 0)
 			{
+				Database_SQLite_TrySet(&st_VERTemp);
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_VERTemp.tszVSerial, lpszXSerialType[st_VERTemp.enVMode], nTimeSpan);

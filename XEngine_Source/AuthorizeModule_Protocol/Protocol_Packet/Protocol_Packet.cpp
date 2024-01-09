@@ -853,6 +853,23 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_TryList)[i]->nID;
 		st_JsonObject["nVTime"] = (*pppSt_TryList)[i]->nVTime;
 		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
+		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == (*pppSt_TryList)[i]->enVMode)
+		{
+			XENGINE_LIBTIMER st_TimeStart = {};
+			XENGINE_LIBTIMER st_TimeEnd = {};
+			XCHAR tszTimeStart[128] = {};
+			XCHAR tszTimeEnd[128] = {};
+			//时间戳转换
+			BaseLib_OperatorTime_StrToTime((*pppSt_TryList)[i]->tszVDate, &st_TimeStart);
+			st_TimeEnd.wDay = (*pppSt_TryList)[i]->nVTime;
+			//得到超时时间
+			BaseLib_OperatorTimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
+			BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
+			//计算时间差
+			BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, (__int64x *)&(*pppSt_TryList)[i]->nLTime);
+		}
+		st_JsonObject["nLTime"] = (*pppSt_TryList)[i]->nLTime;
 		st_JsonObject["tszVDate"] = (*pppSt_TryList)[i]->tszVDate;
 		st_JsonObject["tszVSerial"] = (*pppSt_TryList)[i]->tszVSerial;
 		st_JsonArray.append(st_JsonObject);

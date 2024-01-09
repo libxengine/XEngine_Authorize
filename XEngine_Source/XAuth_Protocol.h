@@ -78,6 +78,7 @@ typedef struct
 	XCHAR tszVDate[64];                                                  //验证时间
 	__int64x nID;                                                        //ID
 	int nVTime;                                                          //试用时间
+	int nLTime;                                                          //剩余时间
 	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode;                   //验证方式
 }AUTHREG_TEMPVER;
 //禁止列表

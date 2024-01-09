@@ -392,6 +392,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 	{
 		pSt_NETTry->nVTime = st_JsonProtocol["nVTime"].asInt();
 	}
+	if (!st_JsonProtocol["nLTime"].isNull())
+	{
+		pSt_NETTry->nLTime = st_JsonProtocol["nLTime"].asInt();
+	}
 	if (!st_JsonProtocol["tszVSerial"].isNull())
 	{
 		_tcsxcpy(pSt_NETTry->tszVSerial, st_JsonProtocol["tszVSerial"].asCString());
