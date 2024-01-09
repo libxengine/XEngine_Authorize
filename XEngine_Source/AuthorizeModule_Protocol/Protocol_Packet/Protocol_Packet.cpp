@@ -850,7 +850,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 	for (int i = 0; i < nListCount; i++)
 	{
 		Json::Value st_JsonObject;
-		st_JsonObject["nID"] = (*pppSt_TryList)[i]->nID;
+		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_TryList)[i]->nID;
 		st_JsonObject["nVTime"] = (*pppSt_TryList)[i]->nVTime;
 		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
 		st_JsonObject["tszVDate"] = (*pppSt_TryList)[i]->tszVDate;

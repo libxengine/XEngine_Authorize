@@ -6,11 +6,11 @@ FILEEXT =
 LIBFLAG = 
 RELEASE = 0
 UNICODE = 0
-LOADHDR = -I ./
-LOADSO = -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_Client
-LIB = -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket
+LOADHDR = -I ./ -I ../XEngine_ThirdPart/jsoncpp
+LOADSO = -L ../XEngine_ThirdPart/jsoncpp -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_Client -L /usr/local/lib/XEngine_Release/XEngine_NetHelp -L /usr/local/lib/XEngine_Release/XEngine_SystemSdk
+LIB = -ljsoncpp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lXEngine_SystemApi
 LIBEX = 
-OBJECTS = AuthClient_Connector.o pch.o
+OBJECTS = AuthClient_Connector.o AuthClient_HTTPVer.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -53,6 +53,8 @@ all:$(OBJECTS)
 
 AuthClient_Connector.o:./AuthClient_Connector/AuthClient_Connector.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthClient_Connector/AuthClient_Connector.cpp
+AuthClient_HTTPVer.o:./AuthClient_HTTPVer/AuthClient_HTTPVer.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthClient_HTTPVer/AuthClient_HTTPVer.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp
