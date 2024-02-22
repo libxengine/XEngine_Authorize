@@ -123,7 +123,7 @@ BOOL CDialog_Modify::OnInitDialog()
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
-			if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+			if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 			{
 				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 				return false;
@@ -261,7 +261,7 @@ void CDialog_Modify::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
 			return;
