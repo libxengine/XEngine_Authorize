@@ -7,8 +7,8 @@ LIBFLAG =
 RELEASE = 0
 UNICODE = 0
 LOADHDR = -I ./ -I ../XEngine_ThirdPart/jsoncpp
-LOADSO = -L ../XEngine_ThirdPart/jsoncpp -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_Client -L /usr/local/lib/XEngine_Release/XEngine_NetHelp -L /usr/local/lib/XEngine_Release/XEngine_SystemSdk
-LIB = -ljsoncpp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lXEngine_SystemApi
+LOADSO = -L ../XEngine_ThirdPart/jsoncpp 
+LIB = -ljsoncpp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lXClient_APIHelp -lXEngine_SystemApi
 LIBEX = 
 OBJECTS = AuthClient_Connector.o AuthClient_HTTPVer.o pch.o
 
