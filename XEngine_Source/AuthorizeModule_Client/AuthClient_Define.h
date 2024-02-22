@@ -17,7 +17,7 @@ extern "C" XLONG AuthClient_GetLastError(int *pInt_SysError = NULL);
 /************************************************************************/
 /*                         验证客户端导出函数                           */
 /************************************************************************/
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 /********************************************************************
 函数名称：AuthClient_Connector_Connect
 函数功能：链接到服务器
@@ -98,7 +98,7 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TRY)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)
 /********************************************************************
 函数名称：AuthClient_HTTPVer_TryRequest
 函数功能：试用版请求
@@ -113,4 +113,33 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);
+/********************************************************************
+函数名称：AuthClient_HTTPVer_GetDCode
+函数功能：获取动态码
+ 参数.一：lpszURLAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：服务器地址,完成的API地址,比如:http://127.0.0.1:5302/api?function=dcode&user=get
+ 参数.二：pInt_DYCode
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出动态码
+ 参数.二：pxhToken
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出绑定的句柄
+ 参数.三：pInt_Timeout
+  In/Out：Out
+  类型：整数型指针
+  可空：Y
+  意思：输出动态码超时时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout = NULL);
 #endif

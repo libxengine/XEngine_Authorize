@@ -9,3 +9,4 @@ EXPORTS
 	AuthClient_Connector_Login
 
 	AuthClient_HTTPVer_TryRequest
+	AuthClient_HTTPVer_GetDCode

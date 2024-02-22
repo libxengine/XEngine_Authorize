@@ -25,7 +25,7 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 #include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
@@ -34,7 +34,7 @@
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../XAuth_Protocol.h"
 #endif
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TRY)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>

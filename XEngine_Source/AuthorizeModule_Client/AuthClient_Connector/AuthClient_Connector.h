@@ -27,6 +27,7 @@ public:
 	bool AuthClient_Connector_Close();
 	bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 	bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
+	
 protected:
 	static XHTHREAD CALLBACK AuthClient_Connector_Thread(XPVOID lParam);
 private:
