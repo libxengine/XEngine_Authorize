@@ -31,7 +31,6 @@ extern "C" XLONG AuthClient_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                         验证客户端导出函数                           */
 /************************************************************************/
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 extern "C" bool AuthClient_Connector_Connect(LPCXSTR lpszClientAddr, int nPort, LPCXSTR lpszPass)
 {
 	return m_Connector.AuthClient_Connector_Connect(lpszClientAddr, nPort, lpszPass);
@@ -48,11 +47,9 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 {
 	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken);
 }
-#endif
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)
 extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
 {
 	return m_HTTPVer.AuthClient_HTTPVer_TryRequest(lpszURLAddr);
@@ -61,4 +58,3 @@ extern "C" bool AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCod
 {
 	return m_HTTPVer.AuthClient_HTTPVer_GetDCode(lpszURLAddr, pInt_DYCode, pxhToken, pInt_Timeout);
 }
-#endif
