@@ -2,11 +2,15 @@
 #include <Windows.h>
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32")
-#pragma comment(lib,"jsoncpp")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize")
+#ifdef _WIN64
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
+#else
+#pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#endif
 #endif
 #include <stdio.h>
 #include <stdlib.h>

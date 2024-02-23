@@ -2,7 +2,11 @@
 #include <Windows.h>
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32.lib")
+#ifdef _WIN64
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/AuthorizeModule_Client")
+#else
 #pragma comment(lib,"../../XEngine_Source/Debug/AuthorizeModule_Client")
+#endif
 #endif
 #include <stdio.h>
 #include <stdlib.h>
