@@ -15,7 +15,7 @@ using namespace std;
 #include "../../XEngine_Source/AuthorizeModule_Client/AuthClient_Error.h"
 
 //Windows::vs2022 x86 debug 编译即可
-//Linux MACOS::g++ -std=c++17 -Wall -g Authorize_ClientModule.cpp -o Authorize_ClientModule.exe -L ../../XEngine_Release -lAuthorizeModule_Client -ljsoncpp
+//Linux MACOS::g++ -std=c++17 -Wall -g Authorize_ClientModule.cpp -o Authorize_ClientModule.exe -L ../../XEngine_Release/ -lAuthorizeModule_Client -ljsoncpp
 
 int main()
 {
