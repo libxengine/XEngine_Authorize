@@ -52,17 +52,13 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
-	if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE == enOPCode)
-	{
-		XEngine_CloseClient(lpszClientAddr);
-		return true;
-	}
 	if (!Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("WS客户端：%s，协议错误"), lpszClientAddr);
 		return false;
 	}
-	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
+
+	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
 	{
 		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
 		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));

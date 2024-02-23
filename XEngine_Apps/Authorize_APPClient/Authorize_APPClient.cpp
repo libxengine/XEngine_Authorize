@@ -5,17 +5,21 @@
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
 #pragma comment(lib,"XEngine_Client/XClient_Socket")
-#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient")
-#pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#pragma comment(lib,"XEngine_Client/XClient_APIHelp")
+#ifdef _WIN64
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
 #else
+#pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#endif
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#endif
 #include <thread>
 #include <json/json.h>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
@@ -23,14 +27,13 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
-#include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
-#include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
+#include <XEngine_Include/XEngine_Client/APIClient_Define.h>
+#include <XEngine_Include/XEngine_Client/APIClient_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
-//Linux::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp -Wl,-rpath=../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client:../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp,--disable-new-dtags
-//Macos::g++ -std=c++17 -Wall -g Auth_APPClient.cpp -o Auth_APPClient.exe -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_BaseLib -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Core -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_Client -L ../../../XEngine/XEngine_Release/XEngine_Linux/Ubuntu/XEngine_NetHelp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lNetHelp_APIClient -lpthread -ljsoncpp
+//Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_ThirdPart/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_Socket -lXClient_APIHelp -lpthread -ljsoncpp
 
 //#define _DYNAMIC_CODE
 bool bRun = true;
@@ -41,10 +44,10 @@ XNETHANDLE xhToken = 0;
 int nDYCode = 0;
 
 XSOCKET m_Socket = 0;
-LPCXSTR lpszUser = _T("123123aa");
-LPCXSTR lpszPass = _T("123123");
-LPCXSTR lpszSerial = _T("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
-LPCXSTR lpszEmail = _T("486179@qq.com");
+LPCXSTR lpszUser = _X("123123aa");
+LPCXSTR lpszPass = _X("123123");
+LPCXSTR lpszSerial = _X("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
+LPCXSTR lpszEmail = _X("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
 
@@ -77,21 +80,21 @@ XHTHREAD AuthClient_Thread()
 				bLogin = false;
 				if (0 == st_ProtocolHdr.wReserve)
 				{
-					printf(_T("登录成功\n"));
+					printf(_X("登录成功\n"));
 				}
 				else
 				{
-					printf(_T("登录失败,错误:%d\n"), st_ProtocolHdr.wReserve);
+					printf(_X("登录失败,错误:%d\n"), st_ProtocolHdr.wReserve);
 				}
 			}
 			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
 			{
 				bTimeOut = false;
-				printf(_T("用户过期\n"));
+				printf(_X("用户过期\n"));
 			}
 			else
 			{
-				printf(_T("不明白的类型\n"));
+				printf(_X("不明白的类型\n"));
 			}
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -101,17 +104,16 @@ XHTHREAD AuthClient_Thread()
 
 int AuthClient_Register()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonUserInfo;
 	Json::Value st_JsonUserTable;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/register");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/register");
 
 	st_JsonUserInfo["tszUserName"] = lpszUser;
 	st_JsonUserInfo["tszUserPass"] = lpszPass;
 	st_JsonUserInfo["tszEMailAddr"] = lpszEmail;
-	st_JsonUserInfo["nPhoneNumber"] = nPhoneNumber;
-	st_JsonUserInfo["nIDNumber"] = nIDNumber;
+	st_JsonUserInfo["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
+	st_JsonUserInfo["nIDNumber"] = (Json::Value::Int64)nIDNumber;
 	st_JsonUserInfo["nUserLevel"] = 5;
 
 	st_JsonUserTable["tszHardCode"] = "2FDWAD02JD2091";
@@ -120,8 +122,8 @@ int AuthClient_Register()
 	st_JsonRoot["st_UserTable"] = st_JsonUserTable;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Register:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -129,10 +131,9 @@ int AuthClient_Register()
 }
 int AuthClient_Pay()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pay");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/pay");
 
 	st_JsonObject["tszSerialNumber"] = lpszSerial;
 	st_JsonObject["tszUserName"] = lpszUser;
@@ -140,8 +141,8 @@ int AuthClient_Pay()
 	st_JsonRoot["st_UserPay"] = st_JsonObject;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Pay:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -149,12 +150,11 @@ int AuthClient_Pay()
 }
 int AuthClient_DynamicCode()
 {
-	int nHTTPCode = 0;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=dcode&user=get");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/api?function=dcode&user=get");
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_DynamicCode:\n%s\n", ptszMsgBuffer);
 
 	Json::Value st_JsonRoot;
@@ -200,7 +200,7 @@ int AuthClient_Login()
 	if (nDYCode > 0)
 	{
 		st_ProtocolHdr.xhToken = xhToken;
-		_stprintf(st_AuthUser.tszDCode, _T("%d"), nDYCode);
+		_xstprintf(st_AuthUser.tszDCode, _X("%d"), nDYCode);
 	}
 
 	int nMsgLen = 0;
@@ -210,7 +210,7 @@ int AuthClient_Login()
 		memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
 		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
-		OPenSsl_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (UCHAR*)tszCodecBuffer, lpszPass);
+		OPenSsl_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (XBYTE*)tszCodecBuffer, lpszPass);
 
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszCodecBuffer, st_ProtocolHdr.unPacketSize);
@@ -227,7 +227,7 @@ int AuthClient_Login()
 
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
 	{
-		printf(_T("登录协议发送失败！\n"));
+		printf(_X("登录协议发送失败！\n"));
 		return -1;
 	}
 	while (bLogin)
@@ -238,12 +238,11 @@ int AuthClient_Login()
 }
 int AuthClient_Notice()
 {
-	int nHTTPCode = 0;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/api?function=notice");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/api?function=notice");
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), lpszUrl, NULL, &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
@@ -263,28 +262,31 @@ int AuthClient_Notice()
 		int nMsgLen = st_JsonArray["tszContext"].asString().length();
 		BaseLib_OperatorCharset_UTFToAnsi(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
 
+#ifdef _MSC_BUILD
 		printf("AuthClient_Notice:\nID:%lld:%s\n", st_JsonArray["nID"].asInt64(), tszMsgBuffer);
+#else
+		printf("AuthClient_Notice:\nID:%ld:%s\n", st_JsonArray["nID"].asInt64(), tszMsgBuffer);
+#endif
 	}
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	return 0;
 }
 int AuthClient_GetPass()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/pass");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/pass");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszEMailAddr"] = lpszEmail;
-	st_JsonObject["nPhoneNumber"] = nPhoneNumber;
-	st_JsonObject["nIDNumber"] = nIDNumber;
+	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
+	st_JsonObject["nIDNumber"] = (Json::Value::Int64)nIDNumber;
 
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_GetPass:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -292,18 +294,17 @@ int AuthClient_GetPass()
 }
 int AuthClient_GetTime()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/time");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/time");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
 	st_JsonRoot["st_UserAuth"] = st_JsonObject;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_GetTime:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -311,22 +312,21 @@ int AuthClient_GetTime()
 }
 int AuthClient_Delete()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/delete");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/delete");
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
 	st_JsonObject["tszEMailAddr"] = lpszEmail;
-	st_JsonObject["nPhoneNumber"] = nPhoneNumber;
-	st_JsonObject["nIDNumber"] = nIDNumber;
+	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
+	st_JsonObject["nIDNumber"] = (Json::Value::Int64)nIDNumber;
 
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Delete:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -334,18 +334,17 @@ int AuthClient_Delete()
 }
 int AuthClient_Try()
 {
-	int nHTTPCode = 0;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszSerialNet = _T("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
-	LPCXSTR lpszUrl = _T("http://127.0.0.1:5302/auth/user/try");
+	LPCXSTR lpszSerialNet = _X("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/try");
 
 	st_JsonObject["tszSerial"] = lpszSerialNet;
 	st_JsonRoot["st_UserTry"] = st_JsonObject;
 
 	int nMsgLen = 0;
-	CHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	printf("AuthClient_Try:\n%s\n", ptszMsgBuffer);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
@@ -358,7 +357,7 @@ int main()
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
 	int nPort = 5300;
-	LPCXSTR lpszAddr = _T("127.0.0.1");
+	LPCXSTR lpszAddr = _X("127.0.0.1");
 
 	if (!XClient_TCPSelect_Create(&m_Socket, lpszAddr, nPort))
 	{

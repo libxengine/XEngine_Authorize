@@ -1,3 +1,25 @@
+XEngine_Authorize V3.11.0.1001
+
+增加:客户端模块的http版本支持获取动态码
+更新:对XEngine V8.25的编译支持
+修改:客户端编译开关选项名称
+修改:动态码被禁用的时候不允许访问
+修正:某些时候websocket服务无法访问的问题
+修正:http发送数据丢失
+修正:某些加解密API缓冲区没有使用正确的问题
+删除:客户端模块导出函数构建编译选项删除
+删除:websocket的text协议验证
+
+added:get dynamic code for http ver
+update:xengine v8.25 build supported
+modify:client build switch name
+modify:dynamiccode is disable then not allow access
+fixed:sometime does not visit websocket service
+fixed:http sendmsg lost datas
+fixed:Some crypto api buffers are used incorrectly
+delete:export functions build switch for client module
+delete:text protocol ver for websocket
+================================================================
 XEngine_Authorize V3.10.0.1001
 
 增加:临时验证超时时间字段支持

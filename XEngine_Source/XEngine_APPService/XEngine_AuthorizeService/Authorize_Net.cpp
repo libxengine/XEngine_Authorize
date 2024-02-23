@@ -174,6 +174,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 	}
 	else
 	{
+		int nSDSize = XENGINE_AUTH_MAX_BUFFER;
 		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
 		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
 
@@ -181,7 +182,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		st_HDRParam.bIsClose = true;
 		if (NULL == lpszPass)
 		{
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nMsgLen, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
 		}
 		else
 		{
@@ -193,10 +194,10 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 			}
 
 			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nMsgLen, &st_HDRParam, ptszCodecBuffer, nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDSize, &st_HDRParam, ptszCodecBuffer, nMsgLen);
 			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 		}
-		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nSDSize);
 	}
 	ManagePool_Memory_Free(xhMemPool, ptszMsgBuffer);
 	return true;

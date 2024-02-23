@@ -13,6 +13,13 @@ bool XEngine_AuthorizeHTTP_DynamicCode(LPCXSTR lpszClientAddr, XCHAR** pptszList
 	memset(tszURLValue, '\0', sizeof(tszURLValue));
 	BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszURLValue);
 
+	if (!st_FunSwitch.bSwitchDCode)
+	{
+		Protocol_Packet_HttpComm(tszMsgBuffer, &nMsgLen, 503, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszMsgBuffer, nMsgLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求获得动态验证码失败,服务器已经关闭此功能!"), lpszClientAddr);
+		return false;
+	}
 	if (0 == _tcsxnicmp(lpszAPIGet, tszURLValue, _tcsxlen(lpszAPIGet)))
 	{
 		//http://app.xyry.org:5302/api?function=dcode&user=get

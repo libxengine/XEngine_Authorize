@@ -1,1 +1,1 @@
-appclient just only x86 debug compile
+appclient just only x86 and x64 debug compile on windows

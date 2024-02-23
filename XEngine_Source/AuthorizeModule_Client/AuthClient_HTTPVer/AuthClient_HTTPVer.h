@@ -18,6 +18,7 @@ public:
 	~CAuthClient_HTTPVer();
 public:
 	bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);
+	bool AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout = NULL);
 protected:
 private:
 };

@@ -2,11 +2,15 @@
 #include <Windows.h>
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32")
-#pragma comment(lib,"jsoncpp")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
-#pragma comment(lib,"XEngine_NetHelp/NetHelp_APIClient")
+#pragma comment(lib,"XEngine_Client/XClient_APIHelp")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize")
+#ifdef _WIN64
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
+#else
+#pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#endif
 #endif
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,19 +23,18 @@
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
-#include <XEngine_Include/XEngine_NetHelp/APIClient_Define.h>
-#include <XEngine_Include/XEngine_NetHelp/APIClient_Error.h>
+#include <XEngine_Include/XEngine_Client/APIClient_Define.h>
+#include <XEngine_Include/XEngine_Client/APIClient_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 
 //需要优先配置XEngine
 //WINDOWS支持VS2022 x64 debug 编译调试
-//linux::g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -L /usr/local/lib/XEngine_Release/XEngine_BaseLib -L /usr/local/lib/XEngine_Release/XEngine_Core -L /usr/local/lib/XEngine_Release/XEngine_NetHelp -L /usr/local/lib/XEngine_Release/XEngine_HelpComponents -lXEngine_BaseLib -lXEngine_OPenSsl -lNetHelp_APIClient -lHelpComponents_Authorize
-//macos::g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -lXEngine_BaseLib -lXEngine_OPenSsl -lNetHelp_APIClient -lHelpComponents_Authorize
+//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_ThirdPart/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Authorize -ljsoncpp
 
 //#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
 
-LPCXSTR lpszPasswd = _T("123123");
+LPCXSTR lpszPasswd = _X("123123");
 
 int main()
 {
@@ -64,7 +67,7 @@ int main()
 	st_JsonRoot["st_AuthUserInfo"] = st_JsonUserInfo;
 
 	XCHAR* ptszCreateBuffer = NULL;
-	LPCXSTR lpszCreateUrl = _T("http://192.168.1.10:5302/auth/cdkey/create");
+	LPCXSTR lpszCreateUrl = _X("http://192.168.1.10:5302/auth/cdkey/create");
 	//1. 创建CDKEY
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//加密
@@ -72,10 +75,10 @@ int main()
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
 	nLen = st_JsonRoot.toStyledString().length();
-	OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nLen, (UCHAR *)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_T("POST"), lpszCreateUrl, tszCodecBuffer, &nCode, &ptszCreateBuffer, &nLen))
+	OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nLen, (XBYTE *)tszCodecBuffer, lpszPasswd);
+	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, tszCodecBuffer, &nCode, &ptszCreateBuffer, &nLen))
 #else
-	if (!APIClient_Http_Request(_T("POST"), lpszCreateUrl, st_JsonRoot.toStyledString().c_str(), &nCode, &ptszCreateBuffer, &nLen))
+	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, st_JsonRoot.toStyledString().c_str(), &nCode, &ptszCreateBuffer, &nLen))
 #endif
 	{
 		printf("发送投递失败！\n");
@@ -99,15 +102,15 @@ int main()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszCreateBuffer);
 	//2. 授权CDKEY
 	XCHAR* ptszAuthBuffer = NULL;
-	LPCXSTR lpszAuthUrl = _T("http://192.168.1.10:5302/auth/cdkey/auth");
+	LPCXSTR lpszAuthUrl = _X("http://192.168.1.10:5302/auth/cdkey/auth");
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//加密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 	nLen = nLen;
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (UCHAR*)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_T("POST"), lpszAuthUrl, tszCodecBuffer, &nCode, &ptszAuthBuffer, &nLen))
+	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
+	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszCodecBuffer, &nCode, &ptszAuthBuffer, &nLen))
 #else
-	if (!APIClient_Http_Request(_T("POST"), lpszAuthUrl, tszMsgBuffer, &nCode, &ptszAuthBuffer, &nLen))
+	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszMsgBuffer, &nCode, &ptszAuthBuffer, &nLen))
 #endif
 	{
 		printf("发送投递失败！\n");
@@ -128,7 +131,7 @@ int main()
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszAuthBuffer);
 	//3. 验证CDKEY
 	XCHAR* ptszVerBuffer = NULL;
-	LPCXSTR lpszVerUrl = _T("http://192.168.1.10:5302/auth/cdkey/ver");
+	LPCXSTR lpszVerUrl = _X("http://192.168.1.10:5302/auth/cdkey/ver");
 
 	XENGINE_AUTHORIZE_LOCAL st_Authorize;
 	memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
@@ -136,10 +139,10 @@ int main()
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 //加密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (UCHAR*)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_T("POST"), lpszVerUrl, tszCodecBuffer, &nCode, &ptszVerBuffer, &nLen))
+	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
+	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszCodecBuffer, &nCode, &ptszVerBuffer, &nLen))
 #else
-	if (!APIClient_Http_Request(_T("POST"), lpszVerUrl, tszMsgBuffer, &nCode, &ptszVerBuffer, &nLen))
+	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszMsgBuffer, &nCode, &ptszVerBuffer, &nLen))
 #endif
 	{
 		printf("发送投递失败！\n");

@@ -53,7 +53,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Connect(LPCXSTR lpszClientAddr,
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
 		return false;
 	}
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	if (!XClient_TCPSelect_Create(&m_hSocket, lpszClientAddr, nPort, 2))
 	{
 		AuthClient_IsErrorOccur = true;
@@ -79,7 +79,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
 {
 	AuthClient_IsErrorOccur = false;
 
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	if (NULL != pSTDThread)
 	{
 		m_bRun = false;
@@ -107,7 +107,7 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
 {
 	AuthClient_IsErrorOccur = false;
 	
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	if (NULL != pbAuth)
 	{
 		*pbAuth = m_bAuth;
@@ -153,7 +153,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_PARAMENT;
 		return false;
 	}
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	XCHAR tszMsgBuffer[2048] = {};
 	XENGINE_PROTOCOLHDR st_ProtocolHdr = {};                   
 	XENGINE_PROTOCOL_USERAUTH st_AuthUser = {};
@@ -247,7 +247,7 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 {
 	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
 
-#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_NETWORK)
+#if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	while (pClass_This->m_bRun)
 	{
 		int nMsgLen = 0;
