@@ -1,0 +1,7 @@
+LIBRARY
+
+EXPORTS
+	InfoReport_GetLastError
+
+	InfoReport_APIMachine_Send
+	InfoReport_APIMachine_GetTime
