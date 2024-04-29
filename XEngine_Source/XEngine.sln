@@ -10,8 +10,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_File", "XEngine_Fil
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Protocol", "AuthorizeModule_Protocol\AuthorizeModule_Protocol.vcxproj", "{6B926D00-DCD2-49E3-86A9-3230C9872E65}"
+	ProjectSection(ProjectDependencies) = postProject
+		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Configure", "AuthorizeModule_Configure\AuthorizeModule_Configure.vcxproj", "{1391B739-713B-4A3A-9233-FEAB92E0566C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_APPService", "XEngine_APPService", "{2444CB54-6443-47F9-8D93-91237D0D05FB}"
 EndProject
@@ -20,18 +26,37 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Database", "AuthorizeModule_Database\AuthorizeModule_Database.vcxproj", "{5FA1874A-32F4-4176-9C23-4E22BE183660}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeService", "XEngine_APPService\XEngine_AuthorizeService\XEngine_AuthorizeService.vcxproj", "{A29DFD8D-2818-4BE3-A2DB-07F241B4BFC9}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1391B739-713B-4A3A-9233-FEAB92E0566C} = {1391B739-713B-4A3A-9233-FEAB92E0566C}
+		{185975A2-EB43-45DF-8108-03656A2BFE33} = {185975A2-EB43-45DF-8108-03656A2BFE33}
+		{5FA1874A-32F4-4176-9C23-4E22BE183660} = {5FA1874A-32F4-4176-9C23-4E22BE183660}
+		{6B926D00-DCD2-49E3-86A9-3230C9872E65} = {6B926D00-DCD2-49E3-86A9-3230C9872E65}
+		{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894} = {AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}
+		{CB9138DF-789D-459F-AD43-4095B22A487F} = {CB9138DF-789D-459F-AD43-4095B22A487F}
+		{DD8CB5F1-980F-48C3-BA2F-3CF534903B14} = {DD8CB5F1-980F-48C3-BA2F-3CF534903B14}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeApp", "XEngine_APPService\XEngine_AuthorizeApp\XEngine_AuthorizeApp.vcxproj", "{51DCBDC7-50CB-4A44-B10B-FCF90309914D}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1391B739-713B-4A3A-9233-FEAB92E0566C} = {1391B739-713B-4A3A-9233-FEAB92E0566C}
+		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Help", "AuthorizeModule_Help\AuthorizeModule_Help.vcxproj", "{AB3DB24C-E1B3-41CF-B2F4-6C12E13C2894}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Client", "AuthorizeModule_Client\AuthorizeModule_Client.vcxproj", "{DD8CB5F1-980F-48C3-BA2F-3CF534903B14}"
+	ProjectSection(ProjectDependencies) = postProject
+		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_Depend", "XEngine_Depend", "{6444F125-63DE-4120-98B3-DF097A9758FA}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "jsoncpp", "XEngine_Depend\XEngine_Module\jsoncpp\jsoncpp.vcxproj", "{940A00A6-A944-46C1-B34F-1361AFE240E0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_InfoReport", "XEngine_Depend\XEngine_Module\XEngine_InfoReport\XEngine_InfoReport.vcxproj", "{185975A2-EB43-45DF-8108-03656A2BFE33}"
+	ProjectSection(ProjectDependencies) = postProject
+		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
