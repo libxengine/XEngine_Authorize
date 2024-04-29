@@ -1,0 +1,3 @@
+[submodule "XEngine_Source/XEngine_Depend"]
+	path = XEngine_Source/XEngine_Depend
+	url = https://github.com/libxengine/XEngine_OPenSource.git
