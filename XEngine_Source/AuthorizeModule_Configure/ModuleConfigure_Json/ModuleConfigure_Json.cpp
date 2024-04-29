@@ -168,6 +168,16 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.nMaxCount = st_JsonXLog["MaxCount"].asInt();
 	pSt_ServerConfig->st_XLog.nLogLeave = st_JsonXLog["LogLeave"].asInt();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
+	
+	if (st_JsonRoot["XReport"].empty() || (2 != st_JsonRoot["XReport"].size()))
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XLOG;
+		return false;
+	}
+	Json::Value st_JsonXReport = st_JsonRoot["XReport"];
+	pSt_ServerConfig->st_XReport.bEnable = st_JsonXReport["bEnable"].asBool();
+	_tcsxcpy(pSt_ServerConfig->st_XReport.tszAPIUrl, st_JsonXReport["tszAPIUrl"].asCString());
 	//版本列表
 	if (st_JsonRoot["XVer"].empty())
 	{

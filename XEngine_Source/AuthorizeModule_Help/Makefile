@@ -6,9 +6,9 @@ FILEEXT =
 LIBFLAG = 
 RELEASE = 0
 UNICODE = 0
-LOADHDR = -I ./ -I ../XEngine_ThirdPart/jsoncpp
-LOADSO = -L ../XEngine_ThirdPart/jsoncpp
-LIB = -lXEngine_BaseLib -ljsoncpp
+LOADHDR = -I ./
+LOADSO = -L 
+LIB = -lXEngine_BaseLib
 LIBEX = 
 OBJECTS = AuthHelp_DynamicCode.o AuthHelp_MultiLogin.o pch.o
 

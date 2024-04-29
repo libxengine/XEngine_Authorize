@@ -51,6 +51,8 @@ using namespace std;
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
+#include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
+#include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
 extern bool bIsRun;
 extern XHANDLE xhLog;
@@ -98,12 +100,14 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../x64/Debug/XEngine_InfoReport.lib")
 #else
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../Debug/XEngine_InfoReport.lib")
 #endif
 #else
 #ifdef _WIN64
@@ -112,12 +116,14 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../x64/Release/XEngine_InfoReport.lib")
 #else
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../Release/XEngine_InfoReport.lib")
 #endif
 #endif
 #pragma comment(lib,"Ws2_32.lib")

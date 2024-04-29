@@ -74,7 +74,12 @@ typedef struct
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
-	}st_XLog;                                 
+	}st_XLog;         
+	struct  
+	{
+		bool bEnable;
+		XCHAR tszAPIUrl[MAX_PATH];
+	}st_XReport;
 	struct  
 	{
 		list<string> *pStl_ListVer;
