@@ -178,6 +178,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	Json::Value st_JsonXReport = st_JsonRoot["XReport"];
 	pSt_ServerConfig->st_XReport.bEnable = st_JsonXReport["bEnable"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XReport.tszAPIUrl, st_JsonXReport["tszAPIUrl"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XReport.tszServiceName, st_JsonXReport["tszServerName"].asCString());
 	//版本列表
 	if (st_JsonRoot["XVer"].empty())
 	{

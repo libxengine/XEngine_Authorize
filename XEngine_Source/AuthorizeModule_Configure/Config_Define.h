@@ -79,6 +79,7 @@ typedef struct
 	{
 		bool bEnable;
 		XCHAR tszAPIUrl[MAX_PATH];
+		XCHAR tszServiceName[128];
 	}st_XReport;
 	struct  
 	{
