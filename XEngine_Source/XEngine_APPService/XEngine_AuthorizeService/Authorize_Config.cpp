@@ -3,11 +3,17 @@
 bool Authorize_Service_Parament(int argc, char** argv)
 {
     LPCXSTR lpszFile = _X("./XEngine_Config/XEngine_Config.json");
+	LPCXSTR lpszVersionFile = _X("./XEngine_Config/XEngine_VersionConfig.json");
 	LPCXSTR lpszSwitchFile = _X("./XEngine_Config/XEngine_SwitchConfig.json");
 
 	if (!ModuleConfigure_Json_File(lpszFile, &st_AuthConfig))
 	{
 		printf("解析配置文件失败,Configure_IniFile_Read:%lX\n", Config_GetLastError());
+		return false;
+	}
+	if (!ModuleConfigure_Json_Versions(lpszVersionFile, &st_AuthConfig))
+	{
+		printf("解析配置文件失败,ModuleConfigure_Json_Versions:%lX\n", Config_GetLastError());
 		return false;
 	}
 	if (!ModuleConfigure_Json_Switch(lpszSwitchFile, &st_FunSwitch))
