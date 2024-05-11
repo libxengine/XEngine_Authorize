@@ -18,6 +18,7 @@ public:
 	~CAuthHelp_MultiLogin();
 public:
 	bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType);
+	bool AuthHelp_MultiLogin_TimeMatch(LPCXSTR lpszLoginTime);
 protected:
 private:
 };

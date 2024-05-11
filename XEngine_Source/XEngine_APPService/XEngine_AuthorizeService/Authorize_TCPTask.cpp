@@ -270,6 +270,18 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 
 			Database_SQLite_UserSet(&st_UserTable);
 		}
+		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+		{
+			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
+			{
+				//如果不匹配
+				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
+				_xtprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
+				BaseLib_OperatorTime_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
+				Database_SQLite_UserSet(&st_UserTable);
+			}
+		}
+
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, nNetType))
 		{
