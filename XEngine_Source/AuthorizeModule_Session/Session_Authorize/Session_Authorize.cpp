@@ -388,6 +388,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
         pClass_This->st_Locker.lock_shared();
         for (auto stl_MapIterator = pClass_This->stl_MapNetClient.begin(); stl_MapIterator != pClass_This->stl_MapNetClient.end(); stl_MapIterator++)
         {
+            bool bMultiTime = false;   //仅仅SECOND类型需要计算
             __int64x nTimeCount = 0;
             AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
             
@@ -399,7 +400,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
                 memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
                 //获取现在的系统时间
 				BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                 
-				//用户登录了多少分钟
+				//用户登录了多少秒钟
 				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
                 nTimeCount += nOnlineSpan;
 				//登陆成功的。我们要处理他过期
@@ -407,6 +408,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				{
 				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
 				{
+                    bMultiTime = true;
 					//秒钟处理
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
 					//赋值给回调函数
@@ -438,7 +440,17 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				}
 				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
 				{
-					//天数卡处理,天数卡需要特殊处理
+					stl_ListIterator->nOnlineTime = nOnlineSpan;
+                    _xstprintf(stl_ListIterator->tszLeftTime, _X("%lld"), stl_ListIterator->nLeftTime);
+					//赋值给回调函数
+					st_ProtocolTimer.nTimeONLine = nOnlineSpan;
+					st_ProtocolTimer.nNetType = stl_ListIterator->nNetType;
+					st_ProtocolTimer.nTimeLeft = stl_ListIterator->nLeftTime;
+					st_ProtocolTimer.enSerialType = stl_ListIterator->st_UserTable.enSerialType;
+					st_ProtocolTimer.enDeviceType = stl_ListIterator->st_UserTable.enDeviceType;
+					_tcsxcpy(st_ProtocolTimer.tszLeftTime, stl_ListIterator->tszLeftTime);
+					_tcsxcpy(st_ProtocolTimer.tszUserAddr, stl_ListIterator->tszClientAddr);
+					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
 					break;
 				}
 				default:
@@ -475,7 +487,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				}
             }
             //处理多端登录情况
-            if (nTimeCount > 0)
+            if ((nTimeCount > 0) && bMultiTime)
             {
                 st_ProtocolTimer.nTimeLeft -= nTimeCount;
                 for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
