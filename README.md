@@ -59,6 +59,11 @@ window执行XEngine_WINEnv.bat 脚本.
 Linux执行:sudo ./XEngine_LINEnv.sh -i 3  
 macos执行:./XEngine_LINEnv.sh -i 3  
 
+#### sub module
+由于依赖的子模块,在你checkout仓库后,在仓库目录下执行下面的命令拉取子模块  
+git submodule init  
+git submodule update  
+
 #### Windows
 使用VS打开并且编译,支持WINDOWS 7SP1以上系统  
 直接运行即可,使用XEngine_AuthorizeService  

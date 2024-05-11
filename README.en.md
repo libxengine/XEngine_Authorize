@@ -59,6 +59,11 @@ window Exection XEngine_WINEnv.bat
 Linux Exection:sudo ./XEngine_LINEnv.sh -i 3  
 Macos Exection:./XEngine_LINEnv.sh -i 3
 
+#### sub module
+Due to the dependent sub-modules, after you checkout the warehouse, execute the following command in the warehouse directory to pull the sub-modules  
+git submodule init  
+git submodule update  
+
 #### Windows
 use vs open and compile,suport windows 7sp1 and above  
 Just Run it,use XEngine_AuthorizeService  
