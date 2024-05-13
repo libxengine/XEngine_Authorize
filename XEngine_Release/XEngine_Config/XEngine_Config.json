@@ -32,8 +32,8 @@
         },
         "st_MulitLogin":{
             "bSecond":true,
-            "bDay":true,
             "bTime":true,
+            "bDay":false,
             "bCustom":false
         }
     },
