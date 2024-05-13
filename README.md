@@ -59,6 +59,11 @@ window执行XEngine_WINEnv.bat 脚本.
 Linux执行:sudo ./XEngine_LINEnv.sh -i 3  
 macos执行:./XEngine_LINEnv.sh -i 3  
 
+#### sub module
+由于依赖的子模块,在你checkout仓库后,在仓库目录下执行下面的命令拉取子模块  
+git submodule init  
+git submodule update  
+
 #### Windows
 使用VS打开并且编译,支持WINDOWS 7SP1以上系统  
 直接运行即可,使用XEngine_AuthorizeService  
@@ -119,7 +124,8 @@ V3版本为全新版本,为了适应过多环境要求开发
 
 ## 更新指导
 数据库更新使用Navicat等数据库软件打开判断表和字段不同的地方进行修改  
-修改完毕后直接把数据库拷贝到新的版本进行覆盖,修改你的配置文件即可
+修改完毕后直接把数据库拷贝到新的版本进行覆盖,修改你的配置文件即可  
+3.11->3.12用户表增加了新的时间字段,请参考SQL文件
 
 ## 视频教程
 你也可以观看视频教程来了解我们的代码框架情况:https://www.bilibili.com/video/BV1iF4m177aG
@@ -138,7 +144,6 @@ V3版本为全新版本,为了适应过多环境要求开发
 
 ## 开发计划 
 mfc转qt界面库(我们需要会Qt的人员加入一起开发)  
-天数卡按照使用天数计费,不使用不计费  
 多端登录注册类型开关  
 短信登录,扫码登录  
 生成会话TOKEN分布式鉴权  

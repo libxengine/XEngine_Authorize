@@ -100,6 +100,20 @@ extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 备注：
 *********************************************************************/
 extern "C" bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType);
+/********************************************************************
+函数名称：AuthHelp_MultiLogin_TimeMatch
+函数功能：判断登录时间是否匹配当前系统时间
+ 参数.一：lpszLoginTime
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要判断的时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool AuthHelp_MultiLogin_TimeMatch(LPCXSTR lpszLoginTime);
 /************************************************************************/
 /*                    剪贴板导出定义                                    */
 /************************************************************************/

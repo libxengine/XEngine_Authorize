@@ -183,7 +183,11 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 				else
 				{
-
+					pSt_ProtocolHdr->wReserve = 257;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，服务端设置不正确"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
 				}
 			}
 			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
@@ -262,10 +266,22 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 		{
 			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
-			_xtprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
+			_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 
 			Database_SQLite_UserSet(&st_UserTable);
 		}
+		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+		{
+			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
+			{
+				//如果不匹配
+				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
+				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
+				BaseLib_OperatorTime_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
+				Database_SQLite_UserSet(&st_UserTable);
+			}
+		}
+
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, nNetType))
 		{

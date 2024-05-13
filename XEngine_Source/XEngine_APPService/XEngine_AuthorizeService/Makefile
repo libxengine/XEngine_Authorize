@@ -7,9 +7,11 @@ LIBFLAG =
 RELEASE = 0
 UNICODE = 0
 LOADHDR = -I ./
-LOADSO = -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../AuthorizeModule_Help -L ../../XEngine_ThirdPart/jsoncpp
-LIB = -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lXEngine_ProcFile -lXEngine_SystemApi  \
-      -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help -ljsoncpp
+LOADSO = -L ../../XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Depend/XEngine_Module/XEngine_InfoReport  \
+         -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../AuthorizeModule_Help 
+LIB = -lXEngine_InfoReport -ljsoncpp   \
+      -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_Authorize -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lXEngine_ProcFile -lXEngine_SystemApi  \
+      -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help 
 LIBEX = 
 OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
           AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o\

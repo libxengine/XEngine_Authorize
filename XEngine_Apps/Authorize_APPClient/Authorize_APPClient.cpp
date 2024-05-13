@@ -33,7 +33,7 @@ using namespace std;
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
-//Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_ThirdPart/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_Socket -lXClient_APIHelp -lpthread -ljsoncpp
+//Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define _DYNAMIC_CODE
 bool bRun = true;
@@ -46,7 +46,7 @@ int nDYCode = 0;
 XSOCKET m_Socket = 0;
 LPCXSTR lpszUser = _X("123123aa");
 LPCXSTR lpszPass = _X("123123");
-LPCXSTR lpszSerial = _X("XAUTH-XYRYM-ZAA10-59NKW-KOFLP-35838-ZXC36-ZOVTH");
+LPCXSTR lpszSerial = _X("XAUTH-XYRYD-NONN5-FSM45-XBLAZ-23475-28MNL-VUTJD-32956-AKF24");
 LPCXSTR lpszEmail = _X("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;

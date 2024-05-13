@@ -3,7 +3,8 @@ UNICODE = 0
 PLATFORM=linux
 FLAGS= 
 
-THIRD_JSONCPP_PATH = ./XEngine_ThirdPart/jsoncpp
+DEPEND_JSONCPP_PATH = ./XEngine_Depend/XEngine_Module/jsoncpp
+DEPEND_REPORT_PATH = ./XEngine_Depend/XEngine_Module/XEngine_InfoReport
 
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
 AUTH_DATABASE_PATH = ./AuthorizeModule_Database
@@ -14,7 +15,7 @@ AUTH_CLIENT_PATH = ./AuthorizeModule_Client
 
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
-XENGINE_MODULES = libjsoncpp.so                                                                                        \
+XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                                                                                    \
           libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
 	      XEngine_AuthorizeApp.exe 
 
@@ -22,7 +23,9 @@ XENGINE_MODULES = libjsoncpp.so                                                 
 MakeAll:$(XENGINE_MODULES)
 
 libjsoncpp.so:
-	make -C $(THIRD_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	make -C $(DEPEND_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+libXEngine_InfoReport.so:
+	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 
 libAuthorizeModule_Session.so:
 	make -C $(AUTH_SESSION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)

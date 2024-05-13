@@ -164,7 +164,13 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
+#ifdef _MSC_BUILD
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
+#elif __linux__
+	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_LINUX;
+#else
+	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_MACOS;
+#endif
 	_tcsxcpy(st_AuthUser.tszUserName, lpszUser);
 	_tcsxcpy(st_AuthUser.tszUserPass, lpszPass);
 	//是否有动态码

@@ -208,9 +208,15 @@ bool CDatabase_SQLite::Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
         //用户级别 -1表示封禁
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
-        //注册日期
+        //登录日期
         nFliedValue++;
-        _tcsxcpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+        if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
+        {
+            _tcsxcpy(pSt_UserInfo->st_UserInfo.tszLoginTime, ppszResult[nFliedValue]);
+        }
+		//注册日期
+		nFliedValue++;
+		_tcsxcpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -387,7 +393,7 @@ bool CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',UPTime = '%s',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszLoginTime, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -481,10 +487,16 @@ bool CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
         //用户级别 -1表示封禁
         nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
-        //注册日期
+        //登录日期
         nFliedValue++;
-        _tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
-        nFliedValue++;
+		if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
+		{
+			_tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszLoginTime, ppszResult[nFliedValue]);
+		}
+		//注册日期
+		nFliedValue++;
+		_tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
     }
     DataBase_SQLite_FreeTable(ppszResult);
     return true;
@@ -1694,10 +1706,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024];
-    XCHAR tszTimer[128];
-
-    memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
-    memset(tszTimer, '\0', sizeof(tszTimer));
+	memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
     //判断和以前的充值卡是否匹配。
     if (en_AuthSerialType != en_AuthUserType)
     {
@@ -1735,20 +1744,8 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
         {
             //如果是天数卡
-            XENGINE_LIBTIMER st_StartTimer;
-            XENGINE_LIBTIMER st_EndTimer;
-
-            memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
-            memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-
-            BaseLib_OperatorTime_GetSysTime(&st_StartTimer);
-
-            st_EndTimer.wDay += _ttxoi(lpszCardTime);
-            BaseLib_OperatorTimeSpan_CalForStu(&st_StartTimer, &st_EndTimer);
-            //格式化时间，到超时的时间
-            _xstprintf(tszTimer, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_EndTimer.wYear, st_EndTimer.wMonth, st_EndTimer.wDay, st_EndTimer.wHour, st_EndTimer.wMinute, st_EndTimer.wSecond);
             //更新用户表的过期时间
-            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);      //更新用户表的过期时间
+            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
         }
         break;
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
@@ -1773,7 +1770,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
             }
             _xstprintf(tszTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTime.wYear, st_AuthTime.wMonth, st_AuthTime.wDay, st_AuthTime.wHour, st_AuthTime.wMinute, st_AuthTime.wSecond);
             //更新用户表的过期时间
-            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);
+            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTime, lpszUserName);
         }
         break;
         default:
@@ -1793,25 +1790,10 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
         break;
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
         {
-            XENGINE_LIBTIMER st_EndTimer;
-            XENGINE_LIBTIMER st_AuthTimer;
-
-            memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-            memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
-            //获取用户拥有的时间
-            if (6 != _stxscanf(lpszUserTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
-            {
-                SQLPacket_IsErrorOccur = true;
-                SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTIME;
-                return false;
-            }
-            st_EndTimer.wDay += _ttxoi(lpszCardTime);
-
-            BaseLib_OperatorTimeSpan_CalForStu(&st_AuthTimer, &st_EndTimer);
-            //格式化时间，到超时的时间
-            _xstprintf(tszTimer, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_EndTimer.wYear, st_EndTimer.wMonth, st_EndTimer.wDay, st_EndTimer.wHour, st_EndTimer.wMinute, st_EndTimer.wSecond);
+			int nCardTime = _ttxoi(lpszCardTime);
+			nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
             //更新用户表的过期时间
-            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);
+            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);
         }
         break;
         case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
@@ -1838,7 +1820,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
             }
             _xstprintf(tszTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTime.wYear, st_AuthTime.wMonth, st_AuthTime.wDay, st_AuthTime.wHour, st_AuthTime.wMinute, st_AuthTime.wSecond);
             //更新用户表的过期时间
-            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTimer, lpszUserName);
+            _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTime, lpszUserName);
         }
         break;
         default:

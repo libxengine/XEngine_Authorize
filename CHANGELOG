@@ -1,3 +1,25 @@
+XEngine_Authorize V3.12.0.1001
+
+增加:使用新的git module替换jsoncpp
+增加:信息报告模块
+增加:天数类型现在已经支持了
+修改:分离版本列表从配置文件中
+修改:检测多端登录类型
+修正:会话模块不是秒卡也会合并计算用时导致的问题
+修正:客户端模块登录类型不正确的问题
+修正:自定义时间类型充值不正确的问题
+修正:次数卡登录的时候可能计算不正确的问题
+
+added:use new git modules instead jsoncpp and info report
+added:info report module
+added:day type supported
+modify:detach the version list into a separate configuration file
+modify:check multi login type
+fixed:the problem of merging login time instead of seconds for session module
+fixed:login type is incorrect for client module
+fixed:time of custom type pay is incorrect
+fixed:time number is incorrect when login
+================================================================
 XEngine_Authorize V3.11.0.1001
 
 增加:客户端模块的http版本支持获取动态码

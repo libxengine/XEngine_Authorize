@@ -74,7 +74,13 @@ typedef struct
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
-	}st_XLog;                                 
+	}st_XLog;         
+	struct  
+	{
+		bool bEnable;
+		XCHAR tszAPIUrl[MAX_PATH];
+		XCHAR tszServiceName[128];
+	}st_XReport;
 	struct  
 	{
 		list<string> *pStl_ListVer;
@@ -121,6 +127,25 @@ extern "C" XLONG Config_GetLastError(int* pInt_SysError = NULL);
 备注：
 *********************************************************************/
 extern "C" bool ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG * pSt_ServerConfig);
+/********************************************************************
+函数名称：ModuleConfigure_Json_Versions
+函数功能：读取版本列表配置
+ 参数.一：lpszConfigFile
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要读取的配置文件
+ 参数.二：pSt_ServerConfig
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出服务配置信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool ModuleConfigure_Json_Versions(LPCXSTR lpszConfigFile, XENGINE_SERVICECONFIG* pSt_ServerConfig);
 /********************************************************************
 函数名称：ModuleConfigure_Json_Switch
 函数功能：功能开关配置文件

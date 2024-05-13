@@ -30,7 +30,7 @@
 
 //需要优先配置XEngine
 //WINDOWS支持VS2022 x64 debug 编译调试
-//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_ThirdPart/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Authorize -ljsoncpp
+//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Authorize -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
 
