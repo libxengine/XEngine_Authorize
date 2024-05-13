@@ -124,7 +124,8 @@ The V3 version is a new version, developed to meet the requirements of many envi
 
 ## update guide
 Database update Use Navicat and other database software to open the judgment table and the different fields for modification  
-After modification, directly copy the database to the new version to overwrite, and modify your configuration file
+After modification, directly copy the database to the new version to overwrite, and modify your configuration file  
+3.11->3.12 A new time field has been added to the user table, please refer to the SQL file
 
 ## Authorization instructions
 Use this software must be open source and indicate the source,If you want closed source and commercial,Then need to be authorized by the author.
