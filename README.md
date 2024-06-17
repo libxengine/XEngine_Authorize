@@ -46,14 +46,6 @@ V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程�
 18. 支持动态验证码登录
 19. 支持多端登录和合并用时
 
-## 架构预览
-XEngine_Authorize  
-│───XEngine_Apps    客户端源代码  
-│───XEngine_Source  服务端源代码 + 服务端管理程序源代码  
-│───XEngine_SQL     mysql 数据库文件  
-│───XEngine_Release 配置信息文件 +  sqlite文件  
-│───XEngine_Docment 帮助文档  
-
 ## 安装教程
 
 #### XEngine环境
@@ -71,7 +63,6 @@ macos执行:./XEngine_LINEnv.sh -i 3
 由于依赖的子模块,在你checkout仓库后,在仓库目录下执行下面的命令拉取子模块  
 git submodule init  
 git submodule update  
-如果github访问失败,也可以在XEngine_Source\XEngine_Depend 下直接clone项目:git clone https://gitee.com/xengine/XEngine_OPenSource.git
 
 #### Windows
 使用VS打开并且编译,支持WINDOWS 7SP1以上系统  
@@ -109,9 +100,7 @@ Linux or macos:直接运行即可
 
 ## 测试服务器
 地址:app.xyry.org  
-端口:tcp 5300 用于客户端程序   
-端口:websocket 5301  
-端口:http 5302 用于服务端管理 传输验证密码:无加密  
+端口:tcp端口 5300,websocket端口 5301,http管理端 5302,传输验证密码:无加密
 
 ## 程序截图
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
