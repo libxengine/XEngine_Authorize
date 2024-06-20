@@ -64,7 +64,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	m_EditFlushTime.SetWindowText("1");
+	m_EditFlushTime.SetWindowText("10");
 	m_EditPosStart.SetWindowText("0");
 	m_EditPosEnd.SetWindowText("50");
 	hUserWnd = m_hWnd;
