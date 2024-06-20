@@ -380,7 +380,10 @@ void CDialog_User::OnBnClickedButton4()
 		return;
 	}
 	CDialog_Modify m_DlgModify;
-	m_DlgModify.DoModal();
+	if (IDOK == m_DlgModify.DoModal())
+	{
+		OnBnClickedButton1();
+	}
 }
 
 
@@ -424,7 +427,10 @@ void CDialog_User::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDialog_Modify m_DlgModify;
-	m_DlgModify.DoModal();
+	if (IDOK == m_DlgModify.DoModal())
+	{
+		OnBnClickedButton1();
+	}
 }
 
 
