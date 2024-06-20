@@ -15,7 +15,7 @@ void CALLBACK XEngine_Client_TCPRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LP
 }
 void CALLBACK XEngine_Client_TCPClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr);
+	XEngine_CloseClient(lpszClientAddr, false);
 }
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
@@ -49,7 +49,7 @@ void CALLBACK XEngine_Client_WSRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPC
 }
 void CALLBACK XEngine_Client_WSClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr);
+	XEngine_CloseClient(lpszClientAddr, false);
 }
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
@@ -67,19 +67,21 @@ void CALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, L
 }
 void CALLBACK XEngine_Client_HttpClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr);
+	XEngine_CloseClient(lpszClientAddr, false);
 }
 //////////////////////////////////////////////////////////////////////////
-bool XEngine_CloseClient(LPCXSTR lpszClientAddr)
+bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 {
+	if (bHeart)
+	{
+		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	HttpProtocol_Server_CloseClinetEx(xhHttpPacket, lpszClientAddr);
-
-	NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
-	NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
-
+	
 	AUTHSESSION_NETCLIENT st_NETClient;
 	memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
 

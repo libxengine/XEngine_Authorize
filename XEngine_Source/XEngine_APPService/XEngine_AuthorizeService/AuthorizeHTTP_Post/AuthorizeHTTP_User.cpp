@@ -32,7 +32,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName);
 		for (int i = 0; i < nListCount; i++)
 		{
-			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 
@@ -226,7 +226,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 				BaseLib_OperatorTime_TimeToStr(tszTimeStart);
 				BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
 
-				st_VERTemp.nLTime = nTimeSpan;
+				st_VERTemp.nLTime = (int)nTimeSpan;
 			}
 			//是否超过
 			if (nTimeSpan >= 0)
