@@ -432,6 +432,12 @@ void CDialog_User::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	OnBnClickedButton4();
+	 // 假设m_listControl是你的CListCtrl成员变量
+	POSITION m_ListPosition = m_ListCtrlClient.GetFirstSelectedItemPosition();
+	if (m_ListPosition != NULL)
+	{
+		OnBnClickedButton4();
+	}
+	
 	*pResult = 0;
 }
