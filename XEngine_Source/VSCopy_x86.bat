@@ -1,4 +1,5 @@
 copy /y "%XEngine_Lib32%\XEngine_BaseLib\XEngine_BaseLib.dll" "./"
+copy /y "%XEngine_Lib32%\XEngine_BaseLib\XEngine_BaseSafe.dll" "./"
 copy /y "%XEngine_Lib32%\XEngine_BaseLib\XEngine_Algorithm.dll" "./"
 copy /y "%XEngine_Lib32%\XEngine_Core\XEngine_Core.dll" "./"
 copy /y "%XEngine_Lib32%\XEngine_Core\XEngine_ManagePool.dll" "./"
