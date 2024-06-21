@@ -52,19 +52,37 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 
-	if (!Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr))
+	if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE == enOPCode)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("WS客户端：%s，协议错误"), lpszClientAddr);
-		return false;
+		int nSDLen = 0;
+		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}
-
-	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
+	else if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PING == enOPCode)
 	{
-		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
-		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-
-		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
+		int nSDLen = 0;
+		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PONG);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}
+	else
+	{
+		if (!Protocol_Parse_WSHdr(lpszMsgBuffer, nMsgLen, &st_ProtocolHdr))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("WS客户端：%s，协议错误"), lpszClientAddr);
+			return false;
+		}
+
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
+		{
+			XENGINE_PROTOCOL_USERAUTH st_UserAuth;
+			memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+			Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
+			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
+		}
+	}
+	
 	return true;
 }
