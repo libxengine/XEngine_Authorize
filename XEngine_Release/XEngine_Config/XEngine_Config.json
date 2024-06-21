@@ -13,7 +13,6 @@
         "nHTTPThread":2
     },
     "XVerification":{
-        "nUserTimeout":30,
         "nTokenTimeout":3600,
         "nDynamicTimeout":30,
         "nVerTime":5,
