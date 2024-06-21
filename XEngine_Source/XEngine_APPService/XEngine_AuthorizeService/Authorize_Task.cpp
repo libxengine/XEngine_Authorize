@@ -38,7 +38,7 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 		XEngine_Client_TaskSend(lpszUserAddr, tszMsgBuffer, nMsgLen, nNetType);
 		if (!st_AuthConfig.bTimeNotify)
 		{
-			XEngine_CloseClient(lpszUserAddr);
+			XEngine_CloseClient(lpszUserAddr, true);
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("地址:%s,用户:%s,网络类型:%d,没有剩余时间,已经通知客户单超时,三方通知设置:%d"), lpszUserName, lpszUserAddr, nNetType, st_AuthConfig.st_XLogin.bPassAuth);
 	}

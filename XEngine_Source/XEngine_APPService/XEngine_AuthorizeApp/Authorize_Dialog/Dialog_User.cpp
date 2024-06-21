@@ -64,7 +64,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 60);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
-	m_EditFlushTime.SetWindowText("1");
+	m_EditFlushTime.SetWindowText("10");
 	m_EditPosStart.SetWindowText("0");
 	m_EditPosEnd.SetWindowText("50");
 	hUserWnd = m_hWnd;
@@ -380,7 +380,10 @@ void CDialog_User::OnBnClickedButton4()
 		return;
 	}
 	CDialog_Modify m_DlgModify;
-	m_DlgModify.DoModal();
+	if (IDOK == m_DlgModify.DoModal())
+	{
+		OnBnClickedButton1();
+	}
 }
 
 
@@ -424,7 +427,10 @@ void CDialog_User::OnBnClickedButton5()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	CDialog_Modify m_DlgModify;
-	m_DlgModify.DoModal();
+	if (IDOK == m_DlgModify.DoModal())
+	{
+		OnBnClickedButton1();
+	}
 }
 
 
@@ -432,6 +438,12 @@ void CDialog_User::OnNMDblclkList1(NMHDR* pNMHDR, LRESULT* pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	// TODO: 在此添加控件通知处理程序代码
-	OnBnClickedButton4();
+	 // 假设m_listControl是你的CListCtrl成员变量
+	POSITION m_ListPosition = m_ListCtrlClient.GetFirstSelectedItemPosition();
+	if (m_ListPosition != NULL)
+	{
+		OnBnClickedButton4();
+	}
+	
 	*pResult = 0;
 }

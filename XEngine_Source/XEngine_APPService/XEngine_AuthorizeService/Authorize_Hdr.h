@@ -59,13 +59,20 @@ extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
 extern XHANDLE xhHttpSocket;
+
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
 extern XHANDLE xhHttpPacket;
+
+extern XHANDLE xhTCPHeart;
+extern XHANDLE xhWSHeart;
+extern XHANDLE xhHTTPHeart;
+
 extern XHANDLE xhMemPool;
 extern XHANDLE xhTCPPool;
 extern XHANDLE xhWSPool;
 extern XHANDLE xhHttpPool;
+
 extern XENGINE_SERVICECONFIG st_AuthConfig;
 extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 

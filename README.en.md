@@ -32,7 +32,7 @@ feature list:
 4. Support Serial Management
 5. Support Log Management
 6. Support Configure Management
-7. Support Serical Multie types(Minute card, day card, frequency card, custom card)
+7. Support Serical Multie types(second card, day card, frequency card, custom card)
 8. Support Try,Support quick verification
 9. Support Retrieve password through email
 10. Support app program and html web Authorize

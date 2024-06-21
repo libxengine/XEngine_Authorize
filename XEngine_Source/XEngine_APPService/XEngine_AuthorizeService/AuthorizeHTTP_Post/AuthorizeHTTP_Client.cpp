@@ -91,7 +91,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		for (int i = 0; i < nListCount; i++)
 		{
-			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);

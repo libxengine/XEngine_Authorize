@@ -1,3 +1,17 @@
+XEngine_Authorize V3.12.1.1001
+
+修改:用户列表刷新时间修改
+修改:用户增加和修改的时候会刷新用户列表
+修改:websocket协议close和ping消息协议支持了
+修正:关闭客户端重复关闭的问题
+删除:不需要的配置项目
+
+modify:user flush time
+modify:flush user list for user add and modify
+modify:websocket close and ping message protocol support
+fixed:repeat close client
+delete:not used configure field
+================================================================
 XEngine_Authorize V3.12.0.1001
 
 增加:使用新的git module替换jsoncpp
