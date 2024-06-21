@@ -31,7 +31,6 @@ typedef struct
 	}st_XMax;
 	struct   
 	{
-		int nUserTimeout;                                   //用户登录超时时间
 		int nTokenTimeout;                                  //TOKEN登录超时时间
 		int nDynamicTimeout;                                //动态码超时时间
 		int nVerTime;                                       //验证时间

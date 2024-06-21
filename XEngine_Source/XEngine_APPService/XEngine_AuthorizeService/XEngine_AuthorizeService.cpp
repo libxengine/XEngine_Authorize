@@ -5,13 +5,20 @@ XHANDLE xhLog = NULL;
 XHANDLE xhTCPSocket = NULL;
 XHANDLE xhWSSocket = NULL;
 XHANDLE xhHttpSocket = NULL;
+
 XHANDLE xhTCPPacket = NULL;
 XHANDLE xhWSPacket = NULL;
 XHANDLE xhHttpPacket = NULL;
+
+XHANDLE xhTCPHeart = NULL;
+XHANDLE xhWSHeart = NULL;
+XHANDLE xhHTTPHeart = NULL;
+
 XHANDLE xhMemPool = NULL;
 XHANDLE xhTCPPool = NULL;
 XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
+
 XENGINE_SERVICECONFIG st_AuthConfig;
 XENGINE_FUNCTIONSWITCH st_FunSwitch;
 
@@ -29,6 +36,10 @@ void ServiceApp_Stop(int signo)
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+
+		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
@@ -175,6 +186,7 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化TCP验证网络事件成功"));
 
+
 		BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.st_XMax.nTCPThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nTCPThread; i++)
 		{
@@ -306,6 +318,10 @@ XENGINE_EXITAPP:
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+
+		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);

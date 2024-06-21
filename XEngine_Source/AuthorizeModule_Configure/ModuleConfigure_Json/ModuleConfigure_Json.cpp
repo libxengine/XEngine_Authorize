@@ -101,14 +101,13 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (7 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (6 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
 		return false;
 	}
 	Json::Value st_JsonXVerification = st_JsonRoot["XVerification"];
-	pSt_ServerConfig->st_XVerification.nUserTimeout = st_JsonXVerification["nUserTimeout"].asInt();
 	pSt_ServerConfig->st_XVerification.nTokenTimeout = st_JsonXVerification["nTokenTimeout"].asInt();
 	pSt_ServerConfig->st_XVerification.nDynamicTimeout = st_JsonXVerification["nDynamicTimeout"].asInt();
 	pSt_ServerConfig->st_XVerification.nVerTime = st_JsonXVerification["nVerTime"].asInt();
