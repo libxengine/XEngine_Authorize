@@ -17,8 +17,8 @@ public:
 	CAuthClient_HTTPVer();
 	~CAuthClient_HTTPVer();
 public:
-	bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);
-	bool AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout = NULL);
+	bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPCXSTR lpszPass = NULL);
+	bool AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout = NULL, LPCXSTR lpszPass = NULL);
 protected:
 private:
 };

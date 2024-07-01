@@ -104,6 +104,11 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
   类型：常量字符指针
   可空：N
   意思：服务器地址
+ 参数.二：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入密码,如果服务端设置了密码客户端也必须使用加密通信
 返回值
   类型：逻辑型
   意思：是否成功
@@ -123,16 +128,21 @@ extern "C" bool AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr);
   类型：整数型指针
   可空：N
   意思：输出动态码
- 参数.二：pxhToken
+ 参数.三：pxhToken
   In/Out：Out
   类型：整数型指针
   可空：N
   意思：输出绑定的句柄
- 参数.三：pInt_Timeout
+ 参数.四：pInt_Timeout
   In/Out：Out
   类型：整数型指针
   可空：Y
   意思：输出动态码超时时间
+ 参数.五：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入密码,如果服务端设置了密码客户端也必须使用加密通信
 返回值
   类型：逻辑型
   意思：是否成功
