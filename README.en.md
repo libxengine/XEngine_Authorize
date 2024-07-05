@@ -19,12 +19,17 @@ Stable and reliable: based on C/C++, the core framework has been verified for 10
 Flexible authentication: supports third-party authentication and authorization, supports distributed authentication and authorization, and can use its own user password system  
 more functions: support various types of authorization  
 
+#### Choose the Right One
+Most products on the market either charge fees, update slowly, or lack complete functionality. They also lack technical support. With our product, you don't need to worry about these issues at all.  
+Our product is completely free and offers both free and paid technical support. It is rich in features and allows for custom development. You can start using our product now and experience the best and open-source time service available.
+
 #### Version difference
 V3 version, the protocol is basically reimplemented. It is no longer compatible with the V2 protocol. V3 is basically changed to the HTTP interface for management. The compatibility is better. Please check the documentation for more.  
 V2 Version can be update to V3,V3 DB Compatible with V2 Databse
 
 ## Software feature
-A simple and high-performance cross-platform network authentication and authorization server developed and implemented based on XEngine  
+Our feature list not only includes the following but also has many features in development.  
+You can refer to this webpage to learn about the features we plan to support in the future: https://github.com/libxengine/XEngine_Authorize/issues  
 feature list:  
 1. support http.websocket protocols
 2. Support Encrypto communication
@@ -126,9 +131,6 @@ The V3 version is a new version, developed to meet the requirements of many envi
 Database update Use Navicat and other database software to open the judgment table and the different fields for modification  
 After modification, directly copy the database to the new version to overwrite, and modify your configuration file  
 3.11->3.12 A new time field has been added to the user table, please refer to the SQL file
-
-## Authorization instructions
-Use this software must be open source and indicate the source,If you want closed source and commercial,Then need to be authorized by the author.
 
 ## Follow us
 If you think this software is helpful to you, please give us a START  
