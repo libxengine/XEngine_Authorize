@@ -188,7 +188,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 用户名：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserName, pptszResult[nFliedValue]);
 		}
 
@@ -196,7 +195,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 密码：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, pptszResult[nFliedValue]);
 		}
 
@@ -204,7 +202,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 过期时间：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->tszLeftTime, pptszResult[nFliedValue]);
 		}
 
@@ -212,7 +209,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 电子邮件：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszEMailAddr, pptszResult[nFliedValue]);
 		}
 
@@ -220,7 +216,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 硬件码：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->tszHardCode, pptszResult[nFliedValue]);
 		}
 
@@ -228,7 +223,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 充值卡类型：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			pSt_UserInfo->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(pptszResult[nFliedValue]);
 		}
 
@@ -236,7 +230,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d QQ号：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			pSt_UserInfo->st_UserInfo.nPhoneNumber = _ttxoll(pptszResult[nFliedValue]);
 		}
 
@@ -244,7 +237,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 身份证ID：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			pSt_UserInfo->st_UserInfo.nIDNumber = _ttxoll(pptszResult[nFliedValue]);
 		}
 
@@ -252,7 +244,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 用户级别 -1表示封禁：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(pptszResult[nFliedValue]);
 		}
 
@@ -260,14 +251,12 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue] && _tcsxlen(pptszResult[nFliedValue]) > 0)
 		{
-			//printf("索引：%d 登录日期：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszLoginTime, pptszResult[nFliedValue]);
 		}
 		//注册日期
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			//printf("索引：%d 注册日期：%s\n", nFliedValue, pptszResult[nFliedValue]);
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszCreateTime, pptszResult[nFliedValue]);
 		}
 
@@ -449,7 +438,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 
 	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',UPTime = NOW(),CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel/*, pSt_UserTable->st_UserInfo.tszLoginTime*/, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
 
-	//printf("22设置用户信息(SQL)：%s\n", tszSQLStatement);
 	//更新用户剩余时间
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
@@ -894,7 +882,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
 	//插入数据库
 	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_TempVer`(tszVSerial,nVMode,nVTime,nLTime,CreateTime) VALUES('%s',%d,%d,%d,NOW())"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->nVTime);
 
-	//printf("网络使用模式插入一条数据：SQL语句%s\n", tszSQLStatement);
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
 		SQLPacket_IsErrorOccur = true;
@@ -1593,7 +1580,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 			DataBase_MySQL_FreeResult(xhData, xhTable);
 			return false;
 		}
-		//printf("测试2 行:%d  列:%d\n", nRow, nColumn);
 
 		if (nRow <= 0)
 		{
@@ -1609,7 +1595,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		int nFliedValue = 0;
 		if (NULL != ppszResult[nFliedValue])
 		{
-			//printf("索引：%d ID：%s\n", nFliedValue, ppszResult[nFliedValue]);
 			pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
 		}
 
@@ -1617,7 +1602,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue])
 		{
-			//printf("索引：%d 是否启用：%s\n", nFliedValue, ppszResult[nFliedValue]);
 			pSt_Banned->bEnable = _ttxoi(ppszResult[nFliedValue]);
 		}
 
@@ -1628,7 +1612,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue])
 		{
-			//printf("索引：%d 过期时间：%s\n", nFliedValue, ppszResult[nFliedValue]);
 			_tcsxcpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
 		}
 
@@ -1637,7 +1620,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue])
 		{
-			//printf("索引：%d 注册时间：%s\n", nFliedValue, ppszResult[nFliedValue]);
 			_tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
 		}
 

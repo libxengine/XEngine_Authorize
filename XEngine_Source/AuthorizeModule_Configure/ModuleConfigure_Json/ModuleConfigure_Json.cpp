@@ -147,7 +147,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
 	//数据库配置
-	printf("%d\n", st_JsonRoot["XSql"].size());
 	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{
 		Config_IsErrorOccur = true;
