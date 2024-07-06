@@ -19,7 +19,16 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		if (!Database_SQLite_UserQuery(st_UserAuth.tszUserName, &st_UserTable))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserQuery(st_UserAuth.tszUserName, &st_UserTable);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserQuery(st_UserAuth.tszUserName, &st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user notfound");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -43,7 +52,14 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		memset(&st_ProtocolTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
 		Protocol_Parse_HttpParseTime(lpszMsgBuffer, nMsgLen, &st_ProtocolTime);
-		Database_SQLite_UserLeave(&st_ProtocolTime);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_UserLeave(&st_ProtocolTime);
+		}
+		else
+		{
+			DBModule_MySQL_UserLeave(&st_ProtocolTime);
+		}
 
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -55,7 +71,14 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		memset(&st_ProtocolTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
 
 		Protocol_Parse_HttpParseTime(lpszMsgBuffer, nMsgLen, &st_ProtocolTime);
-		Database_SQLite_UserLeave(&st_ProtocolTime);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_UserLeave(&st_ProtocolTime);
+		}
+		else
+		{
+			DBModule_MySQL_UserLeave(&st_ProtocolTime);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("PASS客户端：%s，用户名：%s，超时通知成功"), lpszClientAddr, st_ProtocolTime.tszUserName);

@@ -50,7 +50,14 @@ void ServiceApp_Stop(int signo)
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
 		AuthHelp_DynamicCode_Destory();
-		Database_SQLite_Destroy();
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_Destroy();//销毁DB数据库服务
+		}
+		else
+		{
+			DBModule_MySQL_Destroy();// 销毁MYsql数据库服务
+		}
 		exit(0);
 	}
 }
@@ -139,13 +146,25 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化内存池成功"));
 
-	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化数据库服务失败，错误：%lX"), DBModule_GetLastError());
-		goto XENGINE_EXITAPP;
+	/***********  初始化 MySql/DB数据库  ***********/
+	if (0 == st_AuthConfig.st_XSql.nDBType)
+	{ //SQLite数据库
+		if (!DBModule_SQLite_Init(st_AuthConfig.st_XSql.st_SQLite.tszSQLite))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化DB数据库服务失败，错误：%lX"), DBModule_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化DB数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.st_SQLite.tszSQLite);
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.tszSQLite);
-
+	else
+	{
+		if (!DBModule_MySQL_Init((DATABASE_MYSQL_CONNECTINFO *)&st_AuthConfig.st_XSql.st_MYSQL))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化MySql数据库失败，错误：%lX"), DBModule_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化MySql数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.st_MYSQL.tszDBName);
+	}
 	if (!Session_Authorize_Init(XEngine_TaskEvent_Client))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化会话客户端服务失败，错误：%lX"), Session_GetLastError());
@@ -295,10 +314,8 @@ int main(int argc, char** argv)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
-
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XNumberStr(), BaseLib_OperatorVer_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
-
 	while (true)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -332,7 +349,14 @@ XENGINE_EXITAPP:
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
 		AuthHelp_DynamicCode_Destory();
-		Database_SQLite_Destroy();
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_Destroy();
+		}
+		else
+		{
+			DBModule_MySQL_Destroy();
+		}
 	}
 #ifdef _WINDOWS
 	WSACleanup();

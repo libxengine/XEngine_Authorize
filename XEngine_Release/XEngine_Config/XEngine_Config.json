@@ -40,8 +40,13 @@
         "bEnable":false,
         "nPass":123123
     },
-    "XSQL":{
-        "tszSQLFile":"./XEngine_DataBase/SQL_User.db"
+    "XSql":{
+        "nSQLType":1,
+        "SQLAddr": "127.0.0.1",
+        "SQLPort": 3306,
+        "SQLUser": "root",
+        "SQLPass": "123123",
+        "SQLFile":"./XEngine_DataBase/SQL_User.db"
     },
     "XLog":{
         "tszLogFile":"./XEngine_XLog/XEngine_Authorize.log",

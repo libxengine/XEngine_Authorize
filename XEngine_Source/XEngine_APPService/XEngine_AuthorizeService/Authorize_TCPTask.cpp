@@ -61,7 +61,16 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
 	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
 	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
+	bool bSuccess = false;
+	if (0 == st_AuthConfig.st_XSql.nDBType) 
+	{
+		bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //是否在黑名单
+	}
+	else 
+	{
+		bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//是否在黑名单
+	}
+	if (bSuccess) 
 	{
 		pSt_ProtocolHdr->wReserve = 423;
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -132,7 +141,16 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else
 		{
-			if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
+			bool bSuccess = false;
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+			}
+			if (!bSuccess)
 			{
 				pSt_ProtocolHdr->wReserve = 251;
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -268,7 +286,15 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 			_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 
-			Database_SQLite_UserSet(&st_UserTable);
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				DBModule_SQLite_UserSet(&st_UserTable);
+			}
+			else
+			{
+				DBModule_MySQL_UserSet(&st_UserTable);
+			}
+			
 		}
 		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
@@ -278,7 +304,14 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 				BaseLib_OperatorTime_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
-				Database_SQLite_UserSet(&st_UserTable);
+				if (0 == st_AuthConfig.st_XSql.nDBType)
+				{
+					DBModule_SQLite_UserSet(&st_UserTable);
+				}
+				else
+				{
+					DBModule_MySQL_UserSet(&st_UserTable);
+				}
 			}
 		}
 

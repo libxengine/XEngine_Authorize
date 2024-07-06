@@ -29,7 +29,14 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 
 		int nListCount = 0;
 		AUTHREG_TEMPVER** ppSt_AuthVer;
-		Database_SQLite_TryList(&ppSt_AuthVer, &nListCount);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_TryList(&ppSt_AuthVer, &nListCount);
+		}
+		else
+		{
+			DBModule_MySQL_TryList(&ppSt_AuthVer, &nListCount);
+		}
 		Protocol_Packet_HttpTryList(ptszMsgBuffer, &nSDLen, &ppSt_AuthVer, nListCount);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_AuthVer, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -43,7 +50,14 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
 
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
-		Database_SQLite_TryDelete(st_VERTemp.tszVSerial);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_TryDelete(st_VERTemp.tszVSerial);
+		}
+		else
+		{
+			DBModule_MySQL_TryDelete(st_VERTemp.tszVSerial);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证删除成功"), lpszClientAddr, st_VERTemp.tszVSerial);
@@ -54,7 +68,14 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
 
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
-		Database_SQLite_TrySet(&st_VERTemp);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_TrySet(&st_VERTemp);
+		}
+		else
+		{
+			DBModule_MySQL_TrySet(&st_VERTemp);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证修改成功"), lpszClientAddr, st_VERTemp.tszVSerial);

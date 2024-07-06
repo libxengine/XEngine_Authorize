@@ -161,12 +161,14 @@
   <ItemGroup>
     <ClInclude Include="Database_Define.h" />
     <ClInclude Include="Database_Error.h" />
-    <ClInclude Include="Database_SQLite\Database_SQLite.h" />
+    <ClInclude Include="DBModule_MySQL\DBModule_MySQL.h" />
+    <ClInclude Include="DBModule_SQLite\DBModule_SQLite.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Database_SQLite\Database_SQLite.cpp" />
+    <ClCompile Include="DBModule_MySQL\DBModule_MySQL.cpp" />
+    <ClCompile Include="DBModule_SQLite\DBModule_SQLite.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

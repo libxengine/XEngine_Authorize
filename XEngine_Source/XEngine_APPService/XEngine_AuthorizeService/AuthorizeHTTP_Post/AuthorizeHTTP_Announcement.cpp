@@ -23,7 +23,14 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		AUTHREG_ANNOUNCEMENT st_Announcement;
 		memset(&st_Announcement, '\0', sizeof(AUTHREG_ANNOUNCEMENT));
 
-		Database_SQLite_AnnouncementList(NULL, &nListCount);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_AnnouncementList(NULL, &nListCount);
+		}
+		else
+		{
+			DBModule_MySQL_AnnouncementList(NULL, &nListCount);
+		}
 		if (nListCount > 10)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 510, "server limited");
@@ -32,7 +39,14 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 			return false;
 		}
 		Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, &st_Announcement);
-		Database_SQLite_AnnouncementInsert(&st_Announcement);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_AnnouncementInsert(&st_Announcement);
+		}
+		else
+		{
+			DBModule_MySQL_AnnouncementInsert(&st_Announcement);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,插入公告成功,公告信息:%s"), lpszClientAddr, st_Announcement.tszContext);
@@ -43,7 +57,14 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		memset(&st_Announcement, '\0', sizeof(AUTHREG_ANNOUNCEMENT));
 
 		Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, &st_Announcement);
-		Database_SQLite_AnnouncementDelete(&st_Announcement);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_AnnouncementDelete(&st_Announcement);
+		}
+		else
+		{
+			DBModule_MySQL_AnnouncementDelete(&st_Announcement);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,删除公告成功.删除公告ID:%lld"), lpszClientAddr, st_Announcement.nID);
@@ -53,7 +74,14 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		int nListCount = 0;
 		AUTHREG_ANNOUNCEMENT** ppSt_Announcement;
 
-		Database_SQLite_AnnouncementList(&ppSt_Announcement, &nListCount);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_AnnouncementList(&ppSt_Announcement, &nListCount);
+		}
+		else
+		{
+			DBModule_MySQL_AnnouncementList(&ppSt_Announcement, &nListCount);
+		}
 		Protocol_Packet_HttpAnnouncement(tszSDBuffer, &nSDLen, &ppSt_Announcement, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_Announcement, nListCount);

@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "Database_SQLite.h"
+#include "DBModule_SQLite.h"
 /********************************************************************
 //    Created:     2022/05/26  11:01:13
 //    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Database\Database_SQLite\Database_SQLite.cpp
@@ -11,11 +11,11 @@
 //    Purpose:     数据库管理器
 //    History:
 *********************************************************************/
-CDatabase_SQLite::CDatabase_SQLite()
+CDBModule_SQLite::CDBModule_SQLite()
 {
     m_bChange = false;
 }
-CDatabase_SQLite::~CDatabase_SQLite()
+CDBModule_SQLite::~CDBModule_SQLite()
 {
 
 }
@@ -23,7 +23,7 @@ CDatabase_SQLite::~CDatabase_SQLite()
 //                     公有函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：Database_SQLite_Init
+函数名称：DBModule_SQLite_Init
 函数功能：初始化数据库服务
  参数.一：lpszSQLFile
   In/Out：In
@@ -40,7 +40,7 @@ CDatabase_SQLite::~CDatabase_SQLite()
   意思：是否成功
 备注：先初始化数据库服务，在初始化网络服务，才可以使用本验证服务器！
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_Init(LPCXSTR lpszSQLFile, bool bIsChange /* = true */)
+bool CDBModule_SQLite::DBModule_SQLite_Init(LPCXSTR lpszSQLFile, bool bIsChange /* = true */)
 {
     SQLPacket_IsErrorOccur = false;
     m_bChange = bIsChange;
@@ -54,14 +54,14 @@ bool CDatabase_SQLite::Database_SQLite_Init(LPCXSTR lpszSQLFile, bool bIsChange 
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_Destroy
+函数名称：DBModule_SQLite_Destroy
 函数功能：销毁数据库服务
 返回值
   类型：逻辑型
   意思：是否销毁成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_Destroy()
+bool CDBModule_SQLite::DBModule_SQLite_Destroy()
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -74,7 +74,7 @@ bool CDatabase_SQLite::Database_SQLite_Destroy()
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserDelete
+函数名称：DBModule_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
  参数.一：lpszUserName
   In/Out：In
@@ -86,7 +86,7 @@ bool CDatabase_SQLite::Database_SQLite_Destroy()
   意思：是否删除成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserDelete(LPCXSTR lpszUserName)
+bool CDBModule_SQLite::DBModule_SQLite_UserDelete(LPCXSTR lpszUserName)
 {
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
@@ -102,7 +102,7 @@ bool CDatabase_SQLite::Database_SQLite_UserDelete(LPCXSTR lpszUserName)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserRegister
+函数名称：DBModule_SQLite_UserRegister
 函数功能：用户注册处理数据库语句函数
  参数.一：pSt_UserInfo
   In/Out：In
@@ -114,13 +114,13 @@ bool CDatabase_SQLite::Database_SQLite_UserDelete(LPCXSTR lpszUserName)
   意思：是否插入成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
+bool CDBModule_SQLite::DBModule_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
 {
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if (Database_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
+    if (DBModule_SQLite_UserQuery(pSt_UserInfo->st_UserInfo.tszUserName))
     {
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
@@ -136,7 +136,7 @@ bool CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserQuery
+函数名称：DBModule_SQLite_UserQuery
 函数功能：查询用户相对应的值
  参数.一：lpszUserName
   In/Out：In
@@ -153,7 +153,7 @@ bool CDatabase_SQLite::Database_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
   意思：是否查询成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
+bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
 {
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
@@ -223,7 +223,7 @@ bool CDatabase_SQLite::Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserPay
+函数名称：DBModule_SQLite_UserPay
 函数功能：用户充值函数
  参数.一：lpszUserName
   In/Out：In
@@ -240,7 +240,7 @@ bool CDatabase_SQLite::Database_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
+bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -259,7 +259,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
         return false;
     }
     //查询充值卡是否存在
-    if (!Database_SQLite_SerialQuery(lpszSerialName, &st_SerialTable))
+    if (!DBModule_SQLite_SerialQuery(lpszSerialName, &st_SerialTable))
     {
         return false;
     }
@@ -271,7 +271,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
         return false;
     }
     //查询用户信息
-    if (!Database_SQLite_UserQuery(lpszUserName, &st_UserTable))
+    if (!DBModule_SQLite_UserQuery(lpszUserName, &st_UserTable))
     {
         return false;
     }
@@ -279,25 +279,25 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
     switch (st_SerialTable.enSerialType)
     {
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
+        if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
+        if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
+        if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
     case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
-        if (!Database_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
+        if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
@@ -317,7 +317,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserLeave
+函数名称：DBModule_SQLite_UserLeave
 函数功能：用户离开处理事件
  参数.一：pSt_TimeProtocol
   In/Out：In
@@ -329,7 +329,7 @@ bool CDatabase_SQLite::Database_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
   意思：是否处理成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
+bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -374,7 +374,7 @@ bool CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserSet
+函数名称：DBModule_SQLite_UserSet
 函数功能：设置用户信息
  参数.一：pSt_UserTable
   In/Out：In
@@ -386,7 +386,7 @@ bool CDatabase_SQLite::Database_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
+bool CDBModule_SQLite::DBModule_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -404,7 +404,7 @@ bool CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_UserList
+函数名称：DBModule_SQLite_UserList
 函数功能：获取用户列表
  参数.一：pppSt_UserInfo
   In/Out：Out
@@ -431,7 +431,7 @@ bool CDatabase_SQLite::Database_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
+bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -502,7 +502,7 @@ bool CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_SerialInsert
+函数名称：DBModule_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber
   In/Out：In
@@ -514,14 +514,14 @@ bool CDatabase_SQLite::Database_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
   意思：是否插入成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
+bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if (Database_SQLite_SerialQuery(lpszSerialNumber))
+    if (DBModule_SQLite_SerialQuery(lpszSerialNumber))
     {
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
@@ -568,7 +568,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_SerialDelete
+函数名称：DBModule_SQLite_SerialDelete
 函数功能：从数据库删除指定序列号
  参数.一：lpszSerialNumber
   In/Out：In
@@ -580,7 +580,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
   意思：是否删除成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
+bool CDBModule_SQLite::DBModule_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -597,7 +597,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_SerialQuery
+函数名称：DBModule_SQLite_SerialQuery
 函数功能：查询一个指定的序列号信息
  参数.一：lpszSerialNumber
   In/Out：In
@@ -614,7 +614,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
   意思：是否查询成功，如果第二个参数为NULL，那么将只返回是否有这个序列号
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
+bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable /* = NULL */)
 {
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
@@ -665,7 +665,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_SerialQueryAll
+函数名称：DBModule_SQLite_SerialQueryAll
 函数功能：查询序列卡表中的所有序列号
  参数.一：pppSt_SerialTable
   In/Out：Out
@@ -692,7 +692,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
   意思：是否查询成功
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
+bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -747,7 +747,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_SerialPush
+函数名称：DBModule_SQLite_SerialPush
 函数功能：插入一条指定的序列号信息到服务器
  参数.一：pSt_SerialTable
   In/Out：In
@@ -759,14 +759,14 @@ bool CDatabase_SQLite::Database_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
+bool CDBModule_SQLite::DBModule_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
 {
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if (Database_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
+    if (DBModule_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
     {
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
@@ -783,7 +783,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TryInsert
+函数名称：DBModule_SQLite_TryInsert
 函数功能：网络使用模式插入一条数据
  参数.一：pSt_AuthVer
   In/Out：In
@@ -795,7 +795,7 @@ bool CDatabase_SQLite::Database_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
+bool CDBModule_SQLite::DBModule_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -813,7 +813,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
 
     //验证是否存在
     _tcsxcpy(st_AuthVer.tszVSerial, pSt_AuthVer->tszVSerial);
-    if (Database_SQLite_TryQuery(&st_AuthVer))
+    if (DBModule_SQLite_TryQuery(&st_AuthVer))
     {
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
@@ -830,7 +830,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TryQuery
+函数名称：DBModule_SQLite_TryQuery
 函数功能：试用序列号查询函数
  参数.一：pSt_AuthVer
   In/Out：In/Out
@@ -842,7 +842,7 @@ bool CDatabase_SQLite::Database_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
+bool CDBModule_SQLite::DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -892,7 +892,7 @@ bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TryDelete
+函数名称：DBModule_SQLite_TryDelete
 函数功能：删除一条指定的试用数据
  参数.一：lpszSerial
   In/Out：In
@@ -904,7 +904,7 @@ bool CDatabase_SQLite::Database_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
+bool CDBModule_SQLite::DBModule_SQLite_TryDelete(LPCXSTR lpszSerial)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -928,7 +928,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TryClear
+函数名称：DBModule_SQLite_TryClear
 函数功能：清理函数,自动清理过期数据
  参数.一：nThanValue
   In/Out：In
@@ -945,7 +945,7 @@ bool CDatabase_SQLite::Database_SQLite_TryDelete(LPCXSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
+bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode /* = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1030,7 +1030,7 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TrySet
+函数名称：DBModule_SQLite_TrySet
 函数功能：设置用户信息函数
  参数.一：pSt_AuthVer
   In/Out：In
@@ -1042,7 +1042,7 @@ bool CDatabase_SQLite::Database_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONE
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
+bool CDBModule_SQLite::DBModule_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1060,7 +1060,7 @@ bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_TryList
+函数名称：DBModule_SQLite_TryList
 函数功能：请求试用期列表
  参数.一：pppSt_AuthVer
   In/Out：Out
@@ -1087,7 +1087,7 @@ bool CDatabase_SQLite::Database_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
+bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1134,7 +1134,7 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_BannedInsert
+函数名称：DBModule_SQLite_BannedInsert
 函数功能：黑名单列表插入
  参数.一：pSt_Banned
   In/Out：In
@@ -1146,7 +1146,7 @@ bool CDatabase_SQLite::Database_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
+bool CDBModule_SQLite::DBModule_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1157,7 +1157,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
         return false;
     }
     //存在直接返回
-    if (Database_SQLite_BannedExist(pSt_Banned))
+    if (DBModule_SQLite_BannedExist(pSt_Banned))
     {
         return true;
     }
@@ -1182,7 +1182,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_BannedDelete
+函数名称：DBModule_SQLite_BannedDelete
 函数功能：黑名单列表删除
  参数.一：pSt_Banned
   In/Out：In
@@ -1194,7 +1194,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
+bool CDBModule_SQLite::DBModule_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1225,7 +1225,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_BannedList
+函数名称：DBModule_SQLite_BannedList
 函数功能：黑名单列表查询
  参数.一：pppSt_BannedUser
   In/Out：Out
@@ -1262,7 +1262,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedDelete(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd)
+bool CDBModule_SQLite::DBModule_SQLite_BannedList(AUTHREG_BANNED*** pppSt_BannedUser, int* pInt_UserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int* pInt_AddrCount, int nPosStart, int nPosEnd)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1374,7 +1374,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_BannedExist
+函数名称：DBModule_SQLite_BannedExist
 函数功能：名单是否存在黑名单列表
  参数.一：pSt_Banned
   In/Out：In
@@ -1386,7 +1386,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
+bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 {
     SQLPacket_IsErrorOccur = false;
     //判断用域名是否存在
@@ -1493,7 +1493,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_BannedUPDate
+函数名称：DBModule_SQLite_BannedUPDate
 函数功能：更新名单列表信息
  参数.一：pSt_Banned
   In/Out：In
@@ -1505,7 +1505,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
+bool CDBModule_SQLite::DBModule_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1536,7 +1536,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
 	return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_AnnouncementInsert
+函数名称：DBModule_SQLite_AnnouncementInsert
 函数功能：公告插入
  参数.一：pSt_Announcement
   In/Out：In
@@ -1548,7 +1548,7 @@ bool CDatabase_SQLite::Database_SQLite_BannedUPDate(AUTHREG_BANNED* pSt_Banned)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+bool CDBModule_SQLite::DBModule_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1572,7 +1572,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* 
 	return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_AnnouncementDelete
+函数名称：DBModule_SQLite_AnnouncementDelete
 函数功能：公告删除
  参数.一：pSt_Announcement
   In/Out：In
@@ -1584,7 +1584,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* 
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
+bool CDBModule_SQLite::DBModule_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1608,7 +1608,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* 
 	return true;
 }
 /********************************************************************
-函数名称：Database_SQLite_AnnouncementList
+函数名称：DBModule_SQLite_AnnouncementList
 函数功能：列举所有公告
  参数.一：ppppSt_Announcement
   In/Out：Out
@@ -1625,7 +1625,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* 
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
+bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1669,7 +1669,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////
 /********************************************************************
-函数名称：Database_SQLite_UserPayTime
+函数名称：DBModule_SQLite_UserPayTime
 函数功能：日期方式充值方式
  参数.一：lpszUserName
   In/Out：In
@@ -1701,7 +1701,7 @@ bool CDatabase_SQLite::Database_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDatabase_SQLite::Database_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
+bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
 {
     SQLPacket_IsErrorOccur = false;
 
