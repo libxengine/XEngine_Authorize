@@ -147,14 +147,23 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
 	//数据库配置
-	if (st_JsonRoot["XSQL"].empty() || (1 != st_JsonRoot["XSQL"].size()))
+	printf("%d\n", st_JsonRoot["XSql"].size());
+	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XSQL;
 		return false;
 	}
-	Json::Value st_JsonXSQL = st_JsonRoot["XSQL"];
-	_tcsxcpy(pSt_ServerConfig->st_XSql.tszSQLite, st_JsonXSQL["tszSQLFile"].asCString());
+	Json::Value st_JsonXSql = st_JsonRoot["XSql"];
+
+	pSt_ServerConfig->st_XSql.nDBType = st_JsonXSql["nSQLType"].asInt();
+
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_SQLite.tszSQLite, st_JsonXSql["SQLFile"].asCString());
+
+	pSt_ServerConfig->st_XSql.st_MYSQL.nSQLPort = st_JsonXSql["SQLPort"].asInt();
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLAddr, st_JsonXSql["SQLAddr"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLUser, st_JsonXSql["SQLUser"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLPass, st_JsonXSql["SQLPass"].asCString());
 	//日志配置
 	if (st_JsonRoot["XLog"].empty() || (4 != st_JsonRoot["XLog"].size()))
 	{

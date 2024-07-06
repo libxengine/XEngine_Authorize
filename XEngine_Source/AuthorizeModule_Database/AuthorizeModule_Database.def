@@ -3,36 +3,70 @@ LIBRARY
 EXPORTS
 	DBModule_GetLastError
 
-	Database_SQLite_Init
-	Database_SQLite_Destroy
+	DBModule_SQLite_Init
+	DBModule_SQLite_Destroy
 
-	Database_SQLite_UserDelete
-	Database_SQLite_UserRegister
-	Database_SQLite_UserQuery
-	Database_SQLite_UserPay
-	Database_SQLite_UserLeave
-	Database_SQLite_UserSet
-	Database_SQLite_UserList
+	DBModule_SQLite_UserDelete
+	DBModule_SQLite_UserRegister
+	DBModule_SQLite_UserQuery
+	DBModule_SQLite_UserPay
+	DBModule_SQLite_UserLeave
+	DBModule_SQLite_UserSet
+	DBModule_SQLite_UserList
 
-	Database_SQLite_SerialInsert
-	Database_SQLite_SerialDelete
-	Database_SQLite_SerialQuery
-	Database_SQLite_SerialQueryAll
-	Database_SQLite_SerialPush
+	DBModule_SQLite_SerialInsert
+	DBModule_SQLite_SerialDelete
+	DBModule_SQLite_SerialQuery
+	DBModule_SQLite_SerialQueryAll
+	DBModule_SQLite_SerialPush
 
-	Database_SQLite_TryInsert
-	Database_SQLite_TryQuery
-	Database_SQLite_TryDelete
-	Database_SQLite_TryClear
-	Database_SQLite_TrySet
-	Database_SQLite_TryList
+	DBModule_SQLite_TryInsert
+	DBModule_SQLite_TryQuery
+	DBModule_SQLite_TryDelete
+	DBModule_SQLite_TryClear
+	DBModule_SQLite_TrySet
+	DBModule_SQLite_TryList
 
-	Database_SQLite_BannedInsert
-	Database_SQLite_BannedDelete
-	Database_SQLite_BannedList
-	Database_SQLite_BannedExist
-	Database_SQLite_BannedUPDate
+	DBModule_SQLite_BannedInsert
+	DBModule_SQLite_BannedDelete
+	DBModule_SQLite_BannedList
+	DBModule_SQLite_BannedExist
+	DBModule_SQLite_BannedUPDate
 
-	Database_SQLite_AnnouncementInsert
-	Database_SQLite_AnnouncementDelete
-	Database_SQLite_AnnouncementList
+	DBModule_SQLite_AnnouncementInsert
+	DBModule_SQLite_AnnouncementDelete
+	DBModule_SQLite_AnnouncementList
+
+	DBModule_MySQL_Init
+	DBModule_MySQL_Destroy
+
+	DBModule_MySQL_UserDelete
+	DBModule_MySQL_UserRegister
+	DBModule_MySQL_UserQuery
+	DBModule_MySQL_UserPay
+	DBModule_MySQL_UserLeave
+	DBModule_MySQL_UserSet
+	DBModule_MySQL_UserList
+
+	DBModule_MySQL_SerialInsert
+	DBModule_MySQL_SerialDelete
+	DBModule_MySQL_SerialQuery
+	DBModule_MySQL_SerialQueryAll
+	DBModule_MySQL_SerialPush
+
+	DBModule_MySQL_TryInsert
+	DBModule_MySQL_TryQuery
+	DBModule_MySQL_TryDelete
+	DBModule_MySQL_TryClear
+	DBModule_MySQL_TrySet
+	DBModule_MySQL_TryList
+
+	DBModule_MySQL_BannedInsert
+	DBModule_MySQL_BannedDelete
+	DBModule_MySQL_BannedList
+	DBModule_MySQL_BannedExist
+	DBModule_MySQL_BannedUPDate
+
+	DBModule_MySQL_AnnouncementInsert
+	DBModule_MySQL_AnnouncementDelete
+	DBModule_MySQL_AnnouncementList

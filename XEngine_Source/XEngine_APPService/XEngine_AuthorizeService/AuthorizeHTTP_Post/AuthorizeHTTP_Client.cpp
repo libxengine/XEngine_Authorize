@@ -17,7 +17,16 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserTable.st_UserInfo);
-		if (!Database_SQLite_UserQuery(st_UserTable.st_UserInfo.tszUserName, &st_UserTable))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserQuery(st_UserTable.st_UserInfo.tszUserName, &st_UserTable);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserQuery(st_UserTable.st_UserInfo.tszUserName, &st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -63,7 +72,14 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		if (!bOnline)
 		{
 			//只有bOnline不是在线列表的时候才执行
-			Database_SQLite_UserList(&ppSt_UserInfo, &nOffCount, nPosStart, nPosEnd);
+			if (0 == st_AuthConfig.st_XSql.nDBType) 
+			{
+				DBModule_SQLite_UserList(&ppSt_UserInfo, &nOffCount, nPosStart, nPosEnd);
+			}
+			else
+			{
+				DBModule_MySQL_UserList(&ppSt_UserInfo, &nOffCount, nPosStart, nPosEnd);
+			}
 		}
 		Protocol_Packet_HttpClientList(ptszMsgBuffer, &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
 
@@ -104,7 +120,16 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, &st_UserTable);
-		if (!Database_SQLite_UserSet(&st_UserTable))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserSet(&st_UserTable);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserSet(&st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

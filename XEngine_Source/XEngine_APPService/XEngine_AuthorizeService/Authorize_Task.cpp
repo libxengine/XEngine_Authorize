@@ -52,7 +52,14 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 	_tcsxcpy(st_AuthTime.tszUserName, lpszUserName);
 	_tcsxcpy(st_AuthTime.tszUserAddr, lpszUserAddr);
 
-	Database_SQLite_UserLeave(&st_AuthTime);
+	if (0 == st_AuthConfig.st_XSql.nDBType)
+	{
+		DBModule_SQLite_UserLeave(&st_AuthTime);
+	}
+	else
+	{
+		DBModule_MySQL_UserLeave(&st_AuthTime);
+	}
 }
 void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 {

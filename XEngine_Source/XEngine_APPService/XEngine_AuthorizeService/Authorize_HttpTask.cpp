@@ -59,11 +59,20 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 	AUTHREG_BANNED st_Banned;
 	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
 	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
 	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
+
 	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
+	bool bSuccess = false;
+	if (0 == st_AuthConfig.st_XSql.nDBType) 
+	{
+		bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //IP地址是否在黑名单
+	}
+	else 
+	{
+		bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//IP地址是否在黑名单
+	}
+	if (bSuccess) 
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -253,7 +262,6 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		LPCXSTR lpszFuncName = _X("api");
 		LPCXSTR lpszAPIVerNotice = _X("notice");
 		LPCXSTR lpszAPIVerDCode = _X("dcode");
-
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
 		if ((nListCount < 1) || (0 != _tcsxnicmp(lpszFuncName, tszUrlName, _tcsxlen(lpszFuncName))))

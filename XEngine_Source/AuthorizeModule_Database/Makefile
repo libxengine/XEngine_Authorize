@@ -10,7 +10,7 @@ LOADHDR = -I ./
 LOADSO = 
 LIB = -lXEngine_BaseLib -lHelpComponents_DataBase -lHelpComponents_Authorize
 LIBEX = 
-OBJECTS = Database_SQLite.o pch.o
+OBJECTS = DBModule_SQLite.o DBModule_MySQL.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -51,8 +51,10 @@ endif
 all:$(OBJECTS)
 	$(CC) $(DEBUG) $(OBJECTS) -o libAuthorizeModule_Database.$(FILEEXT) $(LIBFLAG) $(LIB) $(LIBEX) $(LOADSO) $(LOADBIN)
 
-Database_SQLite.o:./Database_SQLite/Database_SQLite.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./Database_SQLite/Database_SQLite.cpp
+DBModule_SQLite.o:./DBModule_SQLite/DBModule_SQLite.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./DBModule_SQLite/DBModule_SQLite.cpp
+DBModule_MySQL.o:./DBModule_MySQL/DBModule_MySQL.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./DBModule_MySQL/DBModule_MySQL.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp

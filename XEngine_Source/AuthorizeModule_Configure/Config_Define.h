@@ -15,6 +15,8 @@
 //////////////////////////////////////////////////////////////////////////
 typedef struct  
 {
+	XCHAR tszIPAddr[128];
+	XCHAR tszTopic[128];
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
 	int nHTTPPort;                                          //HTTP管理端口
@@ -64,8 +66,20 @@ typedef struct
 		int nPassword;                                      //密码
 	}st_XCrypto;
 	struct
-	{ 
-		XCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
+	{
+		int nDBType;
+		struct 
+		{
+			XCHAR tszSQLAddr[128];	//数据库地址
+			XCHAR tszSQLUser[128];	//数据库账号
+			XCHAR tszSQLPass[128];	//数据库密码
+			XCHAR tszDBName[128];   //数据库名
+			int nSQLPort;		    //数据库端口
+		}st_MYSQL;
+		struct 
+		{
+			XCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
+		}st_SQLite;
 	}st_XSql;
 	struct
 	{
