@@ -59,6 +59,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
 	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
+	_tcsxcpy(st_Banned.tszUserName, lpszMsgBuffer);
 	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
 	//是否在黑名单
 	bool bSuccess = false;
@@ -75,7 +76,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		pSt_ProtocolHdr->wReserve = 423;
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
 		return false;
 	}
 

@@ -1519,43 +1519,49 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 			return false;
 		}
 
-		if (nRow <= 0)
+		if (nRow > 0)
 		{
-			SQLPacket_IsErrorOccur = true;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
-			DataBase_MySQL_FreeResult(xhData, xhTable);
-			return false;
+			ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+			pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
+			//ID
+			int nFliedValue = 0;
+			if (NULL != ppszResult[nFliedValue]) {
+				pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
+			}
+			//是否启用
+			nFliedValue++;
+			if (NULL != ppszResult[nFliedValue]) {
+				pSt_Banned->bEnable = _ttxoi(ppszResult[nFliedValue]);
+			}
+			//地址
+			nFliedValue++;
+			//过期时间
+			nFliedValue++;
+			if (NULL != ppszResult[nFliedValue]) {
+				_tcsxcpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
+			}
+
+			//注册时间
+			nFliedValue++;
+			if (NULL != ppszResult[nFliedValue]) {
+				_tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
+			}
+
+			//如果启用 且 tszLeftTime 大于 0
+			if (pSt_Banned->bEnable && _tcsxlen(pSt_Banned->tszLeftTime) > 0)
+			{
+				__int64x nTimer = 0;
+				XCHAR tszStrTime[128];
+				memset(tszStrTime, '\0', sizeof(tszStrTime));
+				BaseLib_OperatorTime_TimeToStr(tszStrTime);
+				BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+				if (nTimer < 0)  //如果没有超过禁用时间 直接返回 说明存在黑名单 不在执行判断IP地址
+				{
+					return true;
+				}
+			}
 		}
-
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
-		//ID
-		int nFliedValue = 0;
-		if (NULL != ppszResult[nFliedValue]) {
-			pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
-		}
-		//是否启用
-		nFliedValue++;
-		if (NULL != ppszResult[nFliedValue]) {
-			pSt_Banned->bEnable = _ttxoi(ppszResult[nFliedValue]);
-		}
-
-		//地址
-		nFliedValue++;
-
-		//过期时间
-		nFliedValue++;
-		if (NULL != ppszResult[nFliedValue]) {
-			_tcsxcpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
-		}
-
-		//注册时间
-		nFliedValue++;
-		if (NULL != ppszResult[nFliedValue]) {
-			_tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
-		}
-
 		DataBase_MySQL_FreeResult(xhData, xhTable);
 	}
 
@@ -1584,7 +1590,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		if (nRow <= 0)
 		{
 			SQLPacket_IsErrorOccur = true;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
 			DataBase_MySQL_FreeResult(xhData, xhTable);
 			return false;
 		}
@@ -1622,31 +1628,31 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 		{
 			_tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
 		}
-
-		DataBase_MySQL_FreeResult(xhData, xhTable);
-	}
-	//处理是否被禁用
-	if (!pSt_Banned->bEnable)
-	{
-		SQLPacket_IsErrorOccur = true;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTENABLE;
-		return false;
-	}
-	if (_tcsxlen(pSt_Banned->tszLeftTime) > 0)
-	{
-		__int64x nTimer = 0;
-		XCHAR tszStrTime[128];
-		memset(tszStrTime, '\0', sizeof(tszStrTime));
-		BaseLib_OperatorTime_TimeToStr(tszStrTime);
-		BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
-		if (nTimer > 0)
+		//处理是否被禁用
+		if (!pSt_Banned->bEnable)
 		{
 			SQLPacket_IsErrorOccur = true;
-			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTENABLE;
 			return false;
 		}
+		if (_tcsxlen(pSt_Banned->tszLeftTime) > 0)
+		{
+			__int64x nTimer = 0;
+			XCHAR tszStrTime[128];
+			memset(tszStrTime, '\0', sizeof(tszStrTime));
+			BaseLib_OperatorTime_TimeToStr(tszStrTime);
+			BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+			if (nTimer < 0)
+			{
+				return true;
+			}
+			SQLPacket_IsErrorOccur = true;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
+		}
+		DataBase_MySQL_FreeResult(xhData, xhTable);
 	}
-	return true;
+
+	return false;
 }
 /********************************************************************
 函数名称：DBModule_MySQL_BannedUPDate
