@@ -41,8 +41,8 @@ CREATE TABLE `Authorize_BannedAddr`  (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `bEnable` tinyint(4) NOT NULL,
   `tszIPAddr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tszLeftTime` date NULL DEFAULT NULL,
-  `tszCreateTime` date NOT NULL,
+  `tszLeftTime` datetime NULL DEFAULT NULL,
+  `tszCreateTime` datetime NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 
@@ -58,8 +58,8 @@ CREATE TABLE `Authorize_BannedUser`  (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `bEnable` tinyint(1) NOT NULL,
   `tszUserName` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `tszLeftTime` date NULL DEFAULT NULL,
-  `tszCreateTime` date NOT NULL,
+  `tszLeftTime` datetime NULL DEFAULT NULL,
+  `tszCreateTime` datetime NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
 

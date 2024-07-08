@@ -76,7 +76,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
 		return false;
 	}
 	if (0 == _tcsxnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodPost)))
