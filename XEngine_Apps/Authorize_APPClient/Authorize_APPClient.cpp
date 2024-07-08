@@ -39,7 +39,7 @@ using namespace std;
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
-bool bEncrypto = true;
+bool bEncrypto = false;
 XNETHANDLE xhToken = 0;
 int nDYCode = 0;
 
