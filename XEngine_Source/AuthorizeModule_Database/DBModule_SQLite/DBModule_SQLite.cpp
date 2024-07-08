@@ -1421,19 +1421,29 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
             nFliedValue++;
             //注册时间
             _tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
-           
             //如果启用 且 tszLeftTime 大于 0
-            if (pSt_Banned->bEnable && _tcsxlen(pSt_Banned->tszLeftTime) > 0)
+            if (pSt_Banned->bEnable)
             {
-                __int64x nTimer = 0;
-                XCHAR tszStrTime[128];
-                memset(tszStrTime, '\0', sizeof(tszStrTime));
-
-                BaseLib_OperatorTime_TimeToStr(tszStrTime);
-                BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
-                if (nTimer < 0)  //如果没有超过禁用时间 直接返回 说明存在黑名单 不在执行判断IP地址
+                if (_tcsxlen(pSt_Banned->tszLeftTime) > 0)
                 {
-                    return true;
+					__int64x nTimer = 0;
+					XCHAR tszStrTime[128];
+					memset(tszStrTime, '\0', sizeof(tszStrTime));
+
+					BaseLib_OperatorTime_TimeToStr(tszStrTime);
+					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+					if (nTimer < 0)  
+					{
+						SQLPacket_IsErrorOccur = true;
+						SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_BANNED;
+						return false;
+					}
+                }
+                else
+                {
+					SQLPacket_IsErrorOccur = true;
+					SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_BANNED;
+					return false;
                 }
             }
 		}
@@ -1455,53 +1465,52 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
             SQLPacket_dwErrorCode = DataBase_GetLastError();
             return false;
         }
-        if (nRow <= 0)
+        if (nRow > 0)
         {
-            SQLPacket_IsErrorOccur = true;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
-            return false;
-        }
+			int nFliedValue = nColumn;
+			//ID
+			pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
+			nFliedValue++;
+			//是否启用
+			pSt_Banned->bEnable = _ttxoi(ppszResult[nFliedValue]);
+			nFliedValue++;
+			//地址
+			nFliedValue++;
+			//过期时间
+			_tcsxcpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
+			nFliedValue++;
+			//注册时间
+			_tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
 
-        int nFliedValue = nColumn;
-        //ID
-        pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
-        nFliedValue++;
-        //是否启用
-        pSt_Banned->bEnable = _ttxoi(ppszResult[nFliedValue]);
-        nFliedValue++;
-        //地址
-        nFliedValue++;
-        //过期时间
-        _tcsxcpy(pSt_Banned->tszLeftTime, ppszResult[nFliedValue]);
-        nFliedValue++;
-        //注册时间
-        _tcsxcpy(pSt_Banned->tszCreateTime, ppszResult[nFliedValue]);
+			//处理是否被禁用
+			if (pSt_Banned->bEnable)
+			{
+				if (_tcsxlen(pSt_Banned->tszLeftTime) > 0)
+				{
+					__int64x nTimer = 0;
+					XCHAR tszStrTime[128];
+					memset(tszStrTime, '\0', sizeof(tszStrTime));
 
-        //处理是否被禁用
-        if (!pSt_Banned->bEnable)
-        {
-            SQLPacket_IsErrorOccur = true;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTENABLE;
-            return false;
-        }
-        if (_tcsxlen(pSt_Banned->tszLeftTime) > 0)
-        {
-            __int64x nTimer = 0;
-            XCHAR tszStrTime[128];
-            memset(tszStrTime, '\0', sizeof(tszStrTime));
-
-            BaseLib_OperatorTime_TimeToStr(tszStrTime);
-            BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
-            if (nTimer < 0)
+					BaseLib_OperatorTime_TimeToStr(tszStrTime);
+					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+					if (nTimer < 0)
+					{
+						SQLPacket_IsErrorOccur = true;
+						SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
+						return false;
+					}
+				}
+			}
+            else
             {
-                return true;
+				SQLPacket_IsErrorOccur = true;
+				SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
+                return false;
             }
-            SQLPacket_IsErrorOccur = true;
-            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_TIMELEFT;
         }
         DataBase_SQLite_FreeTable(ppszResult);
     }
-    return false;
+    return true;
 }
 /********************************************************************
 函数名称：DBModule_SQLite_BannedUPDate

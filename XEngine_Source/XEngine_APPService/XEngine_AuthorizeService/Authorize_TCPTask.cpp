@@ -52,33 +52,8 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType)
 {
 	int nSDLen = 0;
-	XCHAR tszSDBuffer[2048];
-	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-
-	AUTHREG_BANNED st_Banned;
-	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
-	_tcsxcpy(st_Banned.tszUserName, lpszMsgBuffer);
-	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
-	//是否在黑名单
-	bool bSuccess = false;
-	if (0 == st_AuthConfig.st_XSql.nDBType) 
-	{
-		bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //是否在黑名单
-	}
-	else 
-	{
-		bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//是否在黑名单
-	}
-	if (bSuccess) 
-	{
-		pSt_ProtocolHdr->wReserve = 423;
-		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
-		return false;
-	}
+	XCHAR tszSDBuffer[2048] = {};
+	AUTHREG_BANNED st_Banned = {};
 
 	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -88,6 +63,28 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+		_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
+		_tcsxcpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
+		BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
+		//是否在黑名单
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //是否在黑名单
+		}
+		else
+		{
+			bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//是否在黑名单
+		}
+		if (!bSuccess)
+		{
+			pSt_ProtocolHdr->wReserve = 423;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
+			return false;
+		}
 
 		pSt_ProtocolHdr->unPacketSize = 0;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
