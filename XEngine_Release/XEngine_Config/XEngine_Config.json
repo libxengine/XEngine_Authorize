@@ -41,7 +41,7 @@
         "nPass":123123
     },
     "XSql":{
-        "nSQLType":1,
+        "nSQLType":0,
         "SQLAddr": "127.0.0.1",
         "SQLPort": 3306,
         "SQLUser": "root",
