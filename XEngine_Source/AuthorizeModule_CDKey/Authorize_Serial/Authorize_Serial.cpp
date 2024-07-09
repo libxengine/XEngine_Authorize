@@ -419,7 +419,7 @@ bool CAuthorize_Serial::Authorize_Serial_Fill(XCHAR *ptszFillBuffer, int nCardNu
 
     int nPosType = 0;
     
-    for (int i = 0; i < nCardNumer; i++)
+    for (int i = 3; i < nCardNumer; i++)
     {
         XCHAR tszRandom[6];
         memset(tszRandom, '\0', 6);
@@ -464,7 +464,7 @@ bool CAuthorize_Serial::Authorize_Serial_Random(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
     
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 6, 0, 1);
+    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 0, 1);
     return true;
 }
 /********************************************************************
@@ -484,7 +484,7 @@ bool CAuthorize_Serial::Authorize_Serial_RandomWord(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 1, 2, 1);
+    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 2, 1);
     return true;
 }
 /********************************************************************
@@ -504,6 +504,6 @@ bool CAuthorize_Serial::Authorize_Serial_RandomNumber(XCHAR *ptszFilleBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFilleBuffer, 1, 1);
+    BaseLib_OperatorHandle_CreateStr(ptszFilleBuffer, 5, 1);
     return true;
 }
