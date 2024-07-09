@@ -8,7 +8,6 @@ copy /y "%XEngine_Lib64%\XEngine_Core\XEngine_OPenSsl.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_DataBase.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_Packets.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_XLog.dll" "./"
-copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_Authorize.dll" "./"
 
 copy /y "%XEngine_Lib64%\XEngine_RfcComponents\RfcComponents_WSProtocol.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_RfcComponents\RfcComponents_HttpProtocol.dll" "./"
