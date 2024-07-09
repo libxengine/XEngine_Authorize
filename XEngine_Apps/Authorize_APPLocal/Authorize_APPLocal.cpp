@@ -5,11 +5,12 @@
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize")
 #ifdef _WIN64
 #pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/AuthorizeModule_CDKey")
 #else
 #pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#pragma comment(lib,"../../XEngine_Source/Debug/AuthorizeModule_CDKey")
 #endif
 #endif
 #include <stdio.h>
@@ -25,12 +26,13 @@
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include "../../XEngine_Source/XAuth_Protocol.h"
+#include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Define.h"
+#include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Error.h"
 
 //需要优先配置XEngine
 //WINDOWS支持VS2022 x64 debug 编译调试
-//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Authorize -ljsoncpp -Wl,-rpath=../../XEngine_Release
+//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
 
@@ -55,9 +57,9 @@ int main()
 	st_JsonAPPInfo["tszAppVer"] = "1.0.0.1001";
 
 	st_JsonREGInfo["tszHardware"] = "5501012NE21N";
-	st_JsonREGInfo["enSerialType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME;
-	st_JsonREGInfo["enRegType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE_TRY;
-	st_JsonREGInfo["enHWType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_HW_TYPE_CPU;
+	st_JsonREGInfo["enSerialType"] = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME;
+	st_JsonREGInfo["enRegType"] = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TRY;
+	st_JsonREGInfo["enHWType"] = ENUM_AUTHORIZE_MODULE_HW_TYPE_CPU;
 
 	st_JsonUserInfo["tszUserName"] = "qyt";
 	st_JsonUserInfo["tszUserContact"] = "486179@qq.com";
@@ -154,15 +156,15 @@ int main()
 
 	OPenSsl_XCrypto_Decoder(ptszVerBuffer, &nLen, tszCodecBuffer, lpszPasswd);
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
-	Authorize_Local_ReadMemory(tszCodecBuffer, nLen, &st_Authorize);
+	Authorize_CDKey_ReadMemory(tszCodecBuffer, nLen, &st_Authorize);
 #else
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszVerBuffer);
-	Authorize_Local_ReadMemory(ptszVerBuffer, nLen, &st_Authorize);
+	Authorize_CDKey_ReadMemory(ptszVerBuffer, nLen, &st_Authorize);
 #endif
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszVerBuffer);
 
 	//4. 也可以本地验证
-	if (Authorize_Local_GetLeftTimer(&st_Authorize))
+	if (Authorize_CDKey_GetLeftTimer(&st_Authorize))
 	{
 		printf("ok\n");
 	}
