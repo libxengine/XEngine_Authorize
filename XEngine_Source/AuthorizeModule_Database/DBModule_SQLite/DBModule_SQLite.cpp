@@ -1157,7 +1157,7 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedInsert(AUTHREG_BANNED* pSt_Banned)
         return false;
     }
     //存在直接返回
-    if (DBModule_SQLite_BannedExist(pSt_Banned))
+    if (!DBModule_SQLite_BannedExist(pSt_Banned))
     {
         return true;
     }
