@@ -500,10 +500,10 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
 		return false;
 	}
-	*pInt_ListCount = nRow;
+	*pInt_ListCount = (int)nRow;
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, (int)nRow, sizeof(AUTHREG_USERTABLE));
 
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
@@ -774,9 +774,9 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 	}
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, (int)nRow, sizeof(AUTHREG_SERIALTABLE));
 
-	*pInt_ListCount = nRow;
+	*pInt_ListCount = (int)nRow;
 
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		// 获取数据库结果
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
@@ -1051,7 +1051,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENT
 
 	list<AUTHREG_TEMPVER> stl_ListVer;
 	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
@@ -1198,7 +1198,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, (int)nRow, sizeof(AUTHREG_TEMPVER));
 
 	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
@@ -1223,7 +1223,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 		_tcsxcpy((*pppSt_AuthVer)[i]->tszVDate, ppszResult[nFliedValue]);
 		nFliedValue++;
 	}
-	*pInt_ListCount = nRow;
+	*pInt_ListCount = (int)nRow;
 	DataBase_MySQL_FreeResult(xhData, xhTable);
 	return true;
 }
@@ -1379,7 +1379,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	
 	list<AUTHREG_BANNED> stl_ListAddr;
 	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
@@ -1423,7 +1423,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 
 	list<AUTHREG_BANNED> stl_ListUser;
 	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		AUTHREG_BANNED st_Banned;
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
@@ -1802,7 +1802,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
 		return false;
 	}
-	*pInt_ListCount = nRow;
+	*pInt_ListCount = (int)nRow;
 	if (NULL == ppppSt_Announcement)
 	{
 		return true;
@@ -1810,7 +1810,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, (int)nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
 	//轮训所有内容
-	for (int i = 0; i < nRow; i++)
+	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
@@ -1826,7 +1826,6 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	DataBase_MySQL_FreeResult(xhData, xhTable);
 	return true;
 }
-
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////
