@@ -1251,7 +1251,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedInsert(AUTHREG_BANNED* pSt_Banned)
 		return false;
 	}
 	//存在直接返回
-	if (DBModule_MySQL_BannedExist(pSt_Banned))
+	if (!DBModule_MySQL_BannedExist(pSt_Banned))
 	{
 		return true;
 	}
