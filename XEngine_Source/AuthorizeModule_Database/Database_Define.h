@@ -318,7 +318,7 @@ extern "C" bool DBModule_SQLite_TryDelete(LPCXSTR lpszSerial);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
+extern "C" bool DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);
 /********************************************************************
 函数名称：DBModule_SQLite_TrySet
 函数功能：设置用户信息函数
@@ -807,7 +807,7 @@ extern "C" bool DBModule_MySQL_TryDelete(LPCXSTR lpszSerial);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
+extern "C" bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);
 /********************************************************************
 函数名称：DBModule_MySQL_TrySet
 函数功能：设置用户信息函数

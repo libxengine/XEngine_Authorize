@@ -1105,7 +1105,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int n
 	Json::Value st_JsonREGInfo = st_JsonRoot["st_AuthRegInfo"];
 	if (!st_JsonREGInfo["nHasTime"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.nHasTime = (ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE)st_JsonREGInfo["nHasTime"].asInt();
+		pSt_Authorize->st_AuthRegInfo.nHasTime = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["nHasTime"].asInt();
 	}
 	if (!st_JsonREGInfo["enSerialType"].isNull())
 	{
@@ -1113,15 +1113,15 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int n
 	}
 	if (!st_JsonREGInfo["enRegType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE)st_JsonREGInfo["enRegType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
 	}
 	if (!st_JsonREGInfo["enHWType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_HELPCOMPONENTS_AUTHORIZE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
 	}
 	if (!st_JsonREGInfo["enVModeType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_HELPCOMPONENTS_AUTHORIZE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
 	}
 	if (!st_JsonREGInfo["tszHardware"].isNull())
 	{

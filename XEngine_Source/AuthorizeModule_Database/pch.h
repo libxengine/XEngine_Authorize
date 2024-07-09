@@ -25,9 +25,9 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../XAuth_Protocol.h"
+#include "../AuthorizeModule_CDKey/CDKey_Define.h"
+#include "../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "Database_Define.h"
 #include "Database_Error.h"
 /********************************************************************
@@ -53,5 +53,17 @@ typedef std::string xstring;
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
+#ifdef _WIN64
+#ifdef _DEBUG
+#pragma comment(lib,"../x64/Debug/AuthorizeModule_CDKey")
+#else
+#pragma comment(lib,"../x64/Release/AuthorizeModule_CDKey")
+#endif
+#else
+#ifdef _DEBUG
+#pragma comment(lib,"../Debug/AuthorizeModule_CDKey")
+#else
+#pragma comment(lib,"../Release/AuthorizeModule_CDKey")
+#endif
+#endif
 #endif

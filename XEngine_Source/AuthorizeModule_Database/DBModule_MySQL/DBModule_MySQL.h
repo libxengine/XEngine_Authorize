@@ -40,7 +40,7 @@ public:
     bool DBModule_MySQL_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);        //网络使用模式插入一条数据
     bool DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);         //试用序列号查询函数
     bool DBModule_MySQL_TryDelete(LPCXSTR lpszSerial);                  //删除一条指定的试用数据
-    bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);               //清理函数,自动清理过期数据
+    bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);               //清理函数,自动清理过期数据
     bool DBModule_MySQL_TrySet(AUTHREG_TEMPVER* pSt_AuthVer);           //设置用户信息函数
     bool DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000); //请求试用期列表
 public:

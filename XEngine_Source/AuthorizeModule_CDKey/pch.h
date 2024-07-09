@@ -7,17 +7,22 @@
 #ifndef PCH_H
 #define PCH_H
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 // 添加要在此处预编译的标头
 #include "framework.h"
 #include <tchar.h>
+#include <io.h>
+#else
+#include <unistd.h>
 #endif
 #endif //PCH_H
+#include <fcntl.h>
 #include <string.h>
-#include <errno.h>
-#include <memory>
+#include <time.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <list>
-#include <json/json.h>
+#include <string>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
@@ -25,40 +30,24 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include "../XAuth_Protocol.h"
-#include "../AuthorizeModule_CDKey/CDKey_Define.h"
-#include "../AuthorizeModule_CDKey/CDKey_Error.h"
-#include "../AuthorizeModule_Configure/Config_Define.h"
-#include "../AuthorizeModule_Session/Session_Define.h"
-#include "../AuthorizeModule_Session/Session_Error.h"
-#include "Protocol_Define.h"
-#include "Protocol_Error.h"
+#include "CDKey_Define.h"
+#include "CDKey_Error.h"
 /********************************************************************
-//    Created:     2021/07/16  09:20:47
-//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Protocol\pch.h
-//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_Protocol
+//    Created:     2024/07/08  17:29:57
+//    File Name:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_CDKey\pch.h
+//    File Path:   D:\XEngine_Authorize\XEngine_Source\AuthorizeModule_CDKey
 //    File Base:   pch
 //    File Ext:    h
-//    Project:     XEngine(网络通信引擎)
+//    Project:     XEngine
 //    Author:      qyt
-//    Purpose:     公用头文件
+//    Purpose:     公有头文件
 //    History:
 *********************************************************************/
-extern bool Protocol_IsErrorOccur;
-extern XLONG Protocol_dwErrorCode;
+extern bool Authorize_IsErrorOccur;
+extern XLONG Authorize_dwErrorCode;
+
+typedef std::string xstring;
 
 #ifdef _MSC_BUILD
-#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
-#ifdef _DEBUG
-#ifdef _WIN64
-#pragma comment(lib,"../x64/Debug/jsoncpp")
-#else
-#pragma comment(lib,"../Debug/jsoncpp")
-#endif
-#else
-#ifdef _WIN64
-#pragma comment(lib,"../x64/Release/jsoncpp")
-#else
-#pragma comment(lib,"../Release/jsoncpp")
-#endif
-#endif
+#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #endif

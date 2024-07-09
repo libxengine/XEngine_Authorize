@@ -6,6 +6,7 @@ FLAGS=
 DEPEND_JSONCPP_PATH = ./XEngine_Depend/XEngine_Module/jsoncpp
 DEPEND_REPORT_PATH = ./XEngine_Depend/XEngine_Module/XEngine_InfoReport
 
+AUTH_CDKEY_PATH = ./AuthorizeModule_CDKey
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
 AUTH_DATABASE_PATH = ./AuthorizeModule_Database
 AUTH_PROTOCOL_PATH = ./AuthorizeModule_Protocol
@@ -16,7 +17,7 @@ AUTH_CLIENT_PATH = ./AuthorizeModule_Client
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
 XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                                                                                    \
-          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
+          libAuthorizeModule_CDKey.so libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
 	      XEngine_AuthorizeApp.exe 
 
 .PHONY:MakeAll 
@@ -27,6 +28,8 @@ libjsoncpp.so:
 libXEngine_InfoReport.so:
 	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 
+libAuthorizeModule_CDKey.so:
+	make -C $(AUTH_CDKEY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 libAuthorizeModule_Session.so:
 	make -C $(AUTH_SESSION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 libAuthorizeModule_Database.so:

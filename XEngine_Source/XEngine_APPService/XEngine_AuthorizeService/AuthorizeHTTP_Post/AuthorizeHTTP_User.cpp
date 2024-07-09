@@ -84,7 +84,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		//填充写入数据
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{
 			_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
 			st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
@@ -264,7 +264,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		{
 			__int64x nTimeSpan = 0;
 			//根据方式来计算剩余时间
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
 			{
 				//次数卡需要更新才可以
 				st_VERTemp.nLTime--;
@@ -316,7 +316,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			st_VERTemp.nVTime = st_AuthConfig.st_XVerification.nVerTime;
 			st_VERTemp.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能,不支持分钟,因为不登录
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
+			if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

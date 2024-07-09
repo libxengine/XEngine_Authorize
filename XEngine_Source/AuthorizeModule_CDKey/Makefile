@@ -7,10 +7,10 @@ LIBFLAG =
 RELEASE = 0
 UNICODE = 0
 LOADHDR = -I ./
-LOADSO = -L ../AuthorizeModule_CDKey
-LIB = -lXEngine_BaseLib -lHelpComponents_DataBase -lAuthorizeModule_CDKey
+LIB = -lXEngine_BaseLib
 LIBEX = 
-OBJECTS = DBModule_SQLite.o DBModule_MySQL.o pch.o
+LOADSO = 
+OBJECTS = Authorize_Serial.o Authorize_CDKey.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -37,7 +37,7 @@ ifeq ($(PLATFORM),linux)
 	FILEEXT = so
 	LIBFLAG = -shared
 	LIBEX = -lpthread -lrt -ldl
-	LOADBIN = -Wl,-rpath=./,--disable-new-dtags
+	LOADBIN = -Wl,-rpath=../XEngine_BaseLib,--disable-new-dtags
 else ifeq ($(PLATFORM),mac)
 	CC += -Wno-deprecated-declarations
 	PLATVER = -D __MACOS__
@@ -45,23 +45,24 @@ else ifeq ($(PLATFORM),mac)
 	FILEEXT = dylib
 	LIBFLAG = -dynamiclib
 	LIBEX = -lpthread -ldl
-	LOADBIN = -Wl,-rpath,@loader_path/./
+	LOADBIN = -Wl,-rpath,@loader_path/../XEngine_BaseLib/
 endif
 
 all:$(OBJECTS)
-	$(CC) $(DEBUG) $(OBJECTS) -o libAuthorizeModule_Database.$(FILEEXT) $(LIBFLAG) $(LIB) $(LIBEX) $(LOADSO) $(LOADBIN)
+	$(CC) $(DEBUG) $(OBJECTS)  -o libAuthorizeModule_CDKey.$(FILEEXT) $(LIBFLAG) $(LIB) $(LIBEX) $(LOADSO) $(LOADBIN)
 
-DBModule_SQLite.o:./DBModule_SQLite/DBModule_SQLite.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./DBModule_SQLite/DBModule_SQLite.cpp
-DBModule_MySQL.o:./DBModule_MySQL/DBModule_MySQL.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./DBModule_MySQL/DBModule_MySQL.cpp
-
-pch.o:pch.cpp
+Authorize_Serial.o:./Authorize_Serial/Authorize_Serial.cpp                                 
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./Authorize_Serial/Authorize_Serial.cpp 
+Authorize_CDKey.o:./Authorize_CDKey/Authorize_CDKey.cpp                                 
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./Authorize_CDKey/Authorize_CDKey.cpp 
+	
+pch.o:pch.cpp             
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp
 
+
 InstallAll:InstallSo
-InstallSo:./libAuthorizeModule_Database.$(FILEEXT)
-	cp ./libAuthorizeModule_Database.$(FILEEXT) ../../XEngine_Release/libAuthorizeModule_Database.$(FILEEXT)
+InstallSo:./libAuthorizeModule_CDKey.$(FILEEXT)
+	cp ./libAuthorizeModule_CDKey.$(FILEEXT) ../../XEngine_Release/libAuthorizeModule_CDKey.$(FILEEXT)
 
 
 CleanAll:CleanObj CleanMk

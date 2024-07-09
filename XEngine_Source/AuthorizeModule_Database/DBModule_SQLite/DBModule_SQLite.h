@@ -40,7 +40,7 @@ public:
     bool DBModule_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryDelete(LPCXSTR lpszSerial);
-    bool DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW);
+    bool DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);
     bool DBModule_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
 public:

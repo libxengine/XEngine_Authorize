@@ -208,28 +208,28 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 			//对多端登录的类型进行验证
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
@@ -270,7 +270,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//分析充值类型
-		if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
+		if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -279,7 +279,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//如果是次数卡,需要优先处理
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 		{
 			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 			_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
@@ -294,7 +294,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
 			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
 			{

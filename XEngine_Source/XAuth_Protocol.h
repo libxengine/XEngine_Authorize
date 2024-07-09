@@ -32,8 +32,111 @@
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDCODE 0x2011     
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT 0x2FFF        //通知客户端时间到期
 //////////////////////////////////////////////////////////////////////////
-//                         导出的数据结构
+//                            导出的枚举型
 //////////////////////////////////////////////////////////////////////////
+#ifndef _MSC_BUILD
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
+static LPCXSTR lpszXSerialType[5] = { "UNKNOW","SECOND","DAY","TIME","CUSTOM" };
+static LPCXSTR lpszXRegType[6] = { "UNKNOW","TEMP","TRY","OFFICIAL","UNLIMIT","EXPIRED" };
+static LPCXSTR lpszXHDType[6] = { "UNKNOW","CPU","DISK","BOARD","MAC","BIOS" };
+#ifndef _MSC_BUILD
+#pragma GCC diagnostic pop
+#endif
+typedef enum
+{
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW = 0,                 //无法识别的充值卡
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND = 1,                 //秒钟,本地使用在read和write的时候更新
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY = 2,                    //天数,本地使用天数卡,不使用不减天数.
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME = 3,                   //次数卡
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM = 4                  //自定义过期日期
+}ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE, * LPENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE;
+typedef enum
+{
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNKNOW = 0,                    //未注册,Authorize_CDKey_GetLeftTimer将返回失败
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TEMP = 1,                      //临时,Authorize_CDKey_GetLeftTimer一次后过期,需要Write
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TRY = 2,                       //试用
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_OFFICIAL = 3,                  //正式版
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT = 4,                   //无限制版,永不过期.CDKEY不做任何验证
+	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_EXPIRED = 5                    //已过期的版本,Authorize_CDKey_GetLeftTimer将返回失败
+}ENUM_AUTHORIZE_MODULE_CDKEY_TYPE, * LPENUM_AUTHORIZE_MODULE_CDKEY_TYPE;
+typedef enum
+{
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_UNKNOW = 0,                     //未指定
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_CPU = 1,                        //CPU序列号
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_DISK = 2,                       //硬盘序列号
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_BOARD = 3,                      //主板序列号
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_MAC = 4,                        //网卡MAC地址
+	ENUM_AUTHORIZE_MODULE_HW_TYPE_BIOS = 5                        //BIOS序列号
+}ENUM_AUTHORIZE_MODULE_HW_TYPE, * LPENUM_AUTHORIZE_MODULE_HW_TYPE;
+typedef enum
+{
+	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_UNKNOW = 0,                 //未知
+	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LOCAL = 0x01,               //本地
+	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LAN = 0x02,                 //局域网
+	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_NETWORK = 0x04,             //网络
+}ENUM_AUTHORIZE_MODULE_VERMODE_TYPE, * LPENUM_AUTHORIZE_MODULE_VERMODE_TYPE;
+//////////////////////////////////////////////////////////////////////////
+//                            导出的结构体
+//////////////////////////////////////////////////////////////////////////
+typedef struct
+{
+	XCHAR tszAddr[32];                                                    //服务器IP地址
+	int nPort;                                                           //端口号码,如果>0表示CDKEY验证失败后改为网络验证
+	//版本信息
+	struct
+	{
+		XCHAR tszAppName[128];                                            //应用程序名称
+		XCHAR tszAppVer[128];                                             //应用程序版本号
+		__int64x nExecTime;                                              //程序已经执行次数,调用Authorize_CDKey_GetLeftTimer会更新
+		bool bInit;                                                      //是否初始化,由用户控制
+	}st_AuthAppInfo;
+	//CDKEY信息
+	struct
+	{
+		XCHAR tszHardware[1024];                                          //硬件码
+		XCHAR tszCreateTime[64];                                          //CDKEY创建日期，年/月/日-小时：分钟：秒
+		XCHAR tszRegisterTime[64];                                        //注册时间，年/月/日-小时：分钟：秒
+		XCHAR tszLeftTime[64];                                            //总的剩余时间,过期日期，根据nLeftType决定此值的意义
+		XCHAR tszStartTime[64];                                           //当前启动时间,由系统读取CDKEY的时候自动更新,天数和分钟有效
+		XCHAR tszExpiryTime[64];                                          //过期的时间,需要调用Authorize_CDKey_GetLeftTimer并且Write才生效
+		__int64x nHasTime;                                               //当前还拥有时间，根据nLeftType决定此值的意义,调用Authorize_CDKey_GetLeftTimer会更新
+		ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;          //过期类型，参考:ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE
+		ENUM_AUTHORIZE_MODULE_CDKEY_TYPE enRegType;                //注册类型，参考:ENUM_AUTHORIZE_MODULE_CDKEY_TYPE
+		ENUM_AUTHORIZE_MODULE_HW_TYPE enHWType;                  //硬件类型，参考:ENUM_AUTHORIZE_MODULE_HW_TYPE
+		ENUM_AUTHORIZE_MODULE_VERMODE_TYPE enVModeType;          //验证方式，参考:ENUM_AUTHORIZE_MODULE_VERMODE_TYPE 
+	}st_AuthRegInfo;
+	//临时序列号
+	struct
+	{
+		//次数限制
+		struct
+		{
+			XCHAR tszTimeSerial[128];
+			int nTimeCount;                                              //使用次数
+			int nTimeNow;                                                //已用次数
+		}st_TimeLimit;
+		//时间限制
+		struct
+		{
+			XCHAR tszDataTime[128];                                       //过期时间
+			XCHAR tszDataSerial[128];                                     //序列号
+		}st_DataLimit;
+		//无限制
+		struct
+		{
+			XCHAR tszUNLimitSerial[128];                                  //无限制序列号
+		}st_UNLimit;
+	}st_AuthSerial;
+	//注册的用户信息，可以不填
+	struct
+	{
+		XCHAR tszUserName[64];                                            //注册的用户
+		XCHAR tszUserContact[64];                                         //联系方式，电子邮件或者手机等
+		XCHAR tszCustom[1024];                                            //自定义数据
+	}st_AuthUserInfo;
+}XENGINE_AUTHORIZE_LOCAL, * LPXENGINE_AUTHORIZE_LOCAL;
 //充值协议
 typedef struct
 {

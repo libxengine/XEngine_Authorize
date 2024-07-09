@@ -60,19 +60,19 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 
 		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime);
 		//解析类型
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enSerialType)
 		{
 			st_AuthTimer.wSecond = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enSerialType)
 		{
 			st_AuthTimer.wDay = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enSerialType)
 		{
 			st_AuthTimer.wFlags = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enSerialType)
 		{
 			if (6 != _stxscanf(tszHasTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
 			{

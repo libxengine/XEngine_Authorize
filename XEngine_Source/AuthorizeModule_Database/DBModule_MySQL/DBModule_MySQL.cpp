@@ -320,25 +320,25 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 	//分析插入方式
 	switch (st_SerialTable.enSerialType)
 	{
-	case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
+	case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
 		if (!DBModule_MySQL_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
 		{
 			return false;
 		}
 		break;
-	case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+	case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
 		if (!DBModule_MySQL_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
 		{
 			return false;
 		}
 		break;
-	case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
+	case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
 		if (!DBModule_MySQL_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
 		{
 			return false;
 		}
 		break;
-	case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
+	case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
 		if (!DBModule_MySQL_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
 		{
 			return false;
@@ -379,7 +379,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimePr
 	memset(tszSQLStatement, '\0', 1024);
 
 
-	if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
+	if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
 	{
 		//天数卡只有剩余时间没有的时候才需要做处理
 		if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -387,7 +387,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimePr
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '0' WHERE UserName = '%s'"), pSt_TimeProtocol->tszUserName);
 		}
 	}
-	if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == pSt_TimeProtocol->enSerialType)
+	if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_TimeProtocol->enSerialType)
 	{
 		//分钟卡必须要有在线时间才能计算
 		if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -396,7 +396,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimePr
 		}
 		_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%lld' WHERE UserName = '%s'"), pSt_TimeProtocol->nTimeLeft, pSt_TimeProtocol->tszUserName);
 	}
-	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
+	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
 	{
 		//次数卡不需要在线时间,直接减去一次就可以了
 		_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%lld' WHERE UserName = '%s'"), _ttxoll(pSt_TimeProtocol->tszLeftTime), pSt_TimeProtocol->tszUserName);
@@ -585,19 +585,19 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
 	{
 		return false;
 	}
-	if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == enAuthSerialType)
+	if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enAuthSerialType)
 	{
 		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType);
 	}
-	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enAuthSerialType)
+	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enAuthSerialType)
 	{
 		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
 	}
-	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enAuthSerialType)
+	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enAuthSerialType)
 	{
 		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
 	}
-	else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
+	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
 	{
 		XCHAR tszLeftTime[MAX_PATH];
 		memset(tszLeftTime, '\0', MAX_PATH);
@@ -1084,7 +1084,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENT
 	for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
 	{
 		//判断是不是不关心注册的模式直接清理
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == enVerMode)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == enVerMode)
 		{
 			if (nThanValue > stl_ListIterator->nVTime)
 			{
@@ -1872,7 +1872,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 	if (en_AuthSerialType != en_AuthUserType)
 	{
 		//如果不等于,需要重写
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW != en_AuthUserType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW != en_AuthUserType)
 		{
 			//判断是否允许改写。
 			if (!m_bChange)
@@ -1895,28 +1895,28 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 		//处理卡类型
 		switch (en_AuthSerialType)
 		{
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
 		{
 			//如果是分钟卡
 			//如果当前的充值卡类型不匹配，那么他以前的充值内容全部都会被删除！
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
 		{
 			//如果是天数卡
 			//更新用户表的过期时间
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
 		{
 			//如果是次数卡
 			//更新用户表的过期时间
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
 		{
 			XCHAR tszTime[128];
 			XENGINE_LIBTIMER st_AuthTime;
@@ -1942,14 +1942,14 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 	{
 		switch (en_AuthSerialType)
 		{
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
 		{
 			int nCardTime = _ttxoi(lpszCardTime);
 			nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
 		{
 			int nCardTime = _ttxoi(lpszCardTime);
 			nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
@@ -1957,7 +1957,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
 		{
 			//如果是次数卡
 			int nCardTime = _ttxoi(lpszCardTime);
@@ -1965,7 +1965,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 			_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
 		}
 		break;
-		case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM:
+		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
 		{
 			//自定义卡,无法相加
 			XCHAR tszTime[128];

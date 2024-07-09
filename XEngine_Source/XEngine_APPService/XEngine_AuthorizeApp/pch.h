@@ -23,8 +23,6 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
