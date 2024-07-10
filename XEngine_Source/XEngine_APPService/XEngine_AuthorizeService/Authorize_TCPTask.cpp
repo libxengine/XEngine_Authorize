@@ -77,7 +77,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//是否在黑名单
 		}
-		if (!bSuccess)
+		if (!bSuccess && st_FunSwitch.bSwitchBlack)
 		{
 			pSt_ProtocolHdr->wReserve = 423;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);

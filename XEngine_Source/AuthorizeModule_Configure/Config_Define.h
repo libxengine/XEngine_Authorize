@@ -113,6 +113,7 @@ typedef struct
 	bool bSwitchDCode;                                      //动态验证码
 	bool bSwitchMulti;                                      //多端登录开关
 	bool bSwitchTry;                                        //临时验证
+	bool bSwitchBlack;                                      //黑名单
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

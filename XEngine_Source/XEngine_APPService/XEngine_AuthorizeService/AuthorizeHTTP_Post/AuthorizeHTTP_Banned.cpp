@@ -11,6 +11,14 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
+	if (!st_FunSwitch.bSwitchBlack)
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，黑名单协议处理失败，功能已经被服务器关闭!"), lpszClientAddr);
+		return false;
+	}
+
 	if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		AUTHREG_BANNED st_Banned;
