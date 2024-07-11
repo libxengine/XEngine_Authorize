@@ -814,19 +814,10 @@ bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt
 {
     Authorize_IsErrorOccur = false;
 
-    XENGINE_LIBTIMER st_StartTimer;
-    XENGINE_LIBTIMER st_EndTimer;
-
-    memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
-    memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-
-    BaseLib_OperatorTime_GetSysTime(&st_StartTimer);                //获取系统时间
-    _xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_StartTimer.wYear, st_StartTimer.wMonth, st_StartTimer.wDay, st_StartTimer.wHour, st_StartTimer.wMinute, st_StartTimer.wSecond);
     //判断注册时间方式
     if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
     {
 		//按照到期时间计算
-		BaseLib_OperatorTimeSpan_GetForStu(&st_StartTimer, pSt_DayTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, 3);
 		_xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), pSt_DayTimer->wYear, pSt_DayTimer->wMonth, pSt_DayTimer->wDay, pSt_DayTimer->wHour, pSt_DayTimer->wMinute, pSt_DayTimer->wSecond);
     }
     else
