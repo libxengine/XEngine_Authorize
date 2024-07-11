@@ -275,8 +275,8 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
         return false;
     }
-    pSt_AuthLocal->st_AuthAppInfo.nExecTime = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("nExecTime"));
-    pSt_AuthLocal->st_AuthAppInfo.bInit = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("bInit"));
+    pSt_AuthLocal->st_AuthAppInfo.nExecTime = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("nExecTime"));
+    pSt_AuthLocal->st_AuthAppInfo.bInit = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("bInit"));
     //添加注册信息
     pSt_AuthLocal->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enHWType"));
     pSt_AuthLocal->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enRegType"));
@@ -661,8 +661,8 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("bInit"), (int*)&pSt_AuthLocal->st_AuthAppInfo.bInit);
-	BaseLib_OperatorFile_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("nExecTime"), &pSt_AuthLocal->st_AuthAppInfo.nExecTime);
+	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("bInit"), (int*)&pSt_AuthLocal->st_AuthAppInfo.bInit);
+	BaseLib_OperatorFile_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("nExecTime"), &pSt_AuthLocal->st_AuthAppInfo.nExecTime);
 	//添加注册信息
 	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enHWType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enHWType);
 	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enRegType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enRegType);
