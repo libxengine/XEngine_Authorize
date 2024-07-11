@@ -46,7 +46,7 @@ feature list:
 13. support third user verification interface
 14. support distributed verification authorize function
 15. black list management
-16. local cdkey support
+16. cdkey support(local, network-number of times, time-user self-registration, system authorization-super multi-functional cdkey)
 17. announecement management
 18. support dynamic verifaction code
 19. support mulit login and merge time
