@@ -83,6 +83,7 @@
 #define IDC_RADIO15                     1029
 #define IDC_DATETIMEPICKER5             1029
 #define IDC_RADIO16                     1030
+#define IDC_EDIT26                      1030
 #define IDC_RADIO17                     1031
 #define IDC_RADIO18                     1032
 #define IDC_RADIO19                     1033
