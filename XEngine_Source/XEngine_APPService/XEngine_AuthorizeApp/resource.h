@@ -85,6 +85,7 @@
 #define IDC_RADIO16                     1030
 #define IDC_EDIT26                      1030
 #define IDC_RADIO17                     1031
+#define IDC_BUTTON11                    1031
 #define IDC_RADIO18                     1032
 #define IDC_RADIO19                     1033
 #define IDC_RADIO20                     1034

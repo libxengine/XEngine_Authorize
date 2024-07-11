@@ -57,6 +57,7 @@ void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 BEGIN_MESSAGE_MAP(CDialog_CDKey, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_CDKey::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON9, &CDialog_CDKey::OnBnClickedButton9)
+	ON_BN_CLICKED(IDC_BUTTON10, &CDialog_CDKey::OnBnClickedButton10)
 END_MESSAGE_MAP()
 
 
@@ -68,13 +69,6 @@ BOOL CDialog_CDKey::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_EditIPAddr.SetWindowText(_T("127.0.0.1"));
-	m_EditPort.SetWindowText(_T("5300"));
-
-	m_EditSoftName.SetWindowText(_T("XEngine_Authorze"));
-	m_EditSoftVer.SetWindowText(_T("V1.0.0.1001"));
-	m_EditSoftTime.SetWindowText(_T("0"));
-
 	m_DateTimeCreate.SetFormat(_T("yyyy-MM-dd HH:mm:ss"));
 	m_DateTimeRegister.SetFormat(_T("yyyy-MM-dd HH:mm:ss"));
 	m_DateTimeStart.SetFormat(_T("yyyy-MM-dd HH:mm:ss"));
@@ -102,6 +96,24 @@ BOOL CDialog_CDKey::OnInitDialog()
 	m_ComboRegHard.SetCurSel(0);
 	m_ComboRegVer.SetCurSel(0);
 
+	return TRUE;  // return TRUE unless you set the focus to a control
+	// 异常: OCX 属性页应返回 FALSE
+}
+
+bool CDialog_CDKey::Dialog_CDKey_Init()
+{
+	m_ComboRegSerial.SetCurSel(3);
+	m_ComboRegType.SetCurSel(2);
+	m_ComboRegHard.SetCurSel(4);
+	m_ComboRegVer.SetCurSel(1);
+
+	m_EditIPAddr.SetWindowText(_T("127.0.0.1"));
+	m_EditPort.SetWindowText(_T("5300"));
+
+	m_EditSoftName.SetWindowText(_T("XEngine_Authorze"));
+	m_EditSoftVer.SetWindowText(_T("V1.0.0.1001"));
+	m_EditSoftTime.SetWindowText(_T("0"));
+
 	int nSerialCount = 3;
 	XCHAR** pptszSerialList;
 	Authorize_Serial_Create(&pptszSerialList, _T("XAUTH"), nSerialCount, 9);
@@ -109,15 +121,27 @@ BOOL CDialog_CDKey::OnInitDialog()
 	m_EditSerialDataNumber.SetWindowText(pptszSerialList[1]);
 	m_EditSerialUnlimitNumber.SetWindowText(pptszSerialList[2]);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
-	m_EditSerialTimeCount.SetWindowText(_T("10"));
+	m_EditSerialTimeCount.SetWindowText(_T("9999"));
 	m_EditSerialTimeUse.SetWindowText(_T("0"));
+
+	XCHAR tszTimeStr[128] = {};
+	XENGINE_LIBTIMER st_LibTime = {};
+	BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+
+	st_LibTime.wYear += 1; //一年后过期
+	BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+
+	COleDateTime m_OleDTime;
+	// 尝试解析字符串为日期和时间
+	if (m_OleDTime.ParseDateTime(tszTimeStr))
+	{
+		m_DataTimeSerial.SetTime(m_OleDTime);
+	}
 
 	m_EditUserInfo.SetWindowText(_T("XEngine"));
 	m_EditUserContact.SetWindowText(_T("www.xyry.org"));
-	return TRUE;  // return TRUE unless you set the focus to a control
-	// 异常: OCX 属性页应返回 FALSE
+	return true;
 }
-
 bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey)
 {
 	//网络信息
@@ -287,4 +311,11 @@ void CDialog_CDKey::OnBnClickedButton9()
 		}
 		Dialog_CDKey_Write(&st_AuthorizeCDKey);
 	}
+}
+
+
+void CDialog_CDKey::OnBnClickedButton10()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	Dialog_CDKey_Init();
 }

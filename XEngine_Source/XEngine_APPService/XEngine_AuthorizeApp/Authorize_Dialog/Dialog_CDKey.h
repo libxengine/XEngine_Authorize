@@ -22,6 +22,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+	bool Dialog_CDKey_Init();
 	bool Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey);
 	bool Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey);
 public:
@@ -55,4 +56,5 @@ public:
 	afx_msg void OnBnClickedButton9();
 	CDateTimeCtrl m_DataTimeRegExpiry;
 	CEdit m_EditKeyPass;
+	afx_msg void OnBnClickedButton10();
 };
