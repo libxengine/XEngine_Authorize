@@ -87,7 +87,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{
 			_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
-			st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
+			st_UserTable.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
 		}
 		//禁止权限0和1注册
 		if (st_UserTable.st_UserInfo.nUserLevel <= 1)
@@ -314,7 +314,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		{
 			//填充写入数据
 			st_VERTemp.nVTime = st_AuthConfig.st_XVerification.nVerTime;
-			st_VERTemp.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
+			st_VERTemp.enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能,不支持分钟,因为不登录
 			if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
 			{

@@ -40,7 +40,7 @@ public:
     bool DBModule_MySQL_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);        //网络使用模式插入一条数据
     bool DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);         //试用序列号查询函数
     bool DBModule_MySQL_TryDelete(LPCXSTR lpszSerial);                  //删除一条指定的试用数据
-    bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);               //清理函数,自动清理过期数据
+    bool DBModule_MySQL_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);               //清理函数,自动清理过期数据
     bool DBModule_MySQL_TrySet(AUTHREG_TEMPVER* pSt_AuthVer);           //设置用户信息函数
     bool DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000); //请求试用期列表
 public:
@@ -54,7 +54,7 @@ public:
     bool DBModule_MySQL_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);  //公告删除
     bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);  //列举所有公告
 protected:
-    bool DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType);  //日期方式充值方式
+    bool DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthUserType);  //日期方式充值方式
 private:
     bool m_bChange;
     XNETHANDLE xhData;                 //数据库句柄

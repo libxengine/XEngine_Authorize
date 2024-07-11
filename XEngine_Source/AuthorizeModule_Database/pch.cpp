@@ -99,7 +99,7 @@ extern "C" bool DBModule_SQLite_TryDelete(LPCXSTR lpszSerial)
 {
 	return m_DBSQLite.DBModule_SQLite_TryDelete(lpszSerial);
 }
-extern "C" bool DBModule_SQLite_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode)
+extern "C" bool DBModule_SQLite_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVerMode)
 {
 	return m_DBSQLite.DBModule_SQLite_TryClear(nThanValue, enVerMode);
 }
@@ -215,7 +215,7 @@ extern "C" bool DBModule_MySQL_TryDelete(LPCXSTR lpszSerial)
 {
 	return m_DBMySQL.DBModule_MySQL_TryDelete(lpszSerial);
 }
-extern "C" bool DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode)
+extern "C" bool DBModule_MySQL_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVerMode)
 {
 	return m_DBMySQL.DBModule_MySQL_TryClear(nThanValue, enVerMode);
 }

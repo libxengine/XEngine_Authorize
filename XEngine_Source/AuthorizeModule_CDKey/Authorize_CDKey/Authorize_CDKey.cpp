@@ -280,7 +280,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
     //添加注册信息
     pSt_AuthLocal->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enHWType"));
     pSt_AuthLocal->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enRegType"));
-    pSt_AuthLocal->st_AuthRegInfo.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enSerialType"));
+    pSt_AuthLocal->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enSerialType"));
 	pSt_AuthLocal->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enVModeType"));
 	pSt_AuthLocal->st_AuthRegInfo.nHasTime = BaseLib_OperatorFile_ReadInt64FromFile(lpszFileKey, _X("AuthReg"), _X("nHasTime"));
     if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware) <= 0)

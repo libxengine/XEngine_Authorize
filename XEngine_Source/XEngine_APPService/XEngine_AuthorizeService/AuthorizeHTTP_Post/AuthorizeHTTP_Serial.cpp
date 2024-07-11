@@ -53,7 +53,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		int nSerialCount = 0;
 		XCHAR tszHasTime[128];
 		XENGINE_LIBTIMER st_AuthTimer;
-		ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
+		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;
 
 		memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
 		memset(tszHasTime, '\0', sizeof(tszHasTime));

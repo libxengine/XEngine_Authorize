@@ -223,7 +223,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
-			pSt_UserInfo->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(pptszResult[nFliedValue]);
+			pSt_UserInfo->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(pptszResult[nFliedValue]);
 		}
 
 		//QQ号
@@ -527,7 +527,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		_tcsxcpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
 		//充值卡类型
 		nFliedValue++;
-		(*pppSt_UserInfo)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		(*pppSt_UserInfo)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		//QQ号
 		nFliedValue++;
 		(*pppSt_UserInfo)[i]->st_UserInfo.nPhoneNumber = _ttxoll(ppszResult[nFliedValue]);
@@ -577,7 +577,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return false;
 	}
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enAuthSerialType;
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enAuthSerialType;
 	XENGINE_LIBTIMER st_AuthTimer;
 	memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
 
@@ -707,7 +707,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		_tcsxcpy(pSt_SerialTable->tszMaxTime, ppszResult[nFliedValue]);
 		//序列卡类型
 		nFliedValue++;
-		pSt_SerialTable->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		pSt_SerialTable->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		//是否已经使用
 		nFliedValue++;
 		pSt_SerialTable->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
@@ -795,7 +795,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		_tcsxcpy((*pppSt_SerialTable)[i]->tszMaxTime, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//序列卡类型
-		(*pppSt_SerialTable)[i]->enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		(*pppSt_SerialTable)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//是否已经使用
 		(*pppSt_SerialTable)[i]->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
@@ -948,7 +948,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 	//试用类型
 	if (NULL != ppszResult[nFliedValue]) 
 	{
-		pSt_AuthVer->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		pSt_AuthVer->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 	}
 
 	//试用时间
@@ -1029,7 +1029,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryDelete(LPCXSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVerMode)
+bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVerMode)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -1065,7 +1065,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_HELPCOMPONENT
 		_tcsxcpy(st_AuthVer.tszVSerial, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//模式
-		st_AuthVer.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		st_AuthVer.enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//测试时间
 		st_AuthVer.nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1211,7 +1211,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 		_tcsxcpy((*pppSt_AuthVer)[i]->tszVSerial, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//类型
-		(*pppSt_AuthVer)[i]->enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+		(*pppSt_AuthVer)[i]->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//时间
 		(*pppSt_AuthVer)[i]->nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1862,7 +1862,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthSerialType, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_AuthUserType)
+bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthUserType)
 {
 	SQLPacket_IsErrorOccur = false;
 	XCHAR tszSQLStatement[1024];
@@ -1919,7 +1919,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 		{
 			XCHAR tszTime[128];
 			XENGINE_LIBTIMER st_AuthTime;
-			ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
+			ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
 
 			memset(tszTime, '\0', sizeof(tszTime));
 			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));
@@ -1969,7 +1969,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 			//自定义卡,无法相加
 			XCHAR tszTime[128];
 			XENGINE_LIBTIMER st_AuthTime;
-			ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE en_GeneraterSerialType;
+			ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
 
 			memset(tszTime, '\0', sizeof(tszTime));
 			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));

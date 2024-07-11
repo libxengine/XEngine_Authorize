@@ -56,7 +56,7 @@ extern "C" XLONG Authorize_GetLastError(int *pInt_SysError = NULL);
   意思：是否生成成功
 备注：输入的时间不能超过99999,多天卡现在由用户直接使用pSt_CustomTimer参数指定,不在内部指定了
 *********************************************************************/
-extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER * pSt_CustomTimer, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
+extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER * pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
 /********************************************************************
 函数名称：Authorize_Serial_Create
 函数功能：创建自定义无类型序列号
@@ -109,7 +109,7 @@ extern "C" bool Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPCXSTR lps
   意思：是否获取成功
 备注：
 *********************************************************************/
-extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer = NULL);
+extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer = NULL);
 /************************************************************************/
 /*                           本地授权导出函数                           */
 /************************************************************************/

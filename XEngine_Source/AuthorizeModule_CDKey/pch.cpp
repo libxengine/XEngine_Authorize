@@ -31,7 +31,7 @@ extern "C" XLONG Authorize_GetLastError(int* pInt_SysError)
 /************************************************************************/
 /*                           卡导出函数                                 */
 /************************************************************************/
-extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER * pSt_CustomTimer, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType)
+extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER * pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType)
 {
 	return m_Serial.Authorize_Serial_Creator(ppptszSerialNumber, lpszUserHeader, nCardNumber, nFieldNumber, pSt_CustomTimer, enSerialType);
 }
@@ -39,7 +39,7 @@ extern "C" bool Authorize_Serial_Create(XCHAR * **ppptszSerialNumber, LPCXSTR lp
 {
 	return m_Serial.Authorize_Serial_Create(ppptszSerialNumber, lpszUserHeader, nCardNumber, nFieldNumber);
 }
-extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE * penSerialType, XENGINE_LIBTIMER * pSt_CustomTimer)
+extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE * penSerialType, XENGINE_LIBTIMER * pSt_CustomTimer)
 {
 	return m_Serial.Authorize_Serial_GetType(lpszSerialNumber, penSerialType, pSt_CustomTimer);
 }

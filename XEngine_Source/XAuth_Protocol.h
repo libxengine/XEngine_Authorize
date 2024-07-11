@@ -41,6 +41,7 @@
 static LPCXSTR lpszXSerialType[5] = { "UNKNOW","SECOND","DAY","TIME","CUSTOM" };
 static LPCXSTR lpszXRegType[6] = { "UNKNOW","TEMP","TRY","OFFICIAL","UNLIMIT","EXPIRED" };
 static LPCXSTR lpszXHDType[6] = { "UNKNOW","CPU","DISK","BOARD","MAC","BIOS" };
+static LPCXSTR lpszXVerType[6] = { "UNKNOW","LOCAL","LAN","NETWORK" };
 #ifndef _MSC_BUILD
 #pragma GCC diagnostic pop
 #endif
@@ -51,7 +52,7 @@ typedef enum
 	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY = 2,                    //天数,本地使用天数卡,不使用不减天数.
 	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME = 3,                   //次数卡
 	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM = 4                  //自定义过期日期
-}ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE, * LPENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE;
+}ENUM_AUTHORIZE_MODULE_SERIAL_TYPE, * LPENUM_AUTHORIZE_MODULE_SERIAL_TYPE;
 typedef enum
 {
 	ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNKNOW = 0,                    //未注册,Authorize_CDKey_GetLeftTimer将返回失败
@@ -102,7 +103,7 @@ typedef struct
 		XCHAR tszStartTime[64];                                           //当前启动时间,由系统读取CDKEY的时候自动更新,天数和分钟有效
 		XCHAR tszExpiryTime[64];                                          //过期的时间,需要调用Authorize_CDKey_GetLeftTimer并且Write才生效
 		__int64x nHasTime;                                               //当前还拥有时间，根据nLeftType决定此值的意义,调用Authorize_CDKey_GetLeftTimer会更新
-		ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;          //过期类型，参考:ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE
+		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;          //过期类型，参考:ENUM_AUTHORIZE_MODULE_SERIAL_TYPE
 		ENUM_AUTHORIZE_MODULE_CDKEY_TYPE enRegType;                //注册类型，参考:ENUM_AUTHORIZE_MODULE_CDKEY_TYPE
 		ENUM_AUTHORIZE_MODULE_HW_TYPE enHWType;                  //硬件类型，参考:ENUM_AUTHORIZE_MODULE_HW_TYPE
 		ENUM_AUTHORIZE_MODULE_VERMODE_TYPE enVModeType;          //验证方式，参考:ENUM_AUTHORIZE_MODULE_VERMODE_TYPE 
@@ -152,7 +153,7 @@ typedef struct
 	__int64x nTimeLeft;                                                   //剩余时间
 	__int64x nTimeONLine;                                                 //在线时间
 	int nNetType;                                                         //连接类型
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;
 	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;
 }AUTHREG_PROTOCOL_TIME, * LPAUTHREG_PROTOCOL_TIME;
 //用户表
@@ -161,7 +162,7 @@ typedef struct tag_AuthReg_UserTable
 	XENGINE_PROTOCOL_USERINFO st_UserInfo;
 	XCHAR tszLeftTime[64];                                                 //剩余日期
 	XCHAR tszHardCode[32];                                                 //硬件码
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;               //充值卡类型
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;               //充值卡类型
 	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                                //设备类型
 }AUTHREG_USERTABLE, * LPAUTHREG_USERTABLE;
 //注册序列号表
@@ -170,7 +171,7 @@ typedef struct tag_AuthReg_SerialTable
 	XCHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //使用者是谁
 	XCHAR tszSerialNumber[128];                                            //序列号
 	XCHAR tszMaxTime[64];                                                  //使用时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;               //充值卡类型
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;               //充值卡类型
 	int bIsUsed;                                                         //是否已经使用
 	XCHAR tszCreateTime[64];                                               //创建时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
@@ -182,7 +183,7 @@ typedef struct
 	__int64x nID;                                                        //ID
 	int nVTime;                                                          //试用时间
 	int nLTime;                                                          //剩余时间
-	ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enVMode;                   //验证方式
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVMode;                   //验证方式
 }AUTHREG_TEMPVER;
 //禁止列表
 typedef struct 

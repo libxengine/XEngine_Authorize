@@ -37,6 +37,7 @@ public:
 	CDialog_Serial m_DlgSerial;
 	CDialog_Banned m_DlgBanned;
 	CDialog_Try m_DlgTry;
+	CDialog_CDKey m_DlgCDKey;
 	CDialog_Announcement m_DlgAnnouncement;
 public:
 	CTabCtrl m_TabWindows;

@@ -18,9 +18,9 @@ public:
     CAuthorize_Serial();
     ~CAuthorize_Serial();
 public:
-    bool Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER* pSt_CustomTimer, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
+    bool Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER* pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
     bool Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber);
-    bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer = NULL);
+    bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer = NULL);
 protected:
     bool Authorize_Serial_Fill(XCHAR *ptszFillBuffer, int nCardNumer);            //填充后面的字段
 protected:
