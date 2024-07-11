@@ -46,7 +46,6 @@ public:
 	CComboBox m_ComboRegVer;
 	CEdit m_EditSerialTimeNumber;
 	CEdit m_EditSerialTimeCount;
-	CEdit m_EditSerialTimeUse;
 	CEdit m_EditSerialDataNumber;
 	CDateTimeCtrl m_DataTimeSerial;
 	CEdit m_EditSerialUnlimitNumber;
@@ -57,4 +56,5 @@ public:
 	CDateTimeCtrl m_DataTimeRegExpiry;
 	CEdit m_EditKeyPass;
 	afx_msg void OnBnClickedButton10();
+	CButton m_CheckSerialDataAdd;
 };

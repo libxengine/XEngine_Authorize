@@ -116,7 +116,6 @@ typedef struct
 		{
 			XCHAR tszTimeSerial[128];
 			int nTimeCount;                                              //使用次数
-			int nTimeNow;                                                //已用次数
 		}st_TimeLimit;
 		//时间限制
 		struct

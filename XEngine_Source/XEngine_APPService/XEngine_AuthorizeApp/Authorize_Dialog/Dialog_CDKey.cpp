@@ -42,7 +42,6 @@ void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO6, m_ComboRegVer);
 	DDX_Control(pDX, IDC_EDIT17, m_EditSerialTimeNumber);
 	DDX_Control(pDX, IDC_EDIT16, m_EditSerialTimeCount);
-	DDX_Control(pDX, IDC_EDIT20, m_EditSerialTimeUse);
 	DDX_Control(pDX, IDC_EDIT22, m_EditSerialDataNumber);
 	DDX_Control(pDX, IDC_DATETIMEPICKER4, m_DataTimeSerial);
 	DDX_Control(pDX, IDC_EDIT21, m_EditSerialUnlimitNumber);
@@ -51,6 +50,7 @@ void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT25, m_EditUserCustom);
 	DDX_Control(pDX, IDC_DATETIMEPICKER5, m_DataTimeRegExpiry);
 	DDX_Control(pDX, IDC_EDIT26, m_EditKeyPass);
+	DDX_Control(pDX, IDC_CHECK3, m_CheckSerialDataAdd);
 }
 
 
@@ -122,7 +122,6 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditSerialUnlimitNumber.SetWindowText(pptszSerialList[2]);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
-	m_EditSerialTimeUse.SetWindowText(_T("0"));
 
 	XCHAR tszTimeStr[128] = {};
 	XENGINE_LIBTIMER st_LibTime = {};
@@ -175,14 +174,16 @@ bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKe
 	CString m_StrSerialCount;
 	CString m_StrSerialUsed;
 	m_EditSerialTimeCount.GetWindowText(m_StrSerialCount);
-	m_EditSerialTimeUse.GetWindowText(m_StrSerialUsed);
 	m_EditSerialTimeNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial));
 	pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount = _ttoi(m_StrSerialCount.GetBuffer());
-	pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeNow = _ttoi(m_StrSerialUsed.GetBuffer());
 
 	m_EditSerialDataNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial));
 	m_DataTimeSerial.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime));
 
+	if (BST_CHECKED == m_CheckSerialDataAdd.GetCheck())
+	{
+		pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.bTimeAdd = true;
+	}
 	m_EditSerialUnlimitNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial));
 	//用户信息
 	m_EditUserInfo.GetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName, sizeof(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName));
@@ -223,10 +224,12 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 	//序列信息
 	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount);
 	m_EditSerialTimeCount.SetWindowText(m_StrFormat);
-	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeNow);
-	m_EditSerialTimeUse.SetWindowText(m_StrFormat);
 	m_EditSerialTimeNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial);
 
+	if (pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.bTimeAdd)
+	{
+		m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
+	}
 	m_EditSerialDataNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial);
 	m_DataTimeSerial.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime);
 

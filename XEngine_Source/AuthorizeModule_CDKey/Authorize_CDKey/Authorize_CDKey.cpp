@@ -181,12 +181,6 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteKey(LPCXSTR lpszFileKey, XENGINE_AUT
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeNow"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow))
-	{
-		Authorize_IsErrorOccur = true;
-		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
-		return false;
-	}
 	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
 	{
 		Authorize_IsErrorOccur = true;
@@ -194,6 +188,12 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteKey(LPCXSTR lpszFileKey, XENGINE_AUT
 		return false;
 	}
 	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime))
+	{
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
+		return false;
+	}
+	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("bTimeAdd"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
@@ -350,7 +350,6 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
 		return false;
 	}
 	pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeCount"));
-	pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeNow"));
 	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
@@ -363,6 +362,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
+	pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("bAddTime"));
 	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
@@ -556,12 +556,6 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pI
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeNow"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow, ptszMsgBuffer, &nMsgLen))
-	{
-		Authorize_IsErrorOccur = true;
-		Authorize_dwErrorCode = BaseLib_GetLastError();
-		return false;
-	}
 	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
@@ -569,6 +563,12 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pI
 		return false;
 	}
 	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, ptszMsgBuffer, &nMsgLen))
+	{
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = BaseLib_GetLastError();
+		return false;
+	}
+	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
@@ -742,12 +742,6 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeNow"), &pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow))
-	{
-		Authorize_IsErrorOccur = true;
-		Authorize_dwErrorCode = BaseLib_GetLastError();
-		return false;
-	}
 	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
 	{
 		Authorize_IsErrorOccur = true;
@@ -760,6 +754,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
+	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), (int*)&pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd);
 	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial))
 	{
 		Authorize_IsErrorOccur = true;
