@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(CDialog_CDKey, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON1, &CDialog_CDKey::OnBnClickedButton1)
 	ON_BN_CLICKED(IDC_BUTTON9, &CDialog_CDKey::OnBnClickedButton9)
 	ON_BN_CLICKED(IDC_BUTTON10, &CDialog_CDKey::OnBnClickedButton10)
+	ON_BN_CLICKED(IDC_BUTTON11, &CDialog_CDKey::OnBnClickedButton11)
 END_MESSAGE_MAP()
 
 
@@ -313,6 +314,7 @@ void CDialog_CDKey::OnBnClickedButton9()
 			return;
 		}
 		Dialog_CDKey_Write(&st_AuthorizeCDKey);
+		bOPenCDKey = true;
 	}
 }
 
@@ -321,4 +323,58 @@ void CDialog_CDKey::OnBnClickedButton10()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	Dialog_CDKey_Init();
+}
+
+
+void CDialog_CDKey::OnBnClickedButton11()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	if (!bOPenCDKey)
+	{
+		AfxMessageBox(_T("没有打开要授权的文件"));
+		return;
+	}
+	XENGINE_AUTHORIZE_LOCAL st_AuthorizeCDKey = {};
+	Dialog_CDKey_Read(&st_AuthorizeCDKey);
+
+	CString m_StrLeftTime;
+	m_EditRegLeftTime.GetWindowText(m_StrLeftTime);
+
+	if (3 == m_ComboRegSerial.GetCurSel())
+	{
+		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, _ttoi64(m_StrLeftTime.GetBuffer()));
+	}
+	else if (4 == m_ComboRegSerial.GetCurSel())
+	{
+		XENGINE_LIBTIMER st_LibTime = {};
+		BaseLib_OperatorTime_StrToTime(m_StrLeftTime.GetBuffer(), &st_LibTime);
+		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
+	}
+	else
+	{
+		AfxMessageBox(_T("授权类型错误,无法继续"));
+		return;
+	}
+
+	CString m_StrPass;
+	m_EditKeyPass.GetWindowText(m_StrPass);
+	if (m_StrPass.IsEmpty())
+	{
+		AfxMessageBox(_T("密码必须设置"));
+		return;
+	}
+	CFileDialog m_FileDlg(false, _T(".key"), _T("CDKey"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("CDKey文件(*.key)|*.key|"));
+	if (IDOK == m_FileDlg.DoModal())
+	{
+		int nMSGLen = 0;
+		XCHAR tszDEBuffer[4096] = {};
+		XBYTE tszENBuffer[4096] = {};
+		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
+
+		OPenSsl_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
+		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
+		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
+		fclose(pSt_File);
+	}
+	AfxMessageBox(_T("授权CDKEY成功"));
 }
