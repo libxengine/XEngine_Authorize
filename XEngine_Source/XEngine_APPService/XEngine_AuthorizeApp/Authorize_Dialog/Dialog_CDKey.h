@@ -53,4 +53,5 @@ public:
 	CEdit m_EditUserContact;
 	CEdit m_EditUserCustom;
 	afx_msg void OnBnClickedButton9();
+	CDateTimeCtrl m_DataTimeRegExpiry;
 };

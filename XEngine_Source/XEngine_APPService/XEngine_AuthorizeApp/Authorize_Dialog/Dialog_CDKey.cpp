@@ -49,6 +49,7 @@ void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT23, m_EditUserInfo);
 	DDX_Control(pDX, IDC_EDIT24, m_EditUserContact);
 	DDX_Control(pDX, IDC_EDIT25, m_EditUserCustom);
+	DDX_Control(pDX, IDC_DATETIMEPICKER5, m_DataTimeRegExpiry);
 }
 
 
@@ -167,6 +168,47 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 {
 	CString m_StrFormat;
 	//网络信息
+	m_EditIPAddr.SetWindowText(pSt_AuthorizeCDKey->tszAddr);
+	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->nPort);
+	m_EditPort.SetWindowText(m_StrFormat);
+	//软件信息
+	m_EditSoftName.SetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName);
+	m_EditSoftVer.SetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer);
+	m_StrFormat.Format(_T("%lld"), pSt_AuthorizeCDKey->st_AuthAppInfo.nExecTime);
+	m_EditSoftTime.SetWindowText(m_StrFormat);
+	if (pSt_AuthorizeCDKey->st_AuthAppInfo.bInit)
+	{
+		m_EditSoftInit.SetCheck(BST_CHECKED);
+	}
+	//注册信息
+	m_EditRegHardCode.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware);
+	m_EditRegLeftTime.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime);
+	m_StrFormat.Format(_T("%lld"), pSt_AuthorizeCDKey->st_AuthRegInfo.nHasTime);
+	m_EditRegHaveTime.SetWindowText(m_StrFormat);
+	m_DateTimeCreate.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime);
+	m_DateTimeRegister.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime);
+	m_DateTimeStart.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime);
+	m_DataTimeRegExpiry.SetWindowTextA(pSt_AuthorizeCDKey->st_AuthRegInfo.tszExpiryTime);
+
+	m_ComboRegSerial.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enSerialType);
+	m_ComboRegType.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enRegType);
+	m_ComboRegHard.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enHWType);
+	m_ComboRegVer.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enVModeType);
+	//序列信息
+	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount);
+	m_EditSerialTimeCount.SetWindowText(m_StrFormat);
+	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeNow);
+	m_EditSerialTimeUse.SetWindowText(m_StrFormat);
+	m_EditSerialTimeNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial);
+
+	m_EditSerialDataNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial);
+	m_DataTimeSerial.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime);
+
+	m_EditSerialUnlimitNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial);
+	//用户信息
+	m_EditUserInfo.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName);
+	m_EditUserContact.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact);
+	m_EditUserCustom.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom);
 	return true;
 }
 void CDialog_CDKey::OnBnClickedButton1()
@@ -201,6 +243,6 @@ void CDialog_CDKey::OnBnClickedButton9()
 			AfxMessageBox(_T("CDKEY读取失败"));
 			return;
 		}
-
+		Dialog_CDKey_Write(&st_AuthorizeCDKey);
 	}
 }
