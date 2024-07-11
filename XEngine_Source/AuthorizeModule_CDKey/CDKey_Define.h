@@ -224,6 +224,25 @@ extern "C" bool Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMsgLen, X
 *********************************************************************/
 extern "C" bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer = 0, XENGINE_LIBTIMER* pSt_DayTimer = NULL);
 /********************************************************************
+函数名称：Authorize_CDKey_UserRegister
+函数功能：用户注册CDKEY函数
+ 参数.一：pSt_AuthLocal
+  In/Out：In
+  类型：结构体指针
+  可空：N
+  意思：要构造的结构体
+ 参数.二：lpszSerialStr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入注册验证的序列号
+返回值
+  类型：逻辑型
+  意思：是否构造成功
+备注：此函数会修改st_AuthRegInfo的时间信息成员,必须重写CDKEY
+*********************************************************************/
+extern "C" bool Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialStr);
+/********************************************************************
 函数名称：Authorize_CDKey_GetLeftTimer
 函数功能：验证CDKey
  参数.一：pSt_AuthLocal

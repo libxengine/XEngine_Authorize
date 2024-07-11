@@ -66,6 +66,10 @@ extern "C" bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL * pSt_AuthL
 {
 	return m_Local.Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, nDayTimer, pSt_DayTimer);
 }
+extern "C" bool Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialStr)
+{
+	return m_Local.Authorize_CDKey_UserRegister(pSt_AuthLocal, lpszSerialStr);
+}
 extern "C" bool Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL * pSt_AuthLocal, LPCXSTR lpszSerialNumber)
 {
 	return m_Local.Authorize_CDKey_GetLeftTimer(pSt_AuthLocal, lpszSerialNumber);

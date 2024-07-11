@@ -123,6 +123,7 @@ typedef struct
 		{
 			XCHAR tszDataTime[128];                                       //过期时间
 			XCHAR tszDataSerial[128];                                     //序列号
+			bool bTimeAdd;                                                //真,过期时间是设置的日期-创建日期.假过期日期就是设定的日期
 		}st_DataLimit;
 		//无限制
 		struct

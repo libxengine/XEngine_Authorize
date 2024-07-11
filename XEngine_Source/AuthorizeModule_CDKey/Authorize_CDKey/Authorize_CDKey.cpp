@@ -808,7 +808,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 返回值
   类型：逻辑型
   意思：是否构造成功
-备注：此函数会修改st_AuthRegInfo的时间信息成员
+备注：此函数会修改st_AuthRegInfo的时间信息成员,必须重写CDKEY
 *********************************************************************/
 bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer /* = 0 */, XENGINE_LIBTIMER* pSt_DayTimer /* = NULL */)
 {
@@ -828,6 +828,94 @@ bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt
     return true;
 }
 /********************************************************************
+函数名称：Authorize_CDKey_UserRegister
+函数功能：用户注册CDKEY函数
+ 参数.一：pSt_AuthLocal
+  In/Out：In
+  类型：结构体指针
+  可空：N
+  意思：要构造的结构体
+ 参数.二：lpszSerialStr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入注册验证的序列号
+返回值
+  类型：逻辑型
+  意思：是否构造成功
+备注：此函数会修改st_AuthRegInfo的时间信息成员,必须重写CDKEY
+*********************************************************************/
+bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialStr)
+{
+	Authorize_IsErrorOccur = false;
+
+	if (NULL == pSt_AuthLocal || NULL == lpszSerialStr)
+	{
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
+		return false;
+	}
+	bool bSerial = false;
+
+	if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial, lpszSerialStr, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial)))
+	{
+		//次数验证
+		pSt_AuthLocal->st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME;
+		pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_OFFICIAL;
+		Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount);
+	}
+	else if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial, lpszSerialStr, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial)))
+	{
+		//日期序列
+		pSt_AuthLocal->st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM;
+		pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_OFFICIAL;
+		XENGINE_LIBTIMER st_LibTime = {};
+		BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+		if (pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd)
+		{
+			__int64x nTimeCount = 0;
+			XENGINE_LIBTIMER st_AddTime = {};
+
+			BaseLib_OperatorTimeSpan_GetForStr(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, &nTimeCount);
+			st_AddTime.wDay = (int)nTimeCount;
+			BaseLib_OperatorTimeSpan_CalForStu(&st_LibTime, &st_AddTime);
+
+			Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, 0, &st_AddTime);
+		}
+		else
+		{
+			__int64x nTimeCount = 0;
+			XCHAR tszTimeStr[128] = {};
+			XENGINE_LIBTIMER st_LibTime = {};
+			BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+
+			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStr, pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &nTimeCount);
+			if (nTimeCount <= 0)
+			{
+				Authorize_IsErrorOccur = true;
+				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TIMEOUT;
+				return false;
+			}
+			BaseLib_OperatorTime_StrToTime(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &st_LibTime);
+			Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, 0, &st_LibTime);
+		}
+	}
+	else if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial, lpszSerialStr, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial)))
+	{
+		//无限制
+		bSerial = true;
+		pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT;
+	}
+
+	if (!bSerial)
+	{
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_FAILED;
+		return false;
+	}
+	return true;
+}
+/********************************************************************
 函数名称：Authorize_CDKey_GetLeftTimer
 函数功能：验证CDKey
  参数.一：pSt_AuthLocal
@@ -845,6 +933,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt
   意思：是否成功
 备注：无限制版本不做验证
       其他验证nHasTime将被设置还拥有时间
+	  此函数在程序启动的时候必须调用,可以设置更新CDKEY信息也可以验证CDKEY
 *********************************************************************/
 bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialNumber /* = NULL */)
 {
@@ -856,137 +945,91 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
 		return false;
 	}
-	bool bSerial = false;
-	//是否输入了序列号,那么进行序列号验证,每次验证都需要序列号
-	if (NULL != lpszSerialNumber)
+	//验证CDKEY本身情况
+	XENGINE_LIBTIMER st_StartTimer;
+	XENGINE_LIBTIMER st_EndTimer;
+	XENGINE_LIBTIMER st_SysTimer;
+
+	memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
+	memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
+	memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIMER));
+	//处理注册类型
+	if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT == pSt_AuthLocal->st_AuthRegInfo.enRegType)
 	{
-		if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial, lpszSerialNumber, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial)))
+		return true;
+	}
+	else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNKNOW == pSt_AuthLocal->st_AuthRegInfo.enRegType)
+	{
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_UNKNOW;
+		return false;
+	}
+	else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TEMP == pSt_AuthLocal->st_AuthRegInfo.enRegType)
+	{
+		if (_tcsxlen(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime) > 1)
 		{
-			//次数验证
-			pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow++;
-			if (pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeNow <= pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount)
-			{
-				bSerial = true;
-			}
-		}
-		else if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial, lpszSerialNumber, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial)))
-		{
-			__int64x nTimeDay = 0;
-			XCHAR tszTimeEnd[128];
-			memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
-			//过期时间
-			BaseLib_OperatorTime_TimeToStr(tszTimeEnd);
-			BaseLib_OperatorTimeSpan_GetForStr(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, tszTimeEnd, &nTimeDay, 3);
-			if (nTimeDay > 0)
-			{
-				bSerial = true;
-			}
-		}
-		else if (0 == _tcsxncmp(pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial, lpszSerialNumber, _tcsxlen(pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial)))
-		{
-			//无限制
-			bSerial = true;
+			Authorize_IsErrorOccur = true;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TEMP;
+			return false;
 		}
 		else
 		{
-			bSerial = false;
+			_xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_SysTimer.wYear, st_SysTimer.wMonth, st_SysTimer.wDay, st_SysTimer.wHour, st_SysTimer.wMinute, st_SysTimer.wSecond);
 		}
 	}
-	//如果本地序列号验证失败,或者没有启用,进行常规CDKEY验证
-	if (!bSerial)
+	else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_EXPIRED == pSt_AuthLocal->st_AuthRegInfo.enRegType)
 	{
-		//验证CDKEY本身情况
-		XENGINE_LIBTIMER st_StartTimer;
-		XENGINE_LIBTIMER st_EndTimer;
-		XENGINE_LIBTIMER st_SysTimer;
-
-		memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
-		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-		memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIMER));
-
-		if (pSt_AuthLocal->st_AuthRegInfo.enRegType <= 0)
+		Authorize_IsErrorOccur = true;
+		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_EXPIRED;
+		return false;
+	}
+	else
+	{
+		//其他类型的注册机制
+		if (pSt_AuthLocal->st_AuthRegInfo.nHasTime <= 0)
 		{
 			Authorize_IsErrorOccur = true;
-			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTREG;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTHASTIME;
 			return false;
 		}
-		//处理注册类型
-		if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT == pSt_AuthLocal->st_AuthRegInfo.enRegType)
-		{
-			return true;
-		}
-		else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNKNOW == pSt_AuthLocal->st_AuthRegInfo.enRegType)
+		BaseLib_OperatorTime_GetSysTime(&st_SysTimer);
+		//转换时间格式
+		_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_StartTimer.wYear, &st_StartTimer.wMonth, &st_StartTimer.wDay, &st_StartTimer.wHour, &st_StartTimer.wMinute, &st_StartTimer.wSecond);
+		//计算超时时间
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 		{
 			Authorize_IsErrorOccur = true;
-			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_UNKNOW;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTSUPPORT;
 			return false;
 		}
-		else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TEMP == pSt_AuthLocal->st_AuthRegInfo.enRegType)
-		{
-			if (_tcsxlen(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime) > 1)
-			{
-				Authorize_IsErrorOccur = true;
-				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TEMP;
-				return false;
-			}
-			else
-			{
-				_xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_SysTimer.wYear, st_SysTimer.wMonth, st_SysTimer.wDay, st_SysTimer.wHour, st_SysTimer.wMinute, st_SysTimer.wSecond);
-			}
-		}
-		else if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_EXPIRED == pSt_AuthLocal->st_AuthRegInfo.enRegType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 		{
 			Authorize_IsErrorOccur = true;
-			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_EXPIRED;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTSUPPORT;
 			return false;
+		}
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
+		{
+			pSt_AuthLocal->st_AuthRegInfo.nHasTime--;
+		}
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
+		{
+			_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_EndTimer.wYear, &st_EndTimer.wMonth, &st_EndTimer.wDay, &st_EndTimer.wHour, &st_EndTimer.wMinute, &st_EndTimer.wSecond);
+			BaseLib_OperatorTimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 		}
 		else
 		{
-			//其他类型的注册机制
-			if (pSt_AuthLocal->st_AuthRegInfo.nHasTime <= 0)
-			{
-				Authorize_IsErrorOccur = true;
-				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTHASTIME;
-				return false;
-			}
-			BaseLib_OperatorTime_GetSysTime(&st_SysTimer);
-			//转换时间格式
-			_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_StartTimer.wYear, &st_StartTimer.wMonth, &st_StartTimer.wDay, &st_StartTimer.wHour, &st_StartTimer.wMinute, &st_StartTimer.wSecond);
-			//计算超时时间
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
-			{
-				_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_EndTimer.wYear, &st_EndTimer.wMonth, &st_EndTimer.wDay, &st_EndTimer.wHour, &st_EndTimer.wMinute, &st_EndTimer.wSecond);
-				__int64x nUsedTime = 0;
-				BaseLib_OperatorTimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
-				pSt_AuthLocal->st_AuthRegInfo.nHasTime -= nUsedTime;
-			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
-			{
-				//在启动的时候已经计算过了,不需要在做计算
-			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
-			{
-				pSt_AuthLocal->st_AuthRegInfo.nHasTime--;
-			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
-			{
-				_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_EndTimer.wYear, &st_EndTimer.wMonth, &st_EndTimer.wDay, &st_EndTimer.wHour, &st_EndTimer.wMinute, &st_EndTimer.wSecond);
-				BaseLib_OperatorTimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
-			}
-			else
-			{
-				Authorize_IsErrorOccur = true;
-				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTSUPPORT;
-				return false;
-			}
-			if (pSt_AuthLocal->st_AuthRegInfo.nHasTime <= 0)
-			{
-				Authorize_IsErrorOccur = true;
-				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TIMEOUT;
-				pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_EXPIRED;
-				_xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_SysTimer.wYear, st_SysTimer.wMonth, st_SysTimer.wDay, st_SysTimer.wHour, st_SysTimer.wMinute, st_SysTimer.wSecond);
-				return false;
-			}
+			Authorize_IsErrorOccur = true;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_NOTSUPPORT;
+			return false;
+		}
+		if (pSt_AuthLocal->st_AuthRegInfo.nHasTime <= 0)
+		{
+			Authorize_IsErrorOccur = true;
+			Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TIMEOUT;
+			pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_EXPIRED;
+			_xstprintf(pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_SysTimer.wYear, st_SysTimer.wMonth, st_SysTimer.wDay, st_SysTimer.wHour, st_SysTimer.wMinute, st_SysTimer.wSecond);
+			return false;
 		}
 	}
 	pSt_AuthLocal->st_AuthAppInfo.nExecTime++;

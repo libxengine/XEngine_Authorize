@@ -12,6 +12,7 @@ EXPORTS
 	Authorize_CDKey_WriteMemory
 	Authorize_CDKey_ReadMemory
 	Authorize_CDKey_BuildKeyTime
+	Authorize_CDKey_UserRegister
 	Authorize_CDKey_GetLeftTimer
 	Authorize_CDKey_WriteTime
 	Authorize_CDKey_ReadTime
