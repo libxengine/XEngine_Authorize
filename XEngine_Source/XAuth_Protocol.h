@@ -83,7 +83,7 @@ typedef enum
 //////////////////////////////////////////////////////////////////////////
 typedef struct
 {
-	XCHAR tszAddr[32];                                                    //服务器IP地址
+	XCHAR tszAddr[MAX_PATH];                                             //服务器或者域名地址
 	int nPort;                                                           //端口号码,如果>0表示CDKEY验证失败后改为网络验证
 	//版本信息
 	struct
