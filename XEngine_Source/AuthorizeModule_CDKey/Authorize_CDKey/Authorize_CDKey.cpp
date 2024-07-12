@@ -809,6 +809,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt
 {
     Authorize_IsErrorOccur = false;
 
+	pSt_AuthLocal->st_AuthAppInfo.bInit = true;
     //判断注册时间方式
     if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
     {

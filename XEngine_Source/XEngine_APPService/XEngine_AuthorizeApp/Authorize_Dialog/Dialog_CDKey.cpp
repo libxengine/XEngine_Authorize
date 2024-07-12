@@ -249,6 +249,11 @@ void CDialog_CDKey::OnBnClickedButton1()
 		AfxMessageBox(_T("创建失败,注册验证类型没选择"));
 		return;
 	}
+	if (3 != m_ComboRegSerial.GetCurSel() || 4 != m_ComboRegSerial.GetCurSel())
+	{
+		AfxMessageBox(_T("创建失败,注册类型仅支持次数卡和自定义时间卡"));
+		return;
+	}
 	CString m_StrPass;
 	m_EditKeyPass.GetWindowText(m_StrPass);
 	if (m_StrPass.IsEmpty())
