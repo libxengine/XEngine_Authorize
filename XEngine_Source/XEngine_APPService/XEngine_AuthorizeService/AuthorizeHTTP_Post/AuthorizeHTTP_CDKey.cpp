@@ -89,6 +89,14 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
 		Authorize_CDKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+
+		if (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_NETWORK != st_Authorize.st_AuthRegInfo.enVModeType)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "unsupport,cdkey is not authorized");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Authorize_GetLastError());
+			return false;
+		}
 		if (!Authorize_CDKey_GetLeftTimer(&st_Authorize))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized,cdkey is not authorized");

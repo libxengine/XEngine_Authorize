@@ -75,8 +75,7 @@ typedef enum
 {
 	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_UNKNOW = 0,                 //未知
 	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LOCAL = 0x01,               //本地
-	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LAN = 0x02,                 //局域网
-	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_NETWORK = 0x04,             //网络
+	ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_NETWORK = 0x02,             //网络
 }ENUM_AUTHORIZE_MODULE_VERMODE_TYPE, * LPENUM_AUTHORIZE_MODULE_VERMODE_TYPE;
 //////////////////////////////////////////////////////////////////////////
 //                            导出的结构体

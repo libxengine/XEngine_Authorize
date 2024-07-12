@@ -949,6 +949,8 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 	memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
 	memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
 	memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIMER));
+
+	BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	//处理注册类型
 	if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT == pSt_AuthLocal->st_AuthRegInfo.enRegType)
 	{
