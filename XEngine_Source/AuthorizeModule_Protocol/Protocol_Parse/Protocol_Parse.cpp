@@ -1104,26 +1104,6 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int n
 	}
 	//注册信息
 	Json::Value st_JsonREGInfo = st_JsonRoot["st_AuthRegInfo"];
-	if (!st_JsonREGInfo["nHasTime"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.nHasTime = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["nHasTime"].asInt();
-	}
-	if (!st_JsonREGInfo["enSerialType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
-	}
-	if (!st_JsonREGInfo["enRegType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
-	}
-	if (!st_JsonREGInfo["enHWType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
-	}
-	if (!st_JsonREGInfo["enVModeType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
-	}
 	if (!st_JsonREGInfo["tszHardware"].isNull())
 	{
 		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszHardware, st_JsonREGInfo["tszHardware"].asCString());
@@ -1147,6 +1127,55 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int n
 	if (!st_JsonREGInfo["tszExpiryTime"].isNull())
 	{
 		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszExpiryTime, st_JsonREGInfo["tszExpiryTime"].asCString());
+	}
+	if (!st_JsonREGInfo["nHasTime"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.nHasTime = st_JsonREGInfo["nHasTime"].asInt();
+	}
+	if (!st_JsonREGInfo["enSerialType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
+	}
+	if (!st_JsonREGInfo["enRegType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
+	}
+	if (!st_JsonREGInfo["enHWType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
+	}
+	if (!st_JsonREGInfo["enVModeType"].isNull())
+	{
+		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
+	}
+	//临时序列号
+	Json::Value st_JsonSerialInfo = st_JsonRoot["st_AuthSerial"];
+	if (!st_JsonSerialInfo.isNull())
+	{
+		if (!st_JsonSerialInfo["tszTimeSerial"].isNull())
+		{
+			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_TimeLimit.tszTimeSerial, st_JsonSerialInfo["tszTimeSerial"].asCString());
+		}
+		if (!st_JsonSerialInfo["nTimeCount"].isNull())
+		{
+			pSt_Authorize->st_AuthSerial.st_TimeLimit.nTimeCount = st_JsonSerialInfo["nTimeCount"].asInt();
+		}
+		if (!st_JsonSerialInfo["tszTimeSerial"].isNull())
+		{
+			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_DataLimit.tszDataSerial, st_JsonSerialInfo["tszTimeSerial"].asCString());
+		}
+		if (!st_JsonSerialInfo["tszDataTime"].isNull())
+		{
+			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_DataLimit.tszDataTime, st_JsonSerialInfo["tszDataTime"].asCString());
+		}
+		if (!st_JsonSerialInfo["bTimeAdd"].isNull())
+		{
+			pSt_Authorize->st_AuthSerial.st_DataLimit.bTimeAdd = st_JsonSerialInfo["bTimeAdd"].asBool();
+		}
+		if (!st_JsonSerialInfo["tszUNLimitSerial"].isNull())
+		{
+			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_UNLimit.tszUNLimitSerial, st_JsonSerialInfo["tszUNLimitSerial"].asCString());
+		}
 	}
 	//CDKEY用户信息
 	Json::Value st_JsonUserInfo = st_JsonRoot["st_AuthUserInfo"];

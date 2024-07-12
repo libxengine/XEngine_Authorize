@@ -26,6 +26,30 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
 		Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, &st_Authorize);
+
+		if (_tcsxlen(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial) <= 0)
+		{
+			int nSerialCount = 3;
+			XCHAR** pptszSerialList;
+			Authorize_Serial_Create(&pptszSerialList, _X("XAUTH"), nSerialCount, 9);
+
+			st_Authorize.st_AuthSerial.st_TimeLimit.nTimeCount = 9999;
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, pptszSerialList[0]);
+
+			st_Authorize.st_AuthSerial.st_DataLimit.bTimeAdd = false;
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
+			XCHAR tszTimeStr[128] = {};
+			XENGINE_LIBTIMER st_LibTime = {};
+			BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+			st_LibTime.wYear += 1; //一年后过期
+			BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
+
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, pptszSerialList[2]);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
+		}
+		
 		if (!Authorize_CDKey_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 406, "Not Acceptable,write key failed");
