@@ -260,6 +260,7 @@ extern "C" bool Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLo
   意思：是否成功
 备注：无限制版本不做验证
 	  其他验证nHasTime将被设置还拥有时间
+	  此函数在程序启动的时候必须调用,可以设置更新CDKEY信息也可以验证CDKEY
 *********************************************************************/
 extern "C" bool Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL * pSt_AuthLocal, LPCXSTR lpszSerialNumber = NULL);
 /********************************************************************

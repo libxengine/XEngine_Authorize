@@ -213,10 +213,24 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 	m_EditRegLeftTime.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime);
 	m_StrFormat.Format(_T("%lld"), pSt_AuthorizeCDKey->st_AuthRegInfo.nHasTime);
 	m_EditRegHaveTime.SetWindowText(m_StrFormat);
-	m_DateTimeCreate.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime);
-	m_DateTimeRegister.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime);
-	m_DateTimeStart.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime);
-	m_DataTimeRegExpiry.SetWindowTextA(pSt_AuthorizeCDKey->st_AuthRegInfo.tszExpiryTime);
+	COleDateTime m_OleDTime;
+	// 尝试解析字符串为日期和时间
+	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime))
+	{
+		m_DateTimeCreate.SetTime(m_OleDTime);
+	}
+	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime))
+	{
+		m_DateTimeRegister.SetTime(m_OleDTime);
+	}
+	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime))
+	{
+		m_DateTimeStart.SetTime(m_OleDTime);
+	}
+	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszExpiryTime))
+	{
+		m_DataTimeSerial.SetTime(m_OleDTime);
+	}
 
 	m_ComboRegSerial.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enSerialType);
 	m_ComboRegType.SetCurSel(pSt_AuthorizeCDKey->st_AuthRegInfo.enRegType);
@@ -232,7 +246,11 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 		m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 	}
 	m_EditSerialDataNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial);
-	m_DataTimeSerial.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime);
+	// 尝试解析字符串为日期和时间
+	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime))
+	{
+		m_DataTimeSerial.SetTime(m_OleDTime);
+	}
 
 	m_EditSerialUnlimitNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial);
 	//用户信息
