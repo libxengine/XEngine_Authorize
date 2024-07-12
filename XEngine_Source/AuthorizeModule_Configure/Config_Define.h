@@ -33,6 +33,11 @@ typedef struct
 	}st_XMax;
 	struct   
 	{
+		struct  
+		{
+			XCHAR tszKeyFile[MAX_PATH];                         //本地CDKEY文件地址
+			XCHAR tszKeyPass[MAX_PATH];                         //本地CDKEY密码
+		}st_XCDKey;
 		int nTokenTimeout;                                  //TOKEN登录超时时间
 		int nDynamicTimeout;                                //动态码超时时间
 		int nVerTime;                                       //验证时间

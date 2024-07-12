@@ -88,7 +88,7 @@ BOOL CDialog_CDKey::OnInitDialog()
 	{
 		m_ComboRegHard.InsertString(i, lpszXHDType[i]);
 	}
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < 3; i++)
 	{
 		m_ComboRegVer.InsertString(i, lpszXVerType[i]);
 	}
@@ -108,10 +108,10 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_ComboRegHard.SetCurSel(4);
 	m_ComboRegVer.SetCurSel(1);
 
-	m_EditIPAddr.SetWindowText(_T("127.0.0.1"));
-	m_EditPort.SetWindowText(_T("5300"));
+	m_EditIPAddr.SetWindowText(_T("http://app.xyry.org"));
+	m_EditPort.SetWindowText(_T("5302"));
 
-	m_EditSoftName.SetWindowText(_T("XEngine_Authorze"));
+	m_EditSoftName.SetWindowText(_T("XEngine_AuthorzeApp"));
 	m_EditSoftVer.SetWindowText(_T("V1.0.0.1001"));
 	m_EditSoftTime.SetWindowText(_T("0"));
 
@@ -262,12 +262,12 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 void CDialog_CDKey::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
-	if (0 == m_ComboRegHard.GetCurSel() || 0 == m_ComboRegSerial.GetCurSel() || 0 == m_ComboRegType.GetCurSel() || 0 == m_ComboRegVer.GetCurSel())
+	if (0 == m_ComboRegSerial.GetCurSel() || 0 == m_ComboRegType.GetCurSel() || 0 == m_ComboRegVer.GetCurSel())
 	{
 		AfxMessageBox(_T("创建失败,注册验证类型没选择"));
 		return;
 	}
-	if (3 != m_ComboRegSerial.GetCurSel() || 4 != m_ComboRegSerial.GetCurSel())
+	if (3 != m_ComboRegSerial.GetCurSel() && 4 != m_ComboRegSerial.GetCurSel())
 	{
 		AfxMessageBox(_T("创建失败,注册类型仅支持次数卡和自定义时间卡"));
 		return;

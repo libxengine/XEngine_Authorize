@@ -41,7 +41,7 @@
 static LPCXSTR lpszXSerialType[5] = { "UNKNOW","SECOND","DAY","TIME","CUSTOM" };
 static LPCXSTR lpszXRegType[6] = { "UNKNOW","TEMP","TRY","OFFICIAL","UNLIMIT","EXPIRED" };
 static LPCXSTR lpszXHDType[6] = { "UNKNOW","CPU","DISK","BOARD","MAC","BIOS" };
-static LPCXSTR lpszXVerType[6] = { "UNKNOW","LOCAL","LAN","NETWORK" };
+static LPCXSTR lpszXVerType[6] = { "UNKNOW","LOCAL","NETWORK" };
 #ifndef _MSC_BUILD
 #pragma GCC diagnostic pop
 #endif

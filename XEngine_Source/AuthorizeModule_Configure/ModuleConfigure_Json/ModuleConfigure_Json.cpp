@@ -101,7 +101,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (6 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (7 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -114,6 +114,9 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XVerification.nVerMode = st_JsonXVerification["nVerMode"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryTime = st_JsonXVerification["nTryTime"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryMode = st_JsonXVerification["nTryMode"].asInt();
+
+	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyFile, st_JsonXVerification["st_XCDKey"]["tszKeyFile"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyPass, st_JsonXVerification["st_XCDKey"]["tszKeyPass"].asCString());
 	//登录配置
 	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
 	{
