@@ -29,7 +29,6 @@ public:
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedButton1();
-	CIPAddressCtrl m_EditIPAddr;
 	CEdit m_EditPort;
 	CDateTimeCtrl m_DateTimeCreate;
 	CDateTimeCtrl m_DateTimeRegister;
@@ -59,4 +58,5 @@ public:
 	afx_msg void OnBnClickedButton10();
 	CButton m_CheckSerialDataAdd;
 	afx_msg void OnBnClickedButton11();
+	CEdit m_EditIPAddr;
 };

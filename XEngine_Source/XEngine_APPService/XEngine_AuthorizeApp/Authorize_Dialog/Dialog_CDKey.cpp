@@ -24,7 +24,6 @@ CDialog_CDKey::~CDialog_CDKey()
 void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_IPADDRESS1, m_EditIPAddr);
 	DDX_Control(pDX, IDC_EDIT1, m_EditPort);
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_DateTimeCreate);
 	DDX_Control(pDX, IDC_DATETIMEPICKER2, m_DateTimeRegister);
@@ -51,6 +50,7 @@ void CDialog_CDKey::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_DATETIMEPICKER5, m_DataTimeRegExpiry);
 	DDX_Control(pDX, IDC_EDIT26, m_EditKeyPass);
 	DDX_Control(pDX, IDC_CHECK3, m_CheckSerialDataAdd);
+	DDX_Control(pDX, IDC_EDIT11, m_EditIPAddr);
 }
 
 
