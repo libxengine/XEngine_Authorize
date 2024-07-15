@@ -18,7 +18,11 @@
         "nVerTime":5,
         "nVerMode":2,
         "nTryTime":30,
-        "nTryMode":1
+        "nTryMode":1,
+        "st_XCDKey":{
+            "tszKeyFile":"./APPVer.key",
+            "tszKeyPass":"123123qa"
+        }
     },
     "XLogin":{
         "bHTTPAuth":false,
