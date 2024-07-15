@@ -23,10 +23,6 @@ c c++network Authorize service
 目前市面上的大多数产品不是收费就是产品更新慢，或者功能不全。没有技术支持。使用我们的产品你完全不需要有这方便的担心。  
 我们的产品完全免费，提供免费技术支持和收费技术支持。功能丰富多样，还可以自主开发。现在，你就可以使用我们的产品并且体验目前最好的并且开源的授时服务.  
 
-#### 版本区别
-V3版本后协议基本重新实现,不在兼容V2协议,V3基本改为HTTP接口进行管理.兼容性更好.请查看文档获取更多.  
-V2可以直接升级到V3版本,因为数据库并没有修改,直接替换程序即可.数据库兼容V2版本  
-
 ## 软件特性  
 我们的功能列表不仅包括下面的，还有很多待开发的功能正在计划中。  
 你可以参考这个网页了解我们未来支持的功能列表:https://github.com/libxengine/XEngine_Authorize/issues  
@@ -125,6 +121,8 @@ Linux or macos:直接运行即可
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/7.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/8.png "在这里输入图片标题")
 
 ## 参与贡献
 

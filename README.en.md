@@ -23,10 +23,6 @@ more functions: support various types of authorization
 Most products on the market either charge fees, update slowly, or lack complete functionality. They also lack technical support. With our product, you don't need to worry about these issues at all.  
 Our product is completely free and offers both free and paid technical support. It is rich in features and allows for custom development. You can start using our product now and experience the best and open-source time service available.
 
-#### Version difference
-V3 version, the protocol is basically reimplemented. It is no longer compatible with the V2 protocol. V3 is basically changed to the HTTP interface for management. The compatibility is better. Please check the documentation for more.  
-V2 Version can be update to V3,V3 DB Compatible with V2 Databse
-
 ## Software feature
 Our feature list not only includes the following but also has many features in development.  
 You can refer to this webpage to learn about the features we plan to support in the future: https://github.com/libxengine/XEngine_Authorize/issues  
@@ -114,6 +110,8 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/7.png "在这里输入图片标题")
+![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/8.png "在这里输入图片标题")
 
 ## Participate in contribution
 
