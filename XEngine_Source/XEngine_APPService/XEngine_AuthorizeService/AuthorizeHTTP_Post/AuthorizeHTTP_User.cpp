@@ -76,7 +76,7 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		{
 			bSuccess = DBModule_MySQL_BannedExist(&st_Banned);
 		}
-		if (!bSuccess && st_FunSwitch.bSwitchBlack)
+		if (!bSuccess && st_FunSwitch.bSwitchBanned)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user name is banned");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

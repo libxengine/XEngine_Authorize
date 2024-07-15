@@ -11,7 +11,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
-	if (!st_FunSwitch.bSwitchBlack)
+	if (!st_FunSwitch.bSwitchBanned)
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

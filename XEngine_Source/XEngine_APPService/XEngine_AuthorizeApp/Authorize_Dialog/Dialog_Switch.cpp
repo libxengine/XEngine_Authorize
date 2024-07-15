@@ -234,7 +234,7 @@ void CDialog_Switch::OnBnClickedButton1()
 			m_RadioTryOPen.SetCheck(BST_UNCHECKED);
 			m_RadioTryClose.SetCheck(BST_CHECKED);
 		}
-		if (st_JsonRoot["bSwitchBlack"].asBool())
+		if (st_JsonRoot["bSwitchBanned"].asBool())
 		{
 			m_RadioBlackOPen.SetCheck(BST_CHECKED);
 			m_RadioBlackClose.SetCheck(BST_UNCHECKED);
@@ -363,11 +363,11 @@ void CDialog_Switch::OnBnClickedButton2()
 
 	if (BST_CHECKED == m_RadioBlackOPen.GetCheck())
 	{
-		st_JsonObject["bSwitchBlack"] = true;
+		st_JsonObject["bSwitchBanned"] = true;
 	}
 	else
 	{
-		st_JsonObject["bSwitchBlack"] = false;
+		st_JsonObject["bSwitchBanned"] = false;
 	}
 	st_JsonRoot["st_SwitchInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());

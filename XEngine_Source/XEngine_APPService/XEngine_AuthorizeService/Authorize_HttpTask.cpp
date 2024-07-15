@@ -72,7 +72,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	{
 		bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//IP地址是否在黑名单
 	}
-	if (!bSuccess && st_FunSwitch.bSwitchBlack)
+	if (!bSuccess && st_FunSwitch.bSwitchBanned)
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "ip address is banned");
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
