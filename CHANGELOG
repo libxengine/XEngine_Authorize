@@ -1,3 +1,29 @@
+XEngine_Authorize V3.13.0.1001
+
+增加:管理程序支持CDKEY创建,打开,授权,初始化
+增加:授权验证模块
+增加:黑名单开关功能支持
+增加:mysql数据库支持
+增加:客户端模块加密支持
+增加:服务端程序CDKEY验证支持
+修改:现在默认使用sqlite数据库
+修改:服务器处理CDKEY协议支持更多字段
+修正:客户端登录加密协议返回处理不正确
+修正:黑名单处理不正确
+删除:局域网CDKEY支持
+
+added:cdkey create,open,authorize,init for app management
+added:authorize module
+added:black function switch supported
+added:mysql database support
+added:encrypted support for client module
+added:cdkey verification support for service
+modify:configure use default sqlite
+modify:server handle cdkey serial field and set serial field
+fixed:Problem with client login protocol parsing failure after setting up encrypted communication
+fixed:banned process is incorrect
+delete:ver lan support for cdkey module
+================================================================
 XEngine_Authorize V3.12.1.1001
 
 修改:用户列表刷新时间修改

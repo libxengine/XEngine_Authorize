@@ -660,6 +660,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchDCode"] = pSt_FunSwitch->bSwitchDCode;
 	st_JsonRoot["bSwitchMulti"] = pSt_FunSwitch->bSwitchMulti;
 	st_JsonRoot["bSwitchTry"] = pSt_FunSwitch->bSwitchTry;
+	st_JsonRoot["bSwitchBanned"] = pSt_FunSwitch->bSwitchBanned;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
@@ -853,7 +854,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 		st_JsonObject["nID"] = (Json::Value::Int64)(*pppSt_TryList)[i]->nID;
 		st_JsonObject["nVTime"] = (*pppSt_TryList)[i]->nVTime;
 		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == (*pppSt_TryList)[i]->enVMode)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == (*pppSt_TryList)[i]->enVMode)
 		{
 			XENGINE_LIBTIMER st_TimeStart = {};
 			XENGINE_LIBTIMER st_TimeEnd = {};

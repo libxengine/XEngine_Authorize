@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_File", "XEngine_File", "{D3A33095-8584-4EFB-9411-EBC38407E7B9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XEngine_HDRFile", "XEngine_HDRFile", "{D3A33095-8584-4EFB-9411-EBC38407E7B9}"
 	ProjectSection(SolutionItems) = preProject
 		XAuth_BuildSwitch.h = XAuth_BuildSwitch.h
 		XAuth_Protocol.h = XAuth_Protocol.h
@@ -24,9 +24,13 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Session", "AuthorizeModule_Session\AuthorizeModule_Session.vcxproj", "{CB9138DF-789D-459F-AD43-4095B22A487F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_Database", "AuthorizeModule_Database\AuthorizeModule_Database.vcxproj", "{5FA1874A-32F4-4176-9C23-4E22BE183660}"
+	ProjectSection(ProjectDependencies) = postProject
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F} = {02A75BD0-416E-4AEF-BF34-BD85BD86384F}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeService", "XEngine_APPService\XEngine_AuthorizeService\XEngine_AuthorizeService.vcxproj", "{A29DFD8D-2818-4BE3-A2DB-07F241B4BFC9}"
 	ProjectSection(ProjectDependencies) = postProject
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F} = {02A75BD0-416E-4AEF-BF34-BD85BD86384F}
 		{1391B739-713B-4A3A-9233-FEAB92E0566C} = {1391B739-713B-4A3A-9233-FEAB92E0566C}
 		{185975A2-EB43-45DF-8108-03656A2BFE33} = {185975A2-EB43-45DF-8108-03656A2BFE33}
 		{5FA1874A-32F4-4176-9C23-4E22BE183660} = {5FA1874A-32F4-4176-9C23-4E22BE183660}
@@ -58,6 +62,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_InfoReport", "XEngi
 	ProjectSection(ProjectDependencies) = postProject
 		{940A00A6-A944-46C1-B34F-1361AFE240E0} = {940A00A6-A944-46C1-B34F-1361AFE240E0}
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AuthorizeModule_CDKey", "AuthorizeModule_CDKey\AuthorizeModule_CDKey.vcxproj", "{02A75BD0-416E-4AEF-BF34-BD85BD86384F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -147,6 +153,14 @@ Global
 		{185975A2-EB43-45DF-8108-03656A2BFE33}.Release|x64.Build.0 = Release|x64
 		{185975A2-EB43-45DF-8108-03656A2BFE33}.Release|x86.ActiveCfg = Release|Win32
 		{185975A2-EB43-45DF-8108-03656A2BFE33}.Release|x86.Build.0 = Release|Win32
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Debug|x64.ActiveCfg = Debug|x64
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Debug|x64.Build.0 = Debug|x64
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Debug|x86.ActiveCfg = Debug|Win32
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Debug|x86.Build.0 = Debug|Win32
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Release|x64.ActiveCfg = Release|x64
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Release|x64.Build.0 = Release|x64
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Release|x86.ActiveCfg = Release|Win32
+		{02A75BD0-416E-4AEF-BF34-BD85BD86384F}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

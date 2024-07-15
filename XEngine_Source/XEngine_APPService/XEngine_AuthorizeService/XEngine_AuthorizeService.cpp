@@ -50,7 +50,14 @@ void ServiceApp_Stop(int signo)
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
 		AuthHelp_DynamicCode_Destory();
-		Database_SQLite_Destroy();
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_Destroy();//销毁DB数据库服务
+		}
+		else
+		{
+			DBModule_MySQL_Destroy();// 销毁MYsql数据库服务
+		}
 		exit(0);
 	}
 }
@@ -92,6 +99,7 @@ int main(int argc, char** argv)
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
 	bIsRun = true;
+	FILE* pSt_File = NULL;
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
@@ -139,13 +147,25 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化内存池成功"));
 
-	if (!Database_SQLite_Init(st_AuthConfig.st_XSql.tszSQLite))
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化数据库服务失败，错误：%lX"), DBModule_GetLastError());
-		goto XENGINE_EXITAPP;
+	/***********  初始化 MySql/DB数据库  ***********/
+	if (0 == st_AuthConfig.st_XSql.nDBType)
+	{ //SQLite数据库
+		if (!DBModule_SQLite_Init(st_AuthConfig.st_XSql.st_SQLite.tszSQLite))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化DB数据库服务失败，错误：%lX"), DBModule_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化DB数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.st_SQLite.tszSQLite);
 	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.tszSQLite);
-
+	else
+	{
+		if (!DBModule_MySQL_Init((DATABASE_MYSQL_CONNECTINFO *)&st_AuthConfig.st_XSql.st_MYSQL))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化MySql数据库失败，错误：%lX"), DBModule_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化MySql数据库服务成功,数据库:%s"), st_AuthConfig.st_XSql.st_MYSQL.tszDBName);
+	}
 	if (!Session_Authorize_Init(XEngine_TaskEvent_Client))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化会话客户端服务失败，错误：%lX"), Session_GetLastError());
@@ -295,10 +315,51 @@ int main(int argc, char** argv)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned);
 
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry);
+	pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("rb"));
+	if (NULL == pSt_File)
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，授权文件没有找到"));
+	}
+	else
+	{
+		//一个简单的示例,没有验证硬件码
+		XCHAR tszENCodecBuffer[4096] = {};
+		XCHAR tszDECodecBuffer[4096] = {};
+		XENGINE_AUTHORIZE_LOCAL st_AuthLocal = {};
+
+		int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
+		fclose(pSt_File);
+
+		if (OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
+		{
+			Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
+			bool bRet = Authorize_CDKey_GetLeftTimer(&st_AuthLocal);
+			//无论成功失败需要重写CDKEY
+			memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
+			memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
+			Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
+			OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
+			pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("wb"));
+			fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
+			fclose(pSt_File);
+			if (bRet)
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，授权文件验证成功，总可运行次数:%s,剩余可运行次数:%lld"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime);
+			}
+			else
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，总可运行次数:%s,剩余可运行次数:%lld，错误码:%lX"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime, Authorize_GetLastError());
+			}
+		}
+		else
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件失败，解密失败,数据不正确"));
+		}
+	}
+	
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XNumberStr(), BaseLib_OperatorVer_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
-
 	while (true)
 	{
 		std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -332,7 +393,14 @@ XENGINE_EXITAPP:
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
 		AuthHelp_DynamicCode_Destory();
-		Database_SQLite_Destroy();
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_Destroy();
+		}
+		else
+		{
+			DBModule_MySQL_Destroy();
+		}
 	}
 #ifdef _WINDOWS
 	WSACleanup();

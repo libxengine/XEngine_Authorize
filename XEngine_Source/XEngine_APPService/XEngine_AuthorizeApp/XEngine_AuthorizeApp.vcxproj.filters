@@ -72,6 +72,9 @@
     <ClInclude Include="Authorize_Dialog\Dialog_Try.h">
       <Filter>头文件\Authorize_Dialog</Filter>
     </ClInclude>
+    <ClInclude Include="Authorize_Dialog\Dialog_CDKey.h">
+      <Filter>头文件\Authorize_Dialog</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="XEngine_AuthorizeApp.cpp">
@@ -108,6 +111,9 @@
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
     <ClCompile Include="Authorize_Dialog\Dialog_Try.cpp">
+      <Filter>源文件\Authorize_Dialog</Filter>
+    </ClCompile>
+    <ClCompile Include="Authorize_Dialog\Dialog_CDKey.cpp">
       <Filter>源文件\Authorize_Dialog</Filter>
     </ClCompile>
   </ItemGroup>

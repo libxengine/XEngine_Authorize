@@ -68,7 +68,16 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 				return false;
 			}
 		}
-		if (!Database_SQLite_UserQuery(tszUserName, &st_UserTable))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserQuery(tszUserName, &st_UserTable);
+		}
+		else
+		{
+			bSuccess = DBModule_MySQL_UserQuery(tszUserName, &st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

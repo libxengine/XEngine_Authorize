@@ -18,7 +18,11 @@
         "nVerTime":5,
         "nVerMode":2,
         "nTryTime":30,
-        "nTryMode":1
+        "nTryMode":1,
+        "st_XCDKey":{
+            "tszKeyFile":"./APPVer.key",
+            "tszKeyPass":"123123qa"
+        }
     },
     "XLogin":{
         "bHTTPAuth":false,
@@ -40,8 +44,13 @@
         "bEnable":false,
         "nPass":123123
     },
-    "XSQL":{
-        "tszSQLFile":"./XEngine_DataBase/SQL_User.db"
+    "XSql":{
+        "nSQLType":0,
+        "SQLAddr": "127.0.0.1",
+        "SQLPort": 3306,
+        "SQLUser": "root",
+        "SQLPass": "123123",
+        "SQLFile":"./XEngine_DataBase/SQL_User.db"
     },
     "XLog":{
         "tszLogFile":"./XEngine_XLog/XEngine_Authorize.log",

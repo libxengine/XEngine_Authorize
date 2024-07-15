@@ -13,10 +13,16 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="头文件\Database_SQLite">
+    <Filter Include="源文件\DBModule_MySQL">
+      <UniqueIdentifier>{e8a2076d-4bed-4439-9493-1a33b0f6fd2b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\DBModule_MySQL">
+      <UniqueIdentifier>{dc9f7cbb-dd1b-4430-99ee-15793188c3a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\DBModule_SQLite">
       <UniqueIdentifier>{bb64f825-b769-444e-b078-90c2727b694f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\Database_SQLite">
+    <Filter Include="源文件\DBModule_SQLite">
       <UniqueIdentifier>{be64df35-6ef0-4c8c-b95a-444977d7d1c4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -27,14 +33,17 @@
     <ClInclude Include="pch.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Database_SQLite\Database_SQLite.h">
-      <Filter>头文件\Database_SQLite</Filter>
-    </ClInclude>
     <ClInclude Include="Database_Define.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Database_Error.h">
       <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DBModule_MySQL\DBModule_MySQL.h">
+      <Filter>头文件\DBModule_MySQL</Filter>
+    </ClInclude>
+    <ClInclude Include="DBModule_SQLite\DBModule_SQLite.h">
+      <Filter>头文件\DBModule_SQLite</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -44,8 +53,11 @@
     <ClCompile Include="pch.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Database_SQLite\Database_SQLite.cpp">
-      <Filter>源文件\Database_SQLite</Filter>
+    <ClCompile Include="DBModule_MySQL\DBModule_MySQL.cpp">
+      <Filter>源文件\DBModule_MySQL</Filter>
+    </ClCompile>
+    <ClCompile Include="DBModule_SQLite\DBModule_SQLite.cpp">
+      <Filter>源文件\DBModule_SQLite</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

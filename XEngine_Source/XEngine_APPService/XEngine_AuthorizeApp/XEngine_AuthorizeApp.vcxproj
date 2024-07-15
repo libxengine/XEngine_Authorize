@@ -193,6 +193,7 @@
   <ItemGroup>
     <ClInclude Include="Authorize_Dialog\Dialog_Announcement.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Banned.h" />
+    <ClInclude Include="Authorize_Dialog\Dialog_CDKey.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Config.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Modify.h" />
     <ClInclude Include="Authorize_Dialog\Dialog_Serial.h" />
@@ -210,6 +211,7 @@
   <ItemGroup>
     <ClCompile Include="Authorize_Dialog\Dialog_Announcement.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Banned.cpp" />
+    <ClCompile Include="Authorize_Dialog\Dialog_CDKey.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Config.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Modify.cpp" />
     <ClCompile Include="Authorize_Dialog\Dialog_Serial.cpp" />

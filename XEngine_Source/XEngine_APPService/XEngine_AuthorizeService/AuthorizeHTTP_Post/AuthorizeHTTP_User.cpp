@@ -36,7 +36,14 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 
-		Database_SQLite_UserDelete(st_UserInfo.tszUserName);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_UserDelete(st_UserInfo.tszUserName);
+		}
+		else
+		{
+			DBModule_MySQL_UserDelete(st_UserInfo.tszUserName);
+		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
@@ -60,18 +67,27 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
 		_tcsxcpy(st_Banned.tszUserName, st_UserTable.st_UserInfo.tszUserName);
-		if (Database_SQLite_BannedExist(&st_Banned))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_BannedExist(&st_Banned);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_BannedExist(&st_Banned);
+		}
+		if (!bSuccess && st_FunSwitch.bSwitchBanned)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 423, "user name is banned");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，用户名已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，用户名或IP地址已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
 			return false;
 		}
 		//填充写入数据
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{
 			_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
-			st_UserTable.enSerialType = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
+			st_UserTable.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
 		}
 		//禁止权限0和1注册
 		if (st_UserTable.st_UserInfo.nUserLevel <= 1)
@@ -85,7 +101,16 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
 			return false;
 		}
-		if (!Database_SQLite_UserRegister(&st_UserTable))
+		bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserRegister(&st_UserTable);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserRegister(&st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			XLONG dwRet = DBModule_GetLastError();
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, dwRet, "user register is failed");
@@ -113,14 +138,30 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, &st_UserPay);
-		if (!Database_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "Serial number not available");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, DBModule_GetLastError());
 			return false;
 		}
-		Database_SQLite_UserQuery(st_UserPay.tszUserName, &st_UserInfo);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_UserQuery(st_UserPay.tszUserName, &st_UserInfo);
+		}
+		else
+		{
+			DBModule_MySQL_UserQuery(st_UserPay.tszUserName, &st_UserInfo);
+		}
 		Session_Authorize_SetUser(&st_UserInfo);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -144,7 +185,16 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
-		if (!Database_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable))
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
+		}
+		if (!bSuccess) 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -200,11 +250,21 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
-		if (Database_SQLite_TryQuery(&st_VERTemp))
+		bool bSuccess = false;
+		//判断是使用哪个数据库
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			bSuccess = DBModule_SQLite_TryQuery(&st_VERTemp);
+		}
+		else 
+		{
+			bSuccess = DBModule_MySQL_TryQuery(&st_VERTemp);
+		}
+		if (bSuccess) 
 		{
 			__int64x nTimeSpan = 0;
 			//根据方式来计算剩余时间
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
 			{
 				//次数卡需要更新才可以
 				st_VERTemp.nLTime--;
@@ -231,7 +291,14 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			//是否超过
 			if (nTimeSpan >= 0)
 			{
-				Database_SQLite_TrySet(&st_VERTemp);
+				if (0 == st_AuthConfig.st_XSql.nDBType) 
+				{
+					DBModule_SQLite_TrySet(&st_VERTemp);
+				}
+				else
+				{
+					DBModule_MySQL_TrySet(&st_VERTemp);
+				}
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_VERTemp.tszVSerial, lpszXSerialType[st_VERTemp.enVMode], nTimeSpan);
@@ -247,16 +314,25 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		{
 			//填充写入数据
 			st_VERTemp.nVTime = st_AuthConfig.st_XVerification.nVerTime;
-			st_VERTemp.enVMode = (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
+			st_VERTemp.enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能,不支持分钟,因为不登录
-			if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
+			if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 501, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_VERTemp.tszVSerial);
 				return false;
 			}
-			if (!Database_SQLite_TryInsert(&st_VERTemp))
+			bool bSuccess = false;
+			if (0 == st_AuthConfig.st_XSql.nDBType) 
+			{
+				bSuccess = DBModule_SQLite_TryInsert(&st_VERTemp);
+			}
+			else 
+			{
+				bSuccess = DBModule_MySQL_TryInsert(&st_VERTemp);
+			}
+			if (!bSuccess) 
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "Internal Server Error");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

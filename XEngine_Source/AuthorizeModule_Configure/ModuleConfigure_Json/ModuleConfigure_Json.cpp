@@ -101,7 +101,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (6 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (7 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -114,6 +114,9 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XVerification.nVerMode = st_JsonXVerification["nVerMode"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryTime = st_JsonXVerification["nTryTime"].asInt();
 	pSt_ServerConfig->st_XVerification.nTryMode = st_JsonXVerification["nTryMode"].asInt();
+
+	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyFile, st_JsonXVerification["st_XCDKey"]["tszKeyFile"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyPass, st_JsonXVerification["st_XCDKey"]["tszKeyPass"].asCString());
 	//登录配置
 	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
 	{
@@ -147,14 +150,22 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
 	//数据库配置
-	if (st_JsonRoot["XSQL"].empty() || (1 != st_JsonRoot["XSQL"].size()))
+	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XSQL;
 		return false;
 	}
-	Json::Value st_JsonXSQL = st_JsonRoot["XSQL"];
-	_tcsxcpy(pSt_ServerConfig->st_XSql.tszSQLite, st_JsonXSQL["tszSQLFile"].asCString());
+	Json::Value st_JsonXSql = st_JsonRoot["XSql"];
+
+	pSt_ServerConfig->st_XSql.nDBType = st_JsonXSql["nSQLType"].asInt();
+
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_SQLite.tszSQLite, st_JsonXSql["SQLFile"].asCString());
+
+	pSt_ServerConfig->st_XSql.st_MYSQL.nSQLPort = st_JsonXSql["SQLPort"].asInt();
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLAddr, st_JsonXSql["SQLAddr"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLUser, st_JsonXSql["SQLUser"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLPass, st_JsonXSql["SQLPass"].asCString());
 	//日志配置
 	if (st_JsonRoot["XLog"].empty() || (4 != st_JsonRoot["XLog"].size()))
 	{
@@ -330,5 +341,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchDCode = st_JsonRoot["bSwitchDCode"].asBool();
 	pSt_ServerConfig->bSwitchMulti = st_JsonRoot["bSwitchMulti"].asBool();
 	pSt_ServerConfig->bSwitchTry = st_JsonRoot["bSwitchTry"].asBool();
+	pSt_ServerConfig->bSwitchBanned = st_JsonRoot["bSwitchBanned"].asBool();
 	return true;
 }

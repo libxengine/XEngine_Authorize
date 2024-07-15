@@ -28,12 +28,17 @@ CAuthClient_HTTPVer::~CAuthClient_HTTPVer()
   类型：常量字符指针
   可空：N
   意思：函数的API地址,需要输入完整的URL
+ 参数.二：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入密码,如果服务端设置了密码客户端也必须使用加密通信
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
+bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPCXSTR lpszPass /* = NULL */)
 {
 	AuthClient_IsErrorOccur = true;
 
@@ -44,6 +49,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
 		return false;
 	}
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)
+
 	int nHTTPCode = 0;
 	XCHAR tszJsonStr[MAX_PATH] = {};
 	Json::Value st_JsonRoot;
@@ -61,18 +67,45 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
 	//请求
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszURLAddr, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
-	st_JsonRoot.clear();
-	st_JsonObject.clear();
-	//解析回复
-	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+
+	if (NULL != lpszPass)
 	{
-		AuthClient_IsErrorOccur = true;
-		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-		return false;
+		XCHAR tszENCodec[2048] = {};
+		XCHAR tszDECodec[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENCodec, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszURLAddr, tszENCodec, &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
+		st_JsonRoot.clear();
+		st_JsonObject.clear();
+		//解析回复
+		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+		if (!pSt_JsonReader->parse(tszDECodec, tszDECodec + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			AuthClient_IsErrorOccur = true;
+			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			return false;
+		}
 	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszURLAddr, st_JsonRoot.toStyledString().c_str(), &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
+		st_JsonRoot.clear();
+		st_JsonObject.clear();
+		//解析回复
+		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			AuthClient_IsErrorOccur = true;
+			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			return false;
+		}
+	}
+	
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		AuthClient_IsErrorOccur = true;
@@ -97,22 +130,27 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr)
   类型：整数型指针
   可空：N
   意思：输出动态码
- 参数.二：pxhToken
+ 参数.三：pxhToken
   In/Out：Out
   类型：整数型指针
   可空：N
   意思：输出绑定的句柄
- 参数.三：pInt_Timeout
+ 参数.四：pInt_Timeout
   In/Out：Out
   类型：整数型指针
   可空：Y
   意思：输出动态码超时时间
+ 参数.五：lpszPass
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入密码,如果服务端设置了密码客户端也必须使用加密通信
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout /* = NULL */)
+bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* pInt_DYCode, XNETHANDLE* pxhToken, int* pInt_Timeout /* = NULL */, LPCXSTR lpszPass /* = NULL */)
 {
 	AuthClient_IsErrorOccur = true;
 
@@ -130,16 +168,35 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* 
 	//请求
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
+
 	APIClient_Http_Request(_X("GET"), lpszURLAddr, NULL, &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
-	//解析回复
-	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	if (NULL != lpszPass)
 	{
-		AuthClient_IsErrorOccur = true;
-		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-		return false;
+		XCHAR tszDECodec[2048] = {};
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
+
+		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+		if (!pSt_JsonReader->parse(tszDECodec, tszDECodec + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			AuthClient_IsErrorOccur = true;
+			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			return false;
+		}
 	}
+	else
+	{
+		//解析回复
+		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			AuthClient_IsErrorOccur = true;
+			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
+			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			return false;
+		}
+	}
+
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		AuthClient_IsErrorOccur = true;

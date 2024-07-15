@@ -30,8 +30,6 @@
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../XAuth_Protocol.h"
 #endif
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)

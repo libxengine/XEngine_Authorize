@@ -406,7 +406,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				//登陆成功的。我们要处理他过期
 				switch (stl_ListIterator->st_UserTable.enSerialType)
 				{
-				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND:
+				case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
 				{
                     bMultiTime = true;
 					//秒钟处理
@@ -422,7 +422,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
                     break;
 				}
-				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME:
+				case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
 				{
 					//次数处理
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
@@ -438,7 +438,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					_tcsxcpy(st_ProtocolTimer.tszUserName, stl_ListIterator->st_UserTable.st_UserInfo.tszUserName);
                     break;
 				}
-				case ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY:
+				case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
 				{
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
                     _xstprintf(stl_ListIterator->tszLeftTime, _X("%lld"), stl_ListIterator->nLeftTime);

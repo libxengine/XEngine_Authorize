@@ -32,7 +32,14 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			return false;
 		}
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
-		Database_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		{
+			DBModule_SQLite_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
+		}
+		else
+		{
+			DBModule_MySQL_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
+		}
 		Protocol_Packet_HttpSerialList(ptszMsgBuffer, &nSDLen, &ppSt_SerialTable, nListCount);
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -46,26 +53,26 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		int nSerialCount = 0;
 		XCHAR tszHasTime[128];
 		XENGINE_LIBTIMER st_AuthTimer;
-		ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType;
+		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;
 
 		memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
 		memset(tszHasTime, '\0', sizeof(tszHasTime));
 
 		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime);
 		//解析类型
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enSerialType)
 		{
 			st_AuthTimer.wSecond = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enSerialType)
 		{
 			st_AuthTimer.wDay = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enSerialType)
 		{
 			st_AuthTimer.wFlags = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enSerialType)
 		{
 			if (6 != _stxscanf(tszHasTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
 			{
@@ -93,9 +100,19 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			return false;
 		}
 		//导入序列卡
-		for (int i = 0; i < nSerialCount; i++)
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			Database_SQLite_SerialInsert(pptszSerialNumber[i]);
+			for (int i = 0; i < nSerialCount; i++) //导入序列卡
+			{
+				DBModule_SQLite_SerialInsert(pptszSerialNumber[i]);
+			}
+		}
+		else 
+		{
+			for (int i = 0; i < nSerialCount; i++) 
+			{
+				DBModule_MySQL_SerialInsert(pptszSerialNumber[i]);
+			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
@@ -108,9 +125,19 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
 
 		Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &ppSt_SerialTable, &nListCount);
-		for (int i = 0; i < nListCount; i++)
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			Database_SQLite_SerialDelete(ppSt_SerialTable[i]->tszSerialNumber);
+			for (int i = 0; i < nListCount; i++)
+			{
+				DBModule_SQLite_SerialDelete(ppSt_SerialTable[i]->tszSerialNumber);
+			}
+		}
+		else 
+		{
+			for (int i = 0; i < nListCount; i++)
+			{
+				DBModule_MySQL_SerialDelete(ppSt_SerialTable[i]->tszSerialNumber);
+			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
@@ -123,9 +150,19 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
 
 		Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &ppSt_SerialTable, &nListCount);
-		for (int i = 0; i < nListCount; i++)
+		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			Database_SQLite_SerialPush(ppSt_SerialTable[i]);
+			for (int i = 0; i < nListCount; i++)
+			{
+				DBModule_SQLite_SerialPush(ppSt_SerialTable[i]);
+			}
+		}
+		else 
+		{
+			for (int i = 0; i < nListCount; i++)
+			{
+				DBModule_MySQL_SerialPush(ppSt_SerialTable[i]);
+			}
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);

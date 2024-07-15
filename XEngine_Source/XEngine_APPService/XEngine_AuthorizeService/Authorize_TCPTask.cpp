@@ -52,23 +52,8 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOLHDR* pSt_ProtocolHdr, int nNetType)
 {
 	int nSDLen = 0;
-	XCHAR tszSDBuffer[2048];
-	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-
-	AUTHREG_BANNED st_Banned;
-	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
-	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
-	//是否在黑名单
-	if (Database_SQLite_BannedExist(&st_Banned))
-	{
-		pSt_ProtocolHdr->wReserve = 423;
-		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，IP地址被禁用!"), lpszClientAddr);
-		return false;
-	}
+	XCHAR tszSDBuffer[2048] = {};
+	AUTHREG_BANNED st_Banned = {};
 
 	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -78,6 +63,28 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
 		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
+
+		_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
+		_tcsxcpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
+		BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
+		//是否在黑名单
+		bool bSuccess = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //是否在黑名单
+		}
+		else
+		{
+			bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//是否在黑名单
+		}
+		if (!bSuccess && st_FunSwitch.bSwitchBanned)
+		{
+			pSt_ProtocolHdr->wReserve = 423;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
+			return false;
+		}
 
 		pSt_ProtocolHdr->unPacketSize = 0;
 		pSt_ProtocolHdr->unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN;
@@ -132,7 +139,16 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else
 		{
-			if (!Database_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable))
+			bool bSuccess = false;
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+			}
+			if (!bSuccess)
 			{
 				pSt_ProtocolHdr->wReserve = 251;
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -192,28 +208,28 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 			//对多端登录的类型进行验证
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
@@ -254,7 +270,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//分析充值类型
-		if ((ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
+		if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
 			pSt_ProtocolHdr->wReserve = 255;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -263,14 +279,22 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//如果是次数卡,需要优先处理
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 		{
 			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 			_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 
-			Database_SQLite_UserSet(&st_UserTable);
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				DBModule_SQLite_UserSet(&st_UserTable);
+			}
+			else
+			{
+				DBModule_MySQL_UserSet(&st_UserTable);
+			}
+			
 		}
-		else if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
 			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
 			{
@@ -278,7 +302,14 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 				BaseLib_OperatorTime_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
-				Database_SQLite_UserSet(&st_UserTable);
+				if (0 == st_AuthConfig.st_XSql.nDBType)
+				{
+					DBModule_SQLite_UserSet(&st_UserTable);
+				}
+				else
+				{
+					DBModule_MySQL_UserSet(&st_UserTable);
+				}
 			}
 		}
 

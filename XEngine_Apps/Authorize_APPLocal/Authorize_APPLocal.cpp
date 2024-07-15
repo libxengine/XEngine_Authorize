@@ -4,12 +4,13 @@
 #pragma comment(lib,"Ws2_32")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
-#pragma comment(lib,"XEngine_Client/XClient_APIHelp")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize")
+#pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi")
 #ifdef _WIN64
 #pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
+#pragma comment(lib,"../../XEngine_Source/x64/Debug/AuthorizeModule_CDKey")
 #else
 #pragma comment(lib,"../../XEngine_Source/Debug/jsoncpp")
+#pragma comment(lib,"../../XEngine_Source/Debug/AuthorizeModule_CDKey")
 #endif
 #endif
 #include <stdio.h>
@@ -18,157 +19,212 @@
 #include <inttypes.h>
 #include <json/json.h>
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
-#include <XEngine_Include/XEngine_Client/APIClient_Define.h>
-#include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
+#include "../../XEngine_Source/XAuth_Protocol.h"
+#include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Define.h"
+#include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Error.h"
 
 //需要优先配置XEngine
-//WINDOWS支持VS2022 x64 debug 编译调试
-//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lHelpComponents_Authorize -ljsoncpp -Wl,-rpath=../../XEngine_Release
+//WINDOWS支持VS2022 x86 debug 编译调试
+//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_BaseLib -lXEngine_OPenSsl -lXEngine_SystemApi -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
-//#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
+XCHAR tszSerialStr[MAX_PATH] = {};
+//1.创建CDKEY.或者由管理员创建.
+bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
+{
+	int nRet = 0;
+	XCHAR tszENCodecBuffer[4096] = {};
+	XCHAR tszDECodecBuffer[4096] = {};
+	XENGINE_AUTHORIZE_LOCAL st_AuthLocal = {};
+	SYSTEMAPI_SERIAL_INFOMATION st_SDKSerial = {};
 
-LPCXSTR lpszPasswd = _X("123123");
+	SystemApi_HardWare_GetSerial(&st_SDKSerial);
+	//网络信息
+	st_AuthLocal.nPort = 5302;
+	_tcsxcpy(st_AuthLocal.tszAddr, _X("http://app.xyry.org"));
+	//软件信息
+	st_AuthLocal.st_AuthAppInfo.bInit = false;
+	st_AuthLocal.st_AuthAppInfo.nExecTime = 0;
+	_xstprintf(st_AuthLocal.st_AuthAppInfo.tszAppName, _X("XEngine_Authorize"));
+	_xstprintf(st_AuthLocal.st_AuthAppInfo.tszAppVer, _X("V1.0.0.1"));
+	//注册信息
+	st_AuthLocal.st_AuthRegInfo.enHWType = ENUM_AUTHORIZE_MODULE_HW_TYPE_BIOS;
+	st_AuthLocal.st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_TRY;
+	st_AuthLocal.st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME;
+	st_AuthLocal.st_AuthRegInfo.enVModeType = ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LOCAL;
+	st_AuthLocal.st_AuthRegInfo.nHasTime = 0;
+	BaseLib_OperatorTime_TimeToStr(st_AuthLocal.st_AuthRegInfo.tszCreateTime);
+	_tcsxcpy(st_AuthLocal.st_AuthRegInfo.tszHardware, st_SDKSerial.tszBoardSerial);
+	_xstprintf(st_AuthLocal.st_AuthRegInfo.tszLeftTime, _X("0"));           //0次试用
+	//序列号信息.可以不写,如果不想启用用户自己注册.或者交给管理员填充
+	int nSerialCount = 3;
+	XCHAR** pptszSerialList;
+	Authorize_Serial_Create(&pptszSerialList, _X("XAUTH"), nSerialCount, 9);
+	_tcsxcpy(tszSerialStr, pptszSerialList[0]);
 
+	st_AuthLocal.st_AuthSerial.st_TimeLimit.nTimeCount = 5;
+	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_TimeLimit.tszTimeSerial, pptszSerialList[0]);
+
+	st_AuthLocal.st_AuthSerial.st_DataLimit.bTimeAdd = false;
+	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
+	XCHAR tszTimeStr[128] = {};
+	XENGINE_LIBTIMER st_LibTime = {};
+	BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+	st_LibTime.wYear += 1; //一年后过期
+	BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+
+	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
+
+	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_UNLimit.tszUNLimitSerial, pptszSerialList[2]);
+	//用户信息
+	_xstprintf(st_AuthLocal.st_AuthUserInfo.tszUserName, _X("qyt"));
+	_xstprintf(st_AuthLocal.st_AuthUserInfo.tszUserContact, _X("486179@qq.com"));
+
+	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
+	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	FILE* pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
+	if (NULL == pSt_File)
+	{
+		printf("create key file is failed\n");
+		return false;
+	}
+	fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
+	fclose(pSt_File);
+
+	return true;
+}
+//2.打开CDKEY并且授权(授权只能通过自我授权或者由管理员授权,用户不应该可以自己随意授权)
+bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd, LPCXSTR lpszSerialStr)
+{
+	XCHAR tszENCodecBuffer[4096] = {};
+	XCHAR tszDECodecBuffer[4096] = {};
+	XENGINE_AUTHORIZE_LOCAL st_AuthLocal = {};
+
+	FILE* pSt_File = _xtfopen(lpszKeyFile, _X("rb"));
+	if (NULL == pSt_File)
+	{
+		printf("open key file is failed\n");
+		return false;
+	}
+	int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
+	fclose(pSt_File);
+
+	OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
+	//printf("大小:%d,内容:\n%s\n", nRet, tszDECodecBuffer);
+
+	Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
+	if (!Authorize_CDKey_UserRegister(&st_AuthLocal, lpszSerialStr))
+	{
+		printf("serila verifacation is failed,error code:%lX\n", Authorize_GetLastError());
+		return false;
+	}
+
+	memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
+	memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
+	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
+	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
+	fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
+	fclose(pSt_File);
+	return true;
+}
+//3.验证CDkey
+bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
+{
+	XCHAR tszENCodecBuffer[4096] = {};
+	XCHAR tszDECodecBuffer[4096] = {};
+	XENGINE_AUTHORIZE_LOCAL st_AuthLocal = {};
+
+	FILE* pSt_File = _xtfopen(lpszKeyFile, _X("rb"));
+	if (NULL == pSt_File)
+	{
+		printf("open key file is failed\n");
+		return false;
+	}
+	int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
+	fclose(pSt_File);
+
+	OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
+	//printf("大小:%d,内容:\n%s\n", nRet, tszDECodecBuffer);
+	Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
+	if (!Authorize_CDKey_GetLeftTimer(&st_AuthLocal))
+	{
+		//失败也需要重写CDKEY
+		memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
+		memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
+		Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
+		OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+		pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
+		fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
+		fclose(pSt_File);
+
+		printf("verifaction is failed\n");
+		return false;
+	}
+	SYSTEMAPI_SERIAL_INFOMATION st_SDKSerial = {};
+	SystemApi_HardWare_GetSerial(&st_SDKSerial);
+
+	if (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LOCAL != st_AuthLocal.st_AuthRegInfo.enVModeType)
+	{
+		printf("cdkey does not support local verification\n");
+		return false;
+	}
+	if (ENUM_AUTHORIZE_MODULE_HW_TYPE_BIOS != st_AuthLocal.st_AuthRegInfo.enHWType)
+	{
+		printf("cdkey serial type is incorrect\n");
+		return false;
+	}
+	if (0 != _tcsxnicmp(st_SDKSerial.tszBoardSerial, st_AuthLocal.st_AuthRegInfo.tszHardware, _tcsxlen(st_SDKSerial.tszBoardSerial)))
+	{
+		printf("cdkey serial verification is failed\n");
+		return false;
+	}
+
+	memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
+	memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
+	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
+	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
+	fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
+	fclose(pSt_File);
+	return true;
+}
 int main()
 {
 #ifdef _MSC_BUILD
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
-#endif
-	int nLen = 0;
-	int nCode = 0;
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonAPPInfo;
-	Json::Value st_JsonREGInfo;
-	Json::Value st_JsonUserInfo;
-	st_JsonRoot["tszAddr"] = "http://app.xyry.org";
-	st_JsonRoot["nPort"] = 5501;
-
-	st_JsonAPPInfo["tszAppName"] = "XEngine";
-	st_JsonAPPInfo["tszAppVer"] = "1.0.0.1001";
-
-	st_JsonREGInfo["tszHardware"] = "5501012NE21N";
-	st_JsonREGInfo["enSerialType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_TIME;
-	st_JsonREGInfo["enRegType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_REG_TYPE_TRY;
-	st_JsonREGInfo["enHWType"] = ENUM_HELPCOMPONENTS_AUTHORIZE_HW_TYPE_CPU;
-
-	st_JsonUserInfo["tszUserName"] = "qyt";
-	st_JsonUserInfo["tszUserContact"] = "486179@qq.com";
-
-	st_JsonRoot["st_AuthAppInfo"] = st_JsonAPPInfo;
-	st_JsonRoot["st_AuthRegInfo"] = st_JsonREGInfo;
-	st_JsonRoot["st_AuthUserInfo"] = st_JsonUserInfo;
-
-	XCHAR* ptszCreateBuffer = NULL;
-	LPCXSTR lpszCreateUrl = _X("http://192.168.1.10:5302/auth/cdkey/create");
-	//1. 创建CDKEY
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-	//加密
-	CHAR tszCodecBuffer[4096];
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-
-	nLen = st_JsonRoot.toStyledString().length();
-	OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nLen, (XBYTE *)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, tszCodecBuffer, &nCode, &ptszCreateBuffer, &nLen))
+	LPCXSTR lpszFileStr = _X("D:\\XEngine_Authorize\\XEngine_Apps\\Debug\\cd.key");
 #else
-	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, st_JsonRoot.toStyledString().c_str(), &nCode, &ptszCreateBuffer, &nLen))
+	LPCXSTR lpszFileStr = _X("cd.key");
 #endif
-	{
-		printf("发送投递失败！\n");
-		return 0;
-	}
+	LPCXSTR lpszPasswd = _X("123123");
 	
-	XCHAR tszMsgBuffer[4096];
-	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-	//解密
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-
-	OPenSsl_XCrypto_Decoder(ptszCreateBuffer, &nLen, tszCodecBuffer, lpszPasswd);
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
-	//你也可以通过授权模块的API函数来读内存,都一回事,这里为了方便直接写了,请求分钟卡,拥有10分钟,也可以写自定义时间格式
-	BaseLib_OperatorFile_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
-#else
-	BaseLib_OperatorFile_WriteProfileFromMemory(ptszCreateBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszCreateBuffer);
-#endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszCreateBuffer);
-	//2. 授权CDKEY
-	XCHAR* ptszAuthBuffer = NULL;
-	LPCXSTR lpszAuthUrl = _X("http://192.168.1.10:5302/auth/cdkey/auth");
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-	//加密
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-	nLen = nLen;
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszCodecBuffer, &nCode, &ptszAuthBuffer, &nLen))
-#else
-	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszMsgBuffer, &nCode, &ptszAuthBuffer, &nLen))
-#endif
+	if (!Authorize_APPLocal_Create(lpszFileStr, lpszPasswd))
 	{
-		printf("发送投递失败！\n");
-		return 0;
+		return -1;
 	}
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-	//解密
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
+	Authorize_APPLocal_Auth(lpszFileStr, lpszPasswd);
 
-	OPenSsl_XCrypto_Decoder(ptszAuthBuffer, &nLen, tszCodecBuffer, lpszPasswd);
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
-	//你也可以通过授权模块的API函数来读内存,都一回事,这里为了方便直接写了,请求分钟卡,拥有10分钟,也可以写自定义时间格式
-	BaseLib_OperatorFile_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
-#else
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszAuthBuffer);
-	BaseLib_OperatorFile_WriteProfileFromMemory(ptszAuthBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
-#endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszAuthBuffer);
-	//3. 验证CDKEY
-	XCHAR* ptszVerBuffer = NULL;
-	LPCXSTR lpszVerUrl = _X("http://192.168.1.10:5302/auth/cdkey/ver");
-
-	XENGINE_AUTHORIZE_LOCAL st_Authorize;
-	memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
-
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-//加密
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
-	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszCodecBuffer, &nCode, &ptszVerBuffer, &nLen))
-#else
-	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszMsgBuffer, &nCode, &ptszVerBuffer, &nLen))
-#endif
+	if (!Authorize_APPLocal_Auth(lpszFileStr, lpszPasswd, tszSerialStr))
 	{
-		printf("发送投递失败！\n");
-		return 0;
+		return -1;
 	}
-#ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
-	//解密
-	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
-	OPenSsl_XCrypto_Decoder(ptszVerBuffer, &nLen, tszCodecBuffer, lpszPasswd);
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
-	Authorize_Local_ReadMemory(tszCodecBuffer, nLen, &st_Authorize);
-#else
-	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszVerBuffer);
-	Authorize_Local_ReadMemory(ptszVerBuffer, nLen, &st_Authorize);
-#endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszVerBuffer);
-
-	//4. 也可以本地验证
-	if (Authorize_Local_GetLeftTimer(&st_Authorize))
+	for (int i = 0; i < 10; i++)
 	{
+		if (!Authorize_APPLocal_Auth(lpszFileStr, lpszPasswd))
+		{
+			break;
+		}
 		printf("ok\n");
-	}
-	else
-	{
-		printf("timeout\n");
 	}
 #ifdef _MSC_BUILD
 	WSACleanup();

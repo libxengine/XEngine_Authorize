@@ -34,12 +34,12 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/XLog_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
@@ -51,6 +51,8 @@ using namespace std;
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
+#include "../../AuthorizeModule_CDKey/CDKey_Define.h"
+#include "../../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
 #include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
@@ -107,6 +109,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_InfoReport.lib")
 #else
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
@@ -114,6 +117,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Debug/XEngine_InfoReport.lib")
 #endif
 #else
@@ -123,6 +127,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_InfoReport.lib")
 #else
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
@@ -130,6 +135,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
+#pragma comment(lib,"../../Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Release/XEngine_InfoReport.lib")
 #endif
 #endif
@@ -141,7 +147,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
-#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Authorize.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol.lib")
 #endif

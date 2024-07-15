@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCXSTR lpszLeftDate, ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, XPVOID lParam)
+void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCXSTR lpszLeftDate, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, XPVOID lParam)
 {
 	if (nLeftTimer <= 0)
 	{
@@ -52,7 +52,14 @@ void CALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNam
 	_tcsxcpy(st_AuthTime.tszUserName, lpszUserName);
 	_tcsxcpy(st_AuthTime.tszUserAddr, lpszUserAddr);
 
-	Database_SQLite_UserLeave(&st_AuthTime);
+	if (0 == st_AuthConfig.st_XSql.nDBType)
+	{
+		DBModule_SQLite_UserLeave(&st_AuthTime);
+	}
+	else
+	{
+		DBModule_MySQL_UserLeave(&st_AuthTime);
+	}
 }
 void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 {

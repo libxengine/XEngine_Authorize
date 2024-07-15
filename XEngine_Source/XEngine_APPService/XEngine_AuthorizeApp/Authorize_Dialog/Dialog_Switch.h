@@ -47,4 +47,6 @@ public:
 	CButton m_RadioMultiClose;
 	CButton m_RadioTryOPen;
 	CButton m_RadioTryClose;
+	CButton m_RadioBlackOPen;
+	CButton m_RadioBlackClose;
 };

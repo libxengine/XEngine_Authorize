@@ -29,7 +29,6 @@ using namespace std;
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
@@ -123,10 +122,27 @@ int AuthClient_Register()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_Register:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_Register:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+
+		printf("AuthClient_Register:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 	return 0;
 }
 int AuthClient_Pay()
@@ -142,10 +158,26 @@ int AuthClient_Pay()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_Pay:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_Pay:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		printf("AuthClient_Pay:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 	return 0;
 }
 int AuthClient_DynamicCode()
@@ -155,15 +187,29 @@ int AuthClient_DynamicCode()
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
 	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_DynamicCode:\n%s\n", ptszMsgBuffer);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	if (bEncrypto)
 	{
-		return 0;
+		XCHAR tszDEBuffer[2048] = {};
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		if (!pSt_JsonReader->parse(tszDEBuffer, tszDEBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			return 0;
+		}
+		printf("AuthClient_DynamicCode:\n%s\n", tszDEBuffer);
+	}
+	else
+	{
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			return 0;
+		}
+		printf("AuthClient_DynamicCode:\n%s\n", ptszMsgBuffer);
 	}
 	XCHAR tszDCodeStr[64];
 	XCHAR tszTokenStr[64];
@@ -242,17 +288,31 @@ int AuthClient_Notice()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
-
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+
+	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	if (bEncrypto)
 	{
-		return 0;
+		XCHAR tszDEBuffer[2048] = {};
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		if (!pSt_JsonReader->parse(tszDEBuffer, tszDEBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			return 0;
+		}
 	}
+	else
+	{
+		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+		{
+			return 0;
+		}
+	}
+	
 	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)
 	{
 		XCHAR tszMsgBuffer[2048];
@@ -286,9 +346,26 @@ int AuthClient_GetPass()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_GetPass:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_GetPass:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		printf("AuthClient_GetPass:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 
 	return 0;
 }
@@ -304,9 +381,26 @@ int AuthClient_GetTime()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_GetTime:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_GetTime:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		printf("AuthClient_GetTime:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 
 	return 0;
 }
@@ -326,10 +420,26 @@ int AuthClient_Delete()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_Delete:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_Delete:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		printf("AuthClient_Delete:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 	return 0;
 }
 int AuthClient_Try()
@@ -344,10 +454,26 @@ int AuthClient_Try()
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-	printf("AuthClient_Try:\n%s\n", ptszMsgBuffer);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
+	if (bEncrypto)
+	{
+		XCHAR tszENBuffer[2048] = {};
+		XCHAR tszDEBuffer[2048] = {};
+
+		nMsgLen = st_JsonRoot.toStyledString().length();
+		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+
+		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		printf("AuthClient_Try:\n%s\n", tszDEBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
+	else
+	{
+		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		printf("AuthClient_Try:\n%s\n", ptszMsgBuffer);
+		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	}
 	return 0;
 }
 int main()

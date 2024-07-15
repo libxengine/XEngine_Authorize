@@ -164,15 +164,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
 	{
-		if (NULL == lpszPass)
-		{
-			NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen);
-		}
-		else
-		{
-			OPenSsl_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszMsgBuffer, lpszPass);
-			NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
-		}
+		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen);
 	}
 	else
 	{

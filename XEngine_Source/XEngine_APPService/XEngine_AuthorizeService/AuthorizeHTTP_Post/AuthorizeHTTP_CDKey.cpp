@@ -26,7 +26,31 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
 		Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, &st_Authorize);
-		if (!Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize))
+
+		if (_tcsxlen(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial) <= 0)
+		{
+			int nSerialCount = 3;
+			XCHAR** pptszSerialList;
+			Authorize_Serial_Create(&pptszSerialList, _X("XAUTH"), nSerialCount, 9);
+
+			st_Authorize.st_AuthSerial.st_TimeLimit.nTimeCount = 9999;
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, pptszSerialList[0]);
+
+			st_Authorize.st_AuthSerial.st_DataLimit.bTimeAdd = false;
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
+			XCHAR tszTimeStr[128] = {};
+			XENGINE_LIBTIMER st_LibTime = {};
+			BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+			st_LibTime.wYear += 1; //一年后过期
+			BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
+
+			_tcsxcpy(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, pptszSerialList[2]);
+			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
+		}
+		
+		if (!Authorize_CDKey_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 406, "Not Acceptable,write key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -41,21 +65,21 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XENGINE_AUTHORIZE_LOCAL st_Authorize;
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
-		Authorize_Local_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+		Authorize_CDKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
 		//授权
-		if (ENUM_HELPCOMPONENTS_AUTHORIZE_SERIAL_TYPE_CUSTOM == st_Authorize.st_AuthRegInfo.enSerialType)
+		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_Authorize.st_AuthRegInfo.enSerialType)
 		{
 			XENGINE_LIBTIMER st_LibTime;
 			memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
 
 			BaseLib_OperatorTime_StrToTime(st_Authorize.st_AuthRegInfo.tszLeftTime, &st_LibTime);
-			Authorize_Local_BuildKeyTime(&st_Authorize, 0, &st_LibTime);
+			Authorize_CDKey_BuildKeyTime(&st_Authorize, 0, &st_LibTime);
 		}
 		else
 		{
-			Authorize_Local_BuildKeyTime(&st_Authorize, _ttxoll(st_Authorize.st_AuthRegInfo.tszLeftTime));
+			Authorize_CDKey_BuildKeyTime(&st_Authorize, _ttxoll(st_Authorize.st_AuthRegInfo.tszLeftTime));
 		}
-		Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
+		Authorize_CDKey_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
 		XEngine_Client_TaskSend(lpszClientAddr, tszRVBuffer, nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求授权CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
@@ -64,15 +88,23 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XENGINE_AUTHORIZE_LOCAL st_Authorize;
 		memset(&st_Authorize, '\0', sizeof(XENGINE_AUTHORIZE_LOCAL));
 
-		Authorize_Local_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
-		if (!Authorize_Local_GetLeftTimer(&st_Authorize))
+		Authorize_CDKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+
+		if (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_NETWORK != st_Authorize.st_AuthRegInfo.enVModeType)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "unsupport,cdkey is not authorized");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Authorize_GetLastError());
+			return false;
+		}
+		if (!Authorize_CDKey_GetLeftTimer(&st_Authorize))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "Unauthorized,cdkey is not authorized");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Authorize_GetLastError());
 			return false;
 		}
-		Authorize_Local_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
+		Authorize_CDKey_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize);
 		XEngine_Client_TaskSend(lpszClientAddr, tszRVBuffer, nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}

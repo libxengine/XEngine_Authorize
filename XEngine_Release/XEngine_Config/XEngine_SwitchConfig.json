@@ -9,5 +9,6 @@
     "bSwitchNotice":true,
     "bSwitchDCode":false,
     "bSwitchMulti":true,
-    "bSwitchTry":true
+    "bSwitchTry":true,
+    "bSwitchBanned":true
 }

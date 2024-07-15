@@ -23,13 +23,13 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Define.h>
-#include <XEngine_Include/XEngine_HelpComponents/Authorize_Error.h>
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
+#include "../../AuthorizeModule_CDKey/CDKey_Define.h"
+#include "../../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
@@ -38,6 +38,7 @@ using namespace std;
 #include "Authorize_Dialog/Dialog_Banned.h"
 #include "Authorize_Dialog/Dialog_Announcement.h"
 #include "Authorize_Dialog/Dialog_Try.h"
+#include "Authorize_Dialog/Dialog_CDKey.h"
 #include "Authorize_Help/Authorize_Help.h"
 
 extern HWND hMainWnd;
@@ -50,17 +51,21 @@ extern LPCXSTR lpszStuType[2];
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Debug/jsoncpp")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help")
+#pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey")
 #else
 #pragma comment(lib,"../../Debug/jsoncpp")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help")
+#pragma comment(lib,"../../Debug/AuthorizeModule_CDKey")
 #endif
 #else
 #ifdef _WIN64
 #pragma comment(lib,"../../x64/Release/jsoncpp")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help")
+#pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey")
 #else
 #pragma comment(lib,"../../Release/jsoncpp")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help")
+#pragma comment(lib,"../../Release/AuthorizeModule_CDKey")
 #endif
 #endif
 
