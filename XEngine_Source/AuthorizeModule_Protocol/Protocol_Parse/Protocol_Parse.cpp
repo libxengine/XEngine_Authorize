@@ -72,6 +72,10 @@ bool CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, X
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+	if (!st_JsonRoot["xhToken"].isNull())
+	{
+		pSt_ProtocolHdr->xhToken = st_JsonRoot["xhToken"].asUInt64();
+	}
 	return true;
 }
 /********************************************************************

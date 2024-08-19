@@ -67,6 +67,6 @@ void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 	Session_Token_Get(xhToken, &st_UserTable);
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%lld,用户名：%s，已经超时,被移除服务器"), xhToken, st_UserTable.st_UserInfo.tszUserName);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%lld,用户名：%s，已经超时,权限级别:%d,被移除服务器"), xhToken, st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.nUserLevel);
 	Session_Token_Delete(xhToken);
 }

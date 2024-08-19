@@ -38,6 +38,8 @@ typedef struct
 			XCHAR tszKeyFile[MAX_PATH];                         //本地CDKEY文件地址
 			XCHAR tszKeyPass[MAX_PATH];                         //本地CDKEY密码
 		}st_XCDKey;
+		int nCheckTimeNumber;                               //检测次数
+		int nCheckTimeout;                                  //超时时间
 		int nTokenTimeout;                                  //TOKEN登录超时时间
 		int nDynamicTimeout;                                //动态码超时时间
 		int nVerTime;                                       //验证时间
@@ -118,7 +120,7 @@ typedef struct
 	bool bSwitchDCode;                                      //动态验证码
 	bool bSwitchMulti;                                      //多端登录开关
 	bool bSwitchTry;                                        //临时验证
-	bool bSwitchBanned;                                      //黑名单
+	bool bSwitchBanned;                                     //黑名单
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
