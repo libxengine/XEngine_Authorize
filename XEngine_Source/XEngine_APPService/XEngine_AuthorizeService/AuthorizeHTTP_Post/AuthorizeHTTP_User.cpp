@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
+bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 8196;
 	XCHAR tszSDBuffer[8196];
@@ -15,9 +15,6 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 
 	if (0 == _tcsxnicmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
 	{
-		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
-
 		if (!st_FunSwitch.bSwitchDelete)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
@@ -25,11 +22,12 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，删除失败，删除功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
-		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+		AUTHREG_USERTABLE st_UserInfo = {};
+		Session_Token_Get(xhToken, &st_UserInfo);
 		//关闭链接
 		int nListCount = 0;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName);
+		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.st_UserInfo.tszUserName);
 		for (int i = 0; i < nListCount; i++)
 		{
 			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
@@ -38,15 +36,15 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			DBModule_SQLite_UserDelete(st_UserInfo.tszUserName);
+			DBModule_SQLite_UserDelete(st_UserInfo.st_UserInfo.tszUserName);
 		}
 		else
 		{
-			DBModule_MySQL_UserDelete(st_UserInfo.tszUserName);
+			DBModule_MySQL_UserDelete(st_UserInfo.st_UserInfo.tszUserName);
 		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.st_UserInfo.tszUserName, nListCount);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIRegister, _tcsxlen(lpszAPIName)))
 	{
