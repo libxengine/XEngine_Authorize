@@ -235,11 +235,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
-		if (0 == _tcsxnicmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
-		{
-			XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, "list", lpszMsgBuffer, nMsgLen);
-		}
-		else if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)))
+		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)))
 		{
 			XEngine_AuthorizeHTTP_DynamicCode(lpszClientAddr, pptszList, nListCount);
 		}
