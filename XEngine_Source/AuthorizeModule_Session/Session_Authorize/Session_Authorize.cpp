@@ -281,7 +281,12 @@ bool CSession_Authorize::Session_Authorize_Destroy()
   类型：数据结构指针
   可空：N
   意思：用户传递的协议数据
- 参数.三：nNetType
+ 参数.三：xhToken
+  In/Out：In
+  类型：句柄
+  可空：Y
+  意思：所属TOKEN
+ 参数.四：nNetType
   In/Out：In
   类型：整数型
   可空：Y
@@ -291,7 +296,7 @@ bool CSession_Authorize::Session_Authorize_Destroy()
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-bool CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, int nNetType)
+bool CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, XNETHANDLE xhToken, int nNetType /* = 0 */)
 {
     Session_IsErrorOccur = false;
 
@@ -311,6 +316,7 @@ bool CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHRE
 	AUTHSESSION_NETCLIENT st_Client;
 	memset(&st_Client, '\0', sizeof(AUTHSESSION_NETCLIENT));
 
+    st_Client.xhToken = xhToken;
 	st_Client.nNetType = nNetType;
     st_Client.nLeftTime = _ttxoll(pSt_UserTable->tszLeftTime);
 
