@@ -662,6 +662,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchMulti"] = pSt_FunSwitch->bSwitchMulti;
 	st_JsonRoot["bSwitchTry"] = pSt_FunSwitch->bSwitchTry;
 	st_JsonRoot["bSwitchBanned"] = pSt_FunSwitch->bSwitchBanned;
+	st_JsonRoot["bSwitchTokenLogin"] = pSt_FunSwitch->bSwitchTokenLogin;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);

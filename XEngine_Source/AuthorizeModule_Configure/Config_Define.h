@@ -121,6 +121,7 @@ typedef struct
 	bool bSwitchMulti;                                      //多端登录开关
 	bool bSwitchTry;                                        //临时验证
 	bool bSwitchBanned;                                     //黑名单
+	bool bSwitchTokenLogin;                                 //TOKEN开关
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

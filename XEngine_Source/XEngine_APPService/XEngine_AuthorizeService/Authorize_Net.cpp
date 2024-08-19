@@ -109,7 +109,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 		}
 		Session_Token_Delete(st_NETClient.xhToken);
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.xhToken, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
 	}
 	else
 	{
