@@ -193,10 +193,6 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Try(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerUser, tszAPIVer, _tcsxlen(lpszAPIVerUser)))
-			{
-				XEngine_AuthorizeHTTP_User(xhToken, lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
-			}
 		}
 		else
 		{
@@ -207,6 +203,10 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			else if (0 == _tcsxnicmp(lpszAPIVerCDKey, tszAPIVer, _tcsxlen(lpszAPIVerCDKey)))
 			{
 				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+			}
+			else if (0 == _tcsxnicmp(lpszAPIVerCDKey, tszAPIVer, _tcsxlen(lpszAPIVerCDKey)))
+			{
+				XEngine_AuthorizeHTTP_User(xhToken, lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
 		}
 	}
