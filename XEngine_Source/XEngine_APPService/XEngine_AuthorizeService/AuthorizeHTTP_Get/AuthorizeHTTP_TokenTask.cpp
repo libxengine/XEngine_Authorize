@@ -7,6 +7,7 @@ bool XEngine_AuthorizeHTTP_TokenTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, 
 	XCHAR tszURLKey[128] = {};
 	XCHAR tszURLValue[128] = {};
 	LPCXSTR lpszAPITime = _X("time");
+	LPCXSTR lpszAPIDCode = _X("dcode");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
@@ -38,6 +39,23 @@ bool XEngine_AuthorizeHTTP_TokenTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, 
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, nListCount);
+	}
+	else if (0 == _tcsxnicmp(lpszAPIDCode, tszURLValue, _tcsxlen(lpszAPIDCode)))
+	{
+		if (!st_FunSwitch.bSwitchDCode)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求获得动态验证码失败,服务器已经关闭此功能!"), lpszClientAddr);
+			return false;
+		}
+		//http://app.xyry.org:5302/api?function=dcode
+		int nDCode = 0;
+		XNETHANDLE xhToken = 0;
+		AuthHelp_DynamicCode_Create(&xhToken, &nDCode);
+		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nDynamicTimeout, nDCode);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获得动态验证码成功,TOKEN:%lld,验证码:%d"), lpszClientAddr, xhToken, nDCode);
 	}
 	return true;
 }
