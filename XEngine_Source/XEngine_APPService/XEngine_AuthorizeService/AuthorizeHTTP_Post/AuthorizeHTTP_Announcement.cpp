@@ -39,6 +39,13 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 			return false;
 		}
 		Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, &st_Announcement);
+		if (_tcsxlen(st_Announcement.tszContext) <= 1)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 510, "server limited");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，公告系统协议处理失败,内容不能小于1个字节!"), lpszClientAddr);
+			return false;
+		}
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
 			DBModule_SQLite_AnnouncementInsert(&st_Announcement);

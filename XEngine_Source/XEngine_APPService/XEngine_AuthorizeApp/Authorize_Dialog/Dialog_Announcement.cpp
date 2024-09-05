@@ -67,6 +67,11 @@ void CDialog_Announcement::OnBnClickedButton1()
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 	m_EditNoticeStr.GetWindowText(m_StrNotice);
 
+	if (m_StrNotice.GetLength() < 1)
+	{
+		AfxMessageBox(_T("内容不能小于1个字节"));
+		return;
+	}
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
