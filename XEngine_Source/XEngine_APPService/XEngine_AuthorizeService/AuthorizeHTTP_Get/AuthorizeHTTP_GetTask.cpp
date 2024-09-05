@@ -8,6 +8,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	XCHAR tszURLValue[128] = {};
 	LPCXSTR lpszAPITime = _X("time");
 	LPCXSTR lpszAPIDCode = _X("dcode");
+	LPCXSTR lpszAPINotice = _X("notice");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
@@ -23,7 +24,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, Session_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
 			return false;
 		}
 		int nListCount = 0;
@@ -56,6 +57,23 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nDynamicTimeout, nDCode);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获得动态验证码成功,TOKEN:%lld,验证码:%d"), lpszClientAddr, xhToken, nDCode);
+	}
+	else if (0 == _tcsxnicmp(lpszAPINotice, tszURLValue, _tcsxlen(lpszAPINotice)))
+	{
+		XCHAR tszUserToken[128];
+		memset(tszUserToken, '\0', sizeof(tszUserToken));
+		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+
+		AUTHREG_USERTABLE st_UserTable = {};
+		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取通告失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
+			return false;
+		}
+		//http://app.xyry.org:5302/api?function=notice
+		XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, _X("list"), NULL, 0);
 	}
 	return true;
 }

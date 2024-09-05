@@ -216,9 +216,9 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		XCHAR** pptszList;
 		XCHAR tszUrlName[128];
 		LPCXSTR lpszFuncName = _X("api");
-		LPCXSTR lpszAPIVerNotice = _X("notice");
 		LPCXSTR lpszAPIVerDCode = _X("dcode");
 		LPCXSTR lpszAPIVerTime = _X("time");
+		LPCXSTR lpszAPIVerNotice = _X("notice");
 
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
@@ -237,7 +237,8 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
 		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
-		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)))
+		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) || 
+			0 == _tcsxnicmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
 		{
 			XEngine_AuthorizeHTTP_GetTask(lpszClientAddr, pptszList, nListCount);
 		}
