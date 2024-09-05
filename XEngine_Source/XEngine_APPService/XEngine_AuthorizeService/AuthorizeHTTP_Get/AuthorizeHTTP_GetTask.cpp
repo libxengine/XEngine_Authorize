@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-bool XEngine_AuthorizeHTTP_TokenTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, int nListCount)
+bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, int nListCount)
 {
 	int nSDLen = 4096;
 	XCHAR tszSDBuffer[4096] = {};

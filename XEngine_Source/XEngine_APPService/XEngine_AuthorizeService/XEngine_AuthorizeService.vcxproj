@@ -150,8 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.cpp" />
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.cpp" />
-    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_TokenTask.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Announcement.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.cpp" />
@@ -170,8 +170,8 @@
     <ClCompile Include="XEngine_AuthorizeService.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.h" />
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_Token.h" />
-    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_TokenTask.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Announcement.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.h" />

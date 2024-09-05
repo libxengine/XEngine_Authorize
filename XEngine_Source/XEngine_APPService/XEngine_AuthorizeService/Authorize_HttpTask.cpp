@@ -239,7 +239,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)))
 		{
-			XEngine_AuthorizeHTTP_TokenTask(lpszClientAddr, pptszList, nListCount);
+			XEngine_AuthorizeHTTP_GetTask(lpszClientAddr, pptszList, nListCount);
 		}
 		else
 		{

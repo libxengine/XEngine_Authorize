@@ -15,7 +15,7 @@ LIB = -lXEngine_InfoReport -ljsoncpp   \
 LIBEX = 
 OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
           AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o\
-          AuthorizeHTTP_Token.o AuthorizeHTTP_TokenTask.o
+          AuthorizeHTTP_Token.o AuthorizeHTTP_GetTask.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c 
@@ -90,8 +90,8 @@ AuthorizeHTTP_Try.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Try.cpp
 
 AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
-AuthorizeHTTP_TokenTask.o:./AuthorizeHTTP_Get/AuthorizeHTTP_TokenTask.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Get/AuthorizeHTTP_TokenTask.cpp
+AuthorizeHTTP_GetTask.o:./AuthorizeHTTP_Get/AuthorizeHTTP_GetTask.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Get/AuthorizeHTTP_GetTask.cpp
 
 XEngine_AuthorizeService.o:./XEngine_AuthorizeService.cpp             
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./XEngine_AuthorizeService.cpp   

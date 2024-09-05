@@ -78,7 +78,7 @@
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Try.cpp">
       <Filter>源文件\AuthorizeHTTP_Post</Filter>
     </ClCompile>
-    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_TokenTask.cpp">
+    <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.cpp">
       <Filter>源文件\AuthorizeHTTP_Get</Filter>
     </ClCompile>
   </ItemGroup>
@@ -134,7 +134,7 @@
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Try.h">
       <Filter>头文件\AuthorizeHTTP_Post</Filter>
     </ClInclude>
-    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_TokenTask.h">
+    <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.h">
       <Filter>头文件\AuthorizeHTTP_Get</Filter>
     </ClInclude>
   </ItemGroup>
