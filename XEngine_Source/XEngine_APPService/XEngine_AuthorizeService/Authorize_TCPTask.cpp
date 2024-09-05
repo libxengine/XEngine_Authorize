@@ -328,7 +328,10 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 
-		BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 2000000);
+		if (0 == pSt_ProtocolHdr->xhToken)
+		{
+			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 2000000);
+		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, pSt_ProtocolHdr->xhToken, nNetType))
 		{
