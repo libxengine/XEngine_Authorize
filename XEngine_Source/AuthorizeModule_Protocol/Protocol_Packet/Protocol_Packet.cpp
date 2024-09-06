@@ -70,7 +70,7 @@ bool CProtocol_Packet::Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_M
 		Json::Value st_JsonRoot;
 		st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
 		st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
-		st_JsonRoot["xhToken"] = pSt_ProtocolHdr->xhToken;
+		st_JsonRoot["xhToken"] = (Json::Value::UInt64)pSt_ProtocolHdr->xhToken;
 		st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
 		st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
 		st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
