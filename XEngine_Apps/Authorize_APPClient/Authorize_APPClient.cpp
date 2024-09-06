@@ -80,6 +80,7 @@ XHTHREAD AuthClient_Thread()
 				if (0 == st_ProtocolHdr.wReserve)
 				{
 					printf(_X("登录成功\n"));
+					xhToken = st_ProtocolHdr.xhToken;
 				}
 				else
 				{
@@ -182,7 +183,7 @@ int AuthClient_Pay()
 }
 int AuthClient_DynamicCode()
 {
-	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/api?function=dcode&user=get");
+	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/api?function=dcode");
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
@@ -284,7 +285,8 @@ int AuthClient_Login()
 }
 int AuthClient_Notice()
 {
-	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/api?function=notice");
+	XCHAR tszURLStr[MAX_PATH] = {};
+	_xstprintf(tszURLStr, _T("http://127.0.0.1:5302/api?function=notice&token=%lld"), xhToken);
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
@@ -294,7 +296,7 @@ int AuthClient_Notice()
 	Json::CharReaderBuilder st_ReaderBuilder;
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 
-	APIClient_Http_Request(_X("GET"), lpszUrl, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	APIClient_Http_Request(_X("GET"), tszURLStr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 	if (bEncrypto)
 	{
 		XCHAR tszDEBuffer[2048] = {};
@@ -373,7 +375,8 @@ int AuthClient_GetTime()
 {
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/time");
+	XCHAR tszURLStr[MAX_PATH] = {};
+	_xstprintf(tszURLStr, _T("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
@@ -389,7 +392,7 @@ int AuthClient_GetTime()
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
 		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
-		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("GET"), tszURLStr, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
 		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
 		printf("AuthClient_GetTime:\n%s\n", tszDEBuffer);
@@ -397,7 +400,7 @@ int AuthClient_GetTime()
 	}
 	else
 	{
-		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("GET"), tszURLStr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 		printf("AuthClient_GetTime:\n%s\n", ptszMsgBuffer);
 		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}
@@ -449,8 +452,8 @@ int AuthClient_Try()
 	LPCXSTR lpszSerialNet = _X("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
 	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/try");
 
-	st_JsonObject["tszSerial"] = lpszSerialNet;
-	st_JsonRoot["st_UserTry"] = st_JsonObject;
+	st_JsonObject["tszVSerial"] = lpszSerialNet;
+	st_JsonRoot["st_VERTemp"] = st_JsonObject;
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
@@ -502,7 +505,7 @@ int main()
 	AuthClient_GetPass();
 	AuthClient_GetTime();
 
-	std::this_thread::sleep_for(std::chrono::seconds(600));
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	AuthClient_Delete();
 	AuthClient_Try();
 
