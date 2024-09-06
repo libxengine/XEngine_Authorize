@@ -235,6 +235,13 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
+		if (_tcsxlen(st_VERTemp.tszVSerial) < 1)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "serial is to short");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求临时试用失败，请求的序列号:%s 太短"), lpszClientAddr, st_VERTemp.tszVSerial);
+			return false;
+		}
 		bool bSuccess = false;
 		//判断是使用哪个数据库
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
