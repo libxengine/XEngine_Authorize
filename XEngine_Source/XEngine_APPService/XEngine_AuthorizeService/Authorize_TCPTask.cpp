@@ -328,7 +328,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 
-		if (0 == pSt_ProtocolHdr->xhToken)
+		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 2000000)
 		{
 			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 2000000);
 		}
