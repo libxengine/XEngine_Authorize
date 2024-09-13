@@ -1,0 +1,60 @@
+name: ubuntu build workflows
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-22.04
+          - os: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
+
+    steps:
+       # 检出您的主仓库代码
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+        with:
+          ref: 'develop'
+        
+       # 检出依赖的xengine仓库到指定的xengine目录
+      - name: Checkout dependency repository (xengine)
+        uses: actions/checkout@v4
+        with:
+          repository: libxengine/xengine
+          path: libxengine
+
+      - name: sub module checkout (opensource)
+        run: |
+            git submodule init
+            git submodule update
+
+      # 设置依赖库的环境变量
+      - name: Set up Dependency Environment Variables
+        run: |
+            cd libxengine
+            chmod 777 *
+            sudo ./XEngine_LINEnv.sh -i 3
+            cd ..
+      #编译
+      - name: make
+        run: | 
+            cd XEngine_Source
+            make
+            make FLAGS=InstallAll
+            make FLAGS=CleanAll
+
+            make RELEASE=1
+            make FLAGS=InstallAll
+            make FLAGS=CleanAll
+            cd ..

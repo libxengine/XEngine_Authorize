@@ -1,0 +1,56 @@
+name: macos build workflows
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    runs-on: macos-13
+
+    steps:
+       # 检出您的主仓库代码
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+        with:
+          ref: 'develop'
+        
+       # 检出依赖的xengine仓库到指定的xengine目录
+      - name: Checkout dependency repository (xengine)
+        uses: actions/checkout@v4
+        with:
+          repository: libxengine/xengine
+          path: libxengine
+
+      - name: sub module checkout (opensource)
+        run: |
+            git submodule init
+            git submodule update
+
+      - name: brew install
+        run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+            
+      # 设置依赖库的环境变量
+      - name: Set up Dependency Environment Variables
+        run: |
+            cd libxengine
+            chmod 777 *
+            ./XEngine_LINEnv.sh -i 3
+            cd ..
+      #编译
+      - name: make
+        run: | 
+            cd XEngine_Source
+            make PLATFORM=mac 
+            make PLATFORM=mac FLAGS=InstallAll
+            make PLATFORM=mac FLAGS=CleanAll
+
+            make PLATFORM=mac RELEASE=1
+            make PLATFORM=mac FLAGS=InstallAll
+            make PLATFORM=mac FLAGS=CleanAll
+            cd ..
