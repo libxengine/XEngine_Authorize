@@ -11,7 +11,12 @@ permissions:
   
 jobs:
   build:
-    runs-on: macos-13
+    strategy:
+      matrix:
+        include:
+          - os: macos-13
+          - os: macos-14
+    runs-on: ${{ matrix.os }}
 
     steps:
        # 检出您的主仓库代码
@@ -24,7 +29,7 @@ jobs:
       - name: Checkout dependency repository (xengine)
         uses: actions/checkout@v4
         with:
-          repository: libxengine/xengine
+          repository: libxengine/libxengine
           path: libxengine
 
       - name: sub module checkout (opensource)
