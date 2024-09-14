@@ -61,4 +61,4 @@ jobs:
       - name: test
         run: |
             cd XEngine_Release
-            ./XEngine_MQServiceApp -t
+            ./XEngine_AuthorizeService -t
