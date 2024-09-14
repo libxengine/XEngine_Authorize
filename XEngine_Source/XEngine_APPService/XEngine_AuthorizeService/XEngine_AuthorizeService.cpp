@@ -1,6 +1,8 @@
 ﻿#include "Authorize_Hdr.h"
 
 bool bIsRun = false;
+bool bIsTest = false;
+
 XHANDLE xhLog = NULL;
 XHANDLE xhTCPSocket = NULL;
 XHANDLE xhWSSocket = NULL;
@@ -99,6 +101,7 @@ int main(int argc, char** argv)
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 #endif
 	bIsRun = true;
+	int nRet = -1;
 	FILE* pSt_File = NULL;
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
@@ -360,8 +363,14 @@ int main(int argc, char** argv)
 	}
 	
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XNumberStr(), BaseLib_OperatorVer_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
+
 	while (true)
 	{
+		if (bIsTest)
+		{
+			nRet = 0;
+			break;
+		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
 
@@ -369,6 +378,15 @@ XENGINE_EXITAPP:
 
 	if (bIsRun)
 	{
+		if (bIsTest && 0 == nRet)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("服务启动完毕，测试程序退出..."));
+		}
+		else
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("服务启动失败，服务器退出..."));
+		}
+
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动失败,按任意键网络验证服务器退出..."));
 		bIsRun = false;
 
@@ -405,6 +423,5 @@ XENGINE_EXITAPP:
 #ifdef _WINDOWS
 	WSACleanup();
 #endif
-	getchar();
-	return 0;
+	return nRet;
 }

@@ -58,3 +58,7 @@ jobs:
             make FLAGS=InstallAll
             make FLAGS=CleanAll
             cd ..
+      - name: test
+        run: |
+            cd XEngine_Release
+            ./XEngine_MQServiceApp -t

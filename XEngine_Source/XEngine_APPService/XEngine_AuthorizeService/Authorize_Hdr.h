@@ -57,6 +57,7 @@ using namespace std;
 #include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
 extern bool bIsRun;
+extern bool bIsTest;
 extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;

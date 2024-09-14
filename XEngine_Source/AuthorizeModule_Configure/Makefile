@@ -16,8 +16,13 @@ ifeq ($(RELEASE),1)
 FLAGS = -c 
 DEBUG = 
 else
-FLAGS = -c -lc_p
-DEBUG = -g -pg 
+	ifeq ($(PLATFORM),mac)
+		FLAGS = -c
+		DEBUG = -g 
+	else
+		FLAGS = -c -lc_p
+		DEBUG = -g -pg 
+	endif
 endif
 
 ifeq ($(UNICODE),1)
