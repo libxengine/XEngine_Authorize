@@ -328,9 +328,9 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 
-		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 2000000)
+		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 20000000)
 		{
-			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 2000000);
+			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 20000000);
 		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, pSt_ProtocolHdr->xhToken, nNetType))
