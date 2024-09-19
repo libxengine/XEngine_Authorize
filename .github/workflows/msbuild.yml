@@ -53,7 +53,7 @@ jobs:
         uses: microsoft/setup-msbuild@v1.0.2
       #编译
       - name: Build Solution
-        run: msbuild XEngine_Source/XEngine_StorageApp.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
       #测试
       - name: Conditional Step for x86 Release
         if: matrix.configuration == 'Release' && matrix.platform == 'x86'
