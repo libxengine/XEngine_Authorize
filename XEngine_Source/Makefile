@@ -23,10 +23,25 @@ XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                        
 .PHONY:MakeAll 
 MakeAll:$(XENGINE_MODULES)
 
+
+ifeq ($(PLATFORM),linux)
+	FILEEXT = so
+else ifeq ($(PLATFORM),mac)
+	FILEEXT = dylib
+endif
+
 libjsoncpp.so:
-	make -C $(DEPEND_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+ifeq ($(FLAGS), InstallAll)
+	cp $(THIRD_JSONCPP_PATH)/libjsoncpp.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(THIRD_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
 libXEngine_InfoReport.so:
-	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+ifeq ($(FLAGS), InstallAll)
+	cp $(THIRD_REPORT_PATH)/libXEngine_InfoReport.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(THIRD_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
 
 libAuthorizeModule_CDKey.so:
 	make -C $(AUTH_CDKEY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
