@@ -212,6 +212,10 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 						break;
 					}
 				}
+				else if (2 == st_AuthConfig.st_XLogin.nMultiMode)
+				{
+					break;
+				}
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 257;
@@ -230,26 +234,30 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
 					bLogin = true;
 				}
+			}
+			else
+			{
+				bLogin = true;  //其他注册类型禁止登录
 			}
 			//判断这次登录是否允许
 			if (bLogin)
