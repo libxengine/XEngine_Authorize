@@ -335,7 +335,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 			}
 		}
-
+		//创建一个普通TOKEN
 		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 20000000)
 		{
 			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 20000000);

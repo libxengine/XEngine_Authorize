@@ -10,5 +10,6 @@
     "bSwitchDCode":false,
     "bSwitchMulti":true,
     "bSwitchTry":true,
-    "bSwitchBanned":true
+    "bSwitchBanned":true,
+    "bSwitchTokenLogin":true
 }
