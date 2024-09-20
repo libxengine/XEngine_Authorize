@@ -23,7 +23,7 @@ public:
 	bool Session_Authorize_CloseAddr(LPCXSTR lpszClientAddr);
 	bool Session_Authorize_Destroy();
 public:
-	bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, int nNetType = 0);
+	bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE* pSt_UserTable, XNETHANDLE xhToken, int nNetType = 0);
 	bool Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
 protected:
 	static XHTHREAD Session_Authorize_ActiveThread(XPVOID lParam);            //计时器线程

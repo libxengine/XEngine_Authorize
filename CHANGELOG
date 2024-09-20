@@ -1,3 +1,41 @@
+XEngine_Authorize V3.14.0.1001
+
+增加:支持无限制多端登录了
+增加:工作流CI支持
+增加:当tcp或者websocket登录的时候会返回token了
+增加:普通用户token开关支持
+修改:websocket支持解析token字段了
+修改:现在http post方法不在需要验证用户,使用token替代
+修改:可以通过token获取用户过期时间
+修改:公告和动态码合并到token任务中
+修改:注册管理界面默认设置5次次数验证了
+修改:多端登录序列类型进行了验证
+修正:删除用户需要验证用户了
+修正:某些时候崩溃
+修正:公告信息可以为NULL的情况
+修正:快速验证不允许硬件码为NULL了
+修正:子模块状态错误
+修正:在MACOS构建运行失败的问题
+删除:XEngine_AuthorizeHTTP_Announcement列举处理方法函数
+
+added:unlimited login type with multi supported now
+added:workflow
+added:reply token handle when tcp and websocket login
+added:token auth for normal user of switch
+modify:web socket support parse token field
+modify:The post method processing flow now only requires token instead of verifying user and password
+modify:get user left time by token
+modify:merge notice and  dynamic code and token task
+modify:set time 5 default value with cdkey init and choice time add serial for management app
+modify:multi login serial type is verification now
+fixed:verification user information for delete user
+fixed:some crashed
+fixed:the problem that notice can be set null
+fixed:does not allow code is null when fast verification
+fixed:sub module status is incorrect
+fixed:build error on mac
+delete:XEngine_AuthorizeHTTP_Announcement list process from get method
+================================================================
 XEngine_Authorize V3.13.0.1001
 
 增加:管理程序支持CDKEY创建,打开,授权,初始化

@@ -16,6 +16,12 @@ AUTH_CLIENT_PATH = ./AuthorizeModule_Client
 
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
+ifeq ($(PLATFORM),linux)
+	FILEEXT = so
+else ifeq ($(PLATFORM),mac)
+	FILEEXT = dylib
+endif
+
 XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                                                                                    \
           libAuthorizeModule_CDKey.so libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
 	      XEngine_AuthorizeApp.exe 
@@ -23,10 +29,19 @@ XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                        
 .PHONY:MakeAll 
 MakeAll:$(XENGINE_MODULES)
 
+
 libjsoncpp.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_JSONCPP_PATH)/libjsoncpp.$(FILEEXT) ../XEngine_Release/
+else
 	make -C $(DEPEND_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
 libXEngine_InfoReport.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_REPORT_PATH)/libXEngine_InfoReport.$(FILEEXT) ../XEngine_Release/
+else
 	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
 
 libAuthorizeModule_CDKey.so:
 	make -C $(AUTH_CDKEY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)

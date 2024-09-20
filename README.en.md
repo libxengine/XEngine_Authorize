@@ -51,11 +51,11 @@ feature list:
 
 #### XEngine Evn
 you must install XEngine,need V8.15 or above,install XEngine can be refer to xengine Readme docment  
-GITEE:https://gitee.com/xyry/libxengine  
-GITHUB:https://github.com/libxengine/xengine
+GITEE:https://gitee.com/libxengine/libxengine  
+GITHUB:https://github.com/libxengine/libxengine
 
 ##### fast to deployment 
-git clone https://gitee.com/xyry/libxengine.git or git clone https://github.com/libxengine/xengine.git  
+git clone https://gitee.com/libxengine/libxengine.git or git clone https://github.com/libxengine/libxengine.git  
 window Exection XEngine_WINEnv.bat   
 Linux Exection:sudo ./XEngine_LINEnv.sh -i 3  
 Macos Exection:./XEngine_LINEnv.sh -i 3

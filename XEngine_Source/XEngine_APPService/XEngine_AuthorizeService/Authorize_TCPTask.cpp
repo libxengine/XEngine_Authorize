@@ -55,7 +55,22 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 	XCHAR tszSDBuffer[2048] = {};
 	AUTHREG_BANNED st_Banned = {};
 
-	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
+	if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN == pSt_ProtocolHdr->unOperatorCode)
+	{
+		if (1 == pSt_ProtocolHdr->byIsReply)
+		{
+			pSt_ProtocolHdr->wReserve = 0;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+		}
+
+		if (st_FunSwitch.bSwitchTokenLogin)
+		{
+			Session_Token_UPDate(pSt_ProtocolHdr->xhToken);
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，句柄:%llu 心跳处理成功"), lpszClientAddr, pSt_ProtocolHdr->xhToken);
+	}
+	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
 		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
@@ -197,6 +212,10 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 						break;
 					}
 				}
+				else if (2 == st_AuthConfig.st_XLogin.nMultiMode)
+				{
+					break;
+				}
 				else
 				{
 					pSt_ProtocolHdr->wReserve = 257;
@@ -215,26 +234,30 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
 					bLogin = true;
 				}
 			}
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
 				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
 					bLogin = true;
 				}
+			}
+			else
+			{
+				bLogin = true;  //其他注册类型禁止登录
 			}
 			//判断这次登录是否允许
 			if (bLogin)
@@ -312,9 +335,13 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 			}
 		}
-
+		//创建一个普通TOKEN
+		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 20000000)
+		{
+			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 20000000);
+		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
-		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, nNetType))
+		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, pSt_ProtocolHdr->xhToken, nNetType))
 		{
 			pSt_ProtocolHdr->wReserve = 256;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -322,6 +349,11 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);
 			return false;
 		}
+		if (st_FunSwitch.bSwitchTokenLogin)
+		{
+			Session_Token_Insert(pSt_ProtocolHdr->xhToken, &st_UserTable);
+		}
+
 		pSt_ProtocolHdr->wReserve = 0;
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);

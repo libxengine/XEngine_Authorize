@@ -48,17 +48,17 @@ extern "C" bool DBModule_SQLite_Destroy();
 /********************************************************************
 函数名称：DBModule_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
- 参数.一：lpszUserName
+ 参数.一：pSt_UserInfo
   In/Out：In
-  类型：常量字符指针
+  类型：数据结构指针
   可空：N
-  意思：要删除的用户
+  意思：输入删除用户信息
 返回值
   类型：逻辑型
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_UserDelete(LPCXSTR lpszUserName);
+extern "C" bool DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO *pSt_UserInfo);
 /********************************************************************
 函数名称：DBModule_SQLite_UserRegister
 函数功能：用户注册处理数据库语句函数
@@ -537,17 +537,17 @@ extern "C" bool DBModule_MySQL_Destroy();
 /********************************************************************
 函数名称：DBModule_MySQL_UserDelete
 函数功能：删除一个用户从数据库中
- 参数.一：lpszUserName
+ 参数.一：pSt_UserInfo
   In/Out：In
-  类型：常量字符指针
+  类型：数据结构指针
   可空：N
-  意思：要删除的用户
+  意思：输入删除用户信息
 返回值
   类型：逻辑型
   意思：是否删除成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_UserDelete(LPCXSTR lpszUserName);
+extern "C" bool DBModule_MySQL_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo);
 /********************************************************************
 函数名称：DBModule_MySQL_UserRegister
 函数功能：用户注册处理数据库语句函数

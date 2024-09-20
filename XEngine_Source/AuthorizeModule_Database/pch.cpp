@@ -39,9 +39,9 @@ extern "C" bool DBModule_SQLite_Destroy()
 {
 	return m_DBSQLite.DBModule_SQLite_Destroy();
 }
-extern "C" bool DBModule_SQLite_UserDelete(LPCXSTR lpszUserName)
+extern "C" bool DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
-	return m_DBSQLite.DBModule_SQLite_UserDelete(lpszUserName);
+	return m_DBSQLite.DBModule_SQLite_UserDelete(pSt_UserInfo);
 }
 extern "C" bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo)
 {
@@ -155,9 +155,9 @@ extern "C" bool DBModule_MySQL_Destroy()
 {
 	return m_DBMySQL.DBModule_MySQL_Destroy();
 }
-extern "C" bool DBModule_MySQL_UserDelete(LPCXSTR lpszUserName)
+extern "C" bool DBModule_MySQL_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
-	return m_DBMySQL.DBModule_MySQL_UserDelete(lpszUserName);
+	return m_DBMySQL.DBModule_MySQL_UserDelete(pSt_UserInfo);
 }
 extern "C" bool DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
 {

@@ -115,6 +115,9 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditSoftVer.SetWindowText(_T("V1.0.0.1001"));
 	m_EditSoftTime.SetWindowText(_T("0"));
 
+	m_EditRegHaveTime.SetWindowText(_T("5"));
+	m_EditRegLeftTime.SetWindowText(_T("5"));
+
 	int nSerialCount = 3;
 	XCHAR** pptszSerialList;
 	Authorize_Serial_Create(&pptszSerialList, _T("XAUTH"), nSerialCount, 9);
@@ -123,6 +126,7 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditSerialUnlimitNumber.SetWindowText(pptszSerialList[2]);
 	BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
+	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 
 	XCHAR tszTimeStr[128] = {};
 	XENGINE_LIBTIMER st_LibTime = {};

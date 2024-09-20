@@ -16,6 +16,7 @@ typedef struct
 	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
 	XCHAR tszClientAddr[64];
 	XCHAR tszLeftTime[64];                                                //过期日期
+	XNETHANDLE xhToken;
 	__int64x nOnlineTime;                                                 //在线时间
 	__int64x nLeftTime;                                                   //剩余时间
 	int nNetType;                                                         //连接类型
@@ -131,7 +132,12 @@ extern "C" bool Session_Authorize_Destroy();
   类型：数据结构指针
   可空：N
   意思：用户传递的协议数据
- 参数.三：nNetType
+ 参数.三：xhToken
+  In/Out：In
+  类型：句柄
+  可空：Y
+  意思：所属TOKEN
+ 参数.四：nNetType
   In/Out：In
   类型：整数型
   可空：Y
@@ -141,7 +147,7 @@ extern "C" bool Session_Authorize_Destroy();
   意思：是否允许登陆
 备注：如果成功，服务器会自动进行计时
 *********************************************************************/
-extern "C" bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType = 0);
+extern "C" bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, XNETHANDLE xhToken, int nNetType = 0);
 /********************************************************************
 函数名称：Session_Authorize_SetUser
 函数功能：设置用户信息

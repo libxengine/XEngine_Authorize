@@ -51,9 +51,9 @@ extern "C" bool Session_Authorize_Destroy()
 {
 	return m_SessionAuth.Session_Authorize_Destroy();
 }
-extern "C" bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, int nNetType)
+extern "C" bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTABLE * pSt_UserTable, XNETHANDLE xhToken, int nNetType)
 {
-	return m_SessionAuth.Session_Authorize_Insert(lpszClientAddr, pSt_UserTable, nNetType);
+	return m_SessionAuth.Session_Authorize_Insert(lpszClientAddr, pSt_UserTable, xhToken, nNetType);
 }
 extern "C" bool Session_Authorize_SetUser(AUTHREG_USERTABLE * pSt_UserTable)
 {

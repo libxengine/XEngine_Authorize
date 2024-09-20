@@ -2,6 +2,7 @@
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_TCPAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
+	
 	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("TCP客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
@@ -106,8 +107,9 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 			Protocol_Packet_HttpUserTime(tszSDBuffer, &nSDLen, &st_AuthTime);
 			APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogout, tszSDBuffer);
 		}
+		Session_Token_Delete(st_NETClient.xhToken);
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.xhToken, st_AuthTime.nTimeONLine);
 	}
 	else
 	{

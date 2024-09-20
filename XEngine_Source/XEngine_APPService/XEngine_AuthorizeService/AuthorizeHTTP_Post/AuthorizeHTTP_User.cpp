@@ -1,6 +1,6 @@
 ﻿#include "../Authorize_Hdr.h"
 
-bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
+bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 8196;
 	XCHAR tszSDBuffer[8196];
@@ -8,16 +8,12 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 	LPCXSTR lpszAPIRegister = _X("register");
 	LPCXSTR lpszAPIPay = _X("pay");
 	LPCXSTR lpszAPIPass = _X("pass");
-	LPCXSTR lpszAPITime = _X("time");
 	LPCXSTR lpszAPITry = _X("try");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
 	if (0 == _tcsxnicmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
 	{
-		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
-
 		if (!st_FunSwitch.bSwitchDelete)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
@@ -25,7 +21,25 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，删除失败，删除功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
+		XENGINE_PROTOCOL_USERINFO st_UserInfo = {};
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+		//删除数据库
+		bool bRet = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			bRet = DBModule_SQLite_UserDelete(&st_UserInfo);
+		}
+		else
+		{
+			bRet = DBModule_MySQL_UserDelete(&st_UserInfo);
+		}
+		if (!bRet)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 401, "user delete failed,maybe user verification failed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，删除用户:%s 失败，删除用户信息数据库错误,数据验证失败!"), lpszClientAddr, st_UserInfo.tszUserName);
+			return false;
+		}
 		//关闭链接
 		int nListCount = 0;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
@@ -36,14 +50,6 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		}
 		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 
-		if (0 == st_AuthConfig.st_XSql.nDBType) 
-		{
-			DBModule_SQLite_UserDelete(st_UserInfo.tszUserName);
-		}
-		else
-		{
-			DBModule_MySQL_UserDelete(st_UserInfo.tszUserName);
-		}
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
@@ -216,27 +222,6 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITime, _tcsxlen(lpszAPIName)))
-	{
-		int nListCount = 0;
-		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		XENGINE_PROTOCOL_USERAUTH st_UserAuth;
-
-		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-
-		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserAuth.tszUserName))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_UserAuth.tszUserName, Session_GetLastError());
-			return false;
-		}
-		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserAuth.tszUserName, nListCount);
-	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITry, _tcsxlen(lpszAPIName)))
 	{
 		AUTHREG_TEMPVER st_VERTemp;
@@ -250,6 +235,13 @@ bool XEngine_AuthorizeHTTP_User(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 			return false;
 		}
 		Protocol_Parse_HttpParseTry(lpszMsgBuffer, nMsgLen, &st_VERTemp);
+		if (_tcsxlen(st_VERTemp.tszVSerial) < 1)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "serial is to short");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求临时试用失败，请求的序列号:%s 太短"), lpszClientAddr, st_VERTemp.tszVSerial);
+			return false;
+		}
 		bool bSuccess = false;
 		//判断是使用哪个数据库
 		if (0 == st_AuthConfig.st_XSql.nDBType) 

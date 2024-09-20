@@ -23,7 +23,7 @@ public:
     bool DBModule_SQLite_Init(LPCXSTR lpszSQLFile, bool bIsChange = true);                           //初始化
     bool DBModule_SQLite_Destroy();                                                                  //销毁
 public:
-    bool DBModule_SQLite_UserDelete(LPCXSTR lpszUserName);                                           //删除用户
+    bool DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo);                                           //删除用户
     bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE*pSt_UserInfo);                               //用户注册
     bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo = NULL);    //用户查询
     bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName,LPCXSTR lpszSerialName);                       //充值卡充值

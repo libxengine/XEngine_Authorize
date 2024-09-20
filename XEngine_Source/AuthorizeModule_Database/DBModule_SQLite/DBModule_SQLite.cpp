@@ -76,22 +76,22 @@ bool CDBModule_SQLite::DBModule_SQLite_Destroy()
 /********************************************************************
 函数名称：DBModule_SQLite_UserDelete
 函数功能：删除一个用户从数据库中
- 参数.一：lpszUserName
+ 参数.一：pSt_UserInfo
   In/Out：In
-  类型：常量字符指针
+  类型：数据结构指针
   可空：N
-  意思：要删除的用户
+  意思：输入删除用户信息
 返回值
   类型：逻辑型
   意思：是否删除成功
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_UserDelete(LPCXSTR lpszUserName)
+bool CDBModule_SQLite::DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo)
 {
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("delete from Authorize_User where UserName = '%s'"), lpszUserName);
+    _xstprintf(tszSQLStatement, _X("DELETE FROM `Authorize_User` WHERE UserName = '%s' AND Password = '%s' AND EmailAddr = '%s' AND IDCard = '%lld'"), pSt_UserInfo->tszUserName, pSt_UserInfo->tszUserPass, pSt_UserInfo->tszEMailAddr, pSt_UserInfo->nIDNumber);
     //执行
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {

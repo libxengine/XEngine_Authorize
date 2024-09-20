@@ -38,6 +38,8 @@ typedef struct
 			XCHAR tszKeyFile[MAX_PATH];                         //本地CDKEY文件地址
 			XCHAR tszKeyPass[MAX_PATH];                         //本地CDKEY密码
 		}st_XCDKey;
+		int nCheckTimeNumber;                               //检测次数
+		int nCheckTimeout;                                  //超时时间
 		int nTokenTimeout;                                  //TOKEN登录超时时间
 		int nDynamicTimeout;                                //动态码超时时间
 		int nVerTime;                                       //验证时间
@@ -49,7 +51,7 @@ typedef struct
 	{
 		bool bHTTPAuth;                                     //是否开启HTTP授权登录,支持HTTP授权验证
 		bool bPassAuth;                                     //是否启用三方认证
-		int nMultiMode;                                     //多端登录模式,0按照平台(PC,WEB,PAD,PHONE 4种),1按照类型(每种都可以)
+		int nMultiMode;                                     //多端登录模式,0按照平台(PC,WEB,PAD,PHONE 4种),1按照类型(每种都可以),2无限制
 		struct  
 		{
 			XCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
@@ -118,7 +120,8 @@ typedef struct
 	bool bSwitchDCode;                                      //动态验证码
 	bool bSwitchMulti;                                      //多端登录开关
 	bool bSwitchTry;                                        //临时验证
-	bool bSwitchBanned;                                      //黑名单
+	bool bSwitchBanned;                                     //黑名单
+	bool bSwitchTokenLogin;                                 //TOKEN开关
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

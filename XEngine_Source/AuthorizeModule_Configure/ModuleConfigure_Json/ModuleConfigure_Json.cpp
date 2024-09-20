@@ -342,5 +342,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchMulti = st_JsonRoot["bSwitchMulti"].asBool();
 	pSt_ServerConfig->bSwitchTry = st_JsonRoot["bSwitchTry"].asBool();
 	pSt_ServerConfig->bSwitchBanned = st_JsonRoot["bSwitchBanned"].asBool();
+	pSt_ServerConfig->bSwitchTokenLogin = st_JsonRoot["bSwitchTokenLogin"].asBool();
 	return true;
 }

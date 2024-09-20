@@ -1,0 +1,77 @@
+name: windows build workflows
+
+on:
+  push:
+    branches: [ "develop" ]
+  pull_request:
+    branches: [ "develop" ]
+  
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    strategy:
+      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
+      fail-fast: false
+      matrix:
+        configuration: [Debug ,Release]
+        platform: [x86 ,x64]
+
+    runs-on: windows-latest # 最新的 Windows 环境
+
+    steps:
+       # 检出您的主仓库代码
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+        with:
+          ref: 'develop'
+        
+       # 检出依赖的xengine仓库到指定的xengine目录
+      - name: Checkout dependency repository (xengine)
+        uses: actions/checkout@v4
+        with:
+          repository: libxengine/libxengine
+          path: xengine
+          
+      - name: sub module checkout (opensource)
+        run: |
+            git submodule init
+            git submodule update
+        shell: pwsh
+
+      # 设置依赖库的环境变量
+      - name: Set up Dependency Environment Variables
+        run: |
+          echo "XENGINE_INCLUDE=${{ github.workspace }}/xengine" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "XENGINE_LIB32=${{ github.workspace }}/xengine/XEngine_Windows/x86" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "XENGINE_LIB64=${{ github.workspace }}/xengine/XEngine_Windows/x64" | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
+        
+      # 配置 MSBuild 的路径，准备构建 VC++ 项目
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1.0.2
+      #编译
+      - name: Build Solution
+        run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+      #测试
+      - name: Conditional Step for x86 Release
+        if: matrix.configuration == 'Release' && matrix.platform == 'x86'
+        run: |
+          cp -r XEngine_Source/Release/*.dll XEngine_Release/
+          cp -r XEngine_Source/Release/*.exe XEngine_Release/
+          cp -r XEngine_Source/VSCopy_x86.bat XEngine_Release/
+          cd XEngine_Release
+          ./VSCopy_x86.bat
+          ./XEngine_AuthorizeService.exe -t
+        shell: pwsh
+      - name: Conditional Step for x86 Debug
+        if: matrix.configuration == 'Debug' && matrix.platform == 'x86'
+        run: |
+          cp -r XEngine_Source/Debug/*.dll XEngine_Release/
+          cp -r XEngine_Source/Debug/*.exe XEngine_Release/
+          cp -r XEngine_Source/VSCopy_x86.bat XEngine_Release/
+          cd XEngine_Release
+          ./VSCopy_x86.bat
+          ./XEngine_AuthorizeService.exe -t
+        shell: pwsh

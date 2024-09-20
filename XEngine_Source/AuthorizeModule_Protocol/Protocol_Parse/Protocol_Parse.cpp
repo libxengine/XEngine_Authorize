@@ -72,6 +72,10 @@ bool CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, X
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+	if (!st_JsonRoot["xhToken"].isNull())
+	{
+		pSt_ProtocolHdr->xhToken = st_JsonRoot["xhToken"].asUInt64();
+	}
 	return true;
 }
 /********************************************************************
@@ -841,7 +845,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchMulti = st_JsonObject["bSwitchMulti"].asBool();
 	pSt_FunSwitch->bSwitchTry = st_JsonObject["bSwitchTry"].asBool();
 	pSt_FunSwitch->bSwitchBanned = st_JsonObject["bSwitchBanned"].asBool();
-
+	pSt_FunSwitch->bSwitchTokenLogin = st_JsonObject["bSwitchTokenLogin"].asBool();
 	return true;
 }
 /********************************************************************

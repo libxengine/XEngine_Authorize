@@ -82,6 +82,10 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 			Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
 			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 		}
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN == st_ProtocolHdr.unOperatorCode)
+		{
+			XEngine_Client_TCPTask(lpszClientAddr, NULL, 0, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
+		}
 	}
 	
 	return true;

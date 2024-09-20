@@ -57,6 +57,7 @@ using namespace std;
 #include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
 extern bool bIsRun;
+extern bool bIsTest;
 extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
@@ -99,7 +100,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Announcement.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Try.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
-#include "AuthorizeHTTP_Get/AuthorizeHTTP_DynamicCode.h"
+#include "AuthorizeHTTP_Get/AuthorizeHTTP_GetTask.h"
 
 #ifdef _MSC_BUILD
 #ifdef _DEBUG

@@ -33,6 +33,10 @@ bool Authorize_Service_Parament(int argc, char** argv)
 		{
 			st_AuthConfig.bDeamon = _ttxoi(argv[i + 1]);
 		}
+		else if (0 == _tcsxcmp("-t", argv[i]))
+		{
+			bIsTest = true;
+		}
     }
 
     return true;
