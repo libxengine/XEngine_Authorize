@@ -50,7 +50,7 @@ jobs:
         
       # 配置 MSBuild 的路径，准备构建 VC++ 项目
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v2
       #编译
       - name: Build Solution
         run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
