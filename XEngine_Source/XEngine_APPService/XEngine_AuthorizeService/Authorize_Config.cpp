@@ -31,7 +31,7 @@ bool Authorize_Service_Parament(int argc, char** argv)
 		}
 		else if (0 == _tcsxcmp("-d", argv[i]))
 		{
-			st_AuthConfig.bDeamon = _ttxoi(argv[i + 1]);
+			st_AuthConfig.bDeamon = _ttxoi(argv[++i]);
 		}
 		else if (0 == _tcsxcmp("-t", argv[i]))
 		{
