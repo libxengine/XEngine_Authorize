@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - develop
-    paths:
-      - 'XEngine_Source/**'
-      - 'XEngine_Release/**'
 
 jobs:
   build:
