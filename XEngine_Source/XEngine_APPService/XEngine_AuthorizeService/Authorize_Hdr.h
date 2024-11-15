@@ -2,6 +2,7 @@
 #ifdef _WINDOWS
 #include <Windows.h>
 #include <tchar.h>
+#include <minidumpapiset.h>
 #else
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -141,6 +142,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #endif
 #endif
 #pragma comment(lib,"Ws2_32.lib")
+#pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_Core/XEngine_Core.lib")
 #pragma comment(lib,"XEngine_Core/XEngine_ManagePool.lib")
