@@ -3,9 +3,9 @@ name: ubuntu build workflows
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
-  
+    paths:
+      - 'XEngine_Source/**'
+      - 'XEngine_Release/**'
 permissions:
   contents: read
   
@@ -62,3 +62,9 @@ jobs:
         run: |
             cd XEngine_Release
             ./XEngine_AuthorizeService -t
+
+      - name: Upload folder as artifact with ubuntu
+        uses: actions/upload-artifact@v4
+        with:
+          name: XEngine_AuthorizeService-x86_64-Ubuntu
+          path: XEngine_Release/

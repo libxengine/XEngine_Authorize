@@ -3,9 +3,9 @@ name: windows build workflows
 on:
   push:
     branches: [ "develop" ]
-  pull_request:
-    branches: [ "develop" ]
-  
+    paths:
+      - 'XEngine_Source/**'
+      - 'XEngine_Release/**'
 permissions:
   contents: read
   
@@ -65,13 +65,27 @@ jobs:
           ./VSCopy_x86.bat
           ./XEngine_AuthorizeService.exe -t
         shell: pwsh
-      - name: Conditional Step for x86 Debug
-        if: matrix.configuration == 'Debug' && matrix.platform == 'x86'
+      - name: Conditional Step for x64 Release
+        if: matrix.configuration == 'Release' && matrix.platform == 'x64'
         run: |
-          cp -r XEngine_Source/Debug/*.dll XEngine_Release/
-          cp -r XEngine_Source/Debug/*.exe XEngine_Release/
-          cp -r XEngine_Source/VSCopy_x86.bat XEngine_Release/
+          cp -r XEngine_Source/x64/Release/*.dll XEngine_Release/
+          cp -r XEngine_Source/x64/Release/*.exe XEngine_Release/
+          cp -r XEngine_Source/VSCopy_x64.bat XEngine_Release/
           cd XEngine_Release
-          ./VSCopy_x86.bat
-          ./XEngine_AuthorizeService.exe -t
+          ./VSCopy_x64.bat
         shell: pwsh
+      
+      #将文件夹打包为 artifact
+      - name: Upload folder as artifact with x86
+        if: matrix.configuration == 'Release' && matrix.platform == 'x86'
+        uses: actions/upload-artifact@v4
+        with:
+          name: XEngine_AuthorizeService-x86_32-Windows
+          path: XEngine_Release/
+ 
+      - name: Upload folder as artifact with x64
+        if: matrix.configuration == 'Release' && matrix.platform == 'x64'
+        uses: actions/upload-artifact@v4
+        with:
+          name: XEngine_AuthorizeService-x86_64-Windows
+          path: XEngine_Release/
