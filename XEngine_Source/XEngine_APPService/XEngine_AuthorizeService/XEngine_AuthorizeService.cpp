@@ -23,7 +23,7 @@ XHANDLE xhHttpPool = NULL;
 
 XENGINE_SERVICECONFIG st_AuthConfig;
 XENGINE_FUNCTIONSWITCH st_FunSwitch;
-
+//update:not run ci test
 void ServiceApp_Stop(int signo)
 {
 	if (bIsRun)
