@@ -2,13 +2,12 @@ name: windows build workflows
 
 on:
   push:
-    branches: [ "develop" ]
+    branches:
+      - develop
     paths:
       - 'XEngine_Source/**'
       - 'XEngine_Release/**'
-permissions:
-  contents: read
-  
+
 jobs:
   build:
     strategy:
