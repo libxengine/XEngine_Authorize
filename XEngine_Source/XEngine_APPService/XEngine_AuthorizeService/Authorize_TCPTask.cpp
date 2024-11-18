@@ -345,5 +345,12 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，登录成功,注册类型:%s,剩余时间:%s"), lpszClientAddr, st_AuthProtocol.tszUserName, lpszXSerialType[st_UserTable.enSerialType], st_UserTable.tszLeftTime);
 	}
+	else
+	{
+		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端:%s,请求的协议:%d-%d 不被支持"), lpszClientAddr, pSt_ProtocolHdr->unOperatorType, pSt_ProtocolHdr->unOperatorCode);
+		return false;
+	}
 	return true;
 }
