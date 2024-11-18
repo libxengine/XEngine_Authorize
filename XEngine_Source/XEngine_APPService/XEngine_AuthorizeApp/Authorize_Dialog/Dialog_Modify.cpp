@@ -33,8 +33,8 @@ void CDialog_Modify::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO1, m_ComboSerial);
 	DDX_Control(pDX, IDC_COMBO2, m_ComboLeave);
 	DDX_Control(pDX, IDC_EDIT7, m_EditHardCode);
-	DDX_Control(pDX, IDC_EDIT8, m_EditCreateTime);
 	DDX_Control(pDX, IDC_BUTTON2, m_BtnModify);
+	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_DateTimeRegister);
 }
 
 
@@ -63,12 +63,15 @@ BOOL CDialog_Modify::OnInitDialog()
 	{
 		m_ComboLeave.InsertString(i, lpszXLevelType[i]);
 	}
-
+	m_DateTimeRegister.SetFormat(_T("yyyy-MM-dd HH:mm:ss"));
 	POSITION pSt_Sition = pUserWnd->m_ListCtrlClient.GetFirstSelectedItemPosition();
 	if (NULL == pSt_Sition)
 	{
 		//没有选择,表示添加
 		m_BtnModify.SetWindowText(_T("添加"));
+		
+		m_ComboSerial.SetCurSel(1);
+		m_ComboLeave.SetCurSel(11);
 	}
 	else
 	{
@@ -144,7 +147,11 @@ BOOL CDialog_Modify::OnInitDialog()
 		m_EditUser.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserName"].asCString());
 		m_EditPass.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString());
 		m_EditEMail.SetWindowText(st_JsonObject["st_UserInfo"]["tszEMailAddr"].asCString());
-		m_EditCreateTime.SetWindowText(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString());
+		COleDateTime m_OleDTime;
+		if (m_OleDTime.ParseDateTime(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString()))
+		{
+			m_DateTimeRegister.SetTime(m_OleDTime);
+		}
 
 		CString m_StrNumber;
 		m_StrNumber.Format(_T("%lld"), st_JsonObject["st_UserInfo"]["nIDNumber"].asUInt64());
@@ -179,7 +186,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	m_EditUser.GetWindowText(st_UserTable.st_UserInfo.tszUserName, sizeof(st_UserTable.st_UserInfo.tszUserName));
 	m_EditPass.GetWindowText(st_UserTable.st_UserInfo.tszUserPass, sizeof(st_UserTable.st_UserInfo.tszUserPass));
 	m_EditEMail.GetWindowText(st_UserTable.st_UserInfo.tszEMailAddr, sizeof(st_UserTable.st_UserInfo.tszEMailAddr));
-	m_EditCreateTime.GetWindowText(st_UserTable.st_UserInfo.tszCreateTime, sizeof(st_UserTable.st_UserInfo.tszCreateTime));
+	m_DateTimeRegister.GetWindowText(st_UserTable.st_UserInfo.tszCreateTime, sizeof(st_UserTable.st_UserInfo.tszCreateTime));
 	m_EditHardCode.GetWindowText(st_UserTable.tszHardCode, sizeof(st_UserTable.tszHardCode));
 
 	CString m_StrNumber;

@@ -66,6 +66,11 @@ typedef struct
 			bool bTime;
 			bool bCustom;                                   
 		}st_MulitLogin;
+		struct  
+		{
+			bool bAutoRenewal;
+			int nRenewalTime;
+		}st_XToken;
 	}st_XLogin;
 	struct  
 	{

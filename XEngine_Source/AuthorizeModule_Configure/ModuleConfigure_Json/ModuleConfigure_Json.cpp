@@ -118,7 +118,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyFile, st_JsonXVerification["st_XCDKey"]["tszKeyFile"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyPass, st_JsonXVerification["st_XCDKey"]["tszKeyPass"].asCString());
 	//登录配置
-	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
+	if (st_JsonRoot["XLogin"].empty() || (6 != st_JsonRoot["XLogin"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -139,6 +139,10 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bDay = st_JsonMulitLogin["bDay"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bSecond = st_JsonMulitLogin["bSecond"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
+
+	Json::Value st_JsonXToken = st_JsonXLogin["st_XToken"];
+	pSt_ServerConfig->st_XLogin.st_XToken.bAutoRenewal = st_JsonXToken["bAutoRenewal"].asBool();
+	pSt_ServerConfig->st_XLogin.st_XToken.nRenewalTime = st_JsonXToken["nRenewalTime"].asInt();
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
