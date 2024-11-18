@@ -24,7 +24,7 @@ jobs:
           check_artifacts: false
           skip_unpack: true
           if_no_artifact_found: fail
-          path: ./
+          path: ./XRelease/
       - name: Download macbuild
         uses: dawidd6/action-download-artifact@v6
         with:
@@ -33,7 +33,7 @@ jobs:
           check_artifacts: false
           skip_unpack: true
           if_no_artifact_found: fail
-          path: ./
+          path: ./XRelease/
       - name: Download msbuild
         uses: dawidd6/action-download-artifact@v6
         with:
@@ -42,10 +42,10 @@ jobs:
           check_artifacts: false
           skip_unpack: true
           if_no_artifact_found: fail
-          path: ./
+          path: ./XRelease/
 
       - name: Display structure of downloaded files
-        run: ls -al ./
+        run: ls -al ./XRelease/
 
       - name: Get current version and increment X
         id: versioning
@@ -71,7 +71,7 @@ jobs:
 
       - name: Generate release notes
         run: |
-          logs=$(git log ${{ steps.versioning.outputs.prev_tag }}..${{ steps.versioning.outputs.new_tag }} --pretty=format:"* %H - %s - %an" --no-merges)
+          logs=$(git log ${{ steps.versioning.outputs.prev_tag }}..${{ steps.versioning.outputs.new_tag }} --pretty=format:"* %h - %s - %an - %cd" --no-merges)
           release_notes=$(echo "$logs" | sed 's/ qyt$/ @xengine-qyt/')
           echo "$release_notes"
           echo "$release_notes" > release_notes.txt
@@ -86,8 +86,4 @@ jobs:
           tag_name: ${{ steps.versioning.outputs.new_tag }}
           name: XEngine_AuthorizeService ${{ steps.versioning.outputs.new_tag }}
           body_path: release_notes.txt
-          files: |
-            ./XEngine_AuthorizeService-x86_64-Mac.zip
-            ./XEngine_AuthorizeService-x86_64-Ubuntu.zip
-            ./XEngine_AuthorizeService-x86_64-Windows.zip
-            ./XEngine_AuthorizeService-x86_32-Windows.zip
+          files: ./XRelease/*.zip
