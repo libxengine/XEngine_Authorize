@@ -38,6 +38,10 @@
             "bTime":true,
             "bDay":false,
             "bCustom":false
+        },
+        "st_XToken":{
+            "bAutoRenewal":false,
+            "nRenewalTime":-1
         }
     },
     "XCrypto":{
