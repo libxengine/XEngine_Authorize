@@ -215,6 +215,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	}
 	else
 	{
+		st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
 		_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/client/modify"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 	}
 
@@ -230,8 +231,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	st_JsonTable["enSerialType"] = st_UserTable.enSerialType;
 	st_JsonTable["st_UserInfo"] = st_JsonUser;
 	st_JsonRoot["st_UserTable"] = st_JsonTable;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
-
+	
 	//是否加密
 	int nMsgLen = 0;
 	TCHAR* ptszMsgBuffer = NULL;
