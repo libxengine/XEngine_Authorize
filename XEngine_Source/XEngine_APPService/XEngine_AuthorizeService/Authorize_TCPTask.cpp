@@ -181,107 +181,93 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 		}
 		//是否已经登录
-		if (st_FunSwitch.bSwitchMulti)
+		bool bLogin = false;
+		int nListCount = 0;
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
+
+		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_AuthProtocol.tszUserName);
+		for (int i = 0; i < nListCount; i++)
 		{
-			bool bLogin = false;
-			int nListCount = 0;
-			AUTHSESSION_NETCLIENT** ppSt_ListClient;
-
-			Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_AuthProtocol.tszUserName);
-			for (int i = 0; i < nListCount; i++)
+			//找到客户端,支持的模式
+			if (0 == st_AuthConfig.st_XLogin.nMultiMode)
 			{
-				//找到客户端,支持的模式
-				if (0 == st_AuthConfig.st_XLogin.nMultiMode)
-				{
-					int nSourceType = 0;
-					int nDestType = 0;
-					AuthHelp_MultiLogin_GetRange(ppSt_ListClient[i]->st_UserTable.enDeviceType, &nSourceType);
-					AuthHelp_MultiLogin_GetRange(st_AuthProtocol.enDeviceType, &nDestType);
+				int nSourceType = 0;
+				int nDestType = 0;
+				AuthHelp_MultiLogin_GetRange(ppSt_ListClient[i]->st_UserTable.enDeviceType, &nSourceType);
+				AuthHelp_MultiLogin_GetRange(st_AuthProtocol.enDeviceType, &nDestType);
 
-					if (nSourceType == nDestType)
-					{
-						bLogin = true;
-						break;
-					}
-				}
-				else if (1 == st_AuthConfig.st_XLogin.nMultiMode)
-				{
-					if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
-					{
-						bLogin = true;
-						break;
-					}
-				}
-				else if (2 == st_AuthConfig.st_XLogin.nMultiMode)
-				{
-					break;
-				}
-				else
-				{
-					pSt_ProtocolHdr->wReserve = 257;
-					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，服务端设置不正确"), lpszClientAddr, st_AuthProtocol.tszUserName);
-					return false;
-				}
-			}
-			BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
-			//对多端登录的类型进行验证
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
-			{
-				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
+				if (nSourceType == nDestType)
 				{
 					bLogin = true;
+					break;
+				}
+			}
+			else if (1 == st_AuthConfig.st_XLogin.nMultiMode)
+			{
+				if (ppSt_ListClient[i]->st_UserTable.enDeviceType == st_AuthProtocol.enDeviceType)
+				{
+					bLogin = true;
+					break;
+				}
+			}
+			else if (2 == st_AuthConfig.st_XLogin.nMultiMode)
+			{
+				break;
+			}
+			else
+			{
+				pSt_ProtocolHdr->wReserve = 257;
+				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，服务端设置不正确"), lpszClientAddr, st_AuthProtocol.tszUserName);
+				return false;
+			}
+		}
+		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		//对多端登录的类型进行验证
+		if (bLogin && st_FunSwitch.bSwitchMulti)
+		{
+			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
+			{
+				if (st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
+				{
+					bLogin = false;
 				}
 			}
 			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
-				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
+				if (st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
-					bLogin = true;
+					bLogin = false;
 				}
 			}
 			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
-				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
+				if (st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
-					bLogin = true;
+					bLogin = false;
 				}
 			}
 			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
-				if (!st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
+				if (st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
-					bLogin = true;
+					bLogin = false;
 				}
 			}
 			else
 			{
 				bLogin = true;  //其他注册类型禁止登录
 			}
-			//判断这次登录是否允许
-			if (bLogin)
-			{
-				pSt_ProtocolHdr->wReserve = 253;
-				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，多端登录失败，用户已经登录,类型:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.enDeviceType);
-				return false;
-			}
 		}
-		else
+		//判断这次登录是否允许
+		if (bLogin)
 		{
-			int nListCount = 0;
-			AUTHSESSION_NETCLIENT** ppSt_ListClient;
-			if (Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_AuthProtocol.tszUserName))
-			{
-				pSt_ProtocolHdr->wReserve = 253;
-				BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
-				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名已经登录"), lpszClientAddr, st_AuthProtocol.tszUserName);
-				return false;
-			}
+			pSt_ProtocolHdr->wReserve = 253;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，多端登录失败，用户已经登录,类型:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.enDeviceType);
+			return false;
 		}
 		//是否被封禁
 		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
