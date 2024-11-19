@@ -91,7 +91,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
-    _xstprintf(tszSQLStatement, _X("DELETE FROM `Authorize_User` WHERE UserName = '%s' AND Password = '%s' AND EmailAddr = '%s' AND IDCard = '%lld'"), pSt_UserInfo->tszUserName, pSt_UserInfo->tszUserPass, pSt_UserInfo->tszEMailAddr, pSt_UserInfo->nIDNumber);
+    _xstprintf(tszSQLStatement, _X("DELETE FROM `Authorize_User` WHERE UserName = '%s'"), pSt_UserInfo->tszUserName);
     //执行
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {

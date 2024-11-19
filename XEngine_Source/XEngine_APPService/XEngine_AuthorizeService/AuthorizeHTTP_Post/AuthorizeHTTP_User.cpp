@@ -21,10 +21,29 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，删除失败，删除功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
+		AUTHREG_USERTABLE st_UserTable = {};
 		XENGINE_PROTOCOL_USERINFO st_UserInfo = {};
+		
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
-		//删除数据库
+
 		bool bRet = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			bRet = DBModule_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
+		}
+		else
+		{
+			bRet = DBModule_MySQL_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
+		}
+		//安全验证判断
+		if ((0 != _tcsxnicmp(st_UserInfo.tszEMailAddr, st_UserTable.st_UserInfo.tszEMailAddr, _tcsxlen(st_UserInfo.tszEMailAddr))) || (st_UserTable.st_UserInfo.nIDNumber != st_UserInfo.nIDNumber))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user information is incorrent");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，删除用户失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
+			return false;
+		}
+		//删除数据库
 		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{
 			bRet = DBModule_SQLite_UserDelete(&st_UserInfo);
