@@ -87,7 +87,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->bDeamon = st_JsonRoot["bDeamon"].asBool();
 	pSt_ServerConfig->bTimeNotify = st_JsonRoot["bTimeNotify"].asBool();
 	//最大配置
-	if (st_JsonRoot["XMax"].empty() || (7 != st_JsonRoot["XMax"].size()))
+	if (st_JsonRoot["XMax"].empty() || (6 != st_JsonRoot["XMax"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XMAX;
@@ -101,7 +101,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (8 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (9 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
