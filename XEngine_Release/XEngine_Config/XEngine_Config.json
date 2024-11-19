@@ -24,8 +24,12 @@
             "tszKeyPass":"123123qa"
         },
         "st_PassCrypto":{
-            "bEnable":false,
+            "bEnable":true,
             "nCodec":2
+        },
+        "st_XToken":{
+            "bAutoRenewal":false,
+            "nRenewalTime":-1
         }   
     },
     "XLogin":{
@@ -42,10 +46,6 @@
             "bTime":true,
             "bDay":false,
             "bCustom":false
-        },
-        "st_XToken":{
-            "bAutoRenewal":false,
-            "nRenewalTime":-1
         }
     },
     "XCrypto":{

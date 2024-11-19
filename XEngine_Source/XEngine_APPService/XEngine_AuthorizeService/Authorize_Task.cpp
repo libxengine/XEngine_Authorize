@@ -69,18 +69,18 @@ void CALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 
 	Session_Token_Get(xhToken, &st_UserTable);
 	//自动续期?
-	if (st_AuthConfig.st_XLogin.st_XToken.bAutoRenewal)
+	if (st_AuthConfig.st_XVerification.st_XToken.bAutoRenewal)
 	{
 		int nRenewalTime = 0;
 		Session_Token_RenewalTime(xhToken, &nRenewalTime);
 
-		if (-1 == st_AuthConfig.st_XLogin.st_XToken.nRenewalTime)
+		if (-1 == st_AuthConfig.st_XVerification.st_XToken.nRenewalTime)
 		{
 			bRemove = false;
 		}
 		else 
 		{
-			if (nRenewalTime <= st_AuthConfig.st_XLogin.st_XToken.nRenewalTime)
+			if (nRenewalTime <= st_AuthConfig.st_XVerification.st_XToken.nRenewalTime)
 			{
 				bRemove = false;
 			}

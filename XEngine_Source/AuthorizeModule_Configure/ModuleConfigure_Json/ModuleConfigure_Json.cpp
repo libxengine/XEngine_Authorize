@@ -87,7 +87,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->bDeamon = st_JsonRoot["bDeamon"].asBool();
 	pSt_ServerConfig->bTimeNotify = st_JsonRoot["bTimeNotify"].asBool();
 	//最大配置
-	if (st_JsonRoot["XMax"].empty() || (6 != st_JsonRoot["XMax"].size()))
+	if (st_JsonRoot["XMax"].empty() || (7 != st_JsonRoot["XMax"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XMAX;
@@ -120,8 +120,11 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 
 	pSt_ServerConfig->st_XVerification.st_PassCrypto.bEnable = st_JsonXVerification["st_PassCrypto"]["bEnable"].asBool();
 	pSt_ServerConfig->st_XVerification.st_PassCrypto.nCodec = st_JsonXVerification["st_PassCrypto"]["nCodec"].asInt();
+
+	pSt_ServerConfig->st_XVerification.st_XToken.bAutoRenewal = st_JsonXVerification["st_XToken"]["bAutoRenewal"].asBool();
+	pSt_ServerConfig->st_XVerification.st_XToken.nRenewalTime = st_JsonXVerification["st_XToken"]["nRenewalTime"].asInt();
 	//登录配置
-	if (st_JsonRoot["XLogin"].empty() || (6 != st_JsonRoot["XLogin"].size()))
+	if (st_JsonRoot["XLogin"].empty() || (5 != st_JsonRoot["XLogin"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -142,10 +145,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bDay = st_JsonMulitLogin["bDay"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bSecond = st_JsonMulitLogin["bSecond"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
-
-	Json::Value st_JsonXToken = st_JsonXLogin["st_XToken"];
-	pSt_ServerConfig->st_XLogin.st_XToken.bAutoRenewal = st_JsonXToken["bAutoRenewal"].asBool();
-	pSt_ServerConfig->st_XLogin.st_XToken.nRenewalTime = st_JsonXToken["nRenewalTime"].asInt();
 	//加密配置
 	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
 	{
