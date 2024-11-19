@@ -90,3 +90,7 @@ extern "C" bool Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHA
 {
 	return m_SessionToken.Session_Token_GetUser(lpszUser, lpszPass, pxhToken);
 }
+extern "C" bool Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_RenewalTime)
+{
+	return m_SessionToken.Session_Token_RenewalTime(xhToken, pInt_RenewalTime);
+}
