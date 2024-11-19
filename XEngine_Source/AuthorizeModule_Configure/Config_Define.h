@@ -38,6 +38,11 @@ typedef struct
 			XCHAR tszKeyFile[MAX_PATH];                         //本地CDKEY文件地址
 			XCHAR tszKeyPass[MAX_PATH];                         //本地CDKEY密码
 		}st_XCDKey;
+		struct  
+		{
+			bool bEnable;                                   //是否启用
+			int nCodec;                                     //加密方法:ENUM_XENGINE_OPENSSL_DIGEST
+		}st_PassCrypto;
 		int nCheckTimeNumber;                               //检测次数
 		int nCheckTimeout;                                  //超时时间
 		int nTokenTimeout;                                  //TOKEN登录超时时间

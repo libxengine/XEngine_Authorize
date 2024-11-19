@@ -43,4 +43,9 @@ public:
 	CEdit m_EditPassword;
 	CEdit m_EditDCode;
 	afx_msg void OnBnClickedButton8();
+	CComboBox m_ComboPassCodec;
+	CButton m_RadioPassDisable;
+	CButton m_RadioPassEnable;
+	afx_msg void OnBnClickedRadio3();
+	afx_msg void OnBnClickedRadio4();
 };

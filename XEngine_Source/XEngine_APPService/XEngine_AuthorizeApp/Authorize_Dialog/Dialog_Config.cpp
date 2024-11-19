@@ -38,6 +38,9 @@ void CDialog_Config::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, m_ListEncrypto);
 	DDX_Control(pDX, IDC_EDIT6, m_EditPassword);
 	DDX_Control(pDX, IDC_EDIT11, m_EditDCode);
+	DDX_Control(pDX, IDC_COMBO7, m_ComboPassCodec);
+	DDX_Control(pDX, IDC_RADIO4, m_RadioPassDisable);
+	DDX_Control(pDX, IDC_RADIO3, m_RadioPassEnable);
 }
 
 
@@ -48,6 +51,8 @@ BEGIN_MESSAGE_MAP(CDialog_Config, CDialogEx)
 	ON_BN_CLICKED(IDC_RADIO2, &CDialog_Config::OnBnClickedRadio2)
 	ON_BN_CLICKED(IDC_RADIO1, &CDialog_Config::OnBnClickedRadio1)
 	ON_BN_CLICKED(IDC_BUTTON8, &CDialog_Config::OnBnClickedButton8)
+	ON_BN_CLICKED(IDC_RADIO3, &CDialog_Config::OnBnClickedRadio3)
+	ON_BN_CLICKED(IDC_RADIO4, &CDialog_Config::OnBnClickedRadio4)
 END_MESSAGE_MAP()
 
 
@@ -70,6 +75,15 @@ BOOL CDialog_Config::OnInitDialog()
 
 	m_CheckCodecEnable.SetCheck(BST_UNCHECKED);
 	m_CheckCodecDisable.SetCheck(BST_CHECKED);
+
+	m_RadioPassDisable.SetCheck(BST_CHECKED);
+	m_ComboPassCodec.EnableWindow(false);
+	m_ComboPassCodec.InsertString(0, _T("MD4"));
+	m_ComboPassCodec.InsertString(1, _T("MD5"));
+	m_ComboPassCodec.InsertString(2, _T("SHA1"));
+	m_ComboPassCodec.InsertString(3, _T("SHA256"));
+	m_ComboPassCodec.SetCurSel(1);
+
 	m_ListEncrypto.AddString(_T("XCrypto(X加密)"));
 	m_ListEncrypto.SetCurSel(0);
 	m_ListEncrypto.EnableWindow(false);
@@ -101,14 +115,26 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditPass.GetWindowText(m_StrPass);
 	m_EditDCode.GetWindowText(m_StrDCode);
 	
-	if (m_StrDCode.GetLength() > 0)
+	TCHAR tszMDBuffer[64] = {};
+	if (m_RadioPassEnable.GetCheck() == BST_CHECKED)
 	{
-		m_EditToken.GetWindowText(m_StrToken);
-		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
+		int nPLen = m_StrPass.GetLength();
+		XBYTE byMD5Buffer[MAX_PATH] = {};
+		OPenSsl_Api_Digest(m_StrPass.GetBuffer(), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
+		BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
 	}
 	else
 	{
-		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), m_StrPass.GetBuffer(), ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
+		_tcsxcpy(tszMDBuffer, m_StrPass.GetBuffer());
+	}
+	if (m_StrDCode.GetLength() > 0)
+	{
+		m_EditToken.GetWindowText(m_StrToken);
+		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
+	}
+	else
+	{
+		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	}
 	//请求用户信息
 	int nMsgLen = 0;
@@ -356,4 +382,18 @@ void CDialog_Config::OnBnClickedButton8()
 	m_EditToken.SetWindowText(tszTokenStr);
 	m_EditDCode.SetWindowText(tszDCodeStr);
 	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+}
+
+
+void CDialog_Config::OnBnClickedRadio3()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_ComboPassCodec.EnableWindow(TRUE);
+}
+
+
+void CDialog_Config::OnBnClickedRadio4()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	m_ComboPassCodec.EnableWindow(FALSE);
 }
