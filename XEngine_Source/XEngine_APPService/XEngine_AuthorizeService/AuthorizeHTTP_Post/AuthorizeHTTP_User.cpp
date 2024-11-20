@@ -206,34 +206,33 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 	{
 		AUTHREG_USERTABLE st_UserTable;
 		XENGINE_PROTOCOL_USERINFO st_UserInfo;
-		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
-
+		
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 		memset(&st_UserInfo, '\0', sizeof(XENGINE_PROTOCOL_USERINFO));
-		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-
+		
 		if (!st_FunSwitch.bSwitchPass)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，找回密码失败，密码找回功能已经被服务器关闭!"), lpszClientAddr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，找回重置密码失败，密码找回重置功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
+		//得到数据库信息
 		bool bSuccess = false;
-		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{
 			bSuccess = DBModule_SQLite_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
 		}
-		else 
+		else
 		{
 			bSuccess = DBModule_MySQL_UserQuery(st_UserInfo.tszUserName, &st_UserTable);
 		}
-		if (!bSuccess) 
+		if (!bSuccess)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，找回密码失败，用户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，找回重置密码失败，用户不存在"), lpszClientAddr, st_UserInfo.tszUserName);
 			return false;
 		}
 		//安全验证判断
@@ -241,15 +240,41 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "user information is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，找回密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，找回重置密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
 			return false;
 		}
+		//是否开启了密码加密
+		if (st_AuthConfig.st_XVerification.st_PassCrypto.bEnable)
+		{
+			//开启了,密码重置
+			int nPLen = _tcsxlen(st_UserInfo.tszUserPass);
+			XBYTE byMD5Buffer[MAX_PATH] = {};
+			OPenSsl_Api_Digest(st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
+			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
+			BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
+			//重置密码
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				bSuccess = DBModule_SQLite_UserSet(&st_UserTable);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_UserSet(&st_UserTable);
+			}
+			if (!bSuccess)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "not found client");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求修改密码失败:%s 错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
+				return false;
+			}
+		}
+		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol = {};
 		_tcsxcpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		_tcsxcpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
-
 		Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，找回密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，找回重置密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITry, _tcsxlen(lpszAPIName)))
 	{
