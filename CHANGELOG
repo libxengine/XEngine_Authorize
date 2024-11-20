@@ -1,3 +1,35 @@
+XEngine_Authorize V3.15.0.1001
+
+增加:密码加密
+增加:TOKEN自动续期
+增加:服务和管理程序coredump支持
+增加:client 删除用户协议支持
+更新:工作流CI添加了发布CI
+更新:依赖库
+优化:启动参数解析
+优化:不支持的协议提示
+优化:管理端用户插入修改初始化值
+修改:用户删除方法
+修改:密码协议现在支持找回和设置功能了
+修正:某些时候退出崩溃
+修正:管理端添加用户失败的问题
+修正:多端登录处理不正确的问题
+
+added:pass encrypt supported
+added:auto renewal token
+added:service app and management app core-dump supported
+added:delete client for management app with token
+update:workflow and add release ci
+update:depend library
+improved:start parameter parse
+improved:tips when request not support protocol
+improved:user insert and modify init value for management app
+modify:user delete away
+modify:user pass now support get and set
+fixed:crashed when exist
+fixed:add user incorrect for management app
+fixed:multi login handle is incorrect and tips logged in
+================================================================
 XEngine_Authorize V3.14.0.1001
 
 增加:支持无限制多端登录了
