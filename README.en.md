@@ -11,6 +11,9 @@ network verification support tcp and websocket and http protocol verification.it
 first open source C/C++ network authentication server, supporting various languages ​​and platforms for network authentication and authorization
 This is a cross-platform simple high-performance network authorization server that provides a complete demo code  
 
+## Notice
+the compiled release version will only be released on github.
+
 #### why choose us
 Fast iteration: feature updates are timely  
 Technical support: complete technical documentation and technical support, quick response to your questions  
@@ -119,6 +122,7 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 2.  Create new Feat_xxx branch
 3.  Submit the code
 4.  New Pull Request
+5.  merge to develop branch
 
 ## development path
 The V1 version is an XEngine component. Most of the code is concentrated in XEngine  
