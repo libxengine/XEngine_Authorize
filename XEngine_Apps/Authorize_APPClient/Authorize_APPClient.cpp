@@ -35,6 +35,7 @@ using namespace std;
 //Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define _DYNAMIC_CODE
+//#define _PASS_ENCRYPT
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
@@ -243,6 +244,14 @@ int AuthClient_Login()
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
 	strcpy(st_AuthUser.tszUserName, lpszUser);
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
+
+#ifdef _PASS_ENCRYPT
+	int nPLen = _tcsxlen(st_AuthUser.tszUserPass);
+	XBYTE byMD5Buffer[MAX_PATH] = {};
+	OPenSsl_Api_Digest(st_AuthUser.tszUserPass, byMD5Buffer, &nPLen, false, XENGINE_OPENSSL_API_DIGEST_MD5);
+	memset(st_AuthUser.tszUserPass, '\0', sizeof(st_AuthUser.tszUserPass));
+	BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
+#endif
 
 	if (nDYCode > 0)
 	{

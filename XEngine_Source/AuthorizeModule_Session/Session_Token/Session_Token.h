@@ -15,6 +15,7 @@ typedef struct
 	AUTHREG_USERTABLE st_UserTable;                                       //用户表
 	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
     int nTimeout;                                                         //单独指定超时
+    int nRenewalTime;                                                     //自动续期次数
 }AUTHSESSION_TOKENCLIENT, * LPAUTHSESSION_TOKENCLIENT;
 //////////////////////////////////////////////////////////////////////////
 class CSession_Token
@@ -30,6 +31,7 @@ public:
     bool Session_Token_UPDate(XNETHANDLE xhToken);
     bool Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_UserTable = NULL);
     bool Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE* pxhToken);
+    bool Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_RenewalTime);
 protected:
     static XHTHREAD Session_Token_Thread(XPVOID lParam);            
 private:

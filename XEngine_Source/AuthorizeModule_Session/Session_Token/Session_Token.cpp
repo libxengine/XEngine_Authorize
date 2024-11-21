@@ -287,6 +287,42 @@ bool CSession_Token::Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, X
 	}
 	return true;
 }
+/********************************************************************
+函数名称：Session_Token_RenewalTime
+函数功能：续期时间
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：输入要操作的TOKEN
+ 参数.二：pInt_RenewalTime
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出续期的次数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CSession_Token::Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_RenewalTime)
+{
+	Session_IsErrorOccur = false;
+
+	st_Locker.lock_shared();
+	unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = stl_MapToken.find(xhToken);
+	if (stl_MapIterator == stl_MapToken.end())
+	{
+		Session_IsErrorOccur = true;
+		Session_dwErrorCode = ERROR_AUTHORIZE_MODULE_SESSION_PARAMENT;
+		st_Locker.unlock_shared();
+		return false;
+	}
+    stl_MapIterator->second.nRenewalTime++;
+    *pInt_RenewalTime = stl_MapIterator->second.nRenewalTime;
+	st_Locker.unlock_shared();
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 //                     线程函数
 //////////////////////////////////////////////////////////////////////////

@@ -49,6 +49,7 @@
 #define IDC_EDIT8                       1014
 #define IDC_CHECK2                      1014
 #define IDC_EDIT22                      1014
+#define IDC_COMBO7                      1014
 #define IDC_RADIO1                      1015
 #define IDC_EDIT23                      1015
 #define IDC_RADIO2                      1016

@@ -22,7 +22,15 @@
         "st_XCDKey":{
             "tszKeyFile":"./APPVer.key",
             "tszKeyPass":"123123qa"
-        }
+        },
+        "st_PassCrypto":{
+            "bEnable":false,
+            "nCodec":2
+        },
+        "st_XToken":{
+            "bAutoRenewal":false,
+            "nRenewalTime":-1
+        }   
     },
     "XLogin":{
         "bHTTPAuth":false,

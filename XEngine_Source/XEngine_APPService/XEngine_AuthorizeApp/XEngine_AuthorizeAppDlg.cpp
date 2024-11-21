@@ -40,7 +40,27 @@ BEGIN_MESSAGE_MAP(CXEngineAuthorizeAppDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON2, &CXEngineAuthorizeAppDlg::OnBnClickedButton2)
 END_MESSAGE_MAP()
 
+LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
+{
+	static int i = 0;
+	XCHAR tszFileStr[MAX_PATH] = {};
+	XCHAR tszTimeStr[128] = {};
+	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
 
+	HANDLE hDumpFile = CreateFileA(tszFileStr, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+	if (INVALID_HANDLE_VALUE != hDumpFile)
+	{
+		MINIDUMP_EXCEPTION_INFORMATION st_DumpInfo = {};
+		st_DumpInfo.ExceptionPointers = pExceptionPointers;
+		st_DumpInfo.ThreadId = GetCurrentThreadId();
+		st_DumpInfo.ClientPointers = TRUE;
+		// 写入 dump 文件
+		MiniDumpWriteDump(GetCurrentProcess(), GetCurrentProcessId(), hDumpFile, MiniDumpNormal, &st_DumpInfo, NULL, NULL);
+		CloseHandle(hDumpFile);
+	}
+	return EXCEPTION_EXECUTE_HANDLER;
+}
 // CXEngineAuthorizeAppDlg 消息处理程序
 
 BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
@@ -53,6 +73,7 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	SetIcon(m_hIcon, false);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
+	SetUnhandledExceptionFilter(Coredump_ExceptionFilter);
 	HANDLE hMutex = CreateMutex(NULL, true, _T("XEngine_AuthorizeApp"));
 	if (NULL != hMutex)
 	{

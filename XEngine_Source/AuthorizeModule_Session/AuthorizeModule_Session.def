@@ -18,3 +18,4 @@ EXPORTS
 	Session_Token_UPDate
 	Session_Token_Get
 	Session_Token_GetUser
+	Session_Token_RenewalTime

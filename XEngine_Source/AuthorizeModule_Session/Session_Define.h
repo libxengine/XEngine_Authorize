@@ -288,3 +288,22 @@ extern "C" bool Session_Token_Get(XNETHANDLE xhToken, AUTHREG_USERTABLE* pSt_Use
 备注：
 *********************************************************************/
 extern "C" bool Session_Token_GetUser(LPCXSTR lpszUser, LPCXSTR lpszPass, XNETHANDLE * pxhToken);
+/********************************************************************
+函数名称：Session_Token_RenewalTime
+函数功能：续期时间
+ 参数.一：xhToken
+  In/Out：In
+  类型：句柄
+  可空：N
+  意思：输入要操作的TOKEN
+ 参数.二：pInt_RenewalTime
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出续期的次数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_RenewalTime);

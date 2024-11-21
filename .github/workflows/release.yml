@@ -1,0 +1,89 @@
+name: release packet
+
+on:
+  push:
+    branches: 
+      - master
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+        # 检出代码并包含标签
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 
+
+      - name: Download linuxbuild
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: linuxbuild.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
+      - name: Download macbuild
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: macbuild.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
+      - name: Download msbuild
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: msbuild.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
+
+      - name: Display structure of downloaded files
+        run: ls -al ./XRelease/
+
+      - name: Get current version and increment X
+        id: versioning
+        run: |
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "Latest tag: $latest_tag"
+          # 提取 X 的值并递增
+          major=$(echo $latest_tag | cut -d '.' -f 1)
+          minor=$(echo $latest_tag | cut -d '.' -f 2)
+          patch=$(echo $latest_tag | cut -d '.' -f 3)
+          build=$(echo $latest_tag | cut -d '.' -f 4)
+
+          new_minor=$((minor + 1))
+          new_version="$major.$new_minor.$patch.$build"
+          echo "New version: $new_version"
+          echo "new_tag=$new_version" >> $GITHUB_OUTPUT
+          echo "prev_tag=$latest_tag" >> $GITHUB_OUTPUT
+
+      - name: Create and push new tag
+        run: |
+          git tag ${{ steps.versioning.outputs.new_tag }}
+          git push origin ${{ steps.versioning.outputs.new_tag }}
+
+      - name: Generate release notes
+        run: |
+          logs=$(git log ${{ steps.versioning.outputs.prev_tag }}..${{ steps.versioning.outputs.new_tag }} --pretty=format:"* %h - %s - %an - %cd" --no-merges)
+          release_notes=$(echo "$logs" | sed 's/ qyt$/ @xengine-qyt/')
+          echo "$release_notes"
+          echo "$release_notes" > release_notes.txt
+        
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          draft: false
+          prerelease: false
+          tag_name: ${{ steps.versioning.outputs.new_tag }}
+          name: XEngine_AuthorizeService ${{ steps.versioning.outputs.new_tag }}
+          body_path: release_notes.txt
+          files: ./XRelease/*.zip

@@ -193,6 +193,13 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Try(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
+			else
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "reqeust api is not support");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求的API:%s 失败,因为不被支持"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return false;
+			}
 		}
 		else
 		{
@@ -207,6 +214,13 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			else if (0 == _tcsxnicmp(lpszAPIVerUser, tszAPIVer, _tcsxlen(lpszAPIVerUser)))
 			{
 				XEngine_AuthorizeHTTP_User(xhToken, lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+			}
+			else
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "reqeust api is not support");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求的API:%s 失败,因为不被支持"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
+				return false;
 			}
 		}
 	}

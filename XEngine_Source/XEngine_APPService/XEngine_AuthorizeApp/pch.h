@@ -13,6 +13,7 @@
 #endif //PCH_H
 #include <json/json.h>
 #include <list>
+#include <minidumpapiset.h>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
@@ -69,6 +70,7 @@ extern LPCXSTR lpszStuType[2];
 #endif
 #endif
 
+#pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_Core/XEngine_OPenSsl.lib")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp.lib")

@@ -302,7 +302,7 @@ void CDialog_User::OnBnClickedButton3()
 
 	TCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/user/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/client/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
 
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
