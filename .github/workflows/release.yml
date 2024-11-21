@@ -84,6 +84,6 @@ jobs:
           draft: false
           prerelease: false
           tag_name: ${{ steps.versioning.outputs.new_tag }}
-          name: XEngine_AuthorizeService ${{ steps.versioning.outputs.new_tag }}
+          name: XEngine_Authorize ${{ steps.versioning.outputs.new_tag }}
           body_path: release_notes.txt
           files: ./XRelease/*.zip
