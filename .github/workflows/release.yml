@@ -16,10 +16,10 @@ jobs:
         with:
           fetch-depth: 0 
 
-      - name: Download linuxbuild
+      - name: Download ubuntubuild
         uses: dawidd6/action-download-artifact@v6
         with:
-          workflow: linuxbuild.yml
+          workflow: ubuntubuild.yml
           workflow_conclusion: success
           check_artifacts: false
           skip_unpack: true
