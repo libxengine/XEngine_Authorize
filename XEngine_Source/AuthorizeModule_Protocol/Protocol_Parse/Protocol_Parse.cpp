@@ -562,7 +562,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		return false;
 	}
 	*pInt_ListCount = st_JsonRoot["Array"].size();
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, st_JsonRoot["Array"].size(), sizeof(AUTHREG_SERIALTABLE));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_SerialTable, st_JsonRoot["Array"].size(), sizeof(AUTHREG_SERIALTABLE));
 	Json::Value st_JsonArray = st_JsonRoot["Array"];
 	for (unsigned int i = 0; i < st_JsonArray.size(); i++)
 	{

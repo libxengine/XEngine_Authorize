@@ -108,7 +108,7 @@ BOOL CDialog_Modify::OnInitDialog()
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 			nMsgLen = st_JsonRoot.toStyledString().length();
-			OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+			Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
 			APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 		}
 		else
@@ -125,7 +125,7 @@ BOOL CDialog_Modify::OnInitDialog()
 			TCHAR tszMsgBuffer[2048];
 			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+			Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 			if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 			{
 				Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
@@ -142,7 +142,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		}
 
 		st_JsonObject = st_JsonRoot["st_UserTable"];
-		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
 		m_EditUser.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserName"].asCString());
 		m_EditPass.SetWindowText(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString());
@@ -251,7 +251,7 @@ void CDialog_Modify::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
 		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -267,7 +267,7 @@ void CDialog_Modify::OnBnClickedButton2()
 		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户接口数据错误,无法继续"));
@@ -291,7 +291,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	{
 		Authorize_Help_LogPrint(_T("修改客户端失败"));
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
 	OnOK();
 }

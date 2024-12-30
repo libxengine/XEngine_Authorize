@@ -103,8 +103,8 @@ bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, in
 	memset(&st_DynamicCode, '\0', sizeof(AUTHHELP_DYNAMICCODE));
 
 	st_DynamicCode.nTimeStart = time(NULL);
-	BaseLib_OperatorHandle_Create(&st_DynamicCode.xhToken);
-	BaseLib_OperatorHandle_Create((XNETHANDLE*)&st_DynamicCode.nDynamicCode, 100001, 999999);
+	BaseLib_Handle_Create(&st_DynamicCode.xhToken);
+	BaseLib_Handle_Create((XNETHANDLE*)&st_DynamicCode.nDynamicCode, 100001, 999999);
 	
 	*pxhToken = st_DynamicCode.xhToken;
 	*pInt_DynamicCode = st_DynamicCode.nDynamicCode;

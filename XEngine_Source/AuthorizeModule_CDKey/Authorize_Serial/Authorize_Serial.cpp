@@ -79,7 +79,7 @@ bool CAuthorize_Serial::Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LP
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
         return false;
     }
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+    BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
     srand((unsigned int)time(NULL));                //取随机因子
 
     for (int i = 0; i < nCardNumber; i++)
@@ -225,7 +225,7 @@ bool CAuthorize_Serial::Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPC
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
 		return false;
 	}
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+	BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
 	srand((unsigned int)time(NULL));                //取随机因子
 
 	for (int i = 0; i < nCardNumber; i++)
@@ -464,7 +464,7 @@ bool CAuthorize_Serial::Authorize_Serial_Random(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
     
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 0, 1);
+    BaseLib_Handle_CreateStr(ptszFillBuffer, 5, 0, 1);
     return true;
 }
 /********************************************************************
@@ -484,7 +484,7 @@ bool CAuthorize_Serial::Authorize_Serial_RandomWord(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 2, 1);
+    BaseLib_Handle_CreateStr(ptszFillBuffer, 5, 2, 1);
     return true;
 }
 /********************************************************************
@@ -504,6 +504,6 @@ bool CAuthorize_Serial::Authorize_Serial_RandomNumber(XCHAR *ptszFilleBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFilleBuffer, 5, 1);
+    BaseLib_Handle_CreateStr(ptszFilleBuffer, 5, 1);
     return true;
 }

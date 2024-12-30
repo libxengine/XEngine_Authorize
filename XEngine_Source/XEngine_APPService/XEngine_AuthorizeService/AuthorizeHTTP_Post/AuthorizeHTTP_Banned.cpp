@@ -76,8 +76,8 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		Protocol_Packet_HttpBanned(tszSDBuffer, &nSDLen, &ppSt_BannedUser, nCountUser, &ppSt_BannedAddr, nCountAddr);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_BannedAddr, nCountAddr);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_BannedUser, nCountUser);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_BannedAddr, nCountAddr);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_BannedUser, nCountUser);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,查询禁用列表成功,禁用的用户个数:%d,禁用的IP地址个数:%d"), lpszClientAddr, nCountUser, nCountAddr);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIModify, lpszAPIName, _tcsxlen(lpszAPIModify)))

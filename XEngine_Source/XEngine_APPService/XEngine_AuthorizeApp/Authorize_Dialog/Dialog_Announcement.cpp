@@ -96,13 +96,13 @@ void CDialog_Announcement::OnBnClickedButton1()
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	nMsgLen = Json::writeString(st_JsonBuilder, st_JsonRoot).length();
-	BaseLib_OperatorCharset_AnsiToUTF(Json::writeString(st_JsonBuilder, st_JsonRoot).c_str(), tszCodecBuffer, &nMsgLen);
+	BaseLib_Charset_AnsiToUTF(Json::writeString(st_JsonBuilder, st_JsonRoot).c_str(), tszCodecBuffer, &nMsgLen);
 	if (bCrypto)
 	{
 		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		OPenSsl_XCrypto_Encoder(tszCodecBuffer, &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Encoder(tszCodecBuffer, &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
 		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -118,7 +118,7 @@ void CDialog_Announcement::OnBnClickedButton1()
 		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -142,7 +142,7 @@ void CDialog_Announcement::OnBnClickedButton1()
 	{
 		Authorize_Help_LogPrint(_T("插入公告信息成功"));
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	OnBnClickedButton3();
 }
 
@@ -191,7 +191,7 @@ void CDialog_Announcement::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
 		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -207,7 +207,7 @@ void CDialog_Announcement::OnBnClickedButton2()
 		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -231,7 +231,7 @@ void CDialog_Announcement::OnBnClickedButton2()
 	{
 		Authorize_Help_LogPrint(_T("删除公告信息成功"));
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	OnBnClickedButton3();
 }
 
@@ -269,7 +269,7 @@ void CDialog_Announcement::OnBnClickedButton3()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
 		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -285,7 +285,7 @@ void CDialog_Announcement::OnBnClickedButton3()
 		TCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -314,12 +314,12 @@ void CDialog_Announcement::OnBnClickedButton3()
 		_i64tot(st_JsonArray["nID"].asInt64(), tszIndex, 10);
 
 		int nMsgLen = st_JsonArray["tszContext"].asString().length();
-		BaseLib_OperatorCharset_UTFToAnsi(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
+		BaseLib_Charset_UTFToAnsi(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
 
 		m_ListAnnouncement.InsertItem(i, _T(""));
 		m_ListAnnouncement.SetItemText(i, 0, tszIndex);
 		m_ListAnnouncement.SetItemText(i, 1, tszMsgBuffer);
 		m_ListAnnouncement.SetItemText(i, 2, st_JsonArray["tszCreateTime"].asCString());
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }

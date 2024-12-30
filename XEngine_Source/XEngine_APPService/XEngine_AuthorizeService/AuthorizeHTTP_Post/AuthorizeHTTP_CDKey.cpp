@@ -40,14 +40,14 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
 			XCHAR tszTimeStr[128] = {};
 			XENGINE_LIBTIMER st_LibTime = {};
-			BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+			BaseLib_Time_GetSysTime(&st_LibTime);
 			st_LibTime.wYear += 1; //一年后过期
-			BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+			BaseLib_Time_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
 
 			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
 
 			_tcsxcpy(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, pptszSerialList[2]);
-			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
+			BaseLib_Memory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
 		}
 		
 		if (!Authorize_CDKey_WriteMemory(tszRVBuffer, &nRVLen, &st_Authorize))
@@ -72,7 +72,7 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			XENGINE_LIBTIMER st_LibTime;
 			memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
 
-			BaseLib_OperatorTime_StrToTime(st_Authorize.st_AuthRegInfo.tszLeftTime, &st_LibTime);
+			BaseLib_Time_StrToTime(st_Authorize.st_AuthRegInfo.tszLeftTime, &st_LibTime);
 			Authorize_CDKey_BuildKeyTime(&st_Authorize, 0, &st_LibTime);
 		}
 		else

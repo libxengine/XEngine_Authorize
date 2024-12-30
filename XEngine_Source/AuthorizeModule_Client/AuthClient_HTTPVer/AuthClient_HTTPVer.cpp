@@ -74,10 +74,10 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPC
 		XCHAR tszDECodec[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENCodec, lpszPass);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENCodec, lpszPass);
 		APIClient_Http_Request(_X("POST"), lpszURLAddr, tszENCodec, &nHTTPCode, &ptszMsgBuffer, &nMsgLen);
 
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
 		st_JsonRoot.clear();
 		st_JsonObject.clear();
 		//解析回复
@@ -86,7 +86,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPC
 		{
 			AuthClient_IsErrorOccur = true;
 			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			return false;
 		}
 	}
@@ -101,7 +101,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPC
 		{
 			AuthClient_IsErrorOccur = true;
 			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			return false;
 		}
 	}
@@ -110,10 +110,10 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPC
 	{
 		AuthClient_IsErrorOccur = true;
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_VERFAILED;
-		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		return false;
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 #endif
 	return true;
 }
@@ -173,14 +173,14 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* 
 	if (NULL != lpszPass)
 	{
 		XCHAR tszDECodec[2048] = {};
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDECodec, lpszPass);
 
 		std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 		if (!pSt_JsonReader->parse(tszDECodec, tszDECodec + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			AuthClient_IsErrorOccur = true;
 			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			return false;
 		}
 	}
@@ -192,7 +192,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* 
 		{
 			AuthClient_IsErrorOccur = true;
 			AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_PARSE;
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			return false;
 		}
 	}
@@ -201,7 +201,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* 
 	{
 		AuthClient_IsErrorOccur = true;
 		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_HTTPVER_VERFAILED;
-		BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		return false;
 	}
 
@@ -211,7 +211,7 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_GetDCode(LPCXSTR lpszURLAddr, int* 
 	{
 		*pInt_Timeout = st_JsonRoot["nTimeout"].asInt();
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 #endif
 	return true;
 }

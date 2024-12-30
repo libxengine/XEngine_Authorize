@@ -8,7 +8,7 @@ RELEASE = 0
 UNICODE = 0
 LOADHDR = -I ./ -I ../XEngine_Depend/XEngine_Module/jsoncpp
 LOADSO = -L ../XEngine_Depend/XEngine_Module/jsoncpp
-LIB = -ljsoncpp -lXEngine_BaseLib -lXEngine_OPenSsl -lXClient_Socket -lXClient_APIHelp -lXEngine_SystemApi
+LIB = -ljsoncpp -lXEngine_BaseLib -lXEngine_Cryption -lXClient_Socket -lXClient_APIHelp -lXEngine_SystemApi
 LIBEX = 
 OBJECTS = AuthClient_Connector.o AuthClient_HTTPVer.o pch.o
 

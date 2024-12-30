@@ -27,7 +27,7 @@ bool Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 
 	::GetDlgItemText(hMainWnd, IDC_EDIT1, tszAddBuffer, sizeof(tszAddBuffer));
 
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	BaseLib_Time_TimeToStr(tszTimeStr);
 	if (_tcslen(tszAddBuffer) <= 0)
 	{
 		_stprintf(tszLogBuffer, _T("%s:%s"), tszTimeStr, lpszLogBuffer);

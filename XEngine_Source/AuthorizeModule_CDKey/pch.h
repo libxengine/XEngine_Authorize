@@ -29,6 +29,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Define.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Error.h>
 #include "../XAuth_Protocol.h"
 #include "CDKey_Define.h"
 #include "CDKey_Error.h"
@@ -50,4 +52,5 @@ typedef std::string xstring;
 
 #ifdef _MSC_BUILD
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
+#pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemConfig.lib")
 #endif

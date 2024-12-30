@@ -594,10 +594,10 @@ bool CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt
 	memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
 	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIMER));
 
-	BaseLib_OperatorTime_TimeToStr(tszTimeStart);
+	BaseLib_Time_TimeToStr(tszTimeStart);
 	_xstprintf(tszTimeEnd, _X("0-0-0 0:0:%d"), nTimeout);
-	BaseLib_OperatorTimeSpan_CalForStr(tszTimeStart, tszTimeEnd, &st_TimeOut);
-	BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeOut);
+	BaseLib_TimeSpan_CalForStr(tszTimeStart, tszTimeEnd, &st_TimeOut);
+	BaseLib_Time_TimeToStr(tszTimeEnd, NULL, true, &st_TimeOut);
 
 	st_JsonRoot["msg"] = "success";
 	st_JsonRoot["code"] = 0;
@@ -863,14 +863,14 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 			XCHAR tszTimeStart[128] = {};
 			XCHAR tszTimeEnd[128] = {};
 			//时间戳转换
-			BaseLib_OperatorTime_StrToTime((*pppSt_TryList)[i]->tszVDate, &st_TimeStart);
+			BaseLib_Time_StrToTime((*pppSt_TryList)[i]->tszVDate, &st_TimeStart);
 			st_TimeEnd.wDay = (*pppSt_TryList)[i]->nVTime;
 			//得到超时时间
-			BaseLib_OperatorTimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
-			BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
+			BaseLib_TimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
+			BaseLib_Time_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
 			//计算时间差
-			BaseLib_OperatorTime_TimeToStr(tszTimeStart);
-			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, (__int64x *)&(*pppSt_TryList)[i]->nLTime);
+			BaseLib_Time_TimeToStr(tszTimeStart);
+			BaseLib_TimeSpan_GetForStr(tszTimeStart, tszTimeEnd, (__int64x *)&(*pppSt_TryList)[i]->nLTime);
 		}
 		st_JsonObject["nLTime"] = (*pppSt_TryList)[i]->nLTime;
 		st_JsonObject["tszVDate"] = (*pppSt_TryList)[i]->tszVDate;

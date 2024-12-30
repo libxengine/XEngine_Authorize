@@ -455,7 +455,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
         return false;
     }
     *pInt_ListCount = nRow;
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, nRow, sizeof(AUTHREG_USERTABLE));
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_UserInfo, nRow, sizeof(AUTHREG_USERTABLE));
     //ID
     int nFliedValue = nColumn;
     for (int i = 0; i < nRow; i++)
@@ -716,7 +716,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
         return false;
     }
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, nRow, sizeof(AUTHREG_SERIALTABLE));
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_SerialTable, nRow, sizeof(AUTHREG_SERIALTABLE));
 
     *pInt_ListCount = nRow;
     int nFliedValue = nColumn;
@@ -1105,7 +1105,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
 		return false;
 	}
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, nRow, sizeof(AUTHREG_TEMPVER));
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_AuthVer, nRow, sizeof(AUTHREG_TEMPVER));
 	int nFliedValue = nColumn;
 	//轮训所有内容
 	for (int i = 0; i < nRow; i++)
@@ -1347,8 +1347,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
     //导出
     *pInt_AddrCount = stl_ListAddr.size();
     *pInt_UserCount = stl_ListUser.size();
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
 
     list<AUTHREG_BANNED>::const_iterator stl_ListIterator = stl_ListAddr.begin();
     for (int i = 0; stl_ListIterator != stl_ListAddr.end(); stl_ListIterator++, i++)
@@ -1430,8 +1430,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 					XCHAR tszStrTime[128];
 					memset(tszStrTime, '\0', sizeof(tszStrTime));
 
-					BaseLib_OperatorTime_TimeToStr(tszStrTime);
-					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+					BaseLib_Time_TimeToStr(tszStrTime);
+					BaseLib_TimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
 					if (nTimer < 0)  
 					{
 						SQLPacket_IsErrorOccur = true;
@@ -1491,8 +1491,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
 					XCHAR tszStrTime[128];
 					memset(tszStrTime, '\0', sizeof(tszStrTime));
 
-					BaseLib_OperatorTime_TimeToStr(tszStrTime);
-					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+					BaseLib_Time_TimeToStr(tszStrTime);
+					BaseLib_TimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
 					if (nTimer < 0)
 					{
 						SQLPacket_IsErrorOccur = true;
@@ -1669,7 +1669,7 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
         return true;
     }
    
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, nRow, sizeof(AUTHREG_ANNOUNCEMENT));
+    BaseLib_Memory_Malloc((XPPPMEM)ppppSt_Announcement, nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
 	int nFliedValue = nColumn;
 	//轮训所有内容

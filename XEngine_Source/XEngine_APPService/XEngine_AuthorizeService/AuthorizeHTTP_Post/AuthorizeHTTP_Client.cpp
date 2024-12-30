@@ -84,8 +84,8 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		Protocol_Packet_HttpClientList(ptszMsgBuffer, &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
 
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nOnCount);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_UserInfo, nOffCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nOnCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_UserInfo, nOffCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;
@@ -110,7 +110,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求剔除用户:%s 成功,在线用户数:%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
@@ -126,9 +126,9 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			int nPLen = _tcsxlen(st_UserTable.st_UserInfo.tszUserPass);
 			XBYTE byMD5Buffer[MAX_PATH] = {};
-			OPenSsl_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
+			Cryption_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
 			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
+			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
 		}
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -164,7 +164,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		//删除数据库
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType)

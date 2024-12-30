@@ -85,7 +85,7 @@ bool CSession_Authorize::Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSI
 返回值
   类型：逻辑型
   意思：是否获取成功
-备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
+备注：参数一必须通过基础库的内存释放函数BaseLib_Memory_Free进行释放内存
 *********************************************************************/
 bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientUser /* = NULL */)
 {
@@ -110,7 +110,7 @@ bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
             }
         }
         *pInt_ListCount = stl_ListClient.size();
-        BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_ListClient.size(), sizeof(AUTHSESSION_NETCLIENT));
+        BaseLib_Memory_Malloc((XPPPMEM)pppSt_ListClient, stl_ListClient.size(), sizeof(AUTHSESSION_NETCLIENT));
 
         auto stl_ListIterator = stl_ListClient.begin();
         for (int i = 0; stl_ListIterator != stl_ListClient.end(); stl_ListIterator++, i++)
@@ -124,7 +124,7 @@ bool CSession_Authorize::Session_Authorize_GetClient(AUTHSESSION_NETCLIENT*** pp
         if (stl_MapIterator != stl_MapNetClient.end())
         {
             *pInt_ListCount = stl_MapIterator->second.size();
-            BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_ListClient, stl_MapIterator->second.size(), sizeof(AUTHSESSION_NETCLIENT));
+            BaseLib_Memory_Malloc((XPPPMEM)pppSt_ListClient, stl_MapIterator->second.size(), sizeof(AUTHSESSION_NETCLIENT));
 
             auto stl_ListIterator = stl_MapIterator->second.begin();
             for (int i = 0; stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++, i++)
@@ -320,7 +320,7 @@ bool CSession_Authorize::Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHRE
 	st_Client.nNetType = nNetType;
     st_Client.nLeftTime = _ttxoll(pSt_UserTable->tszLeftTime);
 
-	BaseLib_OperatorTime_GetSysTime(&st_Client.st_LibTimer);
+	BaseLib_Time_GetSysTime(&st_Client.st_LibTimer);
 	_tcsxcpy(st_Client.tszClientAddr, lpszClientAddr);
 	memcpy(&st_Client.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
 
@@ -405,9 +405,9 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 				memset(&st_LibTimer, '\0', sizeof(XENGINE_LIBTIMER));
                 memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
                 //获取现在的系统时间
-				BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                 
+				BaseLib_Time_GetSysTime(&st_LibTimer);                 
 				//用户登录了多少秒钟
-				BaseLib_OperatorTimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+				BaseLib_TimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
                 nTimeCount += nOnlineSpan;
 				//登陆成功的。我们要处理他过期
 				switch (stl_ListIterator->st_UserTable.enSerialType)
@@ -471,7 +471,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 						break;
 					}
 					//剩余天数,通过秒钟来处理
-					BaseLib_OperatorTimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+					BaseLib_TimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 					//获取过期时间
 					stl_ListIterator->nLeftTime = nLeftTime;
 					stl_ListIterator->nOnlineTime = nOnlineSpan;

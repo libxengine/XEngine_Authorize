@@ -50,38 +50,38 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteKey(LPCXSTR lpszFileKey, XENGINE_AUT
 		return false;
     }
     //添加连接信息文本
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_CONNECT;
         return false;
     }
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("Connection"), _X("nPort"), pSt_AuthLocal->nPort))
+	if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey, _X("Connection"), _X("nPort"), pSt_AuthLocal->nPort))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_CONNECT;
         return false;
     }
     //添加程序名称文本
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
         return false;
     }
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("AppInfo"), _X("nExecTime"), pSt_AuthLocal->st_AuthAppInfo.nExecTime))
+	if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey, _X("AppInfo"), _X("nExecTime"), pSt_AuthLocal->st_AuthAppInfo.nExecTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
 		return false;
 	}
-    if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AppInfo"), _X("bInit"), pSt_AuthLocal->st_AuthAppInfo.bInit))
+    if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AppInfo"), _X("bInit"), pSt_AuthLocal->st_AuthAppInfo.bInit))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
@@ -96,129 +96,129 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteKey(LPCXSTR lpszFileKey, XENGINE_AUT
 
 		memset(tszTimeStart, '\0', sizeof(tszTimeStart));
 		memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
-		BaseLib_OperatorTime_TimeToStr(tszTimeEnd);
-		BaseLib_OperatorTimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+		BaseLib_Time_TimeToStr(tszTimeEnd);
+		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 		pSt_AuthLocal->st_AuthRegInfo.nHasTime -= nUsedTime;
 	}
     //添加注册信息
-    if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("nHasTime"), pSt_AuthLocal->st_AuthRegInfo.nHasTime))
+    if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("nHasTime"), pSt_AuthLocal->st_AuthRegInfo.nHasTime))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enHWType"), pSt_AuthLocal->st_AuthRegInfo.enHWType))
+    if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enHWType"), pSt_AuthLocal->st_AuthRegInfo.enHWType))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enRegType"), pSt_AuthLocal->st_AuthRegInfo.enRegType))
+    if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enRegType"), pSt_AuthLocal->st_AuthRegInfo.enRegType))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enSerialType"), pSt_AuthLocal->st_AuthRegInfo.enSerialType))
+    if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enSerialType"), pSt_AuthLocal->st_AuthRegInfo.enSerialType))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enVModeType"), pSt_AuthLocal->st_AuthRegInfo.enVModeType))
+	if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey,_X("AuthReg"), _X("enVModeType"), pSt_AuthLocal->st_AuthRegInfo.enVModeType))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszCreateTime);
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime))
+    BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszCreateTime);
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey,_X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
 	//临时序列号
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeCount"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount))
+	if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeCount"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("bTimeAdd"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd))
+	if (!SystemConfig_File_WriteInt64FromFile(lpszFileKey, _X("AuthSerial"), _X("bTimeAdd"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial))
+	if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
 	//自定义用户信息
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
         return false;
     }
-    if (!BaseLib_OperatorFile_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom))
+    if (!SystemConfig_File_WriteProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom))
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
@@ -255,59 +255,59 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
 		return false;
     }
     //添加连接信息文本
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr) <= 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_CONNECT;
         return false;
     }
-	pSt_AuthLocal->nPort = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("Connection"), _X("nPort"));
+	pSt_AuthLocal->nPort = SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("Connection"), _X("nPort"));
     //添加程序名称文本
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName) <= 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
         return false;
     }
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer) <= 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_APPINFO;
         return false;
     }
-    pSt_AuthLocal->st_AuthAppInfo.nExecTime = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("nExecTime"));
-    pSt_AuthLocal->st_AuthAppInfo.bInit = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("bInit"));
+    pSt_AuthLocal->st_AuthAppInfo.nExecTime = SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("nExecTime"));
+    pSt_AuthLocal->st_AuthAppInfo.bInit = SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AppInfo"), _X("bInit"));
     //添加注册信息
-    pSt_AuthLocal->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enHWType"));
-    pSt_AuthLocal->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enRegType"));
-    pSt_AuthLocal->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enSerialType"));
-	pSt_AuthLocal->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enVModeType"));
-	pSt_AuthLocal->st_AuthRegInfo.nHasTime = BaseLib_OperatorFile_ReadInt64FromFile(lpszFileKey, _X("AuthReg"), _X("nHasTime"));
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware) <= 0)
+    pSt_AuthLocal->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enHWType"));
+    pSt_AuthLocal->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enRegType"));
+    pSt_AuthLocal->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enSerialType"));
+	pSt_AuthLocal->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthReg"), _X("enVModeType"));
+	pSt_AuthLocal->st_AuthRegInfo.nHasTime = SystemConfig_File_ReadInt64FromFile(lpszFileKey, _X("AuthReg"), _X("nHasTime"));
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime) <= 0)
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime) < 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime) < 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime) < 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime) < 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
         return false;
     }
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime) < 0)
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime) < 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
@@ -322,67 +322,67 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
 		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
 		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIMER));
 
-		BaseLib_OperatorTime_GetSysTime(&st_EndTimer);
-		BaseLib_OperatorTime_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
+		BaseLib_Time_GetSysTime(&st_EndTimer);
+		BaseLib_Time_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
 		if ((st_EndTimer.wYear != st_StartTime.wYear) || (st_EndTimer.wMonth != st_StartTime.wMonth) || (st_EndTimer.wDay != st_StartTime.wDay))
 		{
 			pSt_AuthLocal->st_AuthRegInfo.nHasTime--;
 		}
-		BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
+		BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	}
 	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 	{
 		memset(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, '\0', sizeof(pSt_AuthLocal->st_AuthRegInfo.tszStartTime));
-		BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
+		BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	}
 	
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime) < 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime) < 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_AUTHREG;
 		return false;
 	}
 	//临时序列号
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial) <= 0)
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeCount"));
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial) <= 0)
+	pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount = SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("nTimeCount"));
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime) <= 0)
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
-	pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd = BaseLib_OperatorFile_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("bAddTime"));
-	if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial) <= 0)
+	pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd = SystemConfig_File_ReadIntFromFile(lpszFileKey, _X("AuthSerial"), _X("bAddTime"));
+	if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial) <= 0)
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_SERIAL;
 		return false;
 	}
     //用户信息
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName) <= 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
         return false;
     }
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact) <= 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact) <= 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
         return false;
     }
-    if (BaseLib_OperatorFile_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom) < 0)
+    if (SystemConfig_File_ReadProfileFromFile(lpszFileKey, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom) < 0)
     {
         Authorize_IsErrorOccur = true;
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_USER;
@@ -425,38 +425,38 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pI
 	}
     int nMsgLen = 0;
     //添加连接信息文本
-    if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr, ptszMsgBuffer, &nMsgLen))
+    if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-    if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("Connection"), _X("nPort"), pSt_AuthLocal->nPort, ptszMsgBuffer, &nMsgLen))
+    if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("Connection"), _X("nPort"), pSt_AuthLocal->nPort, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
 	//添加程序名称文本
-    if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName, ptszMsgBuffer, &nMsgLen))
+    if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-    if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer, ptszMsgBuffer, &nMsgLen))
+    if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("nExecTime"), pSt_AuthLocal->st_AuthAppInfo.nExecTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("nExecTime"), pSt_AuthLocal->st_AuthAppInfo.nExecTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("bInit"), pSt_AuthLocal->st_AuthAppInfo.bInit, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AppInfo"), _X("bInit"), pSt_AuthLocal->st_AuthAppInfo.bInit, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
@@ -471,129 +471,129 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pI
 
 		memset(tszTimeStart, '\0', sizeof(tszTimeStart));
 		memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
-		BaseLib_OperatorTime_TimeToStr(tszTimeEnd);
-		BaseLib_OperatorTimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+		BaseLib_Time_TimeToStr(tszTimeEnd);
+		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 		pSt_AuthLocal->st_AuthRegInfo.nHasTime -= nUsedTime;
 	}
 	//添加注册信息
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("nHasTime"), pSt_AuthLocal->st_AuthRegInfo.nHasTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("nHasTime"), pSt_AuthLocal->st_AuthRegInfo.nHasTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enHWType"), pSt_AuthLocal->st_AuthRegInfo.enHWType, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enHWType"), pSt_AuthLocal->st_AuthRegInfo.enHWType, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enRegType"), pSt_AuthLocal->st_AuthRegInfo.enRegType, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enRegType"), pSt_AuthLocal->st_AuthRegInfo.enRegType, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enSerialType"), pSt_AuthLocal->st_AuthRegInfo.enSerialType, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enSerialType"), pSt_AuthLocal->st_AuthRegInfo.enSerialType, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enVModeType"), pSt_AuthLocal->st_AuthRegInfo.enVModeType, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enVModeType"), pSt_AuthLocal->st_AuthRegInfo.enVModeType, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-    BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszCreateTime);
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, ptszMsgBuffer, &nMsgLen))
+    BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszCreateTime);
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
 	//临时序列号
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeCount"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeCount"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteInt64FromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
 	//用户信息
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom, ptszMsgBuffer, &nMsgLen))
+	if (!SystemConfig_File_WriteProfileFromMemory(ptszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom, ptszMsgBuffer, &nMsgLen))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
@@ -636,65 +636,65 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 		return false;
 	}
 	//添加连接信息文本
-    if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr))
+    if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("Connection"), _X("tszAddr"), pSt_AuthLocal->tszAddr))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-    if (!BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("Connection"), _X("nPort"), &pSt_AuthLocal->nPort))
+    if (!SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("Connection"), _X("nPort"), &pSt_AuthLocal->nPort))
     {
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
     }
 	//添加程序名称文本
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppName"), pSt_AuthLocal->st_AuthAppInfo.tszAppName))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("tszAppVer"), pSt_AuthLocal->st_AuthAppInfo.tszAppVer))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("bInit"), (int*)&pSt_AuthLocal->st_AuthAppInfo.bInit);
-	BaseLib_OperatorFile_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("nExecTime"), &pSt_AuthLocal->st_AuthAppInfo.nExecTime);
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("bInit"), (int*)&pSt_AuthLocal->st_AuthAppInfo.bInit);
+	SystemConfig_File_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AppInfo"), _X("nExecTime"), &pSt_AuthLocal->st_AuthAppInfo.nExecTime);
 	//添加注册信息
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enHWType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enHWType);
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enRegType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enRegType);
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enSerialType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enSerialType);
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enVModeType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enVModeType);
-	BaseLib_OperatorFile_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("nHasTime"), &pSt_AuthLocal->st_AuthRegInfo.nHasTime);
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enHWType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enHWType);
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enRegType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enRegType);
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enSerialType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enSerialType);
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("enVModeType"), (int*)&pSt_AuthLocal->st_AuthRegInfo.enVModeType);
+	SystemConfig_File_ReadInt64FromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("nHasTime"), &pSt_AuthLocal->st_AuthRegInfo.nHasTime);
 
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszHardware"), pSt_AuthLocal->st_AuthRegInfo.tszHardware))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszCreateTime"), pSt_AuthLocal->st_AuthRegInfo.tszCreateTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszRegisterTime"), pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszLeftTime"), pSt_AuthLocal->st_AuthRegInfo.tszLeftTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszStartTime"), pSt_AuthLocal->st_AuthRegInfo.tszStartTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
@@ -709,72 +709,72 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
 		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIMER));
 
-		BaseLib_OperatorTime_GetSysTime(&st_EndTimer);
-		BaseLib_OperatorTime_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
+		BaseLib_Time_GetSysTime(&st_EndTimer);
+		BaseLib_Time_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
 		if ((st_EndTimer.wYear != st_StartTime.wYear) || (st_EndTimer.wMonth != st_StartTime.wMonth) || (st_EndTimer.wDay != st_StartTime.wDay))
 		{
 			pSt_AuthLocal->st_AuthRegInfo.nHasTime--;
 		}
-		BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
+		BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	}
 	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 	{
 		memset(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, '\0', sizeof(pSt_AuthLocal->st_AuthRegInfo.tszStartTime));
-		BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
+		BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	}
 
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthReg"), _X("tszExpiryTime"), pSt_AuthLocal->st_AuthRegInfo.tszExpiryTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
 	//序列号信息
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszTimeSerial"), pSt_AuthLocal->st_AuthSerial.st_TimeLimit.tszTimeSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeCount"), &pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount))
+	if (!SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("nTimeCount"), &pSt_AuthLocal->st_AuthSerial.st_TimeLimit.nTimeCount))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataSerial"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszDataTime"), pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	BaseLib_OperatorFile_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), (int*)&pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd);
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial))
+	SystemConfig_File_ReadIntFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("bAddTime"), (int*)&pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd);
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthSerial"), _X("tszUNLimitSerial"), pSt_AuthLocal->st_AuthSerial.st_UNLimit.tszUNLimitSerial))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
 	//用户信息
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserName"), pSt_AuthLocal->st_AuthUserInfo.tszUserName))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszUserContact"), pSt_AuthLocal->st_AuthUserInfo.tszUserContact))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
 		return false;
 	}
-	if (!BaseLib_OperatorFile_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom))
+	if (!SystemConfig_File_ReadProfileFromMemory(lpszMsgBuffer, nMsgLen, _X("AuthUser"), _X("tszCustom"), pSt_AuthLocal->st_AuthUserInfo.tszCustom))
 	{
 		Authorize_IsErrorOccur = true;
 		Authorize_dwErrorCode = BaseLib_GetLastError();
@@ -868,15 +868,15 @@ bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt
 		pSt_AuthLocal->st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM;
 		pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_OFFICIAL;
 		XENGINE_LIBTIMER st_LibTime = {};
-		BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+		BaseLib_Time_GetSysTime(&st_LibTime);
 		if (pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd)
 		{
 			__int64x nTimeCount = 0;
 			XENGINE_LIBTIMER st_AddTime = {};
 
-			BaseLib_OperatorTimeSpan_GetForStr(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, &nTimeCount);
+			BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, &nTimeCount);
 			st_AddTime.wDay = (int)nTimeCount;
-			BaseLib_OperatorTimeSpan_CalForStu(&st_LibTime, &st_AddTime);
+			BaseLib_TimeSpan_CalForStu(&st_LibTime, &st_AddTime);
 
 			Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, 0, &st_AddTime);
 		}
@@ -885,16 +885,16 @@ bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt
 			__int64x nTimeCount = 0;
 			XCHAR tszTimeStr[128] = {};
 			XENGINE_LIBTIMER st_LibTime = {};
-			BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+			BaseLib_Time_TimeToStr(tszTimeStr);
 
-			BaseLib_OperatorTimeSpan_GetForStr(tszTimeStr, pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &nTimeCount);
+			BaseLib_TimeSpan_GetForStr(tszTimeStr, pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &nTimeCount);
 			if (nTimeCount <= 0)
 			{
 				Authorize_IsErrorOccur = true;
 				Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_TIMEOUT;
 				return false;
 			}
-			BaseLib_OperatorTime_StrToTime(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &st_LibTime);
+			BaseLib_Time_StrToTime(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &st_LibTime);
 			Authorize_CDKey_BuildKeyTime(pSt_AuthLocal, 0, &st_LibTime);
 		}
 	}
@@ -911,7 +911,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_FAILED;
 		return false;
 	}
-	BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime);
+	BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszRegisterTime);
 	return true;
 }
 /********************************************************************
@@ -953,7 +953,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 	memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
 	memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIMER));
 
-	BaseLib_OperatorTime_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
+	BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	//处理注册类型
 	if (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_UNLIMIT == pSt_AuthLocal->st_AuthRegInfo.enRegType)
 	{
@@ -988,7 +988,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 	else
 	{
 		//其他类型的注册机制
-		BaseLib_OperatorTime_GetSysTime(&st_SysTimer);
+		BaseLib_Time_GetSysTime(&st_SysTimer);
 		//计算超时时间
 		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 		{
@@ -1009,7 +1009,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 		{
 			_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_EndTimer.wYear, &st_EndTimer.wMonth, &st_EndTimer.wDay, &st_EndTimer.wHour, &st_EndTimer.wMinute, &st_EndTimer.wSecond);
-			BaseLib_OperatorTimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+			BaseLib_TimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
 		}
 		else
 		{
@@ -1268,7 +1268,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadTime(LPCXSTR lpszFileKey, XCHAR*** pp
     ptszMsgBuffer = NULL;
     //导出
     *pInt_ListCount = (int)stl_ListTime.size();
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)ppptszTimeList, *pInt_ListCount, 64);
+    BaseLib_Memory_Malloc((XPPPMEM)ppptszTimeList, *pInt_ListCount, 64);
     list<xstring>::const_iterator stl_ListIterator = stl_ListTime.begin();
     for (int i = 0; stl_ListIterator != stl_ListTime.end(); stl_ListIterator++, i++)
     {

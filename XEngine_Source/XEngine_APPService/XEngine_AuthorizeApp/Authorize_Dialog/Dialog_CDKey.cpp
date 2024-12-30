@@ -124,16 +124,16 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditSerialTimeNumber.SetWindowText(pptszSerialList[0]);
 	m_EditSerialDataNumber.SetWindowText(pptszSerialList[1]);
 	m_EditSerialUnlimitNumber.SetWindowText(pptszSerialList[2]);
-	BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
+	BaseLib_Memory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
 	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 
 	XCHAR tszTimeStr[128] = {};
 	XENGINE_LIBTIMER st_LibTime = {};
-	BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+	BaseLib_Time_GetSysTime(&st_LibTime);
 
 	st_LibTime.wYear += 1; //一年后过期
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+	BaseLib_Time_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
 
 	COleDateTime m_OleDTime;
 	// 尝试解析字符串为日期和时间
@@ -294,7 +294,7 @@ void CDialog_CDKey::OnBnClickedButton1()
 		XBYTE tszENBuffer[4096] = {};
 		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
 
-		OPenSsl_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
+		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
 		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 		if (NULL == pSt_File)
 		{
@@ -329,7 +329,7 @@ void CDialog_CDKey::OnBnClickedButton9()
 		nMSGLen = fread(tszENBuffer, 1, sizeof(tszENBuffer), pSt_File);
 		fclose(pSt_File);
 
-		if (!OPenSsl_XCrypto_Decoder(tszENBuffer, &nMSGLen, tszDEBuffer, m_StrPass.GetBuffer()))
+		if (!Cryption_XCrypto_Decoder(tszENBuffer, &nMSGLen, tszDEBuffer, m_StrPass.GetBuffer()))
 		{
 			AfxMessageBox(_T("解密CDKEY失败"));
 			return;
@@ -374,7 +374,7 @@ void CDialog_CDKey::OnBnClickedButton11()
 	else if (4 == m_ComboRegSerial.GetCurSel())
 	{
 		XENGINE_LIBTIMER st_LibTime = {};
-		BaseLib_OperatorTime_StrToTime(m_StrLeftTime.GetBuffer(), &st_LibTime);
+		BaseLib_Time_StrToTime(m_StrLeftTime.GetBuffer(), &st_LibTime);
 		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
 	}
 	else
@@ -398,7 +398,7 @@ void CDialog_CDKey::OnBnClickedButton11()
 		XBYTE tszENBuffer[4096] = {};
 		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
 
-		OPenSsl_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
+		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
 		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
 		fclose(pSt_File);

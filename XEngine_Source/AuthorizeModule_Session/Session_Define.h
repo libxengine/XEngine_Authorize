@@ -74,7 +74,7 @@ extern "C" bool Session_Authorize_Init(CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT
 返回值
   类型：逻辑型
   意思：是否获取成功
-备注：参数一必须通过基础库的内存释放函数BaseLib_OperatorMemory_Free进行释放内存
+备注：参数一必须通过基础库的内存释放函数BaseLib_Memory_Free进行释放内存
 *********************************************************************/
 extern "C" bool Session_Authorize_GetClient(AUTHSESSION_NETCLIENT * **pppSt_ListClient, int* pInt_ListCount, LPCXSTR lpszClientUser = NULL);
 /********************************************************************

@@ -501,7 +501,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		return false;
 	}
 	*pInt_ListCount = (int)nRow;
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_UserInfo, (int)nRow, sizeof(AUTHREG_USERTABLE));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_UserInfo, (int)nRow, sizeof(AUTHREG_USERTABLE));
 
 	for (__int64u i = 0; i < nRow; i++)
 	{
@@ -772,7 +772,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
 		return false;
 	}
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_SerialTable, (int)nRow, sizeof(AUTHREG_SERIALTABLE));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_SerialTable, (int)nRow, sizeof(AUTHREG_SERIALTABLE));
 
 	*pInt_ListCount = (int)nRow;
 
@@ -1195,7 +1195,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
 		return false;
 	}
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_AuthVer, (int)nRow, sizeof(AUTHREG_TEMPVER));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_AuthVer, (int)nRow, sizeof(AUTHREG_TEMPVER));
 
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
@@ -1454,8 +1454,8 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	//导出
 	*pInt_AddrCount = stl_ListAddr.size();
 	*pInt_UserCount = stl_ListUser.size();
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_BannedAddr, stl_ListAddr.size(), sizeof(AUTHREG_BANNED));
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_BannedUser, stl_ListUser.size(), sizeof(AUTHREG_BANNED));
 
 	list<AUTHREG_BANNED>::const_iterator stl_ListIterator = stl_ListAddr.begin();
 	for (int i = 0; stl_ListIterator != stl_ListAddr.end(); stl_ListIterator++, i++)
@@ -1553,8 +1553,8 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 					__int64x nTimer = 0;
 					XCHAR tszTimeEnd[128];
 					memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
-					BaseLib_OperatorTime_TimeToStr(tszTimeEnd);
-					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszTimeEnd, &nTimer, 3);
+					BaseLib_Time_TimeToStr(tszTimeEnd);
+					BaseLib_TimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszTimeEnd, &nTimer, 3);
 					//如果没有超过禁用时间 直接返回 说明存在黑名单 不在执行判断IP地址
 					if (nTimer < 0) 
 					{
@@ -1630,8 +1630,8 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 					__int64x nTimer = 0;
 					XCHAR tszStrTime[128];
 					memset(tszStrTime, '\0', sizeof(tszStrTime));
-					BaseLib_OperatorTime_TimeToStr(tszStrTime);
-					BaseLib_OperatorTimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
+					BaseLib_Time_TimeToStr(tszStrTime);
+					BaseLib_TimeSpan_GetForStr(pSt_Banned->tszLeftTime, tszStrTime, &nTimer, 3);
 					if (nTimer < 0)
 					{
 						SQLPacket_IsErrorOccur = true;
@@ -1807,7 +1807,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	{
 		return true;
 	}
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)ppppSt_Announcement, (int)nRow, sizeof(AUTHREG_ANNOUNCEMENT));
+	BaseLib_Memory_Malloc((XPPPMEM)ppppSt_Announcement, (int)nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)

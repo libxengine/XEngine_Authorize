@@ -67,7 +67,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -132,9 +132,9 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			int nPLen = _tcsxlen(st_UserTable.st_UserInfo.tszUserPass);
 			XBYTE byMD5Buffer[MAX_PATH] = {};
-			OPenSsl_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
+			Cryption_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
 			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
+			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
 		}
 
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -249,9 +249,9 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			//开启了,密码重置
 			int nPLen = _tcsxlen(st_UserInfo.tszUserPass);
 			XBYTE byMD5Buffer[MAX_PATH] = {};
-			OPenSsl_Api_Digest(st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
+			Cryption_Api_Digest(st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
 			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
+			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
 			//重置密码
 			if (0 == st_AuthConfig.st_XSql.nDBType)
 			{
@@ -323,14 +323,14 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XCHAR tszTimeStart[128] = {};
 				XCHAR tszTimeEnd[128] = {};
 				//时间戳转换
-				BaseLib_OperatorTime_StrToTime(st_VERTemp.tszVDate, &st_TimeStart);
+				BaseLib_Time_StrToTime(st_VERTemp.tszVDate, &st_TimeStart);
 				st_TimeEnd.wDay = st_VERTemp.nVTime;
 				//得到超时时间
-				BaseLib_OperatorTimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
-				BaseLib_OperatorTime_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
+				BaseLib_TimeSpan_CalForStu(&st_TimeStart, &st_TimeEnd);
+				BaseLib_Time_TimeToStr(tszTimeEnd, NULL, true, &st_TimeEnd);
 				//计算时间差
-				BaseLib_OperatorTime_TimeToStr(tszTimeStart);
-				BaseLib_OperatorTimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
+				BaseLib_Time_TimeToStr(tszTimeStart);
+				BaseLib_TimeSpan_GetForStr(tszTimeStart, tszTimeEnd, &nTimeSpan);
 
 				st_VERTemp.nLTime = (int)nTimeSpan;
 			}

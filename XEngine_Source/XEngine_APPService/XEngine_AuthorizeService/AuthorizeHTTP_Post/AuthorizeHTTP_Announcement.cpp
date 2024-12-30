@@ -91,7 +91,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		}
 		Protocol_Packet_HttpAnnouncement(tszSDBuffer, &nSDLen, &ppSt_Announcement, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_Announcement, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_Announcement, nListCount);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,查询公告列表成功,公告个数:%d"), lpszClientAddr, nListCount);
 	}
 	return true;

@@ -126,8 +126,8 @@ bool CAuthHelp_MultiLogin::AuthHelp_MultiLogin_TimeMatch(LPCXSTR lpszLoginTime)
 
 	XENGINE_LIBTIMER st_TimeLogin = {};
 	XENGINE_LIBTIMER st_TimeLocal = {};
-	BaseLib_OperatorTime_GetSysTime(&st_TimeLocal);
-	BaseLib_OperatorTime_StrToTime(lpszLoginTime, &st_TimeLogin);
+	BaseLib_Time_GetSysTime(&st_TimeLocal);
+	BaseLib_Time_StrToTime(lpszLoginTime, &st_TimeLogin);
 	
 	bool bRet = false;
 	if ((st_TimeLogin.wYear == st_TimeLocal.wYear) && (st_TimeLogin.wMonth == st_TimeLocal.wMonth) && (st_TimeLogin.wDay == st_TimeLocal.wDay))

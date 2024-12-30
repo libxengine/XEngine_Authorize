@@ -120,8 +120,8 @@ void CDialog_Config::OnBnClickedButton1()
 	{
 		int nPLen = m_StrPass.GetLength();
 		XBYTE byMD5Buffer[MAX_PATH] = {};
-		OPenSsl_Api_Digest(m_StrPass.GetBuffer(), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
-		BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
+		Cryption_Api_Digest(m_StrPass.GetBuffer(), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
+		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
 	}
 	else
 	{
@@ -152,7 +152,7 @@ void CDialog_Config::OnBnClickedButton1()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
@@ -179,7 +179,7 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditToken.SetWindowText(m_StrToken);
 	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
 
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	Authorize_Help_LogPrint(_T("登录成功"));
 
 	m_BtnLogin.EnableWindow(false);
@@ -218,7 +218,7 @@ void CDialog_Config::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
@@ -238,7 +238,7 @@ void CDialog_Config::OnBnClickedButton2()
 		Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
 		return;
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
 	m_EditToken.SetWindowText("");
 	m_EditTimeout.SetWindowText("");
@@ -279,7 +279,7 @@ void CDialog_Config::OnBnClickedButton5()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
@@ -300,7 +300,7 @@ void CDialog_Config::OnBnClickedButton5()
 		return;
 	}
 	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
 
 
@@ -350,7 +350,7 @@ void CDialog_Config::OnBnClickedButton8()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
@@ -381,7 +381,7 @@ void CDialog_Config::OnBnClickedButton8()
 
 	m_EditToken.SetWindowText(tszTokenStr);
 	m_EditDCode.SetWindowText(tszDCodeStr);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
 
 

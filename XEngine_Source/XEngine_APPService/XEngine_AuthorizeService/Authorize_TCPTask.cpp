@@ -36,7 +36,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
 				_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
 				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 			else
@@ -44,7 +44,7 @@ XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return 0;
 }
@@ -81,7 +81,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 
 		_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
 		_tcsxcpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
-		BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
+		APIAddr_IPAddr_SegAddr(st_Banned.tszIPAddr);
 		//是否在黑名单
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType)
@@ -150,7 +150,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				return false;
 			}
 			Protocol_Parse_HttpParseTable(ptszMsgBuffer, nHTTPLen, &st_UserTable);
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
 		else
 		{
@@ -223,7 +223,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				return false;
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		//对多端登录的类型进行验证
 		if (bLogin && st_FunSwitch.bSwitchMulti)
 		{
@@ -310,7 +310,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				//如果不匹配
 				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
-				BaseLib_OperatorTime_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
+				BaseLib_Time_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
 				if (0 == st_AuthConfig.st_XSql.nDBType)
 				{
 					DBModule_SQLite_UserSet(&st_UserTable);
@@ -324,7 +324,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		//创建一个普通TOKEN
 		if (pSt_ProtocolHdr->xhToken < 10000000 || pSt_ProtocolHdr->xhToken > 20000000)
 		{
-			BaseLib_OperatorHandle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 20000000);
+			BaseLib_Handle_Create(&pSt_ProtocolHdr->xhToken, 10000000, 20000000);
 		}
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, pSt_ProtocolHdr->xhToken, nNetType))

@@ -100,7 +100,7 @@ LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 	static int i = 0;
 	XCHAR tszFileStr[MAX_PATH] = {};
 	XCHAR tszTimeStr[128] = {};
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	BaseLib_Time_TimeToStr(tszTimeStr);
 	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
 
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_FATAL, _X("主程序:软件崩溃,写入dump:%s"), tszFileStr);
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化TCP验证网络事件成功"));
 
 
-		BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.st_XMax.nTCPThread, sizeof(THREADPOOL_PARAMENT));
+		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.st_XMax.nTCPThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nTCPThread; i++)
 		{
 			int* pInt_Index = new int;
@@ -268,7 +268,7 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化WEBSOCKET验证网络事件成功"));
 
-		BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListWSThread, st_AuthConfig.st_XMax.nWSThread, sizeof(THREADPOOL_PARAMENT));
+		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListWSThread, st_AuthConfig.st_XMax.nWSThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nWSThread; i++)
 		{
 			int* pInt_Index = new int;
@@ -300,7 +300,7 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhHttpSocket, XEngine_Client_HttpAccept, XEngine_Client_HttpRecv, XEngine_Client_HttpClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP管理网络事件成功"));
 
-		BaseLib_OperatorMemory_Malloc((XPPPMEM)&ppSt_ListHttpThread, st_AuthConfig.st_XMax.nHTTPThread, sizeof(THREADPOOL_PARAMENT));
+		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListHttpThread, st_AuthConfig.st_XMax.nHTTPThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nHTTPThread; i++)
 		{
 			int* pInt_Index = new int;
@@ -361,7 +361,7 @@ int main(int argc, char** argv)
 		int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
 		fclose(pSt_File);
 
-		if (OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
+		if (Cryption_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
 		{
 			Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
 			bool bRet = Authorize_CDKey_GetLeftTimer(&st_AuthLocal);
@@ -369,7 +369,7 @@ int main(int argc, char** argv)
 			memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
 			memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
 			Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-			OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
+			Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
 			pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("wb"));
 			fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
 			fclose(pSt_File);
@@ -388,7 +388,7 @@ int main(int argc, char** argv)
 		}
 	}
 	
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_OperatorVer_XNumberStr(), BaseLib_OperatorVer_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)
 	{

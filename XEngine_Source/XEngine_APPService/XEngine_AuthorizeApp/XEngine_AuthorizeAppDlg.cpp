@@ -45,7 +45,7 @@ LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 	static int i = 0;
 	XCHAR tszFileStr[MAX_PATH] = {};
 	XCHAR tszTimeStr[128] = {};
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	BaseLib_Time_TimeToStr(tszTimeStr);
 	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
 
 	HANDLE hDumpFile = CreateFileA(tszFileStr, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);

@@ -44,11 +44,6 @@ using namespace std;
 extern bool SQLPacket_IsErrorOccur;
 extern XLONG SQLPacket_dwErrorCode;
 
-#ifdef _UNICODE
-typedef std::wstring xstring;
-#else
-typedef std::string xstring;
-#endif
 
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
