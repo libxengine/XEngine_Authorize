@@ -3,7 +3,7 @@
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
-#pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption")
 #pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi")
 #ifdef _WIN64
 #pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
@@ -23,8 +23,8 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Define.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemApi_Error.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
@@ -33,7 +33,7 @@
 
 //需要优先配置XEngine
 //WINDOWS支持VS2022 x86 debug 编译调试
-//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_BaseLib -lXEngine_OPenSsl -lXEngine_SystemApi -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
+//g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_BaseLib -lXEngine_Cryption -lXEngine_SystemApi -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 XCHAR tszSerialStr[MAX_PATH] = {};
 //1.创建CDKEY.或者由管理员创建.
@@ -60,7 +60,7 @@ bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	st_AuthLocal.st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME;
 	st_AuthLocal.st_AuthRegInfo.enVModeType = ENUM_AUTHORIZE_MODULE_VERMODE_TYPE_LOCAL;
 	st_AuthLocal.st_AuthRegInfo.nHasTime = 0;
-	BaseLib_OperatorTime_TimeToStr(st_AuthLocal.st_AuthRegInfo.tszCreateTime);
+	BaseLib_Time_TimeToStr(st_AuthLocal.st_AuthRegInfo.tszCreateTime);
 	_tcsxcpy(st_AuthLocal.st_AuthRegInfo.tszHardware, st_SDKSerial.tszBoardSerial);
 	_xstprintf(st_AuthLocal.st_AuthRegInfo.tszLeftTime, _X("0"));           //0次试用
 	//序列号信息.可以不写,如果不想启用用户自己注册.或者交给管理员填充
@@ -76,9 +76,9 @@ bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
 	XCHAR tszTimeStr[128] = {};
 	XENGINE_LIBTIMER st_LibTime = {};
-	BaseLib_OperatorTime_GetSysTime(&st_LibTime);
+	BaseLib_Time_GetSysTime(&st_LibTime);
 	st_LibTime.wYear += 1; //一年后过期
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
+	BaseLib_Time_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
 
 	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
 
@@ -88,7 +88,7 @@ bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	_xstprintf(st_AuthLocal.st_AuthUserInfo.tszUserContact, _X("486179@qq.com"));
 
 	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
 	FILE* pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
 	if (NULL == pSt_File)
 	{
@@ -116,7 +116,7 @@ bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd, LPCXSTR lp
 	int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
 	fclose(pSt_File);
 
-	OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
 	//printf("大小:%d,内容:\n%s\n", nRet, tszDECodecBuffer);
 
 	Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
@@ -129,7 +129,7 @@ bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd, LPCXSTR lp
 	memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
 	memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
 	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
 	pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
 	fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
 	fclose(pSt_File);
@@ -151,7 +151,7 @@ bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
 	fclose(pSt_File);
 
-	OPenSsl_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, lpszPasswd);
 	//printf("大小:%d,内容:\n%s\n", nRet, tszDECodecBuffer);
 	Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
 	if (!Authorize_CDKey_GetLeftTimer(&st_AuthLocal))
@@ -160,7 +160,7 @@ bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 		memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
 		memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
 		Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-		OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+		Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
 		pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
 		fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
 		fclose(pSt_File);
@@ -190,7 +190,7 @@ bool Authorize_APPLocal_Auth(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
 	memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
 	Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-	OPenSsl_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, lpszPasswd);
 	pSt_File = _xtfopen(lpszKeyFile, _X("wb"));
 	fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
 	fclose(pSt_File);
