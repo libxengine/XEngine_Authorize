@@ -61,7 +61,7 @@ XEngine_Authorize
 ## 安装教程
 
 #### XEngine环境
-必须安装XEngine,版本需要V8.15或者以上版本,安装XEngine可以参考其Readme文档  
+必须安装XEngine,版本需要V9.x或者以上版本,安装XEngine可以参考其Readme文档  
 GITEE:https://gitee.com/libxengine/libxengine  
 GITHUB:https://github.com/libxengine/libxengine
 
@@ -83,7 +83,7 @@ git submodule update
 XEngine_AuthorizeApp为PC端管理工具
 
 #### Linux
-Linux使用Makefile编译,UBUNTU22.04 x64或者RockyLinux 9 x64  
+Linux使用Makefile编译,UBUNTU22.04或者以上系统  
 在控制台运行,使用XEngine_AuthorizeService
 
 #### Macos
