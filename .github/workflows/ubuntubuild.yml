@@ -8,9 +8,6 @@ on:
       - 'XEngine_Source/**'
       - 'XEngine_Release/**'
       - '.github/**'
-
-permissions:
-  contents: read
   
 jobs:
   build:

@@ -9,9 +9,6 @@ on:
       - 'XEngine_Release/**'
       - '.github/**'
   
-permissions:
-  contents: read
-  
 jobs:
   build:
     strategy:
