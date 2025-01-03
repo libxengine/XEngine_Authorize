@@ -129,7 +129,7 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 
 	XCHAR tszTimeStr[128] = {};
-	XENGINE_LIBTIMER st_LibTime = {};
+	XENGINE_LIBTIME st_LibTime = {};
 	BaseLib_Time_GetSysTime(&st_LibTime);
 
 	st_LibTime.wYear += 1; //一年后过期
@@ -373,7 +373,7 @@ void CDialog_CDKey::OnBnClickedButton11()
 	}
 	else if (4 == m_ComboRegSerial.GetCurSel())
 	{
-		XENGINE_LIBTIMER st_LibTime = {};
+		XENGINE_LIBTIME st_LibTime = {};
 		BaseLib_Time_StrToTime(m_StrLeftTime.GetBuffer(), &st_LibTime);
 		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
 	}

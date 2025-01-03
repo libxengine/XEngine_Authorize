@@ -25,6 +25,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
+#include "../XAuth_BuildSwitch.h"
 #include "../XAuth_Protocol.h"
 #include "../AuthorizeModule_CDKey/CDKey_Define.h"
 #include "../AuthorizeModule_CDKey/CDKey_Error.h"

@@ -316,11 +316,11 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadKey(LPCXSTR lpszFileKey, XENGINE_AUTH
 	//设置启动时间
 	if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 	{
-		XENGINE_LIBTIMER st_EndTimer;
-		XENGINE_LIBTIMER st_StartTime;
+		XENGINE_LIBTIME st_EndTimer;
+		XENGINE_LIBTIME st_StartTime;
 
-		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIMER));
+		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIME));
+		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIME));
 
 		BaseLib_Time_GetSysTime(&st_EndTimer);
 		BaseLib_Time_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
@@ -703,11 +703,11 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
 	//设置启动时间
 	if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 	{
-		XENGINE_LIBTIMER st_EndTimer;
-		XENGINE_LIBTIMER st_StartTime;
+		XENGINE_LIBTIME st_EndTimer;
+		XENGINE_LIBTIME st_StartTime;
 
-		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIMER));
+		memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIME));
+		memset(&st_StartTime, '\0', sizeof(XENGINE_LIBTIME));
 
 		BaseLib_Time_GetSysTime(&st_EndTimer);
 		BaseLib_Time_StrToTime(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, &st_StartTime);
@@ -805,7 +805,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMs
   意思：是否构造成功
 备注：此函数会修改st_AuthRegInfo的时间信息成员,必须重写CDKEY
 *********************************************************************/
-bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer /* = 0 */, XENGINE_LIBTIMER* pSt_DayTimer /* = NULL */)
+bool CAuthorize_CDKey::Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer /* = 0 */, XENGINE_LIBTIME* pSt_DayTimer /* = NULL */)
 {
     Authorize_IsErrorOccur = false;
 
@@ -867,12 +867,12 @@ bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt
 		bSerial = true;
 		pSt_AuthLocal->st_AuthRegInfo.enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM;
 		pSt_AuthLocal->st_AuthRegInfo.enRegType = ENUM_AUTHORIZE_MODULE_CDKEY_TYPE_OFFICIAL;
-		XENGINE_LIBTIMER st_LibTime = {};
+		XENGINE_LIBTIME st_LibTime = {};
 		BaseLib_Time_GetSysTime(&st_LibTime);
 		if (pSt_AuthLocal->st_AuthSerial.st_DataLimit.bTimeAdd)
 		{
 			__int64x nTimeCount = 0;
-			XENGINE_LIBTIMER st_AddTime = {};
+			XENGINE_LIBTIME st_AddTime = {};
 
 			BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, pSt_AuthLocal->st_AuthRegInfo.tszCreateTime, &nTimeCount);
 			st_AddTime.wDay = (int)nTimeCount;
@@ -884,7 +884,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt
 		{
 			__int64x nTimeCount = 0;
 			XCHAR tszTimeStr[128] = {};
-			XENGINE_LIBTIMER st_LibTime = {};
+			XENGINE_LIBTIME st_LibTime = {};
 			BaseLib_Time_TimeToStr(tszTimeStr);
 
 			BaseLib_TimeSpan_GetForStr(tszTimeStr, pSt_AuthLocal->st_AuthSerial.st_DataLimit.tszDataTime, &nTimeCount);
@@ -945,13 +945,13 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 		return false;
 	}
 	//验证CDKEY本身情况
-	XENGINE_LIBTIMER st_StartTimer;
-	XENGINE_LIBTIMER st_EndTimer;
-	XENGINE_LIBTIMER st_SysTimer;
+	XENGINE_LIBTIME st_StartTimer;
+	XENGINE_LIBTIME st_EndTimer;
+	XENGINE_LIBTIME st_SysTimer;
 
-	memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIMER));
-	memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIMER));
-	memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIMER));
+	memset(&st_StartTimer, '\0', sizeof(XENGINE_LIBTIME));
+	memset(&st_EndTimer, '\0', sizeof(XENGINE_LIBTIME));
+	memset(&st_SysTimer, '\0', sizeof(XENGINE_LIBTIME));
 
 	BaseLib_Time_TimeToStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime);
 	//处理注册类型

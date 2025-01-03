@@ -329,7 +329,7 @@ bool CSession_Token::Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_Ren
 XHTHREAD CSession_Token::Session_Token_Thread(XPVOID lParam)
 {
     CSession_Token *pClass_This = (CSession_Token *)lParam;
-	XENGINE_LIBTIMER st_LibTimer;
+	XENGINE_LIBTIME st_LibTimer;
 	list<XNETHANDLE> stl_ListNotify;
 
     while (pClass_This->bIsRun)

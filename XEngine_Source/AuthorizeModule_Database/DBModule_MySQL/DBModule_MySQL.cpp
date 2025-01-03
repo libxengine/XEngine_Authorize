@@ -578,7 +578,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
 		return false;
 	}
 	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enAuthSerialType;
-	XENGINE_LIBTIMER st_AuthTimer;
+	XENGINE_LIBTIME st_AuthTimer;
 	memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
 
 	if (!Authorize_Serial_GetType(lpszSerialNumber, &enAuthSerialType, &st_AuthTimer))
@@ -1918,11 +1918,11 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 		case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
 		{
 			XCHAR tszTime[128];
-			XENGINE_LIBTIMER st_AuthTime;
+			XENGINE_LIBTIME st_AuthTime;
 			ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
 
 			memset(tszTime, '\0', sizeof(tszTime));
-			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));
+			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIME));
 			//获取重置卡类型和时间
 			if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
 			{
@@ -1968,11 +1968,11 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 		{
 			//自定义卡,无法相加
 			XCHAR tszTime[128];
-			XENGINE_LIBTIMER st_AuthTime;
+			XENGINE_LIBTIME st_AuthTime;
 			ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
 
 			memset(tszTime, '\0', sizeof(tszTime));
-			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIMER));
+			memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIME));
 			//获取重置卡类型和时间
 			if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
 			{

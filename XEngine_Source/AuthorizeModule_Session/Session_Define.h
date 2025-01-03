@@ -13,7 +13,7 @@
 typedef struct
 {
 	AUTHREG_USERTABLE st_UserTable;                                       //用户表
-	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
+	XENGINE_LIBTIME st_LibTimer;                                         //登录时间结构
 	XCHAR tszClientAddr[64];
 	XCHAR tszLeftTime[64];                                                //过期日期
 	XNETHANDLE xhToken;

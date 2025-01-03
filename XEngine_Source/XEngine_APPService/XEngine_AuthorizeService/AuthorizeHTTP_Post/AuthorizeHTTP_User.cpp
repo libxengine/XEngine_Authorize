@@ -318,8 +318,8 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			}
 			else
 			{
-				XENGINE_LIBTIMER st_TimeStart = {};
-				XENGINE_LIBTIMER st_TimeEnd = {};
+				XENGINE_LIBTIME st_TimeStart = {};
+				XENGINE_LIBTIME st_TimeEnd = {};
 				XCHAR tszTimeStart[128] = {};
 				XCHAR tszTimeEnd[128] = {};
 				//时间戳转换

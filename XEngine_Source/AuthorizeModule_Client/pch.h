@@ -13,7 +13,6 @@
 #include <WinSock2.h>
 #endif
 #endif //PCH_H
-#include "../XAuth_BuildSwitch.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,6 +24,7 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include "../XAuth_BuildSwitch.h"
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 #include <XEngine_Include/XEngine_Core/Cryption_Define.h>
 #include <XEngine_Include/XEngine_Core/Cryption_Error.h>

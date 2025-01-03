@@ -31,6 +31,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Define.h>
 #include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Error.h>
+#include "../XAuth_BuildSwitch.h"
 #include "../XAuth_Protocol.h"
 #include "CDKey_Define.h"
 #include "CDKey_Error.h"

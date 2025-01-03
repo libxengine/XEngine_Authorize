@@ -12,3 +12,7 @@
 *********************************************************************/
 #define _XAUTH_BUILD_SWITCH_CLIENT_TCP 1
 #define _XAUTH_BUILD_SWITCH_CLIENT_HTTP 1
+
+#if (XENGINE_VERSION_KERNEL <= 9) && (XENGINE_VERSION_MAIN < 10)
+	typedef XENGINE_LIBTIMER XENGINE_LIBTIME;
+#endif

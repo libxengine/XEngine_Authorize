@@ -401,8 +401,8 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
             for (auto stl_ListIterator = stl_MapIterator->second.begin(); stl_ListIterator != stl_MapIterator->second.end(); stl_ListIterator++)
             {
                 __int64x nOnlineSpan = 0;                                        //在线时间
-				XENGINE_LIBTIMER st_LibTimer;
-				memset(&st_LibTimer, '\0', sizeof(XENGINE_LIBTIMER));
+				XENGINE_LIBTIME st_LibTimer;
+				memset(&st_LibTimer, '\0', sizeof(XENGINE_LIBTIME));
                 memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
                 //获取现在的系统时间
 				BaseLib_Time_GetSysTime(&st_LibTimer);                 
@@ -463,8 +463,8 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
                 {
 					//自定义
 					__int64x nLeftTime = 0;                                          //剩余时间
-					XENGINE_LIBTIMER st_TimeLeft;
-					memset(&st_TimeLeft, '\0', sizeof(XENGINE_LIBTIMER));
+					XENGINE_LIBTIME st_TimeLeft;
+					memset(&st_TimeLeft, '\0', sizeof(XENGINE_LIBTIME));
 					//获取指定过期日期
 					if (6 != _stxscanf(stl_ListIterator->st_UserTable.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_TimeLeft.wYear, &st_TimeLeft.wMonth, &st_TimeLeft.wDay, &st_TimeLeft.wHour, &st_TimeLeft.wMinute, &st_TimeLeft.wSecond))
 					{

@@ -568,10 +568,10 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 	if (m_StrTime.GetLength() > 0)
 	{
 		SYSTEMTIME st_SysTime;
-		XENGINE_LIBTIMER st_LibTime;
+		XENGINE_LIBTIME st_LibTime;
 
 		memset(&st_SysTime, '\0', sizeof(SYSTEMTIME));
-		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
+		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIME));
 
 		BaseLib_Time_StrToTime(m_StrTime.GetBuffer(), &st_LibTime);
 
@@ -626,10 +626,10 @@ void CDialog_Banned::OnNMClickList1(NMHDR* pNMHDR, LRESULT* pResult)
 	if (m_StrTime.GetLength() > 0)
 	{
 		SYSTEMTIME st_SysTime;
-		XENGINE_LIBTIMER st_LibTime;
+		XENGINE_LIBTIME st_LibTime;
 
 		memset(&st_SysTime, '\0', sizeof(SYSTEMTIME));
-		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIMER));
+		memset(&st_LibTime, '\0', sizeof(XENGINE_LIBTIME));
 
 		BaseLib_Time_StrToTime(m_StrTime.GetBuffer(), &st_LibTime);
 

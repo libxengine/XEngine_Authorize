@@ -587,12 +587,12 @@ bool CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt
 	}
 	XCHAR tszTimeStart[128];
 	XCHAR tszTimeEnd[128];
-	XENGINE_LIBTIMER st_TimeOut;
+	XENGINE_LIBTIME st_TimeOut;
 	Json::Value st_JsonRoot;
 
 	memset(tszTimeStart, '\0', sizeof(tszTimeStart));
 	memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
-	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIMER));
+	memset(&st_TimeOut, '\0', sizeof(XENGINE_LIBTIME));
 
 	BaseLib_Time_TimeToStr(tszTimeStart);
 	_xstprintf(tszTimeEnd, _X("0-0-0 0:0:%d"), nTimeout);
@@ -858,8 +858,8 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 		st_JsonObject["enVMode"] = (*pppSt_TryList)[i]->enVMode;
 		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == (*pppSt_TryList)[i]->enVMode)
 		{
-			XENGINE_LIBTIMER st_TimeStart = {};
-			XENGINE_LIBTIMER st_TimeEnd = {};
+			XENGINE_LIBTIME st_TimeStart = {};
+			XENGINE_LIBTIME st_TimeEnd = {};
 			XCHAR tszTimeStart[128] = {};
 			XCHAR tszTimeEnd[128] = {};
 			//时间戳转换

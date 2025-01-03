@@ -13,7 +13,7 @@
 typedef struct
 {
 	AUTHREG_USERTABLE st_UserTable;                                       //用户表
-	XENGINE_LIBTIMER st_LibTimer;                                         //登录时间结构
+	XENGINE_LIBTIME st_LibTimer;                                         //登录时间结构
     int nTimeout;                                                         //单独指定超时
     int nRenewalTime;                                                     //自动续期次数
 }AUTHSESSION_TOKENCLIENT, * LPAUTHSESSION_TOKENCLIENT;
