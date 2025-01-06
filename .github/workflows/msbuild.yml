@@ -64,7 +64,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Build Solution
-        run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
+        run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }} /property:CharacterSet=UTF-8
 
       - name: Conditional Step for x86 Release
         if: matrix.configuration == 'Release' && matrix.platform == 'x86'
