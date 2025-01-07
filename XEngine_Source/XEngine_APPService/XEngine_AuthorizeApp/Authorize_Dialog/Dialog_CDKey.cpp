@@ -78,19 +78,23 @@ BOOL CDialog_CDKey::OnInitDialog()
 
 	for (int i = 0; i < 5; i++)
 	{
-		m_ComboRegSerial.InsertString(i, lpszXSerialType[i]);
+		USES_CONVERSION;
+		m_ComboRegSerial.InsertString(i, A2W(lpszXSerialType[i]));
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		m_ComboRegType.InsertString(i, lpszXRegType[i]);
+		USES_CONVERSION;
+		m_ComboRegType.InsertString(i, A2W(lpszXRegType[i]));
 	}
 	for (int i = 0; i < 6; i++)
 	{
-		m_ComboRegHard.InsertString(i, lpszXHDType[i]);
+		USES_CONVERSION;
+		m_ComboRegHard.InsertString(i, A2W(lpszXHDType[i]));
 	}
 	for (int i = 0; i < 3; i++)
 	{
-		m_ComboRegVer.InsertString(i, lpszXVerType[i]);
+		USES_CONVERSION;
+		m_ComboRegVer.InsertString(i, A2W(lpszXVerType[i]));
 	}
 	m_ComboRegSerial.SetCurSel(0);
 	m_ComboRegType.SetCurSel(0);
@@ -120,10 +124,11 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 
 	int nSerialCount = 3;
 	XCHAR** pptszSerialList;
-	Authorize_Serial_Create(&pptszSerialList, _T("XAUTH"), nSerialCount, 9);
-	m_EditSerialTimeNumber.SetWindowText(pptszSerialList[0]);
-	m_EditSerialDataNumber.SetWindowText(pptszSerialList[1]);
-	m_EditSerialUnlimitNumber.SetWindowText(pptszSerialList[2]);
+	USES_CONVERSION;
+	Authorize_Serial_Create(&pptszSerialList, _X("XAUTH"), nSerialCount, 9);
+	m_EditSerialTimeNumber.SetWindowText(A2W(pptszSerialList[0]));
+	m_EditSerialDataNumber.SetWindowText(A2W(pptszSerialList[1]));
+	m_EditSerialUnlimitNumber.SetWindowText(A2W(pptszSerialList[2]));
 	BaseLib_Memory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
 	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
@@ -137,7 +142,7 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 
 	COleDateTime m_OleDTime;
 	// 尝试解析字符串为日期和时间
-	if (m_OleDTime.ParseDateTime(tszTimeStr))
+	if (m_OleDTime.ParseDateTime(A2W(tszTimeStr)))
 	{
 		m_DataTimeSerial.SetTime(m_OleDTime);
 	}
@@ -149,63 +154,92 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey)
 {
 	//网络信息
+	CString m_StrIPAddr;
 	CString m_StrIPPort;
-	m_EditIPAddr.GetWindowText(pSt_AuthorizeCDKey->tszAddr, sizeof(pSt_AuthorizeCDKey->tszAddr));
+	CString m_StrAPPName;
+	CString m_StrAPPVer;
+	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditPort.GetWindowText(m_StrIPPort);
+
+	USES_CONVERSION;
+	strcpy(pSt_AuthorizeCDKey->tszAddr, W2A(m_StrIPAddr.GetBuffer()));
 	pSt_AuthorizeCDKey->nPort = _ttoi(m_StrIPPort.GetString());
 	//程序信息
 	CString m_StrSoftTime;
-	m_EditSoftName.GetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName, sizeof(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName));
-	m_EditSoftVer.GetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer, sizeof(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer));
+	m_EditSoftName.GetWindowText(m_StrAPPName);
+	m_EditSoftVer.GetWindowText(m_StrAPPVer);
 	m_EditSoftTime.GetWindowText(m_StrSoftTime);
 	if (BST_CHECKED == m_EditSoftInit.GetCheck())
 	{
 		pSt_AuthorizeCDKey->st_AuthAppInfo.bInit = true;
 	}
+	strcpy(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName, W2A(m_StrAPPName.GetBuffer()));
+	strcpy(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer, W2A(m_StrAPPVer.GetBuffer()));
 	//注册信息
-	CString m_StrRegHaveTime;
-	m_EditRegHardCode.GetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware, sizeof(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware));
-	m_EditRegLeftTime.GetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime, sizeof(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime));
-	m_EditRegHaveTime.GetWindowText(m_StrRegHaveTime);
-	pSt_AuthorizeCDKey->st_AuthRegInfo.nHasTime = _ttoi64(m_StrRegHaveTime.GetBuffer());
-	m_DateTimeCreate.GetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime, sizeof(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime));
+	CString m_StrRegInfo;
+	m_EditRegHardCode.GetWindowText(m_StrRegInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware, W2A(m_StrRegInfo.GetBuffer()));
+	m_StrRegInfo.ReleaseBuffer();
+	m_EditRegLeftTime.GetWindowText(m_StrRegInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime, W2A(m_StrRegInfo.GetBuffer()));
+	m_StrRegInfo.ReleaseBuffer();
+	m_EditRegHaveTime.GetWindowText(m_StrRegInfo);
+	pSt_AuthorizeCDKey->st_AuthRegInfo.nHasTime = _ttoi64(m_StrRegInfo.GetBuffer());
+	m_StrRegInfo.ReleaseBuffer();
+	m_DateTimeCreate.GetWindowText(m_StrRegInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime, W2A(m_StrRegInfo.GetBuffer()));
 	//m_DateTimeRegister.GetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime, sizeof(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime));
-	m_DateTimeStart.GetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime, sizeof(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime));
+	m_StrRegInfo.ReleaseBuffer();
+	m_DateTimeStart.GetWindowText(m_StrRegInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime, W2A(m_StrRegInfo.GetBuffer()));
 	pSt_AuthorizeCDKey->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)m_ComboRegSerial.GetCurSel();
 	pSt_AuthorizeCDKey->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)m_ComboRegType.GetCurSel();
 	pSt_AuthorizeCDKey->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)m_ComboRegHard.GetCurSel();
 	pSt_AuthorizeCDKey->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)m_ComboRegVer.GetCurSel();
 	//序列信息
-	CString m_StrSerialCount;
-	CString m_StrSerialUsed;
-	m_EditSerialTimeCount.GetWindowText(m_StrSerialCount);
-	m_EditSerialTimeNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial));
-	pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount = _ttoi(m_StrSerialCount.GetBuffer());
-
-	m_EditSerialDataNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial));
-	m_DataTimeSerial.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime));
+	CString m_StrSerialInfo;
+	m_EditSerialTimeCount.GetWindowText(m_StrSerialInfo);
+	pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount = _ttoi(m_StrSerialInfo.GetBuffer());
+	m_StrSerialInfo.ReleaseBuffer();
+	m_EditSerialTimeNumber.GetWindowText(m_StrSerialInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial, W2A(m_StrSerialInfo.GetBuffer()));
+	m_StrSerialInfo.ReleaseBuffer();
+	m_EditSerialDataNumber.GetWindowText(m_StrSerialInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial, W2A(m_StrSerialInfo.GetBuffer()));
+	m_StrSerialInfo.ReleaseBuffer();
+	m_DataTimeSerial.GetWindowText(m_StrSerialInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime, W2A(m_StrSerialInfo.GetBuffer()));
 
 	if (BST_CHECKED == m_CheckSerialDataAdd.GetCheck())
 	{
 		pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.bTimeAdd = true;
 	}
-	m_EditSerialUnlimitNumber.GetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial, sizeof(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial));
+	m_StrSerialInfo.ReleaseBuffer();
+	m_EditSerialUnlimitNumber.GetWindowText(m_StrSerialInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial, W2A(m_StrSerialInfo.GetBuffer()));
 	//用户信息
-	m_EditUserInfo.GetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName, sizeof(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName));
-	m_EditUserContact.GetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact, sizeof(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact));
-	m_EditUserCustom.GetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom, sizeof(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom));
+	CString m_StrUserInfo;
+	m_EditUserInfo.GetWindowText(m_StrUserInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName, W2A(m_StrUserInfo.GetBuffer()));
+	m_StrUserInfo.ReleaseBuffer();
+	m_EditUserContact.GetWindowText(m_StrUserInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact, W2A(m_StrUserInfo.GetBuffer()));
+	m_EditUserContact.GetWindowText(m_StrUserInfo);
+	m_EditUserCustom.GetWindowText(m_StrUserInfo);
+	strcpy(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom, W2A(m_StrUserInfo.GetBuffer()));
 	return true;
 }
 bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey)
 {
 	CString m_StrFormat;
 	//网络信息
-	m_EditIPAddr.SetWindowText(pSt_AuthorizeCDKey->tszAddr);
+	USES_CONVERSION;
+	m_EditIPAddr.SetWindowText(A2W(pSt_AuthorizeCDKey->tszAddr));
 	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->nPort);
 	m_EditPort.SetWindowText(m_StrFormat);
 	//软件信息
-	m_EditSoftName.SetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName);
-	m_EditSoftVer.SetWindowText(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer);
+	m_EditSoftName.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppName));
+	m_EditSoftVer.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthAppInfo.tszAppVer));
 	m_StrFormat.Format(_T("%lld"), pSt_AuthorizeCDKey->st_AuthAppInfo.nExecTime);
 	m_EditSoftTime.SetWindowText(m_StrFormat);
 	if (pSt_AuthorizeCDKey->st_AuthAppInfo.bInit)
@@ -213,25 +247,25 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 		m_EditSoftInit.SetCheck(BST_CHECKED);
 	}
 	//注册信息
-	m_EditRegHardCode.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware);
-	m_EditRegLeftTime.SetWindowText(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime);
+	m_EditRegHardCode.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszHardware));
+	m_EditRegLeftTime.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszLeftTime));
 	m_StrFormat.Format(_T("%lld"), pSt_AuthorizeCDKey->st_AuthRegInfo.nHasTime);
 	m_EditRegHaveTime.SetWindowText(m_StrFormat);
 	COleDateTime m_OleDTime;
 	// 尝试解析字符串为日期和时间
-	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime))
+	if (m_OleDTime.ParseDateTime(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszCreateTime)))
 	{
 		m_DateTimeCreate.SetTime(m_OleDTime);
 	}
-	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime))
+	if (m_OleDTime.ParseDateTime(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszRegisterTime)))
 	{
 		m_DateTimeRegister.SetTime(m_OleDTime);
 	}
-	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime))
+	if (m_OleDTime.ParseDateTime(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime)))
 	{
 		m_DateTimeStart.SetTime(m_OleDTime);
 	}
-	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthRegInfo.tszExpiryTime))
+	if (m_OleDTime.ParseDateTime(A2W(pSt_AuthorizeCDKey->st_AuthRegInfo.tszExpiryTime)))
 	{
 		m_DataTimeSerial.SetTime(m_OleDTime);
 	}
@@ -243,24 +277,24 @@ bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDK
 	//序列信息
 	m_StrFormat.Format(_T("%d"), pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.nTimeCount);
 	m_EditSerialTimeCount.SetWindowText(m_StrFormat);
-	m_EditSerialTimeNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial);
+	m_EditSerialTimeNumber.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthSerial.st_TimeLimit.tszTimeSerial));
 
 	if (pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.bTimeAdd)
 	{
 		m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 	}
-	m_EditSerialDataNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial);
+	m_EditSerialDataNumber.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataSerial));
 	// 尝试解析字符串为日期和时间
-	if (m_OleDTime.ParseDateTime(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime))
+	if (m_OleDTime.ParseDateTime(A2W(pSt_AuthorizeCDKey->st_AuthSerial.st_DataLimit.tszDataTime)))
 	{
 		m_DataTimeSerial.SetTime(m_OleDTime);
 	}
 
-	m_EditSerialUnlimitNumber.SetWindowText(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial);
+	m_EditSerialUnlimitNumber.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthSerial.st_UNLimit.tszUNLimitSerial));
 	//用户信息
-	m_EditUserInfo.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName);
-	m_EditUserContact.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact);
-	m_EditUserCustom.SetWindowText(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom);
+	m_EditUserInfo.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserName));
+	m_EditUserContact.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthUserInfo.tszUserContact));
+	m_EditUserCustom.SetWindowText(A2W(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom));
 	return true;
 }
 void CDialog_CDKey::OnBnClickedButton1()
@@ -294,7 +328,8 @@ void CDialog_CDKey::OnBnClickedButton1()
 		XBYTE tszENBuffer[4096] = {};
 		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
 
-		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
+		USES_CONVERSION;
+		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, W2A(m_StrPass.GetBuffer()));
 		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 		if (NULL == pSt_File)
 		{
@@ -329,7 +364,8 @@ void CDialog_CDKey::OnBnClickedButton9()
 		nMSGLen = fread(tszENBuffer, 1, sizeof(tszENBuffer), pSt_File);
 		fclose(pSt_File);
 
-		if (!Cryption_XCrypto_Decoder(tszENBuffer, &nMSGLen, tszDEBuffer, m_StrPass.GetBuffer()))
+		USES_CONVERSION;
+		if (!Cryption_XCrypto_Decoder(tszENBuffer, &nMSGLen, tszDEBuffer, W2A(m_StrPass.GetBuffer())))
 		{
 			AfxMessageBox(_T("解密CDKEY失败"));
 			return;
@@ -374,7 +410,8 @@ void CDialog_CDKey::OnBnClickedButton11()
 	else if (4 == m_ComboRegSerial.GetCurSel())
 	{
 		XENGINE_LIBTIME st_LibTime = {};
-		BaseLib_Time_StrToTime(m_StrLeftTime.GetBuffer(), &st_LibTime);
+		USES_CONVERSION;
+		BaseLib_Time_StrToTime(W2A(m_StrLeftTime.GetBuffer()), &st_LibTime);
 		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
 	}
 	else
@@ -397,8 +434,8 @@ void CDialog_CDKey::OnBnClickedButton11()
 		XCHAR tszDEBuffer[4096] = {};
 		XBYTE tszENBuffer[4096] = {};
 		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
-
-		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, m_StrPass.GetBuffer());
+		USES_CONVERSION;
+		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, W2A(m_StrPass.GetBuffer()));
 		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
 		fclose(pSt_File);

@@ -17,8 +17,8 @@ public:
 	CAuthHelp_ClipBoard();
 	~CAuthHelp_ClipBoard();
 public:
-	bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
-	bool AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
+	bool AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
+	bool AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
 	bool AuthHelp_ClipBoard_Clear();
 private:
 };

@@ -93,7 +93,7 @@ bool CAuthHelp_Windows::AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegr
   意思：是否成功添加
 备注：
 *********************************************************************/
-bool CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip)
+bool CAuthHelp_Windows::AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip)
 {
 	Help_IsErrorOccur = false;
 

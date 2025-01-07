@@ -9,7 +9,7 @@
 
 // 添加要在此处预编译的标头
 #include "framework.h"
-
+#include <atlconv.h>
 #endif //PCH_H
 #include <json/json.h>
 #include <list>

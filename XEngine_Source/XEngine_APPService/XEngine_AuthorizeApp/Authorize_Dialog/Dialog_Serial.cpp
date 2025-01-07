@@ -62,7 +62,8 @@ BOOL CDialog_Serial::OnInitDialog()
 
 	for (int i = 0; i < 5; i++)
 	{
-		m_ComboSerialType.InsertString(i, lpszXSerialType[i]);
+		USES_CONVERSION;
+		m_ComboSerialType.InsertString(i, A2W(lpszXSerialType[i]));
 	}
 
 	m_ComboNumber.InsertString(0, _T("4"));
@@ -73,8 +74,8 @@ BOOL CDialog_Serial::OnInitDialog()
 	m_ComboNumber.InsertString(5, _T("9"));
 	m_ComboNumber.InsertString(6, _T("10"));
 
-	m_EditPosStart.SetWindowText("0");
-	m_EditPosEnd.SetWindowText("50");
+	m_EditPosStart.SetWindowText(_T("0"));
+	m_EditPosEnd.SetWindowText(_T("50"));
 
 	m_ComboNumber.SetCurSel(0);
 	m_ComboSerialType.SetCurSel(0);
@@ -100,32 +101,32 @@ void CDialog_Serial::OnBnClickedButton1()
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
-
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
-	st_JsonRoot["PosStart"] = _ttxoi(m_StrPosStart.GetBuffer());
-	st_JsonRoot["PosEnd"] = _ttxoi(m_StrPosEnd.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
+	st_JsonRoot["PosStart"] = _ttoi(m_StrPosStart.GetBuffer());
+	st_JsonRoot["PosEnd"] = _ttoi(m_StrPosEnd.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
@@ -133,10 +134,10 @@ void CDialog_Serial::OnBnClickedButton1()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -161,19 +162,19 @@ void CDialog_Serial::OnBnClickedButton1()
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 
 		m_ListSerial.InsertItem(i, _T(""));
-		m_ListSerial.SetItemText(i, 0, st_JsonArray["tszUserName"].asCString());
-		m_ListSerial.SetItemText(i, 1, st_JsonArray["tszSerialNumber"].asCString());
-		m_ListSerial.SetItemText(i, 2, st_JsonArray["tszMaxTime"].asCString());
-		m_ListSerial.SetItemText(i, 3, lpszXSerialType[st_JsonArray["enSerialType"].asInt()]);
+		m_ListSerial.SetItemText(i, 0, A2W(st_JsonArray["tszUserName"].asCString()));
+		m_ListSerial.SetItemText(i, 1, A2W(st_JsonArray["tszSerialNumber"].asCString()));
+		m_ListSerial.SetItemText(i, 2, A2W(st_JsonArray["tszMaxTime"].asCString()));
+		m_ListSerial.SetItemText(i, 3, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
 		if (st_JsonArray["bIsUsed"].asBool())
 		{
-			m_ListSerial.SetItemText(i, 4, "已使用");
+			m_ListSerial.SetItemText(i, 4, _T("已使用"));
 		}
 		else
 		{
-			m_ListSerial.SetItemText(i, 4, "未使用");
+			m_ListSerial.SetItemText(i, 4, _T("未使用"));
 		}
-		m_ListSerial.SetItemText(i, 5, st_JsonArray["tszCreateTime"].asCString());
+		m_ListSerial.SetItemText(i, 5, A2W(st_JsonArray["tszCreateTime"].asCString()));
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
@@ -185,7 +186,7 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -204,15 +205,16 @@ void CDialog_Serial::OnBnClickedButton2()
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
 
 	st_JsonObject["enSerialType"] = m_ComboSerialType.GetCurSel();
-	st_JsonObject["nNumberCount"] = _ttxoi(m_StrNumberCount.GetBuffer());
-	st_JsonObject["nSerialCount"] = _ttxoi(m_StrSerialCount.GetBuffer());
+	st_JsonObject["nNumberCount"] = _ttoi(m_StrNumberCount.GetBuffer());
+	st_JsonObject["nSerialCount"] = _ttoi(m_StrSerialCount.GetBuffer());
 	st_JsonObject["tszHasTime"] = m_StrHasTime.GetBuffer();
 	st_JsonRoot["st_SerialInfo"] = st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	XCHAR* ptszMsgBuffer = NULL;
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -220,16 +222,16 @@ void CDialog_Serial::OnBnClickedButton2()
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	st_JsonRoot.clear();
 	JSONCPP_STRING st_JsonError;
@@ -237,10 +239,10 @@ void CDialog_Serial::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -285,7 +287,7 @@ void CDialog_Serial::OnBnClickedButton4()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -307,11 +309,12 @@ void CDialog_Serial::OnBnClickedButton4()
 	st_JsonObject["tszSerialNumber"] = m_StrSerial.GetBuffer();
 	st_JsonArray.append(st_JsonObject);
 	st_JsonRoot["Array"] = st_JsonArray;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	XCHAR* ptszMsgBuffer = NULL;
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -319,16 +322,16 @@ void CDialog_Serial::OnBnClickedButton4()
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	st_JsonRoot.clear();
 	JSONCPP_STRING st_JsonError;
@@ -336,10 +339,10 @@ void CDialog_Serial::OnBnClickedButton4()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -401,7 +404,7 @@ void CDialog_Serial::OnBnClickedButton6()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("rb"));
 
-	TCHAR tszMsgBuffer[MAX_PATH];
+	XCHAR tszMsgBuffer[MAX_PATH];
 	//跳过第一行
 	if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
 	{
@@ -422,8 +425,8 @@ void CDialog_Serial::OnBnClickedButton6()
 		int nID = 0;
 		AUTHREG_SERIALTABLE st_SerialTable;
 		memset(&st_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
-
-		int nRet = _stscanf(tszMsgBuffer, _T("%d %s %s %s %d %d %s %s"), &nID, st_SerialTable.tszUserName, st_SerialTable.tszSerialNumber, st_SerialTable.tszMaxTime, &st_SerialTable.enSerialType, &st_SerialTable.bIsUsed, st_SerialTable.tszCreateTime, (st_SerialTable.tszCreateTime + 11));
+		
+		int nRet = _stxscanf(tszMsgBuffer, _X("%d %s %s %s %d %d %s %s"), &nID, st_SerialTable.tszUserName, st_SerialTable.tszSerialNumber, st_SerialTable.tszMaxTime, &st_SerialTable.enSerialType, &st_SerialTable.bIsUsed, st_SerialTable.tszCreateTime, (st_SerialTable.tszCreateTime + 11));
 		st_SerialTable.tszCreateTime[10] = ' ';
 		stl_ListSerial.push_back(st_SerialTable);
 	}
@@ -432,7 +435,7 @@ void CDialog_Serial::OnBnClickedButton6()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
 	memset(tszUrlAddr, '\0', MAX_PATH);
@@ -462,11 +465,12 @@ void CDialog_Serial::OnBnClickedButton6()
 		st_JsonArray.append(st_JsonObject);
 	}
 	st_JsonRoot["Array"] = st_JsonArray;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/serial/push"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	XCHAR* ptszMsgBuffer = NULL;
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/push"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
@@ -474,16 +478,16 @@ void CDialog_Serial::OnBnClickedButton6()
 
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	st_JsonRoot.clear();
 	JSONCPP_STRING st_JsonError;
@@ -491,10 +495,10 @@ void CDialog_Serial::OnBnClickedButton6()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析序列号推送接口数据错误,无法继续"));
@@ -536,10 +540,10 @@ void CDialog_Serial::OnBnClickedButton7()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 
-	TCHAR tszMsgBuffer[MAX_PATH];
+	XCHAR tszMsgBuffer[MAX_PATH];
 	memset(tszMsgBuffer, '\0', MAX_PATH);
 	//写字段头
-	int nRet = _xstprintf(tszMsgBuffer, _T("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime\r\n"));
+	int nRet = _xstprintf(tszMsgBuffer, _X("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime\r\n"));
 	fwrite(tszMsgBuffer, 1, nRet, pSt_File);
 
 	for (int i = 0; i < m_ListSerial.GetItemCount(); i++)
@@ -548,19 +552,20 @@ void CDialog_Serial::OnBnClickedButton7()
 		int nUsedType = 0;
 		memset(tszMsgBuffer, '\0', MAX_PATH);
 
+		USES_CONVERSION;
 		for (int j = 0; j < sizeof(lpszXSerialType) - 1; j++)
 		{
-			if (0 == _tcsxnicmp(lpszXSerialType[j], m_ListSerial.GetItemText(i, 3).GetBuffer(), _tcsxlen(lpszXSerialType[j])))
+			if (0 == _tcsxnicmp(lpszXSerialType[j], W2A(m_ListSerial.GetItemText(i, 3).GetBuffer()), _tcsxlen(lpszXSerialType[j])))
 			{
 				nSerialType = j;
 				break;
 			}
 		}
-		if (0 == _tcsxnicmp(m_ListSerial.GetItemText(i, 4).GetBuffer(), "未使用", m_ListSerial.GetItemText(i, 4).GetLength()))
+		if (0 == _tcsxnicmp(W2A(m_ListSerial.GetItemText(i, 4).GetBuffer()), "未使用", m_ListSerial.GetItemText(i, 4).GetLength()))
 		{
 			nUsedType = 0;
 		}
-		nRet = _xstprintf(tszMsgBuffer, _T("%d %s %s %s %d %d %s %s\r\n"), i, m_ListSerial.GetItemText(i, 0).GetBuffer(), m_ListSerial.GetItemText(i, 1).GetBuffer(), m_ListSerial.GetItemText(i, 2).GetBuffer(), nSerialType, nUsedType, m_ListSerial.GetItemText(i, 5).GetBuffer(), m_ListSerial.GetItemText(i, 6).GetBuffer());
+		nRet = _xstprintf(tszMsgBuffer, _X("%d %s %s %s %d %d %s %s\r\n"), i, W2A(m_ListSerial.GetItemText(i, 0).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 1).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 2).GetBuffer()), nSerialType, nUsedType, W2A(m_ListSerial.GetItemText(i, 5).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 6).GetBuffer()));
 		fwrite(tszMsgBuffer, 1, nRet, pSt_File);
 	}
 	fclose(pSt_File);

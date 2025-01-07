@@ -72,23 +72,24 @@ void CDialog_Announcement::OnBnClickedButton1()
 		AfxMessageBox(_T("内容不能小于1个字节"));
 		return;
 	}
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/insert"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	Json::StreamWriterBuilder st_JsonBuilder;
 	st_JsonBuilder["emitUTF8"] = true;
 
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	
 	st_JsonObject["tszContext"] = m_StrNotice.GetBuffer();
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
-	TCHAR tszCodecBuffer[2048];
+	XCHAR tszCodecBuffer[2048];
 	TCHAR tszPassBuffer[64];
 
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
@@ -99,15 +100,15 @@ void CDialog_Announcement::OnBnClickedButton1()
 	BaseLib_Charset_AnsiToUTF(Json::writeString(st_JsonBuilder, st_JsonRoot).c_str(), tszCodecBuffer, &nMsgLen);
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Encoder(tszCodecBuffer, &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(tszCodecBuffer, &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszCodecBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszCodecBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
@@ -115,10 +116,10 @@ void CDialog_Announcement::OnBnClickedButton1()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -169,17 +170,17 @@ void CDialog_Announcement::OnBnClickedButton2()
 	}
 	m_StrNotice = m_ListAnnouncement.GetItemText(nSelect, 0);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
-
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/delete"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
-	st_JsonObject["nID"] = _ttxoll(m_StrNotice.GetBuffer());
+	st_JsonObject["nID"] = _ttoll(m_StrNotice.GetBuffer());
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -187,16 +188,16 @@ void CDialog_Announcement::OnBnClickedButton2()
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
@@ -204,10 +205,10 @@ void CDialog_Announcement::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -250,31 +251,32 @@ void CDialog_Announcement::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/auth/notice/list"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
+	XCHAR* ptszMsgBuffer = NULL;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	st_JsonRoot["xhToken"] = _ttxoll(m_StrToken.GetBuffer());
+	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, tszPassBuffer);
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
+		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
 	{
-		APIClient_Http_Request(_T("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
+		APIClient_Http_Request(_X("POST"), tszUrlAddr, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
@@ -282,10 +284,10 @@ void CDialog_Announcement::OnBnClickedButton3()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, tszPassBuffer);
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -305,7 +307,7 @@ void CDialog_Announcement::OnBnClickedButton3()
 	{
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		TCHAR tszIndex[64];
 
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
@@ -318,8 +320,8 @@ void CDialog_Announcement::OnBnClickedButton3()
 
 		m_ListAnnouncement.InsertItem(i, _T(""));
 		m_ListAnnouncement.SetItemText(i, 0, tszIndex);
-		m_ListAnnouncement.SetItemText(i, 1, tszMsgBuffer);
-		m_ListAnnouncement.SetItemText(i, 2, st_JsonArray["tszCreateTime"].asCString());
+		m_ListAnnouncement.SetItemText(i, 1, A2W(tszMsgBuffer));
+		m_ListAnnouncement.SetItemText(i, 2, A2W(st_JsonArray["tszCreateTime"].asCString()));
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
