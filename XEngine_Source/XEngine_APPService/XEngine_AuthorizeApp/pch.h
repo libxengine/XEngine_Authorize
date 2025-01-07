@@ -47,7 +47,7 @@ extern HWND hMainWnd;
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
 extern bool bCrypto;
-extern LPCXSTR lpszStuType[2];
+extern LPCTSTR lpszStuType[2];
 
 #ifdef _DEBUG
 #ifdef _WIN64

@@ -183,7 +183,7 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.SetItemText(i, 5, A2W(st_JsonArray["tszLeftTime"].asCString()));
 		m_ListCtrlClient.SetItemText(i, 6, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
 		m_ListCtrlClient.SetItemText(i, 7, A2W(lpszXDevType[st_JsonArray["enDeviceType"].asInt()]));
-		m_ListCtrlClient.SetItemText(i, 8, A2W(lpszStuType[st_JsonObject["nUserState"].asInt()]));
+		m_ListCtrlClient.SetItemText(i, 8, lpszStuType[st_JsonObject["nUserState"].asInt()]);
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	UpdateWindow();
@@ -218,7 +218,7 @@ void CDialog_User::OnBnClickedButton2()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
-	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+	st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
@@ -309,7 +309,7 @@ void CDialog_User::OnBnClickedButton3()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
-	st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+	st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 	st_JsonRoot["st_UserInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	//是否加密

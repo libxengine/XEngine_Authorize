@@ -97,9 +97,10 @@ BOOL CDialog_Modify::OnInitDialog()
 		Json::Value st_JsonRoot;
 		Json::Value st_JsonObject;
 
-		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 		st_JsonRoot["st_UserInfo"] = st_JsonObject;
 		st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
+		
 		//是否加密
 		TCHAR tszPassBuffer[64];
 		memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));

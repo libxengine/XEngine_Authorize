@@ -129,11 +129,11 @@ void CDialog_Banned::OnBnClickedButton2()
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
-		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 	}
 	else
 	{
-		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszIPAddr"] = W2A(m_StrUser.GetBuffer());
 	}
 	if (BST_CHECKED == m_RadioEnable.GetCheck())
 	{
@@ -145,7 +145,7 @@ void CDialog_Banned::OnBnClickedButton2()
 	}
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
-		st_JsonObject["tszLeftTime"] = m_StrTime.GetBuffer();
+		st_JsonObject["tszLeftTime"] = W2A(m_StrTime.GetBuffer());
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
@@ -334,19 +334,20 @@ void CDialog_Banned::OnBnClickedButton3()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	// TODO: 在此添加控件通知处理程序代码
+	USES_CONVERSION;
 	POSITION pSt_Sition = m_ListUser.GetFirstSelectedItemPosition();
 	int nSelect = m_ListUser.GetNextSelectedItem(pSt_Sition);
 	if (nSelect >= 0)
 	{
 		m_StrUser = m_ListUser.GetItemText(nSelect, 2);
-		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 	}
 	pSt_Sition = m_ListAddr.GetFirstSelectedItemPosition();
 	nSelect = m_ListAddr.GetNextSelectedItem(pSt_Sition);
 	if (nSelect >= 0)
 	{
 		m_StrUser = m_ListAddr.GetItemText(nSelect, 2);
-		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszIPAddr"] = W2A(m_StrUser.GetBuffer());
 	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
@@ -363,7 +364,6 @@ void CDialog_Banned::OnBnClickedButton3()
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/banned/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -465,11 +465,11 @@ void CDialog_Banned::OnBnClickedButton5()
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	if (BST_CHECKED == m_RadioUser.GetCheck())
 	{
-		st_JsonObject["tszUserName"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszUserName"] = W2A(m_StrUser.GetBuffer());
 	}
 	else
 	{
-		st_JsonObject["tszIPAddr"] = m_StrUser.GetBuffer();
+		st_JsonObject["tszIPAddr"] = W2A(m_StrUser.GetBuffer());
 	}
 	if (BST_CHECKED == m_RadioEnable.GetCheck())
 	{
@@ -481,7 +481,7 @@ void CDialog_Banned::OnBnClickedButton5()
 	}
 	if (BST_CHECKED == m_BtnCheckTime.GetCheck())
 	{
-		st_JsonObject["tszLeftTime"] = m_StrTime.GetBuffer();
+		st_JsonObject["tszLeftTime"] = W2A(m_StrTime.GetBuffer());
 	}
 	st_JsonRoot["st_Banned"] = st_JsonObject;
 	//是否加密
@@ -565,7 +565,6 @@ void CDialog_Banned::OnNMClickList2(NMHDR* pNMHDR, LRESULT* pResult)
 	}
 	m_RadioIPAddr.SetCheck(BST_UNCHECKED);
 	m_RadioUser.SetCheck(BST_CHECKED);
-
 	m_EditUser.SetWindowText(m_StrUser.GetBuffer());
 	if (m_StrTime.GetLength() > 0)
 	{

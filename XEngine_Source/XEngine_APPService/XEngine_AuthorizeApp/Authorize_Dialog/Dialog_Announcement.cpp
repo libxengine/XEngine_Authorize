@@ -86,7 +86,7 @@ void CDialog_Announcement::OnBnClickedButton1()
 
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	
-	st_JsonObject["tszContext"] = m_StrNotice.GetBuffer();
+	st_JsonObject["tszContext"] = W2A(m_StrNotice.GetBuffer());
 	st_JsonRoot["st_Notice"] = st_JsonObject;
 	//是否加密
 	XCHAR tszCodecBuffer[2048];

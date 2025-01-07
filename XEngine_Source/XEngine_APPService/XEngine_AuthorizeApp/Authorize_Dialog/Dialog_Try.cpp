@@ -192,7 +192,7 @@ void CDialog_Try::OnBnClickedButton2()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
-	st_JsonObject["tszVSerial"] = m_StrSerial.GetBuffer();
+	st_JsonObject["tszVSerial"] = W2A(m_StrSerial.GetBuffer());
 	st_JsonRoot["st_VERTemp"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	//是否加密
@@ -331,8 +331,8 @@ void CDialog_Try::OnBnClickedButton3()
 	st_JsonObject["enVMode"] = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)m_ComboType.GetCurSel();
 	st_JsonObject["nVTime"] = _ttoi(m_StrTime.GetBuffer());
 	st_JsonObject["nLTime"] = _ttoi(m_StrLeft.GetBuffer());
-	st_JsonObject["tszVSerial"] = m_StrSerail.GetBuffer();
-	st_JsonObject["tszVDate"] = m_StrDate.GetBuffer();
+	st_JsonObject["tszVSerial"] = W2A(m_StrSerail.GetBuffer());
+	st_JsonObject["tszVDate"] = W2A(m_StrDate.GetBuffer());
 	st_JsonRoot["st_VERTemp"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 	//是否加密

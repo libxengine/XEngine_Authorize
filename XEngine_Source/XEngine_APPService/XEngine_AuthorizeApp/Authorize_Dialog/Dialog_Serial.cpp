@@ -204,16 +204,16 @@ void CDialog_Serial::OnBnClickedButton2()
 	m_EditSerialCount.GetWindowText(m_StrSerialCount);
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
 
+	USES_CONVERSION;
 	st_JsonObject["enSerialType"] = m_ComboSerialType.GetCurSel();
 	st_JsonObject["nNumberCount"] = _ttoi(m_StrNumberCount.GetBuffer());
 	st_JsonObject["nSerialCount"] = _ttoi(m_StrSerialCount.GetBuffer());
-	st_JsonObject["tszHasTime"] = m_StrHasTime.GetBuffer();
+	st_JsonObject["tszHasTime"] = W2A(m_StrHasTime.GetBuffer());
 	st_JsonRoot["st_SerialInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
@@ -305,15 +305,14 @@ void CDialog_Serial::OnBnClickedButton4()
 	m_EditHasTime.GetWindowText(m_StrHasTime);
 	m_EditSerialCount.GetWindowText(m_StrSerialCount);
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
-
-	st_JsonObject["tszSerialNumber"] = m_StrSerial.GetBuffer();
+	USES_CONVERSION;
+	st_JsonObject["tszSerialNumber"] = W2A(m_StrSerial.GetBuffer());
 	st_JsonArray.append(st_JsonObject);
 	st_JsonRoot["Array"] = st_JsonArray;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
-	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
