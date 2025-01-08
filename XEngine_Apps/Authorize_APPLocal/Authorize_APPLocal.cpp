@@ -75,7 +75,7 @@ bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 	st_AuthLocal.st_AuthSerial.st_DataLimit.bTimeAdd = false;
 	_tcsxcpy(st_AuthLocal.st_AuthSerial.st_DataLimit.tszDataSerial, pptszSerialList[1]);
 	XCHAR tszTimeStr[128] = {};
-	XENGINE_LIBTIMER st_LibTime = {};
+	XENGINE_LIBTIME st_LibTime = {};
 	BaseLib_Time_GetSysTime(&st_LibTime);
 	st_LibTime.wYear += 1; //一年后过期
 	BaseLib_Time_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
