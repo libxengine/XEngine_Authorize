@@ -71,11 +71,13 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, true);			// 设置大图标
 	SetIcon(m_hIcon, false);		// 设置小图标
+#ifndef _DEBUG
 	if (setlocale(LC_ALL, ".UTF8") == NULL)
 	{
 		AfxMessageBox(_T("Error setting locale.\n"));
 		return false;
 	}
+#endif
 
 	// TODO: 在此添加额外的初始化代码
 	SetUnhandledExceptionFilter(Coredump_ExceptionFilter);

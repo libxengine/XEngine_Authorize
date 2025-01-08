@@ -147,7 +147,6 @@ void CDialog_Announcement::OnBnClickedButton1()
 	OnBnClickedButton3();
 }
 
-
 void CDialog_Announcement::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -236,7 +235,6 @@ void CDialog_Announcement::OnBnClickedButton2()
 	OnBnClickedButton3();
 }
 
-
 void CDialog_Announcement::OnBnClickedButton3()
 {
 	// TODO: 在此添加控件通知处理程序代码
@@ -307,20 +305,19 @@ void CDialog_Announcement::OnBnClickedButton3()
 	{
 		Json::Value st_JsonArray = st_JsonRoot["Array"][i];
 
-		XCHAR tszMsgBuffer[2048];
+		TCHAR tszMsgBuffer[2048];
 		TCHAR tszIndex[64];
 
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 		memset(tszIndex, '\0', 64);
 
 		_i64tot(st_JsonArray["nID"].asInt64(), tszIndex, 10);
-
 		int nMsgLen = st_JsonArray["tszContext"].asString().length();
-		BaseLib_Charset_UTFToAnsi(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
+		BaseLib_Charset_UTFToUnicode(st_JsonArray["tszContext"].asCString(), tszMsgBuffer, &nMsgLen);
 
 		m_ListAnnouncement.InsertItem(i, _T(""));
 		m_ListAnnouncement.SetItemText(i, 0, tszIndex);
-		m_ListAnnouncement.SetItemText(i, 1, A2W(tszMsgBuffer));
+		m_ListAnnouncement.SetItemText(i, 1, tszMsgBuffer);
 		m_ListAnnouncement.SetItemText(i, 2, A2W(st_JsonArray["tszCreateTime"].asCString()));
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
