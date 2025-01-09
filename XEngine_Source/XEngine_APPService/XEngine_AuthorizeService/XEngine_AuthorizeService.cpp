@@ -328,7 +328,7 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为关闭,采用明文传输"));
 	}
 	//发送信息报告
-	if (st_AuthConfig.st_XReport.bEnable)
+	if (st_AuthConfig.st_XReport.bEnable && !bIsTest)
 	{
 		if (InfoReport_APIMachine_Send(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName))
 		{
