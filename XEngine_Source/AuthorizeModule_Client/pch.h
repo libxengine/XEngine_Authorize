@@ -13,7 +13,6 @@
 #include <WinSock2.h>
 #endif
 #endif //PCH_H
-#include "../XAuth_BuildSwitch.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,9 +24,10 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include "../XAuth_BuildSwitch.h"
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
-#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Define.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Error.h>
 #include <XEngine_Include/XEngine_Client/XClient_Define.h>
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
 #include "../XAuth_Protocol.h"
@@ -58,7 +58,7 @@ extern XLONG AuthClient_dwErrorCode;
 
 #ifdef _MSC_BUILD
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
-#pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption")
 #pragma comment(lib,"XEngine_Client/XClient_Socket")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp")
 #pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemApi")

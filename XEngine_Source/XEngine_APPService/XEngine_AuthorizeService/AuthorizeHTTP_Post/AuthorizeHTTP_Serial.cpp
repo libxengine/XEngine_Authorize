@@ -41,7 +41,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			DBModule_MySQL_SerialQueryAll(&ppSt_SerialTable, &nListCount, nPosStart, nPosEnd);
 		}
 		Protocol_Packet_HttpSerialList(ptszMsgBuffer, &nSDLen, &ppSt_SerialTable, nListCount);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;
@@ -52,7 +52,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		int nNumberCount = 0;
 		int nSerialCount = 0;
 		XCHAR tszHasTime[128];
-		XENGINE_LIBTIMER st_AuthTimer;
+		XENGINE_LIBTIME st_AuthTimer;
 		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;
 
 		memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
@@ -114,7 +114,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_SerialInsert(pptszSerialNumber[i]);
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);
+		BaseLib_Memory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求插入序列号成功,个数:%d"), lpszClientAddr, nSerialCount);
@@ -139,7 +139,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_SerialDelete(ppSt_SerialTable[i]->tszSerialNumber);
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除序列号成功,删除个数:%d"), lpszClientAddr, nListCount);
@@ -164,7 +164,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_SerialPush(ppSt_SerialTable[i]);
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求推送自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);

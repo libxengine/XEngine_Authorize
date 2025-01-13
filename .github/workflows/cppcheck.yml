@@ -1,0 +1,35 @@
+name: cpp check workflows
+
+on:
+  push:
+    branches: 
+      - 'develop'
+    paths:
+      - 'XEngine_Source/**'
+      - 'XEngine_Release/**'
+      - '.github/**'
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout main repository code
+      uses: actions/checkout@v4
+      with:
+        ref: 'develop'
+
+    - name: Create static_analysis directory
+      run: mkdir -p static_analysis
+
+    - name: Run Cppcheck
+      run: |
+        sudo apt-get install -y cppcheck
+        cppcheck --enable=all --language=c++ --std=c++20 ./XEngine_Source/ --output-file=static_analysis/log.xml --xml
+      continue-on-error: true
+
+    - name: Upload Cppcheck Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: cppcheck_results
+        path: static_analysis/log.xml

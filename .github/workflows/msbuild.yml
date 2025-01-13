@@ -3,15 +3,15 @@ name: windows build workflows
 on:
   push:
     branches:
-      - develop
+      - 'develop'
     paths:
       - 'XEngine_Source/**'
       - 'XEngine_Release/**'
+      - '.github/**'
 
 jobs:
   build:
     strategy:
-      # Set fail-fast to false to ensure that feedback is delivered for all matrix combinations. Consider changing this to true when your workflow is stable.
       fail-fast: false
       matrix:
         configuration: [Debug ,Release]
@@ -31,7 +31,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: libxengine/libxengine
-          path: xengine
+          path: libxengine
           
       - name: sub module checkout (opensource)
         run: |
@@ -39,21 +39,33 @@ jobs:
             git submodule update
         shell: pwsh
 
-      # 设置依赖库的环境变量
-      - name: Set up Dependency Environment Variables
+      - name: Set up Dependency x86_64 Environment
+        if: matrix.platform == 'x64'
         run: |
-          echo "XENGINE_INCLUDE=${{ github.workspace }}/xengine" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "XENGINE_LIB32=${{ github.workspace }}/xengine/XEngine_Windows/x86" | Out-File -FilePath $env:GITHUB_ENV -Append
-          echo "XENGINE_LIB64=${{ github.workspace }}/xengine/XEngine_Windows/x64" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "XENGINE_INCLUDE=${{ github.workspace }}/libxengine" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "XENGINE_LIB64=${{ github.workspace }}/libxengine/XEngine_Windows" | Out-File -FilePath $env:GITHUB_ENV -Append
+        shell: pwsh
+      - name: Set up Dependency x86_32 Environment
+        if: matrix.platform == 'x86'
+        run: |
+          $response = Invoke-RestMethod -Uri "https://api.github.com/repos/libxengine/libxengine/releases/latest" -Headers @{"Accept"="application/vnd.github.v3+json"}
+          $latest_tag = $response.tag_name
+          Write-Host "Latest Tag: $latest_tag"
+    
+          $url = "https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_Windows_x86-32.zip"
+          Invoke-WebRequest -Uri $url -OutFile "XEngine_Windows_x86-32.zip"
+          Expand-Archive -Path ./XEngine_Windows_x86-32.zip -DestinationPath ./XEngine_Windows -Force
+
+          echo "XENGINE_INCLUDE=${{ github.workspace }}/XEngine_Windows" | Out-File -FilePath $env:GITHUB_ENV -Append
+          echo "XENGINE_LIB32=${{ github.workspace }}/XEngine_Windows/XEngine_Windows" | Out-File -FilePath $env:GITHUB_ENV -Append
         shell: pwsh
         
-      # 配置 MSBuild 的路径，准备构建 VC++ 项目
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
-      #编译
+
       - name: Build Solution
         run: msbuild XEngine_Source/XEngine.sln /p:Configuration=${{ matrix.configuration }} /p:Platform=${{ matrix.platform }}
-      #测试
+
       - name: Conditional Step for x86 Release
         if: matrix.configuration == 'Release' && matrix.platform == 'x86'
         run: |
@@ -73,8 +85,7 @@ jobs:
           cd XEngine_Release
           ./VSCopy_x64.bat
         shell: pwsh
-      
-      #将文件夹打包为 artifact
+
       - name: Upload folder as artifact with x86
         if: matrix.configuration == 'Release' && matrix.platform == 'x86'
         uses: actions/upload-artifact@v4

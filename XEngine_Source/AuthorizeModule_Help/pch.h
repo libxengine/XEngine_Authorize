@@ -24,6 +24,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include "../XAuth_BuildSwitch.h"
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
 /********************************************************************

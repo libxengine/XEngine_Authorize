@@ -7,4 +7,4 @@ HWND hMainWnd = NULL;
 HWND hUserWnd = NULL;
 HWND hConfigWnd = NULL;
 bool bCrypto = false;
-LPCXSTR lpszStuType[2] = { "离线","在线" };
+LPCTSTR lpszStuType[2] = { _T("离线"),_T("在线") };

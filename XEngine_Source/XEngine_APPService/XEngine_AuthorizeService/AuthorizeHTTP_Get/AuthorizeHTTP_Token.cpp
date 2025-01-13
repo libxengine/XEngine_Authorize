@@ -13,7 +13,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	memset(tszURLKey, '\0', sizeof(tszURLKey));
 	memset(tszURLValue, '\0', sizeof(tszURLValue));
-	BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
+	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 
 	if (0 == _tcsxnicmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
 	{
@@ -36,9 +36,9 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录失败，请求参数不正确"), lpszClientAddr);
 			return false;
 		}
-		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
-		BaseLib_OperatorString_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
-		BaseLib_OperatorString_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
+		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
+		BaseLib_String_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
 		//是否启用了动态码
 		if (st_FunSwitch.bSwitchDCode)
 		{
@@ -56,8 +56,8 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 			memset(tszTokenStr, '\0', sizeof(tszTokenStr));
 			memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
 
-			BaseLib_OperatorString_GetKeyValue(pptszList[4], "=", tszURLKey, tszTokenStr);
-			BaseLib_OperatorString_GetKeyValue(pptszList[5], "=", tszURLKey, tszDCodeStr);
+			BaseLib_String_GetKeyValue(pptszList[4], "=", tszURLKey, tszTokenStr);
+			BaseLib_String_GetKeyValue(pptszList[5], "=", tszURLKey, tszDCodeStr);
 
 			xhToken = _ttxoll(tszTokenStr);
 			if (!AuthHelp_DynamicCode_Get(xhToken, _ttxoi(tszDCodeStr)))
@@ -109,7 +109,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		}
 		if (0 == xhToken)
 		{
-			BaseLib_OperatorHandle_Create(&xhToken);
+			BaseLib_Handle_Create(&xhToken);
 		}
 		Session_Token_Insert(xhToken, &st_UserTable);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
@@ -122,7 +122,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
 
-		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 
 		if (!Session_Token_UPDate(_ttxoll(tszUserToken)))
 		{
@@ -141,7 +141,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
 
-		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 		//主动关闭
 		Session_Token_Delete(_ttxoll(tszUserToken));
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);

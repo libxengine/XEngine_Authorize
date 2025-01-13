@@ -141,7 +141,7 @@ extern "C" bool AuthHelp_MultiLogin_TimeMatch(LPCXSTR lpszLoginTime);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Get
 函数功能：获取剪贴板内容
@@ -165,7 +165,7 @@ extern "C" bool AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthHelp_ClipBoard_Get(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
+extern "C" bool AuthHelp_ClipBoard_Get(TCHAR * ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat = 1);
 /********************************************************************
 函数名称：AuthHelp_ClipBoard_Clear
 函数功能：清空剪贴板
@@ -220,5 +220,5 @@ extern "C" bool AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, 
   意思：是否成功添加
 备注：
 *********************************************************************/
-extern "C" bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip);
+extern "C" bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip);
 #endif

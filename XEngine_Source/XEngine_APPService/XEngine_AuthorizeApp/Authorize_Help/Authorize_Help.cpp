@@ -19,7 +19,7 @@ bool Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 {
 	TCHAR tszLogBuffer[8196];
 	TCHAR tszAddBuffer[8196];
-	TCHAR tszTimeStr[64];
+	XCHAR tszTimeStr[64];
 
 	memset(tszLogBuffer, '\0', sizeof(tszLogBuffer));
 	memset(tszAddBuffer, '\0', sizeof(tszAddBuffer));
@@ -27,18 +27,19 @@ bool Authorize_Help_LogPrint(LPCTSTR lpszLogBuffer)
 
 	::GetDlgItemText(hMainWnd, IDC_EDIT1, tszAddBuffer, sizeof(tszAddBuffer));
 
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	USES_CONVERSION;
+	BaseLib_Time_TimeToStr(tszTimeStr);
 	if (_tcslen(tszAddBuffer) <= 0)
 	{
-		_stprintf(tszLogBuffer, _T("%s:%s"), tszTimeStr, lpszLogBuffer);
+		_stprintf(tszLogBuffer, _T("%s:%s"), A2W(tszTimeStr), lpszLogBuffer);
 	}
 	else if (_tcslen(tszAddBuffer) >= 8196)
 	{
-		_stprintf(tszLogBuffer, _T("%s:%s"), tszTimeStr, lpszLogBuffer);
+		_stprintf(tszLogBuffer, _T("%s:%s"), A2W(tszTimeStr), lpszLogBuffer);
 	}
 	else
 	{
-		_stprintf(tszLogBuffer, _T("%s\r\n%s:%s"), tszAddBuffer, tszTimeStr, lpszLogBuffer);
+		_stprintf(tszLogBuffer, _T("%s\r\n%s:%s"), tszAddBuffer, A2W(tszTimeStr), lpszLogBuffer);
 	}
 	::SetDlgItemText(hMainWnd, IDC_EDIT1, tszLogBuffer);
 	return true;

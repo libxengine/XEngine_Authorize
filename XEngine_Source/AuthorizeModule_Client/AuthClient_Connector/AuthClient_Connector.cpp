@@ -186,7 +186,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 		XCHAR tszCodecBuffer[2048] = {};
 
 		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
-		OPenSsl_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (XBYTE*)tszCodecBuffer, tszPassStr);
+		Cryption_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (XBYTE*)tszCodecBuffer, tszPassStr);
 
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszCodecBuffer, st_ProtocolHdr.unPacketSize);
@@ -269,7 +269,7 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 		if (nMsgLen > 0 && _tcsxlen(pClass_This->tszPassStr) > 0)
 		{
 			//只有有后续数据的情况才需要解密
-			OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, pClass_This->tszPassStr);
+			Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, pClass_This->tszPassStr);
 		}
 		else
 		{

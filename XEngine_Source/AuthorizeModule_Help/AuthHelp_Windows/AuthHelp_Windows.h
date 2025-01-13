@@ -18,6 +18,6 @@ public:
 	~CAuthHelp_Windows();
 public:
 	bool AuthHelp_Windows_Dithering(HWND hWnd, int nDitheringDegree = 4, int nDitheringCareer = 30);
-	bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCXSTR lpszContextOfTip);
+	bool AuthHelp_Windows_CreateTooltip(HWND hWnd, LPCTSTR lpszContextOfTip);
 private:
 };

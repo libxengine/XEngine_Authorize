@@ -2,13 +2,12 @@ name: macos build workflows
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: 
+      - 'develop'
     paths:
       - 'XEngine_Source/**'
       - 'XEngine_Release/**'
-  
-permissions:
-  contents: read
+      - '.github/**'
   
 jobs:
   build:
@@ -16,6 +15,7 @@ jobs:
       matrix:
         include:
           - os: macos-13
+          - os: macos-14
     runs-on: ${{ matrix.os }}
     
     steps:
@@ -30,7 +30,6 @@ jobs:
         with:
           repository: libxengine/libxengine
           path: libxengine
-          ref: 'master'
 
       - name: sub module checkout (opensource)
         run: |
@@ -40,14 +39,30 @@ jobs:
       - name: brew install
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             
-      # 设置依赖库的环境变量
-      - name: Set up Dependency Environment Variables
+      - name: Set up Dependency x86_64 Environment 
+        if: matrix.os == 'macos-13'
         run: |
             cd libxengine
             chmod 777 *
             ./XEngine_LINEnv.sh -i 3
-            cd ..
-      #编译
+      - name: Set up Dependency Arm64 Environment 
+        if: matrix.os == 'macos-14'
+        run: |
+            cd libxengine
+            chmod 777 *
+            ./XEngine_LINEnv.sh -i 0
+
+            latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/libxengine/libxengine.git | awk '{print $2}' | sed 's/refs\/tags\///' | tail -n 1)
+            
+            wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_Mac_Arm64.zip
+            unzip ./XEngine_Mac_Arm64.zip -d ./XEngine_Mac_Arm64
+            cd XEngine_Mac_Arm64
+
+            sudo mkdir -p /usr/local/include
+            sudo mkdir -p /usr/local/lib
+            sudo cp -rf ./XEngine_Include /usr/local/include
+            sudo find ./XEngine_Mac -name "*.dylib" -exec cp {} /usr/local/lib \;
+
       - name: make debug
         run: | 
             cd XEngine_Source
@@ -65,8 +80,15 @@ jobs:
             cd XEngine_Release
             ./XEngine_AuthorizeService -t
 
-      - name: Upload folder as artifact with mac
+      - name: Upload folder as artifact with mac x64
+        if: matrix.os == 'macos-13'
         uses: actions/upload-artifact@v4
         with:
           name: XEngine_AuthorizeService-x86_64-Mac
+          path: XEngine_Release/
+      - name: Upload folder as artifact with mac arm
+        if: matrix.os == 'macos-14'
+        uses: actions/upload-artifact@v4
+        with:
+          name: XEngine_AuthorizeService-Arm64-Mac
           path: XEngine_Release/

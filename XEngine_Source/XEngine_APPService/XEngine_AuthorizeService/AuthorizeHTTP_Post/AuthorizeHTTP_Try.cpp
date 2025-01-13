@@ -38,7 +38,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 			DBModule_MySQL_TryList(&ppSt_AuthVer, &nListCount);
 		}
 		Protocol_Packet_HttpTryList(ptszMsgBuffer, &nSDLen, &ppSt_AuthVer, nListCount);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_AuthVer, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_AuthVer, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		free(ptszMsgBuffer);
 		ptszMsgBuffer = NULL;

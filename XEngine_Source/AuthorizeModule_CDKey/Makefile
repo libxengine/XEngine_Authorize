@@ -1,4 +1,4 @@
-CC = g++ -Wall -std=c++17 -fPIC
+CC = g++ -Wall -std=c++20 -fPIC
 PLATFORM = linux
 PLATVER = 
 PLATDIR = 
@@ -7,7 +7,7 @@ LIBFLAG =
 RELEASE = 0
 UNICODE = 0
 LOADHDR = -I ./
-LIB = -lXEngine_BaseLib
+LIB = -lXEngine_BaseLib -lXEngine_SystemConfig
 LIBEX = 
 LOADSO = 
 OBJECTS = Authorize_Serial.o Authorize_CDKey.o pch.o

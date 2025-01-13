@@ -11,13 +11,13 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	LPCXSTR lpszAPINotice = _X("notice");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-	BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
+	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 
 	if (0 == _tcsxnicmp(lpszAPITime, tszURLValue, _tcsxlen(lpszAPITime)))
 	{
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
-		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 
 		AUTHREG_USERTABLE st_UserTable = {};
 		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable))
@@ -37,7 +37,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 			return false;
 		}
 		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, nListCount);
 	}
@@ -62,7 +62,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	{
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
-		BaseLib_OperatorString_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 
 		AUTHREG_USERTABLE st_UserTable = {};
 		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable))

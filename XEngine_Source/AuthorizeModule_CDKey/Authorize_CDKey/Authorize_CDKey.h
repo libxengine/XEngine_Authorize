@@ -22,7 +22,7 @@ public:
 	bool Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal);
 	bool Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal);
 public:
-	bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer = 0, XENGINE_LIBTIMER* pSt_DayTimer = NULL);
+	bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer = 0, XENGINE_LIBTIME* pSt_DayTimer = NULL);
 	bool Authorize_CDKey_UserRegister(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialStr);
 	bool Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, LPCXSTR lpszSerialNumber = NULL);
 	bool Authorize_CDKey_WriteTime(LPCXSTR lpszFileKey, int nCount = 0);

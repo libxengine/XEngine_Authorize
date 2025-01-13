@@ -56,7 +56,7 @@ extern "C" XLONG Authorize_GetLastError(int *pInt_SysError = NULL);
   意思：是否生成成功
 备注：输入的时间不能超过99999,多天卡现在由用户直接使用pSt_CustomTimer参数指定,不在内部指定了
 *********************************************************************/
-extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER * pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
+extern "C" bool Authorize_Serial_Creator(XCHAR * **ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIME * pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY);
 /********************************************************************
 函数名称：Authorize_Serial_Create
 函数功能：创建自定义无类型序列号
@@ -109,7 +109,7 @@ extern "C" bool Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPCXSTR lps
   意思：是否获取成功
 备注：
 *********************************************************************/
-extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer = NULL);
+extern "C" bool Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIME* pSt_CustomTimer = NULL);
 /************************************************************************/
 /*                           本地授权导出函数                           */
 /************************************************************************/
@@ -222,7 +222,7 @@ extern "C" bool Authorize_CDKey_ReadMemory(LPCXSTR lpszMsgBuffer, int nMsgLen, X
   意思：是否构造成功
 备注：此函数会修改st_AuthRegInfo的时间信息成员
 *********************************************************************/
-extern "C" bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer = 0, XENGINE_LIBTIMER* pSt_DayTimer = NULL);
+extern "C" bool Authorize_CDKey_BuildKeyTime(XENGINE_AUTHORIZE_LOCAL* pSt_AuthLocal, __int64x nDayTimer = 0, XENGINE_LIBTIME* pSt_DayTimer = NULL);
 /********************************************************************
 函数名称：Authorize_CDKey_UserRegister
 函数功能：用户注册CDKEY函数

@@ -33,7 +33,7 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 					memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
 					_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-					OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+					Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
 					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament);
 				}
 				else
@@ -41,9 +41,9 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
 				}
 			}
-			BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return 0;
 }
@@ -60,7 +60,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	AUTHREG_BANNED st_Banned;
 	memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 	_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
-	BaseLib_OperatorIPAddr_SegAddr(st_Banned.tszIPAddr);
+	APIAddr_IPAddr_SegAddr(st_Banned.tszIPAddr);
 
 	//是否在黑名单
 	bool bSuccess = false;
@@ -240,7 +240,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "request is failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
+			BaseLib_Memory_Free((XPPPMEM)&pptszList, nListCount);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,发送的URL请求参数不正确:%s"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return false;
 		}
@@ -250,7 +250,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszURLKey, '\0', sizeof(tszURLKey));
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
-		BaseLib_OperatorString_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
+		BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) || 
 			0 == _tcsxnicmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
 		{
@@ -260,7 +260,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		{
 			XEngine_AuthorizeHTTP_Token(lpszClientAddr, pptszList, nListCount);
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&pptszList, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&pptszList, nListCount);
 	}
 	else
 	{

@@ -9,7 +9,7 @@
 
 // 添加要在此处预编译的标头
 #include "framework.h"
-
+#include <atlconv.h>
 #endif //PCH_H
 #include <json/json.h>
 #include <list>
@@ -20,10 +20,11 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Define.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
+#include "../../XAuth_BuildSwitch.h"
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
@@ -46,7 +47,7 @@ extern HWND hMainWnd;
 extern HWND hUserWnd;
 extern HWND hConfigWnd;
 extern bool bCrypto;
-extern LPCXSTR lpszStuType[2];
+extern LPCTSTR lpszStuType[2];
 
 #ifdef _DEBUG
 #ifdef _WIN64
@@ -72,5 +73,5 @@ extern LPCXSTR lpszStuType[2];
 
 #pragma comment(lib,"Dbghelp.lib")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_OPenSsl.lib")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption.lib")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp.lib")

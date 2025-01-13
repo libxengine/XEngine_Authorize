@@ -34,7 +34,7 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
 
 				_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-				OPenSsl_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
 				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode);
 			}
 			else
@@ -42,7 +42,7 @@ XHTHREAD CALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
 			}
 		}
-		BaseLib_OperatorMemory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return 0;
 }

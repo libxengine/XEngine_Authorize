@@ -125,7 +125,7 @@ bool CSession_Token::Session_Token_Insert(XNETHANDLE xhToken, AUTHREG_USERTABLE*
     AUTHSESSION_TOKENCLIENT st_TokenClient;
     memset(&st_TokenClient,'\0',sizeof(AUTHSESSION_TOKENCLIENT));
 
-    BaseLib_OperatorTime_GetSysTime(&st_TokenClient.st_LibTimer);
+    BaseLib_Time_GetSysTime(&st_TokenClient.st_LibTimer);
     memcpy(&st_TokenClient.st_UserTable, pSt_UserTable, sizeof(AUTHREG_USERTABLE));
 
     st_Locker.lock();
@@ -186,7 +186,7 @@ bool CSession_Token::Session_Token_UPDate(XNETHANDLE xhToken)
         st_Locker.unlock_shared();
         return false;
 	}
-    BaseLib_OperatorTime_GetSysTime(&stl_MapIterator->second.st_LibTimer);
+    BaseLib_Time_GetSysTime(&stl_MapIterator->second.st_LibTimer);
 	st_Locker.unlock_shared();
 	return true;
 }
@@ -329,7 +329,7 @@ bool CSession_Token::Session_Token_RenewalTime(XNETHANDLE xhToken, int* pInt_Ren
 XHTHREAD CSession_Token::Session_Token_Thread(XPVOID lParam)
 {
     CSession_Token *pClass_This = (CSession_Token *)lParam;
-	XENGINE_LIBTIMER st_LibTimer;
+	XENGINE_LIBTIME st_LibTimer;
 	list<XNETHANDLE> stl_ListNotify;
 
     while (pClass_This->bIsRun)
@@ -339,10 +339,10 @@ XHTHREAD CSession_Token::Session_Token_Thread(XPVOID lParam)
         unordered_map<XNETHANDLE, AUTHSESSION_TOKENCLIENT>::iterator stl_MapIterator = pClass_This->stl_MapToken.begin();
         for (; stl_MapIterator != pClass_This->stl_MapToken.end(); stl_MapIterator++)
         {
-            BaseLib_OperatorTime_GetSysTime(&st_LibTimer);                  //获取现在的系统时间
+            BaseLib_Time_GetSysTime(&st_LibTimer);                  //获取现在的系统时间
             __int64x nOnlineSpan = 0;                                       //在线时间
             //用户登录了多少秒
-            BaseLib_OperatorTimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+            BaseLib_TimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
             if (stl_MapIterator->second.nTimeout > 0)
             {
 				if (nOnlineSpan > stl_MapIterator->second.nTimeout)

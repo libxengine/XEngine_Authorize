@@ -45,7 +45,7 @@ LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 	static int i = 0;
 	XCHAR tszFileStr[MAX_PATH] = {};
 	XCHAR tszTimeStr[128] = {};
-	BaseLib_OperatorTime_TimeToStr(tszTimeStr);
+	BaseLib_Time_TimeToStr(tszTimeStr);
 	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
 
 	HANDLE hDumpFile = CreateFileA(tszFileStr, GENERIC_READ | GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
@@ -71,6 +71,13 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, true);			// 设置大图标
 	SetIcon(m_hIcon, false);		// 设置小图标
+#ifndef _DEBUG
+	if (setlocale(LC_ALL, ".UTF8") == NULL)
+	{
+		AfxMessageBox(_T("Error setting locale.\n"));
+		return false;
+	}
+#endif
 
 	// TODO: 在此添加额外的初始化代码
 	SetUnhandledExceptionFilter(Coredump_ExceptionFilter);

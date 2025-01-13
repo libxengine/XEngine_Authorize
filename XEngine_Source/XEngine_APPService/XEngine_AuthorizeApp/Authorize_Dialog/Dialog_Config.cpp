@@ -88,7 +88,7 @@ BOOL CDialog_Config::OnInitDialog()
 	m_ListEncrypto.SetCurSel(0);
 	m_ListEncrypto.EnableWindow(false);
 
-	m_EditPassword.SetWindowText("123123");
+	m_EditPassword.SetWindowText(_T("123123"));
 	m_EditPassword.EnableWindow(false);
 
 	hConfigWnd = m_hWnd;
@@ -106,7 +106,7 @@ void CDialog_Config::OnBnClickedButton1()
 	CString m_StrPass;
 	CString m_StrToken;
 	CString m_StrDCode;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
@@ -115,31 +115,32 @@ void CDialog_Config::OnBnClickedButton1()
 	m_EditPass.GetWindowText(m_StrPass);
 	m_EditDCode.GetWindowText(m_StrDCode);
 	
-	TCHAR tszMDBuffer[64] = {};
+	USES_CONVERSION;
+	XCHAR tszMDBuffer[64] = {};
 	if (m_RadioPassEnable.GetCheck() == BST_CHECKED)
 	{
 		int nPLen = m_StrPass.GetLength();
 		XBYTE byMD5Buffer[MAX_PATH] = {};
-		OPenSsl_Api_Digest(m_StrPass.GetBuffer(), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
-		BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
+		Cryption_Api_Digest(W2A(m_StrPass.GetBuffer()), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
+		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
 	}
 	else
 	{
-		_tcsxcpy(tszMDBuffer, m_StrPass.GetBuffer());
+		_tcsxcpy(tszMDBuffer, W2A(m_StrPass.GetBuffer()));
 	}
 	if (m_StrDCode.GetLength() > 0)
 	{
 		m_EditToken.GetWindowText(m_StrToken);
-		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, m_StrToken.GetBuffer(), m_StrDCode.GetBuffer());
+		_xstprintf(tszUrlAddr, _X("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d&token=%s&dcode=%s"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()), W2A(m_StrUser.GetBuffer()), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS, W2A(m_StrToken.GetBuffer()), W2A(m_StrDCode.GetBuffer()));
 	}
 	else
 	{
-		_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrUser.GetBuffer(), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
+		_xstprintf(tszUrlAddr, _X("http://%s:%s/api?function=login&user=%s&pass=%s&device=%d"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()), W2A(m_StrUser.GetBuffer()), tszMDBuffer, ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS);
 	}
 	//请求用户信息
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -148,11 +149,11 @@ void CDialog_Config::OnBnClickedButton1()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
@@ -177,9 +178,9 @@ void CDialog_Config::OnBnClickedButton1()
 	}
 	m_StrToken.Format(_T("%lld"), st_JsonRoot["xhToken"].asUInt64());
 	m_EditToken.SetWindowText(m_StrToken);
-	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
+	m_EditTimeout.SetWindowText(A2W(st_JsonRoot["tszTimeEnd"].asCString()));
 
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	Authorize_Help_LogPrint(_T("登录成功"));
 
 	m_BtnLogin.EnableWindow(false);
@@ -194,18 +195,19 @@ void CDialog_Config::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditToken.GetWindowText(m_StrToken);
 
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=close&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/api?function=close&token=%s"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()), W2A(m_StrToken.GetBuffer()));
 	//请求用户信息
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -214,11 +216,11 @@ void CDialog_Config::OnBnClickedButton2()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
@@ -238,10 +240,10 @@ void CDialog_Config::OnBnClickedButton2()
 		Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
 		return;
 	}
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 
-	m_EditToken.SetWindowText("");
-	m_EditTimeout.SetWindowText("");
+	m_EditToken.SetWindowText(_T(""));
+	m_EditTimeout.SetWindowText(_T(""));
 
 	m_BtnLogin.EnableWindow(true);
 	m_BtnLogout.EnableWindow(false);
@@ -255,18 +257,18 @@ void CDialog_Config::OnBnClickedButton5()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 	m_EditToken.GetWindowText(m_StrToken);
-
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=update&token=%s"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer(), m_StrToken.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/api?function=update&token=%s"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()), W2A(m_StrToken.GetBuffer()));
 	//请求用户信息
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -275,11 +277,11 @@ void CDialog_Config::OnBnClickedButton5()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
@@ -299,8 +301,8 @@ void CDialog_Config::OnBnClickedButton5()
 		Authorize_Help_LogPrint(_T("续期失败,无法继续"));
 		return;
 	}
-	m_EditTimeout.SetWindowText(st_JsonRoot["tszTimeEnd"].asCString());
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	m_EditTimeout.SetWindowText(A2W(st_JsonRoot["tszTimeEnd"].asCString()));
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
 
 
@@ -327,17 +329,18 @@ void CDialog_Config::OnBnClickedButton8()
 	// TODO: 在此添加控件通知处理程序代码
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
-	TCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[MAX_PATH];
 	memset(tszUrlAddr, '\0', MAX_PATH);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
 
-	_xstprintf(tszUrlAddr, _T("http://%s:%s/api?function=dcode&user=get"), m_StrIPAddr.GetBuffer(), m_StrIPPort.GetBuffer());
+	USES_CONVERSION;
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/api?function=dcode&user=get"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//请求用户信息
 	int nMsgLen = 0;
-	TCHAR* ptszMsgBuffer = NULL;
-	APIClient_Http_Request(_T("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
+	XCHAR* ptszMsgBuffer = NULL;
+	APIClient_Http_Request(_X("GET"), tszUrlAddr, NULL, NULL, &ptszMsgBuffer, &nMsgLen);
 
 	Json::Value st_JsonRoot;
 	JSONCPP_STRING st_JsonError;
@@ -346,11 +349,11 @@ void CDialog_Config::OnBnClickedButton8()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		TCHAR tszMsgBuffer[2048];
+		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		OPenSsl_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, m_StrCodecPass.GetBuffer());
+		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
@@ -376,12 +379,12 @@ void CDialog_Config::OnBnClickedButton8()
 	memset(tszDCodeStr, '\0', sizeof(tszDCodeStr));
 	memset(tszTokenStr, '\0', sizeof(tszTokenStr));
 
-	_xstprintf(tszDCodeStr, _T("%d"), st_JsonRoot["nDynamicCode"].asUInt());
-	_xstprintf(tszTokenStr, _T("%llu"), st_JsonRoot["xhToken"].asUInt64());
+	_stprintf(tszDCodeStr, _T("%d"), st_JsonRoot["nDynamicCode"].asUInt());
+	_stprintf(tszTokenStr, _T("%llu"), st_JsonRoot["xhToken"].asUInt64());
 
 	m_EditToken.SetWindowText(tszTokenStr);
 	m_EditDCode.SetWindowText(tszDCodeStr);
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
 
 

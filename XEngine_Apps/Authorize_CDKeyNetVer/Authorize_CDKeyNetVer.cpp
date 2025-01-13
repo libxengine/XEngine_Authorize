@@ -3,8 +3,9 @@
 #include <tchar.h>
 #pragma comment(lib,"Ws2_32")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
-#pragma comment(lib,"XEngine_Core/XEngine_OPenSsl")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption")
 #pragma comment(lib,"XEngine_Client/XClient_APIHelp")
+#pragma comment(lib,"XEngine_SystemSdk/XEngine_SystemConfig")
 #ifdef _WIN64
 #pragma comment(lib,"../../XEngine_Source/x64/Debug/jsoncpp")
 #pragma comment(lib,"../../XEngine_Source/x64/Debug/AuthorizeModule_CDKey")
@@ -22,17 +23,19 @@
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Define.h>
-#include <XEngine_Include/XEngine_Core/OPenSsl_Error.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Define.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Define.h>
+#include <XEngine_Include/XEngine_SystemSdk/SystemConfig_Error.h>
 #include "../../XEngine_Source/XAuth_Protocol.h"
 #include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Define.h"
 #include "../../XEngine_Source/AuthorizeModule_CDKey/CDKey_Error.h"
 
 //需要优先配置XEngine
 //WINDOWS支持VS2022 x64 debug 编译调试
-//g++ -std=c++17 -Wall -g Authorize_CDKeyNetVer.cpp -o Authorize_CDKeyNetVer.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_OPenSsl -lXClient_APIHelp -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
+//g++ -std=c++17 -Wall -g Authorize_CDKeyNetVer.cpp -o Authorize_CDKeyNetVer.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -lXEngine_BaseLib -L ../../XEngine_Release -lXEngine_Cryption -lXClient_APIHelp -lXEngine_SystemConfig -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define XENGINE_AUTHORIZE_CDKEY_CRYPTO
 
@@ -78,7 +81,7 @@ int main()
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
 	nLen = st_JsonRoot.toStyledString().length();
-	OPenSsl_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
 	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, tszCodecBuffer, &nCode, &ptszCreateBuffer, &nLen))
 #else
 	if (!APIClient_Http_Request(_X("POST"), lpszCreateUrl, st_JsonRoot.toStyledString().c_str(), &nCode, &ptszCreateBuffer, &nLen))
@@ -94,15 +97,15 @@ int main()
 	//解密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
-	OPenSsl_XCrypto_Decoder(ptszCreateBuffer, &nLen, tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Decoder(ptszCreateBuffer, &nLen, tszCodecBuffer, lpszPasswd);
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
 	//你也可以通过授权模块的API函数来读内存,都一回事,这里为了方便直接写了,请求分钟卡,拥有10分钟,也可以写自定义时间格式
-	BaseLib_OperatorFile_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
+	SystemConfig_File_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
 #else
-	BaseLib_OperatorFile_WriteProfileFromMemory(ptszCreateBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
+	SystemConfig_File_WriteProfileFromMemory(ptszCreateBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszCreateBuffer);
 #endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszCreateBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszCreateBuffer);
 	//2. 授权CDKEY
 	XCHAR* ptszAuthBuffer = NULL;
 	LPCXSTR lpszAuthUrl = _X("http://127.0.0.1:5302/auth/cdkey/auth");
@@ -110,7 +113,7 @@ int main()
 	//加密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 	nLen = nLen;
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
 	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszCodecBuffer, &nCode, &ptszAuthBuffer, &nLen))
 #else
 	if (!APIClient_Http_Request(_X("POST"), lpszAuthUrl, tszMsgBuffer, &nCode, &ptszAuthBuffer, &nLen))
@@ -123,15 +126,15 @@ int main()
 	//解密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
-	OPenSsl_XCrypto_Decoder(ptszAuthBuffer, &nLen, tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Decoder(ptszAuthBuffer, &nLen, tszCodecBuffer, lpszPasswd);
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
 	//你也可以通过授权模块的API函数来读内存,都一回事,这里为了方便直接写了,请求分钟卡,拥有10分钟,也可以写自定义时间格式
-	BaseLib_OperatorFile_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
+	SystemConfig_File_WriteProfileFromMemory(tszCodecBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
 #else
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszAuthBuffer);
-	BaseLib_OperatorFile_WriteProfileFromMemory(ptszAuthBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
+	SystemConfig_File_WriteProfileFromMemory(ptszAuthBuffer, nLen, "AuthReg", "tszLeftTime", "10", tszMsgBuffer, &nLen);
 #endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszAuthBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszAuthBuffer);
 	//3. 验证CDKEY
 	XCHAR* ptszVerBuffer = NULL;
 	LPCXSTR lpszVerUrl = _X("http://127.0.0.1:5302/auth/cdkey/ver");
@@ -142,7 +145,7 @@ int main()
 #ifdef XENGINE_AUTHORIZE_CDKEY_CRYPTO
 	//加密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
-	OPenSsl_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Encoder(tszMsgBuffer, &nLen, (XBYTE*)tszCodecBuffer, lpszPasswd);
 	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszCodecBuffer, &nCode, &ptszVerBuffer, &nLen))
 #else
 	if (!APIClient_Http_Request(_X("POST"), lpszVerUrl, tszMsgBuffer, &nCode, &ptszVerBuffer, &nLen))
@@ -155,14 +158,14 @@ int main()
 	//解密
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
-	OPenSsl_XCrypto_Decoder(ptszVerBuffer, &nLen, tszCodecBuffer, lpszPasswd);
+	Cryption_XCrypto_Decoder(ptszVerBuffer, &nLen, tszCodecBuffer, lpszPasswd);
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, tszCodecBuffer);
 	Authorize_CDKey_ReadMemory(tszCodecBuffer, nLen, &st_Authorize);
 #else
 	printf("接受到数据,大小:%d,内容:\n%s\n", nLen, ptszVerBuffer);
 	Authorize_CDKey_ReadMemory(ptszVerBuffer, nLen, &st_Authorize);
 #endif
-	BaseLib_OperatorMemory_FreeCStyle((XPPMEM)&ptszVerBuffer);
+	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszVerBuffer);
 
 	//4. 也可以本地验证
 	if (Authorize_CDKey_GetLeftTimer(&st_Authorize))

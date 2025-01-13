@@ -43,7 +43,7 @@ CAuthHelp_ClipBoard::~CAuthHelp_ClipBoard()
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCTSTR lpszMsgBuffer, int nMsgLen, XLONG dwFormat)
 {
 	Help_IsErrorOccur = true;
 
@@ -68,17 +68,21 @@ bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsg
 	}
 	HANDLE hGlobal = INVALID_HANDLE_VALUE;
 	//GlobalAlloc 是分配指定的内存空间 单位为字节
-	hGlobal = GlobalAlloc(GHND, nMsgLen + 1);
+	hGlobal = GlobalAlloc(GMEM_MOVEABLE, nMsgLen * sizeof(TCHAR) + 1);
 	if (NULL == hGlobal)
 	{
 		Help_IsErrorOccur = true;
 		Help_dwErrorCode = ERROR_AUTHORIZE_MODULE_HELP_CLIPBOARD_MALLOC;
 		return false;
 	}
-	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 XPVOID
-	memcpy(ptszBuffer, lpszMsgBuffer, nMsgLen);
+	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hGlobal); //锁定一个全局内存对象 并且返回一个指向其第一个内存地址的指针 返回类型为 XPVOID
+	memcpy(ptszBuffer, lpszMsgBuffer, nMsgLen * sizeof(TCHAR));
 
-	SetClipboardData(dwFormat, hGlobal);       //设置到剪贴板内容格式，然后是 数据的指针。
+#ifdef _UNICODE
+	SetClipboardData(CF_UNICODETEXT, hGlobal);       
+#else
+	SetClipboardData(CF_TEXT, hGlobal);    
+#endif
 
 	GlobalUnlock(hGlobal);                     //解锁。这样 其他程序才能操作这款内存！
 	GlobalFree(hGlobal);                       //释放这个申请的空间
@@ -109,7 +113,7 @@ bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Set(LPCXSTR lpszMsgBuffer, int nMsg
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
+bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(TCHAR* ptszMsgBuffer, int* pInt_MsgLen, XLONG dwFormat /* = 1 */)
 {
 	Help_IsErrorOccur = false;
 
@@ -134,7 +138,7 @@ bool CAuthHelp_ClipBoard::AuthHelp_ClipBoard_Get(XCHAR* ptszMsgBuffer, int* pInt
 		return false;
 	}
 
-	XCHAR* ptszBuffer = (XCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
+	TCHAR* ptszBuffer = (TCHAR*)GlobalLock(hCliBd);        //将句柄转化为地址
 	*pInt_MsgLen = (int)GlobalSize(hCliBd) - 1;                 //剪贴板内容大小
 
 	memcpy(ptszMsgBuffer, ptszBuffer, *pInt_MsgLen);

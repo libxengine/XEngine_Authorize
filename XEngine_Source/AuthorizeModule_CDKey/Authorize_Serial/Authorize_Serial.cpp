@@ -69,7 +69,7 @@ CAuthorize_Serial::~CAuthorize_Serial()
   意思：是否生成成功
 备注：输入的时间不能超过99999,多天卡现在由用户直接使用pSt_CustomTimer参数指定,不在内部指定了
 *********************************************************************/
-bool CAuthorize_Serial::Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIMER* pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType /* = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY */)
+bool CAuthorize_Serial::Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LPCXSTR lpszUserHeader, int nCardNumber, int nFieldNumber, XENGINE_LIBTIME* pSt_CustomTimer, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType /* = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY */)
 {
     Authorize_IsErrorOccur = false;
     //参数检查
@@ -79,7 +79,7 @@ bool CAuthorize_Serial::Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LP
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
         return false;
     }
-    BaseLib_OperatorMemory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+    BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
     srand((unsigned int)time(NULL));                //取随机因子
 
     for (int i = 0; i < nCardNumber; i++)
@@ -225,7 +225,7 @@ bool CAuthorize_Serial::Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPC
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
 		return false;
 	}
-	BaseLib_OperatorMemory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+	BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
 	srand((unsigned int)time(NULL));                //取随机因子
 
 	for (int i = 0; i < nCardNumber; i++)
@@ -265,7 +265,7 @@ bool CAuthorize_Serial::Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPC
   意思：是否获取成功
 备注：
 *********************************************************************/
-bool CAuthorize_Serial::Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIMER* pSt_CustomTimer /* = NULL */)
+bool CAuthorize_Serial::Authorize_Serial_GetType(LPCXSTR lpszSerialNumber, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, XENGINE_LIBTIME* pSt_CustomTimer /* = NULL */)
 {
     Authorize_IsErrorOccur = false;
 
@@ -464,7 +464,7 @@ bool CAuthorize_Serial::Authorize_Serial_Random(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
     
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 0, 1);
+    BaseLib_Handle_CreateStr(ptszFillBuffer, 5, 0, 1);
     return true;
 }
 /********************************************************************
@@ -484,7 +484,7 @@ bool CAuthorize_Serial::Authorize_Serial_RandomWord(XCHAR *ptszFillBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFillBuffer, 5, 2, 1);
+    BaseLib_Handle_CreateStr(ptszFillBuffer, 5, 2, 1);
     return true;
 }
 /********************************************************************
@@ -504,6 +504,6 @@ bool CAuthorize_Serial::Authorize_Serial_RandomNumber(XCHAR *ptszFilleBuffer)
 {
     Authorize_IsErrorOccur = false;
 
-    BaseLib_OperatorHandle_CreateStr(ptszFilleBuffer, 5, 1);
+    BaseLib_Handle_CreateStr(ptszFilleBuffer, 5, 1);
     return true;
 }
