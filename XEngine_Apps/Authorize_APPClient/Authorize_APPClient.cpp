@@ -295,7 +295,7 @@ int AuthClient_Login()
 int AuthClient_Notice()
 {
 	XCHAR tszURLStr[MAX_PATH] = {};
-	_xstprintf(tszURLStr, _T("http://127.0.0.1:5302/api?function=notice&token=%lld"), xhToken);
+	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=notice&token=%lld"), xhToken);
 
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
@@ -385,7 +385,7 @@ int AuthClient_GetTime()
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 	XCHAR tszURLStr[MAX_PATH] = {};
-	_xstprintf(tszURLStr, _T("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
+	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
 
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszUserPass"] = lpszPass;
