@@ -1,3 +1,25 @@
+XEngine_Authorize V3.16.0.1001
+
+更新:匹配XEngineV9
+更新:依赖库
+更新:升级编译器到c++20,c17
+修改:windows的构建从ansi修改为unicode版本
+修改:测试启动取消了发送信息报告的功能
+修正:app应用在windows构建问题
+修正:在其他语言系统下乱码问题
+修正:通告乱码问题
+修正:拷贝序列号错误
+
+update:match xengine v9.x
+update:depend library
+update:compiler version to c++20 and c17
+modify:windows build character to unicode from ansi
+modify:cancel send info report when test start
+fixed:app build on windows
+fixed:Displays incorrectly in other language systems
+fixed:announcement context Garbled characters
+fixed:copy serial number incorrect
+================================================================
 XEngine_Authorize V3.15.0.1001
 
 增加:密码加密
