@@ -86,9 +86,11 @@ jobs:
         with:
           name: XEngine_AuthorizeService-x86_64-Mac
           path: XEngine_Release/
+          retention-days: 1
       - name: Upload folder as artifact with mac arm
         if: matrix.os == 'macos-14'
         uses: actions/upload-artifact@v4
         with:
           name: XEngine_AuthorizeService-Arm64-Mac
           path: XEngine_Release/
+          retention-days: 1
