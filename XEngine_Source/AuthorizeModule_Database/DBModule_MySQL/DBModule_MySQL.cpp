@@ -265,6 +265,136 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 	return true;
 }
 /********************************************************************
+函数名称：DBModule_MySQL_CodeQuery
+函数功能：硬件吗查询用户信息
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：要查询的指定信息
+ 参数.二：pSt_UserInfo
+  In/Out：Out
+  类型：数据结构指针
+  可空：Y
+  意思：如果为空NULL，那么将只判断此用户是否存在
+返回值
+  类型：逻辑型
+  意思：是否查询成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
+{
+	SQLPacket_IsErrorOccur = false;
+	//查询
+	XNETHANDLE xhTable = 0;
+	__int64u nColumn = 0;
+	__int64u nRow = 0;
+
+	XCHAR tszSQLStatement[1024];    //SQL语句
+	memset(tszSQLStatement, '\0', 1024);
+
+	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` WHERE HardCode = '%s'"), lpszHardCode);
+	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
+		return false;
+	}
+	if (nRow <= 0)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
+		return false;
+	}
+	XCHAR** pptszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+	if (NULL != pSt_UserInfo)
+	{
+		memset(pSt_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
+
+		//ID
+		int nFliedValue = 0;
+
+		//用户名
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserName, pptszResult[nFliedValue]);
+		}
+
+		//密码
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, pptszResult[nFliedValue]);
+		}
+
+		//过期时间
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->tszLeftTime, pptszResult[nFliedValue]);
+		}
+
+		//电子邮件
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszEMailAddr, pptszResult[nFliedValue]);
+		}
+
+		//硬件码
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->tszHardCode, pptszResult[nFliedValue]);
+		}
+
+		//充值卡类型
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(pptszResult[nFliedValue]);
+		}
+
+		//QQ号
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->st_UserInfo.nPhoneNumber = _ttxoll(pptszResult[nFliedValue]);
+		}
+
+		//身份证ID
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->st_UserInfo.nIDNumber = _ttxoll(pptszResult[nFliedValue]);
+		}
+
+		//用户级别 -1表示封禁
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(pptszResult[nFliedValue]);
+		}
+
+		//登录日期
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue] && _tcsxlen(pptszResult[nFliedValue]) > 0)
+		{
+			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszLoginTime, pptszResult[nFliedValue]);
+		}
+		//注册日期
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszCreateTime, pptszResult[nFliedValue]);
+		}
+
+	}
+	DataBase_MySQL_FreeResult(xhData, xhTable);
+	return true;
+}
+/********************************************************************
 函数名称：DBModule_MySQL_UserPay
 函数功能：用户充值函数
  参数.一：lpszUserName
