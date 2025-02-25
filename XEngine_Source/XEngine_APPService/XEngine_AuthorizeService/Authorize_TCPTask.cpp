@@ -186,6 +186,14 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			else
 			{
+				if (!st_FunSwitch.bSwitchHCLogin)
+				{
+					pSt_ProtocolHdr->wReserve = 251;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，硬件码：%s，登录失败，服务端关闭此功能"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
+				}
 				//查询硬件吗
 				if (0 == st_AuthConfig.st_XSql.nDBType)
 				{

@@ -132,6 +132,7 @@ typedef struct
 	bool bSwitchTry;                                        //临时验证
 	bool bSwitchBanned;                                     //黑名单
 	bool bSwitchTokenLogin;                                 //TOKEN开关
+	bool bSwitchHCLogin;                                    //硬件码登录
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数
