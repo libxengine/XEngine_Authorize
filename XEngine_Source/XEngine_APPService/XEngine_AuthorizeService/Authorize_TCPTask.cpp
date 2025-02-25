@@ -338,9 +338,23 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
-			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
+			bool bSuccess = false;
+			XCHAR tszIPAddr[128] = {};
+
+			_tcsxcpy(tszIPAddr, lpszClientAddr);
+			APIAddr_IPAddr_SegAddr(tszIPAddr);
+			if (0 == st_AuthConfig.st_XSql.nDBType)
 			{
-				//如果不匹配
+				bSuccess = DBModule_SQLite_QueryLogin(st_UserTable.st_UserInfo.tszLoginTime, tszIPAddr);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_QueryLogin(st_UserTable.st_UserInfo.tszLoginTime, tszIPAddr);
+			}
+			//是否存在
+			if (!bSuccess)
+			{
+				//不存在.减去一天
 				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 				BaseLib_Time_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
@@ -372,7 +386,19 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			Session_Token_Insert(pSt_ProtocolHdr->xhToken, &st_UserTable);
 		}
+		//记录每次登陆
+		XCHAR tszIPAddr[128] = {};
 
+		_tcsxcpy(tszIPAddr, lpszClientAddr);
+		APIAddr_IPAddr_SegAddr(tszIPAddr);
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_UserLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+		}
+		else
+		{
+			DBModule_MySQL_UserLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+		}
 		pSt_ProtocolHdr->wReserve = 0;
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);

@@ -30,6 +30,8 @@ public:
     bool DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol);            //用户离开更新表
     bool DBModule_MySQL_UserSet(AUTHREG_USERTABLE* pSt_UserTable);                      //设置用户信息
     bool DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd); //获取用户列表
+	bool DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
+	bool DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 public:
     bool DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber);                                     //插入序列卡
     bool DBModule_MySQL_SerialDelete(LPCXSTR lpszSerialNumber);                                     //删除一个序列号

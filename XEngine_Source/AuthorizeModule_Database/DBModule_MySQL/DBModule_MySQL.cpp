@@ -564,6 +564,90 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	return true;
 }
 /********************************************************************
+函数名称：DBModule_MySQL_UserLogin
+函数功能：用户登录信息记录
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	XCHAR tszSQLStatement[1024] = {};
+	XCHAR tszTimeStr[128] = {};
+	BaseLib_Time_TimeToStr(tszTimeStr, NULL, false);
+
+	_xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Login(UserName, UserAddr, UserTime) values('%s','%s','%s')"), lpszUserName, lpszUserAddr, tszTimeStr);
+
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_QueryLogin
+函数功能：用户登录记录查询
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	XCHAR tszSQLStatement[1024];    //SQL语句
+	char** ppszResult = NULL;
+	__int64u nRow = 0;
+	__int64u nColumn = 0;
+	XNETHANDLE xhTable = 0;
+	memset(tszSQLStatement, '\0', 1024);
+
+	XCHAR tszTimeStr[128] = {};
+	BaseLib_Time_TimeToStr(tszTimeStr, NULL, false);
+
+	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_Login` WHERE UserName = '%s' AND UserTime = '%s' AND UserAddr = '%s'"), lpszUserName, tszTimeStr, lpszUserAddr);
+	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
+		return false;
+	}
+	if (nRow <= 0)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
+		return false;
+	}
+	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+	return true;
+}
+/********************************************************************
 函数名称：DBModule_MySQL_SerialInsert
 函数功能：插入一个序列号到数据库
  参数.一：lpszSerialNumber

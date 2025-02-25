@@ -67,6 +67,14 @@ extern "C" bool DBModule_SQLite_UserList(AUTHREG_USERTABLE * **pppSt_UserInfo, i
 {
 	return m_DBSQLite.DBModule_SQLite_UserList(pppSt_UserInfo, pInt_ListCount, nPosStart, nPosEnd);
 }
+extern "C" bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	return m_DBSQLite.DBModule_SQLite_UserLogin(lpszUserName, lpszUserAddr);
+}
+extern "C" bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	return m_DBSQLite.DBModule_SQLite_QueryLogin(lpszUserName, lpszUserAddr);
+}
 extern "C" bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
 {
 	return m_DBSQLite.DBModule_SQLite_SerialInsert(lpszSerialNumber);
@@ -257,4 +265,12 @@ extern "C" bool DBModule_MySQL_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Anno
 extern "C" bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
 {
 	return m_DBMySQL.DBModule_MySQL_AnnouncementList(ppppSt_Announcement, pInt_ListCount);
+}
+extern "C" bool DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	return m_DBMySQL.DBModule_MySQL_UserLogin(lpszUserName, lpszUserAddr);
+}
+extern "C" bool DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
+{
+	return m_DBMySQL.DBModule_MySQL_QueryLogin(lpszUserName, lpszUserAddr);
 }

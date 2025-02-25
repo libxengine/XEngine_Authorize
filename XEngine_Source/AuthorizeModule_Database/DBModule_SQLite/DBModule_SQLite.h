@@ -30,6 +30,8 @@ public:
     bool DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol);            //用户离开更新表
     bool DBModule_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
     bool DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
+    bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
+    bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 public:
     bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber);                                     //插入序列卡
     bool DBModule_SQLite_SerialDelete(LPCXSTR lpszSerialNumber);                                     //删除一个序列号
