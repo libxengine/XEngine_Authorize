@@ -86,31 +86,17 @@ extern "C" bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
   类型：数据结构指针
   可空：Y
   意思：如果为空NULL，那么将只判断此用户是否存在
-返回值
-  类型：逻辑型
-  意思：是否查询成功
-备注：
-*********************************************************************/
-extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
-/********************************************************************
-函数名称：DBModule_SQLite_CodeQuery
-函数功能：硬件吗查询用户信息
- 参数.一：lpszUserName
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：要查询的指定信息
- 参数.二：pSt_UserInfo
+ 参数.三：bUser
   In/Out：Out
-  类型：数据结构指针
+  类型：逻辑型
   可空：Y
-  意思：如果为空NULL，那么将只判断此用户是否存在
+  意思：使用用户名查询还是硬件码
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo = NULL);
+extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_SQLite_UserPay
 函数功能：用户充值函数
@@ -594,31 +580,17 @@ extern "C" bool DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo);
   类型：数据结构指针
   可空：Y
   意思：如果为空NULL，那么将只判断此用户是否存在
-返回值
-  类型：逻辑型
-  意思：是否查询成功
-备注：
-*********************************************************************/
-extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo);
-/********************************************************************
-函数名称：DBModule_MySQL_CodeQuery
-函数功能：硬件吗查询用户信息
- 参数.一：lpszUserName
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：要查询的指定信息
- 参数.二：pSt_UserInfo
+ 参数.三：bUser
   In/Out：Out
-  类型：数据结构指针
+  类型：逻辑型
   可空：Y
-  意思：如果为空NULL，那么将只判断此用户是否存在
+  意思：使用用户名查询还是硬件码
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo = NULL);
+extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_MySQL_UserPay
 函数功能：用户充值函数

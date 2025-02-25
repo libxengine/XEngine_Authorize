@@ -31,6 +31,13 @@ typedef struct
 		int nWSThread;                                      //WEBSOCKET业务线程个数
 		int nHTTPThread;                                    //HTTP业务线程个数
 	}st_XMax;
+	struct  
+	{
+		int nHeartCheck;                                    //检测次数
+		int nTCPTime;                                       //TCP检测时间
+		int nWSTime;                                        //WEBSOCKET检测时间
+		int nHTTPTime;                                      //HTTP检测时间
+	}st_XTime;
 	struct   
 	{
 		struct  

@@ -197,11 +197,11 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				//查询硬件吗
 				if (0 == st_AuthConfig.st_XSql.nDBType)
 				{
-					bSuccess = DBModule_SQLite_CodeQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+					bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable, false);
 				}
 				else
 				{
-					bSuccess = DBModule_MySQL_CodeQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+					bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable, false);
 				}
 				if ((_tcsxlen(st_AuthProtocol.tszUserName) != _tcsxlen(st_UserTable.tszHardCode)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserName, st_UserTable.tszHardCode, _tcsxlen(st_AuthProtocol.tszUserName))))
 				{

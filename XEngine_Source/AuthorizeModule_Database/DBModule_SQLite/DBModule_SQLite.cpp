@@ -148,21 +148,35 @@ bool CDBModule_SQLite::DBModule_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
   类型：数据结构指针
   可空：Y
   意思：如果为空NULL，那么将只判断此用户是否存在
+ 参数.三：bUser
+  In/Out：Out
+  类型：逻辑型
+  可空：Y
+  意思：使用用户名查询还是硬件码
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
+bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */, bool bUser /* = true */)
 {
     SQLPacket_IsErrorOccur = false;
+
     XCHAR tszSQLStatement[1024];    //SQL语句
     char** ppszResult = NULL;
     int nRow = 0;
     int nColumn = 0;
     memset(tszSQLStatement, '\0', 1024);
 
-    _xstprintf(tszSQLStatement, _X("select * from Authorize_User where UserName = '%s'"), lpszUserName);
+    if (bUser)
+    {
+        _xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` WHERE UserName = '%s'"), lpszUserName);
+    }
+    else
+    {
+        _xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` WHERE HardCode = '%s'"), lpszUserName);
+    }
+    
     if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
     {
         SQLPacket_IsErrorOccur = true;
@@ -221,94 +235,6 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
 
     DataBase_SQLite_FreeTable(ppszResult);
     return true;
-}
-/********************************************************************
-函数名称：DBModule_SQLite_CodeQuery
-函数功能：硬件吗查询用户信息
- 参数.一：lpszUserName
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：要查询的指定信息
- 参数.二：pSt_UserInfo
-  In/Out：Out
-  类型：数据结构指针
-  可空：Y
-  意思：如果为空NULL，那么将只判断此用户是否存在
-返回值
-  类型：逻辑型
-  意思：是否查询成功
-备注：
-*********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo /* = NULL */)
-{
-	SQLPacket_IsErrorOccur = false;
-
-	XCHAR tszSQLStatement[XPATH_MAX];    //SQL语句
-	char** ppszResult = NULL;
-	int nRow = 0;
-	int nColumn = 0;
-	memset(tszSQLStatement, '\0', XPATH_MAX);
-
-	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` WHERE HardCode = '%s'"), lpszHardCode);
-	if (!DataBase_SQLite_GetTable(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
-	{
-		SQLPacket_IsErrorOccur = true;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
-		return false;
-	}
-	if ((0 == nRow) || (0 == nColumn))
-	{
-		SQLPacket_IsErrorOccur = true;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTUSER;
-		return false;
-	}
-	//如果是NULL，表示不想知道结果
-	if (NULL != pSt_UserInfo)
-	{
-		memset(pSt_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
-		//ID
-		int nFliedValue = nColumn;
-		//用户名
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserName, ppszResult[nFliedValue]);
-		//密码
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
-		//过期时间
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->tszLeftTime, ppszResult[nFliedValue]);
-		//电子邮件
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->st_UserInfo.tszEMailAddr, ppszResult[nFliedValue]);
-		//硬件码
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->tszHardCode, ppszResult[nFliedValue]);
-		//充值卡类型
-		nFliedValue++;
-		pSt_UserInfo->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
-		//QQ号
-		nFliedValue++;
-		pSt_UserInfo->st_UserInfo.nPhoneNumber = _ttxoll(ppszResult[nFliedValue]);
-		//身份证ID
-		nFliedValue++;
-		pSt_UserInfo->st_UserInfo.nIDNumber = _ttxoll(ppszResult[nFliedValue]);
-		//用户级别 -1表示封禁
-		nFliedValue++;
-		pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
-		//登录日期
-		nFliedValue++;
-		if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
-		{
-			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszLoginTime, ppszResult[nFliedValue]);
-		}
-		//注册日期
-		nFliedValue++;
-		_tcsxcpy(pSt_UserInfo->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
-	}
-
-	DataBase_SQLite_FreeTable(ppszResult);
-	return true;
 }
 /********************************************************************
 函数名称：DBModule_SQLite_UserPay

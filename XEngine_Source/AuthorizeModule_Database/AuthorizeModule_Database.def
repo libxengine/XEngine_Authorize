@@ -9,7 +9,6 @@ EXPORTS
 	DBModule_SQLite_UserDelete
 	DBModule_SQLite_UserRegister
 	DBModule_SQLite_UserQuery
-	DBModule_SQLite_CodeQuery
 	DBModule_SQLite_UserPay
 	DBModule_SQLite_UserLeave
 	DBModule_SQLite_UserSet
@@ -44,7 +43,6 @@ EXPORTS
 	DBModule_MySQL_UserDelete
 	DBModule_MySQL_UserRegister
 	DBModule_MySQL_UserQuery
-	DBModule_MySQL_CodeQuery
 	DBModule_MySQL_UserPay
 	DBModule_MySQL_UserLeave
 	DBModule_MySQL_UserSet

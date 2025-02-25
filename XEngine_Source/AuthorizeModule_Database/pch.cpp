@@ -47,13 +47,9 @@ extern "C" bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo)
 {
 	return m_DBSQLite.DBModule_SQLite_UserRegister(pSt_UserInfo);
 }
-extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE * pSt_UserInfo)
+extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE * pSt_UserInfo, bool bUser)
 {
-	return m_DBSQLite.DBModule_SQLite_UserQuery(lpszUserName, pSt_UserInfo);
-}
-extern "C" bool DBModule_SQLite_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo)
-{
-	return m_DBSQLite.DBModule_SQLite_CodeQuery(lpszHardCode, pSt_UserInfo);
+	return m_DBSQLite.DBModule_SQLite_UserQuery(lpszUserName, pSt_UserInfo, bUser);
 }
 extern "C" bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
@@ -147,7 +143,6 @@ extern "C" bool DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT * **ppppSt
 {
 	return m_DBSQLite.DBModule_SQLite_AnnouncementList(ppppSt_Announcement, pInt_ListCount);
 }
-
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -167,13 +162,9 @@ extern "C" bool DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo)
 {
 	return m_DBMySQL.DBModule_MySQL_UserRegister(pSt_UserInfo);
 }
-extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo)
+extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo, bool bUser)
 {
-	return m_DBMySQL.DBModule_MySQL_UserQuery(lpszUserName, pSt_UserInfo);
-}
-extern "C" bool DBModule_MySQL_CodeQuery(LPCXSTR lpszHardCode, AUTHREG_USERTABLE* pSt_UserInfo)
-{
-	return m_DBMySQL.DBModule_MySQL_CodeQuery(lpszHardCode, pSt_UserInfo);
+	return m_DBMySQL.DBModule_MySQL_UserQuery(lpszUserName, pSt_UserInfo, bUser);
 }
 extern "C" bool DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
