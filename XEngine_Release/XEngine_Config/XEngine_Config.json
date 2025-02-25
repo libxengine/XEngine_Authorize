@@ -64,7 +64,8 @@
         "tszLogFile":"./XEngine_XLog/XEngine_Authorize.log",
         "MaxSize":1024000,
         "MaxCount":10,
-        "LogLeave":32
+        "LogLeave":32,
+        "nLogType":17
     },
     "XReport":{
         "bEnable":true,

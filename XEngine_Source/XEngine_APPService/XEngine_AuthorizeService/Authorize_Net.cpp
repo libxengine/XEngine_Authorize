@@ -2,7 +2,6 @@
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_TCPAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	
 	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("TCP客户端：%s，进入服务器"), lpszClientAddr);
 	return true;

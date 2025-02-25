@@ -155,7 +155,7 @@ int main(int argc, char** argv)
 	st_XLogConfig.XLog_MaxSize = st_AuthConfig.st_XLog.nMaxSize;
 	_tcsxcpy(st_XLogConfig.tszFileName, st_AuthConfig.st_XLog.tszLogFile);
 
-	xhLog = HelpComponents_XLog_Init(HELPCOMPONENTS_XLOG_OUTTYPE_FILE | HELPCOMPONENTS_XLOG_OUTTYPE_STD, &st_XLogConfig);
+	xhLog = HelpComponents_XLog_Init(st_AuthConfig.st_XLog.nLogType, &st_XLogConfig);
 	if (NULL == xhLog)
 	{
 		printf("启动服务器失败，启动日志失败，错误：%lX", XLog_GetLastError());

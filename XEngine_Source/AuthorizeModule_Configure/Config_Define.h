@@ -104,6 +104,7 @@ typedef struct
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
+		int nLogType;                                      //日志类型
 	}st_XLog;         
 	struct  
 	{
