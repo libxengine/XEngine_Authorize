@@ -48,7 +48,8 @@ jobs:
             cd libxengine
             chmod 777 *
             ./XEngine_LINEnv.sh -i 0
-            
+      - name: install xengine library
+        run: |           
             latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
             wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_RockyLinux_9_x86-64.zip
             unzip ./XEngine_RockyLinux_9_x86-64.zip -d ./XEngine_RockyLinux_9_x86-64
@@ -57,7 +58,7 @@ jobs:
             cp -rf ./XEngine_Include /usr/local/include
             find ./XEngine_Linux -name "*.so" -exec cp {} /usr/local/lib \;         
             ldconfig
-      #编译
+
       - name: make
         run: | 
             cd XEngine_Source
@@ -72,6 +73,8 @@ jobs:
       - name: test
         run: |
             cd XEngine_Release
+            ls -al /usr/local/include
+            ldd ./XEngine_AuthorizeService
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact with RockyLinux
