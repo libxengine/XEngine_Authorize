@@ -12,6 +12,12 @@
         "nWSThread":2,
         "nHTTPThread":2
     },
+    "XTime":{
+        "nHeartCheck":3,
+        "nTCPTime":5,
+        "nWSTime":5,
+        "nHTTPTime":5
+    },
     "XVerification":{
         "nTokenTimeout":3600,
         "nDynamicTimeout":30,

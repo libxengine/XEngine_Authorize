@@ -242,6 +242,14 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhTCPSocket, XEngine_Client_TCPAccept, XEngine_Client_TCPRecv, XEngine_Client_TCPClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化TCP验证网络事件成功"));
 
+		xhTCPHeart = SocketOpt_HeartBeat_InitEx(st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nTCPTime, XEngine_Client_TCPHeart);
+		if (NULL == xhTCPHeart)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化TCP验证心跳服务失败，错误：%lX"), NetCore_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化TCP验证心跳服务成功,检测次数:%d,检测时间:%d"), st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nTCPTime);
+
 		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListTCPThread, st_AuthConfig.st_XMax.nTCPThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nTCPThread; i++)
 		{
@@ -274,6 +282,14 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhWSSocket, XEngine_Client_WSAccept, XEngine_Client_WSRecv, XEngine_Client_WSClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化WEBSOCKET验证网络事件成功"));
 
+		xhWSHeart = SocketOpt_HeartBeat_InitEx(st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nWSTime, XEngine_Client_WSHeart);
+		if (NULL == xhWSHeart)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化WEBSOCKET验证心跳服务失败，错误：%lX"), NetCore_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化WEBSOCKET验证心跳服务成功,检测次数:%d,检测时间:%d"), st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nWSTime);
+
 		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListWSThread, st_AuthConfig.st_XMax.nWSThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nWSThread; i++)
 		{
@@ -305,6 +321,14 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP管理网络服务成功,端口:%d,网络池个数:%d"), st_AuthConfig.nHTTPPort, st_AuthConfig.st_XMax.nIOThread);
 		NetCore_TCPXCore_RegisterCallBackEx(xhHttpSocket, XEngine_Client_HttpAccept, XEngine_Client_HttpRecv, XEngine_Client_HttpClose);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP管理网络事件成功"));
+
+		xhHTTPHeart = SocketOpt_HeartBeat_InitEx(st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nHTTPTime, XEngine_Client_HttpHeart);
+		if (NULL == xhHTTPHeart)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化HTTP心跳服务失败，错误：%lX"), NetCore_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP心跳服务成功,检测次数:%d,检测时间:%d"), st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nHTTPTime);
 
 		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListHttpThread, st_AuthConfig.st_XMax.nHTTPThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nHTTPThread; i++)

@@ -17,6 +17,10 @@ void CALLBACK XEngine_Client_TCPClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, X
 {
 	XEngine_CloseClient(lpszClientAddr, false);
 }
+void CALLBACK XEngine_Client_TCPHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
+}
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
@@ -51,6 +55,10 @@ void CALLBACK XEngine_Client_WSClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XP
 {
 	XEngine_CloseClient(lpszClientAddr, false);
 }
+void CALLBACK XEngine_Client_WSHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
+}
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
@@ -68,6 +76,10 @@ void CALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, L
 void CALLBACK XEngine_Client_HttpClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, false);
+}
+void CALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
 }
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)

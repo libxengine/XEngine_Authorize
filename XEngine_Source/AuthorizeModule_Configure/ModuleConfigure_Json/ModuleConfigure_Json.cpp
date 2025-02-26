@@ -100,6 +100,18 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nTCPThread = st_JsonXMax["nTCPThread"].asInt();
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
+	//时间配置
+	if (st_JsonRoot["XTime"].empty() || (4 != st_JsonRoot["XTime"].size()))
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XTIME;
+		return false;
+	}
+	Json::Value st_JsonXTime = st_JsonRoot["XTime"];
+	pSt_ServerConfig->st_XTime.nHeartCheck = st_JsonXTime["nHeartCheck"].asInt();
+	pSt_ServerConfig->st_XTime.nTCPTime = st_JsonXTime["nTCPTime"].asInt();
+	pSt_ServerConfig->st_XTime.nWSTime = st_JsonXTime["nWSTime"].asInt();
+	pSt_ServerConfig->st_XTime.nHTTPTime = st_JsonXTime["nHTTPTime"].asInt();
 	//验证配置
 	if (st_JsonRoot["XVerification"].empty() || (9 != st_JsonRoot["XVerification"].size()))
 	{
