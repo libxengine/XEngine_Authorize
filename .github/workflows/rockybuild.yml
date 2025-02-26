@@ -74,6 +74,7 @@ jobs:
         run: |
             cd XEngine_Release
             ls -al /usr/local/include
+            ls- al /usr/local/lib
             ldd ./XEngine_AuthorizeService
             ./XEngine_AuthorizeService -t
 
