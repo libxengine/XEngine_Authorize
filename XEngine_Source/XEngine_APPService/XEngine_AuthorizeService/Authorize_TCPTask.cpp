@@ -345,11 +345,11 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			APIAddr_IPAddr_SegAddr(tszIPAddr);
 			if (0 == st_AuthConfig.st_XSql.nDBType)
 			{
-				bSuccess = DBModule_SQLite_QueryLogin(st_UserTable.st_UserInfo.tszLoginTime, tszIPAddr);
+				bSuccess = DBModule_SQLite_QueryLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
 			}
 			else
 			{
-				bSuccess = DBModule_MySQL_QueryLogin(st_UserTable.st_UserInfo.tszLoginTime, tszIPAddr);
+				bSuccess = DBModule_MySQL_QueryLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
 			}
 			//是否存在
 			if (!bSuccess)
