@@ -1,16 +1,16 @@
 /*
- Navicat Premium Data Transfer
+ Navicat Premium Dump SQL
 
- Source Server         : authorize
+ Source Server         : Authorize
  Source Server Type    : SQLite
- Source Server Version : 3035005 (3.35.5)
+ Source Server Version : 3045000 (3.45.0)
  Source Schema         : main
 
  Target Server Type    : SQLite
- Target Server Version : 3035005 (3.35.5)
+ Target Server Version : 3045000 (3.45.0)
  File Encoding         : 65001
 
- Date: 11/05/2024 16:06:07
+ Date: 26/02/2025 14:13:16
 */
 
 PRAGMA foreign_keys = false;
@@ -60,6 +60,20 @@ CREATE TABLE "Authorize_BannedUser" (
 
 -- ----------------------------
 -- Records of Authorize_BannedUser
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for Authorize_Login
+-- ----------------------------
+DROP TABLE IF EXISTS "Authorize_Login";
+CREATE TABLE "Authorize_Login" (
+  "UserName" text NOT NULL,
+  "UserAddr" text NOT NULL,
+  "UserTime" text NOT NULL
+);
+
+-- ----------------------------
+-- Records of Authorize_Login
 -- ----------------------------
 
 -- ----------------------------
@@ -133,26 +147,26 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 -- Records of sqlite_sequence
 -- ----------------------------
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedUser', 6);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedAddr', 5);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_TempVer', 1);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_Serial', 10);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 5);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedUser', 7);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedAddr', 6);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_TempVer', 4);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_Serial', 22);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 20);
 
 -- ----------------------------
 -- Auto increment value for Authorize_BannedAddr
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 5 WHERE name = 'Authorize_BannedAddr';
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_BannedAddr';
 
 -- ----------------------------
 -- Auto increment value for Authorize_BannedUser
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 6 WHERE name = 'Authorize_BannedUser';
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_BannedUser';
 
 -- ----------------------------
 -- Auto increment value for Authorize_Serial
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 10 WHERE name = 'Authorize_Serial';
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_Serial';
 
 -- ----------------------------
 -- Auto increment value for Authorize_TempVer
@@ -162,6 +176,6 @@ UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_TempVer';
 -- ----------------------------
 -- Auto increment value for Authorize_User
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 5 WHERE name = 'Authorize_User';
+UPDATE "sqlite_sequence" SET seq = 2 WHERE name = 'Authorize_User';
 
 PRAGMA foreign_keys = true;
