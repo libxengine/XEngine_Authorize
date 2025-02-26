@@ -1,0 +1,82 @@
+name: rocky build workflows
+
+on:
+  push:
+    branches: 
+      - 'develop'
+    paths:
+      - 'XEngine_Source/**'
+      - 'XEngine_Release/**'
+      - '.github/**'
+  
+permissions:
+  contents: read
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: rockylinux/rockylinux:9.5
+
+    steps:
+       # 检出您的主仓库代码
+      - name: Checkout main repository code
+        uses: actions/checkout@v4
+        with:
+          ref: 'develop'
+        
+       # 检出依赖的xengine仓库到指定的xengine目录
+      - name: Checkout dependency repository (xengine)
+        uses: actions/checkout@v4
+        with:
+          repository: libxengine/libxengine
+          path: libxengine
+
+      - name: sub module checkout (opensource)
+        uses: actions/checkout@v4
+        with:
+          repository: libxengine/XEngine_OPenSource
+          path: XEngine_Source/XEngine_Depend
+          
+      - name: install system package
+        run: |
+            dnf update -y
+            dnf install gcc g++ make git jq unzip -y
+      # 设置依赖库的环境变量
+      - name: Set up Dependency rocky linux Environment
+        run: |
+            cd libxengine
+            chmod 777 *
+            ./XEngine_LINEnv.sh -i 0
+            
+            latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
+            wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_RockyLinux_9_x86-64.zip
+            unzip ./XEngine_RockyLinux_9_x86-64.zip -d ./XEngine_RockyLinux_9_x86-64
+            cd XEngine_RockyLinux_9_x86-64
+            
+            cp -rf ./XEngine_Include /usr/local/include
+            find ./XEngine_Linux -name "*.so" -exec cp {} /usr/local/lib \;         
+            ldconfig
+      #编译
+      - name: make
+        run: | 
+            cd XEngine_Source
+            make
+            make FLAGS=InstallAll
+            make FLAGS=CleanAll
+
+            make RELEASE=1
+            make FLAGS=InstallAll
+            make FLAGS=CleanAll
+
+      - name: test
+        run: |
+            cd XEngine_Release
+            ./XEngine_AuthorizeService -t
+
+      - name: Upload folder as artifact with RockyLinux
+        uses: actions/upload-artifact@v4
+        with:
+          name: XEngine_AuthorizeService-x86_64-RockyLinux-9
+          path: XEngine_Release/
+          retention-days: 1
