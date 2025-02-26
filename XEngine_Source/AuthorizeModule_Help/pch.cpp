@@ -60,10 +60,6 @@ extern "C" bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType
 {
 	return m_HelpLogin.AuthHelp_MultiLogin_GetRange(nClientDevice, pInt_IDType);
 }
-extern "C" bool AuthHelp_MultiLogin_TimeMatch(LPCXSTR lpszLoginTime)
-{
-	return m_HelpLogin.AuthHelp_MultiLogin_TimeMatch(lpszLoginTime);
-}
 /************************************************************************/
 /*                    剪贴板导出定义                                    */
 /************************************************************************/

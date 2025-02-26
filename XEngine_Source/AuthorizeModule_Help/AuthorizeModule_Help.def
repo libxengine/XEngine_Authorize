@@ -9,7 +9,6 @@ EXPORTS
 	AuthHelp_DynamicCode_Get
 
 	AuthHelp_MultiLogin_GetRange
-	AuthHelp_MultiLogin_TimeMatch
 
 	AuthHelp_ClipBoard_Set
 	AuthHelp_ClipBoard_Get
