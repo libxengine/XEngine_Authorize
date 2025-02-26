@@ -26,8 +26,8 @@ void CALLBACK XEngine_Client_TCPHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, i
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	HelpComponents_Datas_CreateEx(xhWSHeart, lpszClientAddr, 0);
 	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
+	SocketOpt_HeartBeat_InsertAddrEx(xhWSHeart, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("WS客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
 }
@@ -67,7 +67,7 @@ void CALLBACK XEngine_Client_WSHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, in
 bool CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	HttpProtocol_Server_CreateClientEx(xhHttpPacket, lpszClientAddr, 0);
-	RfcComponents_WSPacket_CreateEx(xhHTTPHeart, lpszClientAddr, 0);
+	SocketOpt_HeartBeat_InsertAddrEx(xhHTTPHeart, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
 }
