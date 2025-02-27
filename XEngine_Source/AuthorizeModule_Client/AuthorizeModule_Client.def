@@ -7,6 +7,7 @@ EXPORTS
 	AuthClient_Connector_Close
 	AuthClient_Connector_GetAuth
 	AuthClient_Connector_Login
+	AuthClient_Connector_Heart
 
 	AuthClient_HTTPVer_TryRequest
 	AuthClient_HTTPVer_GetDCode
