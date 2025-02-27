@@ -33,6 +33,26 @@ bool Authorize_Service_Parament(int argc, char** argv)
 		{
 			st_AuthConfig.bDeamon = _ttxoi(argv[++i]);
 		}
+		else if (0 == _tcsxcmp("-TP", argv[i]))
+		{
+			st_AuthConfig.nTCPPort = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-WP", argv[i]))
+		{
+			st_AuthConfig.nWSPort = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-HP", argv[i]))
+		{
+			st_AuthConfig.nHTTPPort = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-LL", argv[i]))
+		{
+			st_AuthConfig.st_XLog.nLogLeave = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-LT", argv[i]))
+		{
+			st_AuthConfig.st_XLog.nLogType = _ttxoi(argv[++i]);
+		}
 		else if (0 == _tcsxcmp("-t", argv[i]))
 		{
 			bIsTest = true;
