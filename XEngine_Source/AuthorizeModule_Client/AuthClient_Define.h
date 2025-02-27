@@ -60,7 +60,7 @@ extern "C" bool AuthClient_Connector_Close();
   意思：输出是否验证,如果登录成功但是参数为假.说明没有剩余时间了
 返回值
   类型：逻辑型
-  意思：是否成功
+  意思：是否登录,如果没有登录将返回假,登录成功才需要判断是否通过验证
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
