@@ -90,17 +90,20 @@ void CALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, 
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 {
+	xstring m_StrLeave;
 	if (bHeart)
 	{
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		m_StrLeave = _X("心跳断开");
 	}
 	else
 	{
 		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhHTTPHeart, lpszClientAddr);
+		m_StrLeave = _X("正常断开");
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
@@ -132,11 +135,11 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 		}
 		Session_Token_Delete(st_NETClient.xhToken);
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.xhToken, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d,离开方式:%s"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.xhToken, st_AuthTime.nTimeONLine, m_StrLeave.c_str());
 	}
 	else
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，离开服务器"), lpszClientAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，离开服务器,离开方式:%s"), lpszClientAddr, m_StrLeave.c_str());
 	}
 	return true;
 }
