@@ -325,6 +325,7 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 				st_ProtocolHdr.byVersion = 1;
 				st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
+				nTimeStart = nTimeEnd;
 				XClient_TCPSelect_SendMsg(pClass_This->m_hSocket, (LPCXSTR)&st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 			}
 		}
