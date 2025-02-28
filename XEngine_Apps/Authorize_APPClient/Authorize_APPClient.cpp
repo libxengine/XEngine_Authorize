@@ -40,6 +40,7 @@ bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
 bool bEncrypto = false;
+bool bHeart = true;
 XNETHANDLE xhToken = 0;
 int nDYCode = 0;
 
@@ -53,6 +54,7 @@ __int64x nIDNumber = 511025111111111111;
 
 XHTHREAD AuthClient_Thread()
 {
+	time_t nTimeStart = time(NULL);
 	while (bRun)
 	{
 		int nMsgLen = 0;
@@ -96,6 +98,22 @@ XHTHREAD AuthClient_Thread()
 			else
 			{
 				printf(_X("不明白的类型\n"));
+			}
+		}
+		if (bHeart)
+		{
+			time_t nTimeEnd = time(NULL);
+			if ((nTimeEnd - nTimeStart) > 2)
+			{
+				XENGINE_PROTOCOLHDR st_ProtocolHdr = {};
+				st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
+				st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_HEARTBEAT;
+				st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN;
+				st_ProtocolHdr.byVersion = 1;
+				st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
+
+				nTimeStart = nTimeEnd;
+				XClient_TCPSelect_SendMsg(m_Socket, (LPCXSTR)&st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 			}
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(10));
@@ -514,7 +532,7 @@ int main()
 	AuthClient_GetPass();
 	AuthClient_GetTime();
 
-	std::this_thread::sleep_for(std::chrono::seconds(10));
+	std::this_thread::sleep_for(std::chrono::seconds(100));
 	AuthClient_Delete();
 	AuthClient_Try();
 

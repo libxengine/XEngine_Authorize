@@ -55,6 +55,7 @@ int TestClient_TryLogin()
 }
 int main()
 {
+	TestClient_HardLogin();
 	TestClient_TryLogin();
 	return 0;
 }
