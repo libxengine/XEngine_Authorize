@@ -1,3 +1,25 @@
+XEngine_Authorize V3.17.0.1001
+
+added:option method for http
+added:tcp and websocket and http heartbeat and disable and enable support
+added:multi login for day supported
+added:hardware code login and switch support
+added:type print set configure for log
+modify:user and code query merge to user functions
+update:depend library
+improved:parameter parse and more parameter supported
+delete:not used time function for help module
+
+增加:HTTP OPTION方法支持
+增加:tcp websocket,http 心跳支持并且支持启用禁用
+增加:多端登录天数卡支持
+增加:硬件码登录以及开关支持
+增加:日志类型设置支持
+修改:用户名和用户码登录函数合并
+更新:第三方库
+优化:更多启动参数解析支持
+删除:没有使用的帮助模块时间函数
+================================================================
 XEngine_Authorize V3.16.0.1001
 
 更新:匹配XEngineV9
