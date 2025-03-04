@@ -50,7 +50,7 @@
         "st_MulitLogin":{
             "bSecond":true,
             "bTime":true,
-            "bDay":false,
+            "bDay":true,
             "bCustom":false
         }
     },
