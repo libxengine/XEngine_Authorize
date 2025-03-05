@@ -66,7 +66,9 @@ jobs:
             cd ..
 
             cd XEngine_Release
-            ./XEngine_AuthorizeService -t '
+            ./XEngine_AuthorizeService -t
+            chown -R $(id -u):$(id -g) .
+            chmod -R a+r .  '
 
       - name: Upload folder as artifact with RockyLinux
         uses: actions/upload-artifact@v4
