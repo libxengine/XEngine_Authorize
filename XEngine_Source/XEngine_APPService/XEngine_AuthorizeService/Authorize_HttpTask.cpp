@@ -48,12 +48,13 @@ XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 	return 0;
 }
 
-bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM *pSt_HTTPParament)
+bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM* pSt_HTTPParament)
 {
 	int nSDLen = 4096;
 	XCHAR tszSDBuffer[4096];
 	LPCXSTR lpszMethodPost = _X("POST");
 	LPCXSTR lpszMethodGet = _X("GET");
+	LPCXSTR lpszMethodOPtion = _X("OPTION");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
@@ -64,11 +65,11 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 	//是否在黑名单
 	bool bSuccess = false;
-	if (0 == st_AuthConfig.st_XSql.nDBType) 
+	if (0 == st_AuthConfig.st_XSql.nDBType)
 	{
 		bSuccess = DBModule_SQLite_BannedExist(&st_Banned); //IP地址是否在黑名单
 	}
-	else 
+	else
 	{
 		bSuccess = DBModule_MySQL_BannedExist(&st_Banned);//IP地址是否在黑名单
 	}
@@ -251,7 +252,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
 		BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
-		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) || 
+		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) ||
 			0 == _tcsxnicmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
 		{
 			XEngine_AuthorizeHTTP_GetTask(lpszClientAddr, pptszList, nListCount);
@@ -261,6 +262,12 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XEngine_AuthorizeHTTP_Token(lpszClientAddr, pptszList, nListCount);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&pptszList, nListCount);
+	}
+	else if (0 == _tcsxnicmp(lpszMethodOPtion, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodOPtion)))
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,发送的OPTION方法处理成功.此为心跳请求"), lpszClientAddr);
 	}
 	else
 	{

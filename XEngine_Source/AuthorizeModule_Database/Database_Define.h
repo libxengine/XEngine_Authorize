@@ -86,12 +86,17 @@ extern "C" bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
   类型：数据结构指针
   可空：Y
   意思：如果为空NULL，那么将只判断此用户是否存在
+ 参数.三：bUser
+  In/Out：Out
+  类型：逻辑型
+  可空：Y
+  意思：使用用户名查询还是硬件码
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo);
+extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_SQLite_UserPay
 函数功能：用户充值函数
@@ -168,6 +173,44 @@ extern "C" bool DBModule_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
 备注：
 *********************************************************************/
 extern "C" bool DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);
+/********************************************************************
+函数名称：DBModule_SQLite_UserLogin
+函数功能：用户登录信息记录
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
+/********************************************************************
+函数名称：DBModule_SQLite_QueryLogin
+函数功能：用户登录记录查询
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 /********************************************************************
 函数名称：DBModule_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
@@ -575,12 +618,17 @@ extern "C" bool DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo);
   类型：数据结构指针
   可空：Y
   意思：如果为空NULL，那么将只判断此用户是否存在
+ 参数.三：bUser
+  In/Out：Out
+  类型：逻辑型
+  可空：Y
+  意思：使用用户名查询还是硬件码
 返回值
   类型：逻辑型
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo);
+extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_MySQL_UserPay
 函数功能：用户充值函数
@@ -993,3 +1041,41 @@ extern "C" bool DBModule_MySQL_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Anno
 备注：
 *********************************************************************/
 extern "C" bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);
+/********************************************************************
+函数名称：DBModule_MySQL_UserLogin
+函数功能：用户登录信息记录
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
+/********************************************************************
+函数名称：DBModule_MySQL_QueryLogin
+函数功能：用户登录记录查询
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：lpszUserAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户IP地址
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);

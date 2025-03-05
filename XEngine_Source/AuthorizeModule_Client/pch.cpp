@@ -47,6 +47,10 @@ extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, i
 {
 	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken);
 }
+extern "C" bool AuthClient_Connector_Heart(bool bEnable)
+{
+	return m_Connector.AuthClient_Connector_Heart(bEnable);
+}
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/

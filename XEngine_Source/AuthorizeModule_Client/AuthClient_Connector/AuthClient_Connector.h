@@ -27,12 +27,14 @@ public:
 	bool AuthClient_Connector_Close();
 	bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 	bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
+	bool AuthClient_Connector_Heart(bool bEnable = true);
 protected:
 	static XHTHREAD CALLBACK AuthClient_Connector_Thread(XPVOID lParam);
 private:
 	bool m_bRun = false;
 	bool m_bLogin = false;
 	bool m_bAuth = false;
+	bool m_bHeart = false;
 	XSOCKET m_hSocket = 0;
 	XCHAR tszPassStr[128] = {};
 private:

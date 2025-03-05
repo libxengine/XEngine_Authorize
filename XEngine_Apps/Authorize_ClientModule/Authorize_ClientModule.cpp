@@ -21,7 +21,24 @@ using namespace std;
 //Windows::vs2022 x86 debug 编译即可
 //Linux MACOS::g++ -std=c++17 -Wall -g Authorize_ClientModule.cpp -o Authorize_ClientModule.exe -L ../../XEngine_Release/ -lAuthorizeModule_Client -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
-int main()
+int TestClient_HardLogin()
+{
+	if (!AuthClient_Connector_Connect(_X("127.0.0.1"), 5300))
+	{
+		printf("AuthClient_Connector_Connect:%lX\n", AuthClient_GetLastError());
+		return -1;
+	}
+	if (!AuthClient_Connector_Login("2FDWAD02JD2091", ""))
+	{
+		printf("AuthClient_Connector_Login:%lX\n", AuthClient_GetLastError());
+		return -1;
+	}
+
+	AuthClient_Connector_Close();
+	return 0;
+}
+
+int TestClient_TryLogin()
 {
 	//插入查询
 	LPCXSTR lpszTryInsert = _X("http://127.0.0.1:5302/auth/user/try");
@@ -34,5 +51,11 @@ int main()
 	{
 		printf("failed\n");
 	}
+	return 0;
+}
+int main()
+{
+	TestClient_HardLogin();
+	TestClient_TryLogin();
 	return 0;
 }

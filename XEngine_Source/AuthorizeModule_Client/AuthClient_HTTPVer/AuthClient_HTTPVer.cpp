@@ -49,7 +49,6 @@ bool CAuthClient_HTTPVer::AuthClient_HTTPVer_TryRequest(LPCXSTR lpszURLAddr, LPC
 		return false;
 	}
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_HTTP)
-
 	int nHTTPCode = 0;
 	XCHAR tszJsonStr[MAX_PATH] = {};
 	Json::Value st_JsonRoot;

@@ -60,7 +60,7 @@ extern "C" bool AuthClient_Connector_Close();
   意思：输出是否验证,如果登录成功但是参数为假.说明没有剩余时间了
 返回值
   类型：逻辑型
-  意思：是否成功
+  意思：是否登录,如果没有登录将返回假,登录成功才需要判断是否通过验证
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
@@ -93,6 +93,20 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
 备注：
 *********************************************************************/
 extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
+/********************************************************************
+函数名称：AuthClient_Connector_Heart
+函数功能：启用禁用客户端心跳
+ 参数.一：bEnable
+  In/Out：In
+  类型：逻辑型
+  可空：Y
+  意思：是启用还是禁用
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：服务器开启了心跳,那么客户端也需要开启
+*********************************************************************/
+extern "C" bool AuthClient_Connector_Heart(bool bEnable = true);
 /************************************************************************/
 /*                         临时验证函数                                 */
 /************************************************************************/

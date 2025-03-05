@@ -49,16 +49,20 @@ extern XLONG SQLPacket_dwErrorCode;
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#ifdef _WIN64
 #ifdef _DEBUG
+#ifdef _M_X64
 #pragma comment(lib,"../x64/Debug/AuthorizeModule_CDKey")
-#else
-#pragma comment(lib,"../x64/Release/AuthorizeModule_CDKey")
+#elif _M_ARM64
+#pragma comment(lib,"../ARM64/Debug/AuthorizeModule_CDKey")
+#elif _M_IX86
+#pragma comment(lib,"../Debug/AuthorizeModule_CDKey")
 #endif
 #else
-#ifdef _DEBUG
-#pragma comment(lib,"../Debug/AuthorizeModule_CDKey")
-#else
+#ifdef _M_X64
+#pragma comment(lib,"../x64/Release/AuthorizeModule_CDKey")
+#elif _M_ARM64
+#pragma comment(lib,"../ARM64/Release/AuthorizeModule_CDKey")
+#elif _M_IX86
 #pragma comment(lib,"../Release/AuthorizeModule_CDKey")
 #endif
 #endif

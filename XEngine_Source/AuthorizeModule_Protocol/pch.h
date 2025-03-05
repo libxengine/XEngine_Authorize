@@ -50,15 +50,19 @@ extern XLONG Protocol_dwErrorCode;
 #ifdef _MSC_BUILD
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
 #ifdef _DEBUG
-#ifdef _WIN64
+#ifdef _M_X64
 #pragma comment(lib,"../x64/Debug/jsoncpp")
-#else
+#elif _M_ARM64
+#pragma comment(lib,"../ARM64/Debug/jsoncpp")
+#elif _M_IX86
 #pragma comment(lib,"../Debug/jsoncpp")
 #endif
 #else
-#ifdef _WIN64
+#ifdef _M_X64
 #pragma comment(lib,"../x64/Release/jsoncpp")
-#else
+#elif _M_ARM64
+#pragma comment(lib,"../ARM64/Release/jsoncpp")
+#elif _M_IX86
 #pragma comment(lib,"../Release/jsoncpp")
 #endif
 #endif

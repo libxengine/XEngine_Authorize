@@ -21,6 +21,7 @@
 #define ERROR_AUTHORIZE_MODULE_CLIENT_RECV 0x0060002                     //接受数据失败
 #define ERROR_AUTHORIZE_MODULE_CLIENT_LOGIN 0x0060003                    //登录失败，请查看错误码
 #define ERROR_AUTHORIZE_MODULE_CLIENT_THREAD 0x0060004                   //创建线程失败
+#define ERROR_AUTHORIZE_MODULE_CLIENT_NOTAUTH 0x0060005                  //没有验证无法启用心跳
 /************************************************************************/
 /*                          HTTP验证错误                                */
 /************************************************************************/

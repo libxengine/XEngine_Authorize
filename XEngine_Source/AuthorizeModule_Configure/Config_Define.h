@@ -31,6 +31,13 @@ typedef struct
 		int nWSThread;                                      //WEBSOCKET业务线程个数
 		int nHTTPThread;                                    //HTTP业务线程个数
 	}st_XMax;
+	struct  
+	{
+		int nHeartCheck;                                    //检测次数
+		int nTCPTime;                                       //TCP检测时间
+		int nWSTime;                                        //WEBSOCKET检测时间
+		int nHTTPTime;                                      //HTTP检测时间
+	}st_XTime;
 	struct   
 	{
 		struct  
@@ -104,6 +111,7 @@ typedef struct
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
+		int nLogType;                                      //日志类型
 	}st_XLog;         
 	struct  
 	{
@@ -132,6 +140,7 @@ typedef struct
 	bool bSwitchTry;                                        //临时验证
 	bool bSwitchBanned;                                     //黑名单
 	bool bSwitchTokenLogin;                                 //TOKEN开关
+	bool bSwitchHCLogin;                                    //硬件码登录
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

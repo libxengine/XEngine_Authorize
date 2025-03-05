@@ -1089,7 +1089,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteTime(LPCXSTR lpszFileKey, int nCount
 		if (nCount > 0)
 		{
 			int nListCount = 0;
-			XCHAR** pptszListTime;
+			XCHAR** pptszListTime = NULL;
 			//读取现有的
 			Authorize_CDKey_ReadTime(lpszFileKey, &pptszListTime, &nListCount);
 			//是否大于14 >= 10

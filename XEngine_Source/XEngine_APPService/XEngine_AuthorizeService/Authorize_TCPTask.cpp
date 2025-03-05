@@ -155,29 +155,62 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		else
 		{
 			bool bSuccess = false;
-			if (0 == st_AuthConfig.st_XSql.nDBType)
+			//用户密码登录还是硬件吗登录
+			if (_tcsxlen(st_AuthProtocol.tszUserPass) > 0)
 			{
-				bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+				//用户密码登录,查询用户名
+				if (0 == st_AuthConfig.st_XSql.nDBType)
+				{
+					bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+				}
+				else
+				{
+					bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
+				}
+				if (!bSuccess)
+				{
+					pSt_ProtocolHdr->wReserve = 251;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
+				}
+				if ((_tcsxlen(st_AuthProtocol.tszUserPass) != _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_AuthProtocol.tszUserPass))))
+				{
+					pSt_ProtocolHdr->wReserve = 252;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
+				}
 			}
 			else
 			{
-				bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable);
-			}
-			if (!bSuccess)
-			{
-				pSt_ProtocolHdr->wReserve = 251;
-				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
-				return false;
-			}
-			if ((_tcsxlen(st_AuthProtocol.tszUserPass) != _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_AuthProtocol.tszUserPass))))
-			{
-				pSt_ProtocolHdr->wReserve = 252;
-				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
-				return false;
+				if (!st_FunSwitch.bSwitchHCLogin)
+				{
+					pSt_ProtocolHdr->wReserve = 251;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，硬件码：%s，登录失败，服务端关闭此功能"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
+				}
+				//查询硬件吗
+				if (0 == st_AuthConfig.st_XSql.nDBType)
+				{
+					bSuccess = DBModule_SQLite_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable, false);
+				}
+				else
+				{
+					bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable, false);
+				}
+				if ((_tcsxlen(st_AuthProtocol.tszUserName) != _tcsxlen(st_UserTable.tszHardCode)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserName, st_UserTable.tszHardCode, _tcsxlen(st_AuthProtocol.tszUserName))))
+				{
+					pSt_ProtocolHdr->wReserve = 252;
+					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，硬件码：%s，登录失败，硬件码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
+					return false;
+				}
 			}
 		}
 		//是否已经登录
@@ -305,9 +338,23 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
-			if (!AuthHelp_MultiLogin_TimeMatch(st_UserTable.st_UserInfo.tszLoginTime))
+			bool bSuccess = false;
+			XCHAR tszIPAddr[128] = {};
+
+			_tcsxcpy(tszIPAddr, lpszClientAddr);
+			APIAddr_IPAddr_SegAddr(tszIPAddr);
+			if (0 == st_AuthConfig.st_XSql.nDBType)
 			{
-				//如果不匹配
+				bSuccess = DBModule_SQLite_QueryLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_QueryLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+			}
+			//是否存在
+			if (!bSuccess)
+			{
+				//不存在.减去一天
 				__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 				_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
 				BaseLib_Time_TimeToStr(st_UserTable.st_UserInfo.tszLoginTime);
@@ -339,7 +386,19 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			Session_Token_Insert(pSt_ProtocolHdr->xhToken, &st_UserTable);
 		}
+		//记录每次登陆
+		XCHAR tszIPAddr[128] = {};
 
+		_tcsxcpy(tszIPAddr, lpszClientAddr);
+		APIAddr_IPAddr_SegAddr(tszIPAddr);
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_UserLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+		}
+		else
+		{
+			DBModule_MySQL_UserLogin(st_UserTable.st_UserInfo.tszUserName, tszIPAddr);
+		}
 		pSt_ProtocolHdr->wReserve = 0;
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);

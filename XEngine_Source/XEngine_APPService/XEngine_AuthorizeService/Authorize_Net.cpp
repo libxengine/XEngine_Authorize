@@ -2,8 +2,8 @@
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_TCPAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	
 	HelpComponents_Datas_CreateEx(xhTCPPacket, lpszClientAddr, 0);
+	SocketOpt_HeartBeat_InsertAddrEx(xhTCPHeart, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("TCP客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
 }
@@ -13,15 +13,21 @@ void CALLBACK XEngine_Client_TCPRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LP
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
 	}
+	SocketOpt_HeartBeat_ActiveAddrEx(xhTCPHeart, lpszClientAddr);
 }
 void CALLBACK XEngine_Client_TCPClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, false);
 }
+void CALLBACK XEngine_Client_TCPHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
+}
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	RfcComponents_WSPacket_CreateEx(xhWSPacket, lpszClientAddr, 0);
+	SocketOpt_HeartBeat_InsertAddrEx(xhWSHeart, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("WS客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
 }
@@ -47,15 +53,21 @@ void CALLBACK XEngine_Client_WSRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPC
 		RfcComponents_WSPacket_SetLoginEx(xhWSPacket, lpszClientAddr);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("WS客户端：%s，握手成功"), lpszClientAddr);
 	}
+	SocketOpt_HeartBeat_ActiveAddrEx(xhWSHeart, lpszClientAddr);
 }
 void CALLBACK XEngine_Client_WSClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, false);
 }
+void CALLBACK XEngine_Client_WSHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
+}
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	HttpProtocol_Server_CreateClientEx(xhHttpPacket, lpszClientAddr, 0);
+	SocketOpt_HeartBeat_InsertAddrEx(xhHTTPHeart, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，进入服务器"), lpszClientAddr);
 	return true;
 }
@@ -65,19 +77,33 @@ void CALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, L
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
 	}
+	SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);
 }
 void CALLBACK XEngine_Client_HttpClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, false);
 }
+void CALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, true);
+}
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 {
+	xstring m_StrLeave;
 	if (bHeart)
 	{
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		m_StrLeave = _X("心跳断开");
+	}
+	else
+	{
+		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
+		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
+		SocketOpt_HeartBeat_DeleteAddrEx(xhHTTPHeart, lpszClientAddr);
+		m_StrLeave = _X("正常断开");
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
@@ -109,11 +135,11 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
 		}
 		Session_Token_Delete(st_NETClient.xhToken);
 		Session_Authorize_CloseAddr(lpszClientAddr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.xhToken, st_AuthTime.nTimeONLine);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，Token:%llu，离开服务器,在线时长:%d,离开方式:%s"), lpszClientAddr, st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.xhToken, st_AuthTime.nTimeONLine, m_StrLeave.c_str());
 	}
 	else
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，离开服务器"), lpszClientAddr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，离开服务器,离开方式:%s"), lpszClientAddr, m_StrLeave.c_str());
 	}
 	return true;
 }
@@ -163,10 +189,12 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 			ptszCodecBuffer = NULL;
 		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
+		SocketOpt_HeartBeat_ActiveAddrEx(xhWSHeart, lpszClientAddr);
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
 	{
 		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen);
+		SocketOpt_HeartBeat_ActiveAddrEx(xhTCPHeart, lpszClientAddr);
 	}
 	else
 	{
@@ -194,6 +222,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nSDSize);
+		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);
 	}
 	ManagePool_Memory_Free(xhMemPool, ptszMsgBuffer);
 	return true;

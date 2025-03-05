@@ -1,4 +1,4 @@
-name: ubuntu build workflows
+name: ubuntu x86_64 build workflows
 
 on:
   push:
@@ -81,9 +81,11 @@ jobs:
         with:
           name: XEngine_AuthorizeService-x86_64-Ubuntu-22.04
           path: XEngine_Release/
+          retention-days: 1
       - name: Upload folder as artifact with ubuntu24.04
         if: matrix.os == 'ubuntu-24.04'
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-x86_64-Ubuntu-24.04
+          name: XEngine_AuthorizeService-Ubuntu-24.04-x86_64
           path: XEngine_Release/
+          retention-days: 1

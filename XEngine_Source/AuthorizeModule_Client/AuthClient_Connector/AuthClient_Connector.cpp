@@ -86,6 +86,8 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
 		pSTDThread->join();
 	}
 	m_bLogin = false;
+	m_bAuth = false;
+	m_bHeart = false;
 	XClient_TCPSelect_Close(m_hSocket);
 #endif
 	return true;
@@ -100,7 +102,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Close()
   意思：输出是否验证,如果登录成功但是参数为假.说明没有剩余时间了
 返回值
   类型：逻辑型
-  意思：是否成功
+  意思：是否登录,如果没有登录将返回假,登录成功才需要判断是否通过验证
 备注：
 *********************************************************************/
 bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL */)
@@ -246,12 +248,40 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 #endif
 	return true;
 }
+/********************************************************************
+函数名称：AuthClient_Connector_Heart
+函数功能：启用禁用客户端心跳
+ 参数.一：bEnable
+  In/Out：In
+  类型：逻辑型
+  可空：Y
+  意思：是启用还是禁用
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CAuthClient_Connector::AuthClient_Connector_Heart(bool bEnable /* = true */)
+{
+	AuthClient_IsErrorOccur = false;
+
+	if (!m_bAuth)
+	{
+		AuthClient_IsErrorOccur = true;
+		AuthClient_dwErrorCode = ERROR_AUTHORIZE_MODULE_CLIENT_NOTAUTH;
+		return false;
+	}
+	m_bHeart = bEnable;
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 //                      保护函数
 //////////////////////////////////////////////////////////////////////////
 XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
 {
 	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
+
+	time_t nTimeStart = time(NULL);
 
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	while (pClass_This->m_bRun)
@@ -262,7 +292,9 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 
 		if (!XClient_TCPSelect_RecvPkt(pClass_This->m_hSocket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
 		{
+			pClass_This->m_bRun = false;
 			pClass_This->m_bLogin = false;
+			pClass_This->m_bAuth = false;
 			break;
 		}
 		XCHAR tszMsgBuffer[4096] = {};
@@ -279,6 +311,23 @@ XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lPar
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
 		{
 			pClass_This->m_bAuth = false;
+		}
+		//心跳支持
+		if (pClass_This->m_bHeart)
+		{
+			time_t nTimeEnd = time(NULL);
+			if ((nTimeEnd - nTimeStart) > 2)
+			{
+				XENGINE_PROTOCOLHDR st_ProtocolHdr = {};
+				st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
+				st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_HEARTBEAT;
+				st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN;
+				st_ProtocolHdr.byVersion = 1;
+				st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
+
+				nTimeStart = nTimeEnd;
+				XClient_TCPSelect_SendMsg(pClass_This->m_hSocket, (LPCXSTR)&st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
+			}
 		}
 		std::this_thread::sleep_for(std::chrono::seconds(1));
 	}

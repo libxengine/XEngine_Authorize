@@ -49,29 +49,38 @@ extern HWND hConfigWnd;
 extern bool bCrypto;
 extern LPCTSTR lpszStuType[2];
 
+#ifdef _MSC_BUILD
+#pragma comment(lib,"Dbghelp.lib")
+#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption.lib")
+#pragma comment(lib,"XEngine_Client/XClient_APIHelp.lib")
 #ifdef _DEBUG
-#ifdef _WIN64
+#ifdef _M_X64
 #pragma comment(lib,"../../x64/Debug/jsoncpp")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey")
-#else
+#elif _M_ARM64
+#pragma comment(lib,"../../ARM64/Debug/jsoncpp")
+#pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Help")
+#pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_CDKey")
+#elif _M_IX86
 #pragma comment(lib,"../../Debug/jsoncpp")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help")
 #pragma comment(lib,"../../Debug/AuthorizeModule_CDKey")
 #endif
 #else
-#ifdef _WIN64
+#ifdef _M_X64
 #pragma comment(lib,"../../x64/Release/jsoncpp")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey")
-#else
+#elif _M_ARM64
+#pragma comment(lib,"../../ARM64/Release/jsoncpp")
+#pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Help")
+#pragma comment(lib,"../../ARM64/Release/AuthorizeModule_CDKey")
+#elif _M_IX86
 #pragma comment(lib,"../../Release/jsoncpp")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help")
 #pragma comment(lib,"../../Release/AuthorizeModule_CDKey")
 #endif
 #endif
-
-#pragma comment(lib,"Dbghelp.lib")
-#pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
-#pragma comment(lib,"XEngine_Core/XEngine_Cryption.lib")
-#pragma comment(lib,"XEngine_Client/XClient_APIHelp.lib")
+#endif
