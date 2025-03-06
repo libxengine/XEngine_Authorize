@@ -73,6 +73,6 @@ jobs:
       - name: Upload folder as artifact with RockyLinux
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-RockyLinux-9-Arm64
+          name: XEngine_AuthorizeService-RockyLinux_9_Arm64
           path: XEngine_Release/
           retention-days: 1

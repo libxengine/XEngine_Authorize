@@ -69,6 +69,6 @@ jobs:
       - name: Upload folder as artifact with ubuntu Arm64
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-Ubuntu-24.04-Arm64
+          name: XEngine_AuthorizeService-Ubuntu_24.04_Arm64
           path: XEngine_Release/
           retention-days: 1

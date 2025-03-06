@@ -1,5 +1,6 @@
 XEngine_Authorize V3.17.0.1001
 
+added:more ci release arm64 support
 added:option method for http
 added:tcp and websocket and http heartbeat and disable and enable support
 added:multi login for day supported
@@ -10,6 +11,7 @@ update:depend library
 improved:parameter parse and more parameter supported
 delete:not used time function for help module
 
+增加:更多CI发布ARM64版本支持
 增加:HTTP OPTION方法支持
 增加:tcp websocket,http 心跳支持并且支持启用禁用
 增加:多端登录天数卡支持

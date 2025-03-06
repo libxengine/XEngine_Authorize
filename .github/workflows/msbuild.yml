@@ -113,20 +113,20 @@ jobs:
         if: matrix.configuration == 'Release' && matrix.platform == 'x86'
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-Windows-x86_32
+          name: XEngine_AuthorizeService-Windows_x86_32
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with x64
         if: matrix.configuration == 'Release' && matrix.platform == 'x64'
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-Windows-x86_64
+          name: XEngine_AuthorizeService-Windows_x86_64
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with Arm64
         if: matrix.configuration == 'Release' && matrix.platform == 'Arm64'
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-Windows-Arm64
+          name: XEngine_AuthorizeService-Windows_Arm64
           path: XEngine_Release/
           retention-days: 1
