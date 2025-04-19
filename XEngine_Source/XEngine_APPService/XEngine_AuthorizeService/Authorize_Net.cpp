@@ -162,7 +162,7 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 }
 bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass)
 {
-	XCHAR* ptszMsgBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_AUTH_MAX_BUFFER);
+	XCHAR* ptszMsgBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
 	if (NULL == ptszMsgBuffer)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
@@ -177,7 +177,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		}
 		else
 		{
-			XCHAR* ptszCodecBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+			XCHAR* ptszCodecBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
@@ -198,7 +198,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 	}
 	else
 	{
-		int nSDSize = XENGINE_AUTH_MAX_BUFFER;
+		int nSDSize = XENGINE_MEMORY_SIZE_MAX;
 		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
 		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
 
@@ -210,7 +210,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		}
 		else
 		{
-			XCHAR* ptszCodecBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_AUTH_MAX_BUFFER);
+			XCHAR* ptszCodecBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);

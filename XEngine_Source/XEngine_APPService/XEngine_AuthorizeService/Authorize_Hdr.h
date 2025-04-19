@@ -87,7 +87,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #define XENGINE_AUTH_APP_NETTYPE_TCP 0
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
 #define XENGINE_AUTH_APP_NETTYPE_HTTP 2
-#define XENGINE_AUTH_MAX_BUFFER (1024 * 1024 * 10)
 
 #include "Authorize_Config.h"
 #include "Authorize_Net.h"

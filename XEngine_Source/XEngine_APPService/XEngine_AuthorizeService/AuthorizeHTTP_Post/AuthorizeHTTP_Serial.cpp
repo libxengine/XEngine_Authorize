@@ -16,12 +16,12 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		int nPosStart = 0;
 		int nPosEnd = 0;
 		int nListCount = 0;
-		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
 		if (NULL == ptszMsgBuffer)
 		{
 			return false;
 		}
-		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
+		memset(ptszMsgBuffer, '\0', XENGINE_MEMORY_SIZE_MAX);
 
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)

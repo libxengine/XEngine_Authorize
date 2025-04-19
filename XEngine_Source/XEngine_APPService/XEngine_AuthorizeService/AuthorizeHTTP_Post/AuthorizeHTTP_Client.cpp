@@ -48,7 +48,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		AUTHREG_USERTABLE** ppSt_UserInfo;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		
-		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_AUTH_MAX_BUFFER);
+		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
 		if (NULL == ptszMsgBuffer)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "internal server error");
@@ -56,7 +56,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
 			return false;
 		}
-		memset(ptszMsgBuffer, '\0', XENGINE_AUTH_MAX_BUFFER);
+		memset(ptszMsgBuffer, '\0', XENGINE_MEMORY_SIZE_MAX);
 
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)
