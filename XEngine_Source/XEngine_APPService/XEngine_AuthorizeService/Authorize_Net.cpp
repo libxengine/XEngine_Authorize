@@ -177,7 +177,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		}
 		else
 		{
-			XCHAR* ptszCodecBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
+			XCHAR* ptszCodecBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
 			if (NULL == ptszCodecBuffer)
 			{
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
