@@ -264,6 +264,7 @@
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_User.h" />
     <ClInclude Include="Authorize_Config.h" />
     <ClInclude Include="Authorize_Hdr.h" />
+    <ClInclude Include="Authorize_HttpMemory.h" />
     <ClInclude Include="Authorize_HttpTask.h" />
     <ClInclude Include="Authorize_Task.h" />
     <ClInclude Include="Authorize_Net.h" />

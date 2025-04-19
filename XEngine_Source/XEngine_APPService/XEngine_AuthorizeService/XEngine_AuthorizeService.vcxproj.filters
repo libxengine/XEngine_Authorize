@@ -137,5 +137,8 @@
     <ClInclude Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.h">
       <Filter>头文件\AuthorizeHTTP_Get</Filter>
     </ClInclude>
+    <ClInclude Include="Authorize_HttpMemory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -88,6 +88,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #define XENGINE_AUTH_APP_NETTYPE_WS 1
 #define XENGINE_AUTH_APP_NETTYPE_HTTP 2
 
+#include "Authorize_HttpMemory.h"
 #include "Authorize_Config.h"
 #include "Authorize_Net.h"
 #include "Authorize_Task.h"
