@@ -115,7 +115,7 @@ BOOL CXEngineAuthorizeAppDlg::OnInitDialog()
 	//调整子对话框在父窗口中的位置 
 	CRect st_Rect;
 	m_TabWindows.GetClientRect(&st_Rect);
-	st_Rect.top += 20;
+	st_Rect.top += 30;
 	st_Rect.bottom -= 1;
 	st_Rect.left += 1;
 	st_Rect.right -= 1;
