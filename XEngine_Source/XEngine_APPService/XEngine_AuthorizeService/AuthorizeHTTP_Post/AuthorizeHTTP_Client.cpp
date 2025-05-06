@@ -45,16 +45,6 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		bool bOnline = false;
 		AUTHREG_USERTABLE** ppSt_UserInfo;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		
-		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
-		if (NULL == ptszMsgBuffer)
-		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "internal server error");
-			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
-			return false;
-		}
-		memset(ptszMsgBuffer, '\0', XENGINE_MEMORY_SIZE_MAX);
 
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)
@@ -80,13 +70,11 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_UserList(&ppSt_UserInfo, &nOffCount, nPosStart, nPosEnd);
 			}
 		}
-		Protocol_Packet_HttpClientList(ptszMsgBuffer, &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
+		Protocol_Packet_HttpClientList(m_MemoryPool.get(), &nSDLen, &ppSt_ListClient, nOnCount, &ppSt_UserInfo, nOffCount);
 
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nOnCount);
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_UserInfo, nOffCount);
-		XEngine_Client_TaskSend(lpszClientAddr, ptszMsgBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		free(ptszMsgBuffer);
-		ptszMsgBuffer = NULL;
+		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求客户端列表成功,在线用户:%d,离线用户:%d,显示标志:%d"), lpszClientAddr, nOnCount, nOffCount - nOnCount, bOnline);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIClose, lpszAPIName, _tcsxlen(lpszAPIClose)))
