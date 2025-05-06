@@ -115,10 +115,15 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			st_UserTable.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
 		}
 		//禁止权限0和1注册
-		if (st_UserTable.st_UserInfo.nUserLevel <= 1)
+		if (st_UserTable.st_UserInfo.nUserLevel < 10)
 		{
-			st_UserTable.st_UserInfo.nUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PERMISSION, "user and pass does not set");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
+			return false;
 		}
+		//默认普通用户
+		st_UserTable.st_UserInfo.nUserLevel = 20;
 		if (_tcsxlen(st_UserTable.st_UserInfo.tszUserName) <= 0 || _tcsxlen(st_UserTable.st_UserInfo.tszUserPass) <= 0)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "user and pass does not set");

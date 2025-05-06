@@ -63,7 +63,7 @@ BOOL CDialog_Modify::OnInitDialog()
 	for (int i = 0; i < 21; i++)
 	{
 		USES_CONVERSION;
-		m_ComboLeave.InsertString(i, A2W(lpszXLevelType[i]));
+		m_ComboLeave.InsertString(i, A2W(lpszXLevelType[i + 1]));
 	}
 	m_DateTimeRegister.SetFormat(_T("yyyy-MM-dd HH:mm:ss"));
 	POSITION pSt_Sition = pUserWnd->m_ListCtrlClient.GetFirstSelectedItemPosition();
@@ -168,7 +168,7 @@ BOOL CDialog_Modify::OnInitDialog()
 		m_EditLeftTime.SetWindowText(A2W(st_JsonObject["tszLeftTime"].asCString()));
 
 		m_ComboSerial.SetCurSel(st_JsonObject["enSerialType"].asInt());
-		m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt() + 1);
+		m_ComboLeave.SetCurSel(st_JsonObject["st_UserInfo"]["nUserLevel"].asInt());
 
 		if (ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_ROOT == st_JsonObject["st_UserInfo"]["nUserLevel"].asInt())
 		{

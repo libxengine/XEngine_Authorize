@@ -302,15 +302,6 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，多端登录失败，用户已经登录,类型:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.enDeviceType);
 			return false;
 		}
-		//是否被封禁
-		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
-		{
-			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_BANNED;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return false;
-		}
 		//分析充值类型
 		if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
