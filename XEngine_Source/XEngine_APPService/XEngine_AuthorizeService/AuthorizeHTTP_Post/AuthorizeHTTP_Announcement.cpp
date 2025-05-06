@@ -10,7 +10,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 	CHttpMemory_PoolEx m_MemoryPool(XENGINE_MEMORY_SIZE_MAX);
 	if (!st_FunSwitch.bSwitchNotice)
 	{
-		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 503, "the function is closed");
+		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，公告系统协议处理失败，功能已经被服务器关闭!"), lpszClientAddr);
 		return false;
@@ -32,7 +32,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		}
 		if (nListCount > 10)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 510, "server limited");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_LIMIT, "server limited");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，公告系统协议处理失败，超过了服务器限制的公告数量!"), lpszClientAddr);
 			return false;
@@ -40,7 +40,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, &st_Announcement);
 		if (_tcsxlen(st_Announcement.tszContext) <= 1)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 510, "server limited");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_LIMIT, "server limited");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，公告系统协议处理失败,内容不能小于1个字节!"), lpszClientAddr);
 			return false;

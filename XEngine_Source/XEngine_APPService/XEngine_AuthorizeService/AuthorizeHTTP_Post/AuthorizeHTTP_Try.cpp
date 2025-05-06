@@ -19,7 +19,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
 		if (NULL == ptszMsgBuffer)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 500, "internal server error");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "internal server error");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
 			return false;

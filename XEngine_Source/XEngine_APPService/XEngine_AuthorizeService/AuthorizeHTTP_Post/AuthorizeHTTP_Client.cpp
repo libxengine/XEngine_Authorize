@@ -27,7 +27,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		if (!bSuccess) 
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 404, "not found client");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户:%s 信息失败,错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;
@@ -49,7 +49,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XCHAR* ptszMsgBuffer = (XCHAR*)malloc(XENGINE_MEMORY_SIZE_MAX);
 		if (NULL == ptszMsgBuffer)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 500, "internal server error");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "internal server error");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,申请内存失败,错误:%d"), lpszClientAddr, errno);
 			return false;
@@ -59,7 +59,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 400, "pos parament is not rigth");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "pos parament is not rigth");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求用户列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
 			return false;
@@ -99,7 +99,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName))
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 404, "not found client");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求剔除用户:%s 没有找到,可能不在线"), lpszClientAddr, st_UserInfo.tszUserName);
 			return false;
@@ -139,7 +139,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		if (!bSuccess) 
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 404, "not found client");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求修改用户信息失败:%s 错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;
@@ -175,7 +175,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		if (!bSuccess)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 404, "not found client");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "not found client");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求删除用户失败:%s 错误码:%lX"), lpszClientAddr, st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;

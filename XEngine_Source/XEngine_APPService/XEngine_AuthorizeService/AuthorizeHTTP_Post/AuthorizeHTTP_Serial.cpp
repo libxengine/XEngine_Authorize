@@ -24,7 +24,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 400, "pos parament is not rigth");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "pos parament is not rigth");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求序列号列表失败,POS参数不正确,%d - %d"), lpszClientAddr, nPosStart, nPosEnd);
 			return false;
@@ -74,7 +74,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			if (6 != _stxscanf(tszHasTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
 			{
-				Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 400, "time request is failed");
+				Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "time request is failed");
 				XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求插入序列卡失败,时间格式错误"), lpszClientAddr);
 				return false;
@@ -82,7 +82,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		else
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 415, "not support serial types");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTSUPPORT, "not support serial types");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求插入序列卡失败,不支持的类型格式:%d"), lpszClientAddr, enSerialType);
 			return false;
@@ -92,7 +92,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		LPCXSTR lpszUserHdr = _X("XAUTH");
 		if (!Authorize_Serial_Creator(&pptszSerialNumber, lpszUserHdr, nSerialCount, nNumberCount, &st_AuthTimer, enSerialType))
 		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 500, "Internal Server Error");
+			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Internal Server Error");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,创建序列卡失败,错误码:%lX"), lpszClientAddr, Authorize_GetLastError());
 			return false;

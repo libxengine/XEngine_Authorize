@@ -11,7 +11,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	CHttpMemory_PoolEx m_MemoryPool(XENGINE_MEMORY_SIZE_MAX);
 	if (!st_FunSwitch.bSwitchBanned)
 	{
-		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, 503, "the function is closed");
+		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，黑名单协议处理失败，功能已经被服务器关闭!"), lpszClientAddr);
 		return false;
