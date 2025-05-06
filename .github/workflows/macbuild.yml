@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-14-large
-          - os: macos-14-xlarge
+          - os: macos-13
+          - os: macos-14
     runs-on: ${{ matrix.os }}
     
     steps:
@@ -40,13 +40,13 @@ jobs:
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             
       - name: Set up Dependency x86_64 Environment 
-        if: matrix.os == 'macos-14-large'
+        if: matrix.os == 'macos-13'
         run: |
             cd libxengine
             chmod 777 *
             ./XEngine_LINEnv.sh -i 3
       - name: Set up Dependency Arm64 Environment 
-        if: matrix.os == 'macos-14-xlarge'
+        if: matrix.os == 'macos-14'
         run: |
             cd libxengine
             chmod 777 *
@@ -81,14 +81,14 @@ jobs:
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact with mac x64
-        if: matrix.os == 'macos-14-large'
+        if: matrix.os == 'macos-13'
         uses: actions/upload-artifact@v4
         with:
           name: XEngine_AuthorizeService-Mac_x86_64
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with mac arm
-        if: matrix.os == 'macos-14-xlarge'
+        if: matrix.os == 'macos-14'
         uses: actions/upload-artifact@v4
         with:
           name: XEngine_AuthorizeService-Mac_Arm64
