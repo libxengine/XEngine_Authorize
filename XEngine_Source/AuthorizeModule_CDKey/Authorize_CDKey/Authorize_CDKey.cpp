@@ -97,7 +97,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteKey(LPCXSTR lpszFileKey, XENGINE_AUT
 		memset(tszTimeStart, '\0', sizeof(tszTimeStart));
 		memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
 		BaseLib_Time_TimeToStr(tszTimeEnd);
-		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
 		pSt_AuthLocal->st_AuthRegInfo.nHasTime -= nUsedTime;
 	}
     //添加注册信息
@@ -472,7 +472,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteMemory(XCHAR* ptszMsgBuffer, int* pI
 		memset(tszTimeStart, '\0', sizeof(tszTimeStart));
 		memset(tszTimeEnd, '\0', sizeof(tszTimeEnd));
 		BaseLib_Time_TimeToStr(tszTimeEnd);
-		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+		BaseLib_TimeSpan_GetForStr(pSt_AuthLocal->st_AuthRegInfo.tszStartTime, tszTimeEnd, &nUsedTime, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
 		pSt_AuthLocal->st_AuthRegInfo.nHasTime -= nUsedTime;
 	}
 	//添加注册信息
@@ -1009,7 +1009,7 @@ bool CAuthorize_CDKey::Authorize_CDKey_GetLeftTimer(XENGINE_AUTHORIZE_LOCAL* pSt
 		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_AuthLocal->st_AuthRegInfo.enSerialType)
 		{
 			_stxscanf(pSt_AuthLocal->st_AuthRegInfo.tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_EndTimer.wYear, &st_EndTimer.wMonth, &st_EndTimer.wDay, &st_EndTimer.wHour, &st_EndTimer.wMinute, &st_EndTimer.wSecond);
-			BaseLib_TimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+			BaseLib_TimeSpan_GetForStu(&st_SysTimer, &st_EndTimer, &pSt_AuthLocal->st_AuthRegInfo.nHasTime, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
 		}
 		else
 		{
