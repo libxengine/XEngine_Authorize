@@ -150,7 +150,7 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */, XLONG dwCryption /* = 0 */)
+bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */, XLONG dwCryption /* = 0 */)
 {
 	AuthClient_IsErrorOccur = false;
 

@@ -97,7 +97,7 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
+extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
 /********************************************************************
 函数名称：AuthClient_Connector_Heart
 函数功能：启用禁用客户端心跳

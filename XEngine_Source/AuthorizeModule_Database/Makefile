@@ -4,8 +4,6 @@ PLATVER =
 PLATDIR = 
 FILEEXT = 
 LIBFLAG = 
-RELEASE = 0
-UNICODE = 0
 LOADHDR = -I ./
 LOADSO = -L ../AuthorizeModule_CDKey
 LIB = -lXEngine_BaseLib -lHelpComponents_DataBase -lAuthorizeModule_CDKey
@@ -26,9 +24,9 @@ else
 endif
 
 ifeq ($(UNICODE),1)
-UNICODE = -D _UNICODE
+override UNICODE := -D __UNICODE__
 else
-UNICODE = 
+override UNICODE := -D __ANSI__
 endif
 
 ifeq ($(PLATFORM),linux)
