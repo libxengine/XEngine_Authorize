@@ -197,16 +197,9 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		}
 		else
 		{
-			XCHAR* ptszCodecBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
-			if (NULL == ptszCodecBuffer)
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-				return false;
-			}
-
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, ptszCodecBuffer, nMsgLen);
-			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
+			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);

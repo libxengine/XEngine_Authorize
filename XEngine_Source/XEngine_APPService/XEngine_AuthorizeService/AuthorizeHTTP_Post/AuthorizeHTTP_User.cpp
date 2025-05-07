@@ -132,16 +132,6 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		bSuccess = false;
-
-		if (st_AuthConfig.st_XVerification.st_PassCrypto.bEnable)
-		{
-			int nPLen = _tcsxlen(st_UserTable.st_UserInfo.tszUserPass);
-			XBYTE byMD5Buffer[MAX_PATH] = {};
-			Cryption_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
-			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
-		}
-
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
 			bSuccess = DBModule_SQLite_UserRegister(&st_UserTable);
@@ -247,32 +237,23 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，找回重置密码失败，验证信息失败"), lpszClientAddr, st_UserInfo.tszUserName);
 			return false;
 		}
-		//是否开启了密码加密
-		if (st_AuthConfig.st_XVerification.st_PassCrypto.bEnable)
+		//重置密码
+		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{
-			//开启了,密码重置
-			int nPLen = _tcsxlen(st_UserInfo.tszUserPass);
-			XBYTE byMD5Buffer[MAX_PATH] = {};
-			Cryption_Api_Digest(st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
-			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
-			//重置密码
-			if (0 == st_AuthConfig.st_XSql.nDBType)
-			{
-				bSuccess = DBModule_SQLite_UserSet(&st_UserTable);
-			}
-			else
-			{
-				bSuccess = DBModule_MySQL_UserSet(&st_UserTable);
-			}
-			if (!bSuccess)
-			{
-				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "not found client");
-				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求修改密码失败:%s 错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
-				return false;
-			}
+			bSuccess = DBModule_SQLite_UserSet(&st_UserTable);
 		}
+		else
+		{
+			bSuccess = DBModule_MySQL_UserSet(&st_UserTable);
+		}
+		if (!bSuccess)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "server set db failed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求修改密码失败:%s 错误码:%lX"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
+			return false;
+		}
+
 		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol = {};
 		_tcsxcpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		_tcsxcpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);

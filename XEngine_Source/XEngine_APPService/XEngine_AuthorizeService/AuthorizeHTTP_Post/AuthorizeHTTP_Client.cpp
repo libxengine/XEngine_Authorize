@@ -107,15 +107,6 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, &st_UserTable);
-
-		if (st_AuthConfig.st_XVerification.st_PassCrypto.bEnable)
-		{
-			int nPLen = _tcsxlen(st_UserTable.st_UserInfo.tszUserPass);
-			XBYTE byMD5Buffer[MAX_PATH] = {};
-			Cryption_Api_Digest(st_UserTable.st_UserInfo.tszUserPass, byMD5Buffer, &nPLen, false, st_AuthConfig.st_XVerification.st_PassCrypto.nCodec);
-			memset(st_UserTable.st_UserInfo.tszUserPass, '\0', sizeof(st_UserTable.st_UserInfo.tszUserPass));
-			BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_UserTable.st_UserInfo.tszUserPass);
-		}
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{

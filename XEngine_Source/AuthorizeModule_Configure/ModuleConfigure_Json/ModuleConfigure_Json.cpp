@@ -113,7 +113,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XTime.nWSTime = st_JsonXTime["nWSTime"].asInt();
 	pSt_ServerConfig->st_XTime.nHTTPTime = st_JsonXTime["nHTTPTime"].asInt();
 	//验证配置
-	if (st_JsonRoot["XVerification"].empty() || (9 != st_JsonRoot["XVerification"].size()))
+	if (st_JsonRoot["XVerification"].empty() || (8 != st_JsonRoot["XVerification"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XVER;
@@ -129,9 +129,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 
 	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyFile, st_JsonXVerification["st_XCDKey"]["tszKeyFile"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XVerification.st_XCDKey.tszKeyPass, st_JsonXVerification["st_XCDKey"]["tszKeyPass"].asCString());
-
-	pSt_ServerConfig->st_XVerification.st_PassCrypto.bEnable = st_JsonXVerification["st_PassCrypto"]["bEnable"].asBool();
-	pSt_ServerConfig->st_XVerification.st_PassCrypto.nCodec = st_JsonXVerification["st_PassCrypto"]["nCodec"].asInt();
 
 	pSt_ServerConfig->st_XVerification.st_XToken.bAutoRenewal = st_JsonXVerification["st_XToken"]["bAutoRenewal"].asBool();
 	pSt_ServerConfig->st_XVerification.st_XToken.nRenewalTime = st_JsonXVerification["st_XToken"]["nRenewalTime"].asInt();
