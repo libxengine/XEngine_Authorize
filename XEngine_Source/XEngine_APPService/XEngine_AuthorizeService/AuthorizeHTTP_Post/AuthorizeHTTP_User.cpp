@@ -65,7 +65,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName);
 		for (int i = 0; i < nListCount; i++)
 		{
-			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 

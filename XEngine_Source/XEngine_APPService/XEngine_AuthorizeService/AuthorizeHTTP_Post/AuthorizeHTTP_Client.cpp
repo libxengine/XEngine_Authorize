@@ -94,7 +94,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		for (int i = 0; i < nListCount; i++)
 		{
-			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
@@ -139,7 +139,7 @@ bool XEngine_AuthorizeHTTP_Client(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName);
 		for (int i = 0; i < nListCount; i++)
 		{
-			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr, true);
+			XEngine_CloseClient(ppSt_ListClient[i]->tszClientAddr);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		//删除数据库

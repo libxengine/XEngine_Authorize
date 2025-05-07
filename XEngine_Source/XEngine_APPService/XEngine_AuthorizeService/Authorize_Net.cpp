@@ -17,11 +17,11 @@ void CALLBACK XEngine_Client_TCPRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LP
 }
 void CALLBACK XEngine_Client_TCPClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, false);
+	XEngine_CloseClient(lpszClientAddr, 1);
 }
 void CALLBACK XEngine_Client_TCPHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, true);
+	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_WSAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
@@ -57,11 +57,11 @@ void CALLBACK XEngine_Client_WSRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPC
 }
 void CALLBACK XEngine_Client_WSClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, false);
+	XEngine_CloseClient(lpszClientAddr, 1);
 }
 void CALLBACK XEngine_Client_WSHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, true);
+	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
 bool CALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
@@ -81,29 +81,40 @@ void CALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, L
 }
 void CALLBACK XEngine_Client_HttpClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, false);
+	XEngine_CloseClient(lpszClientAddr, 1);
 }
 void CALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
 {
-	XEngine_CloseClient(lpszClientAddr, true);
+	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
-bool XEngine_CloseClient(LPCXSTR lpszClientAddr, bool bHeart)
+bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 {
 	xstring m_StrLeave;
-	if (bHeart)
+	if (0 == nLeaveType)
 	{
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
-		m_StrLeave = _X("心跳断开");
+
+		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
+		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
+		SocketOpt_HeartBeat_DeleteAddrEx(xhHTTPHeart, lpszClientAddr);
+		m_StrLeave = _X("主动断开");
 	}
-	else
+	else if (1 == nLeaveType)
 	{
 		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhHTTPHeart, lpszClientAddr);
 		m_StrLeave = _X("正常断开");
+	}
+	else
+	{
+		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		m_StrLeave = _X("心跳断开");
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
