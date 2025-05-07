@@ -68,7 +68,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			Session_Token_UPDate(pSt_ProtocolHdr->xhToken);
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，句柄:%llu 心跳处理成功"), lpszClientAddr, pSt_ProtocolHdr->xhToken);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG, _X("客户端：%s，句柄:%llu 心跳处理成功"), lpszClientAddr, pSt_ProtocolHdr->xhToken);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{

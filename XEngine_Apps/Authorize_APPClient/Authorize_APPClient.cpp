@@ -35,7 +35,7 @@ using namespace std;
 //Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_Cryption -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define _DYNAMIC_CODE
-//#define _PASS_ENCRYPT
+#define _PASS_ENCRYPT
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
@@ -128,12 +128,22 @@ int AuthClient_Register()
 	Json::Value st_JsonUserTable;
 	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/register");
 
-	st_JsonUserInfo["tszUserName"] = lpszUser;
+#ifdef _PASS_ENCRYPT
+	XCHAR tszPassCodec[128] = {};
+	int nPLen = _tcsxlen(lpszPass);
+	XBYTE byMD5Buffer[MAX_PATH] = {};
+	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
+	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPassCodec);
+	st_JsonUserInfo["tszUserPass"] = tszPassCodec;
+#else
 	st_JsonUserInfo["tszUserPass"] = lpszPass;
+#endif
+
+	st_JsonUserInfo["tszUserName"] = lpszUser;
 	st_JsonUserInfo["tszEMailAddr"] = lpszEmail;
 	st_JsonUserInfo["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
 	st_JsonUserInfo["nIDNumber"] = (Json::Value::Int64)nIDNumber;
-	st_JsonUserInfo["nUserLevel"] = 5;
+	st_JsonUserInfo["nUserLevel"] = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
 	st_JsonUserTable["tszHardCode"] = "2FDWAD02JD2091";
 	st_JsonUserTable["st_UserInfo"] = st_JsonUserInfo;
@@ -266,9 +276,9 @@ int AuthClient_Login()
 #ifdef _PASS_ENCRYPT
 	int nPLen = _tcsxlen(st_AuthUser.tszUserPass);
 	XBYTE byMD5Buffer[MAX_PATH] = {};
-	OPenSsl_Api_Digest(st_AuthUser.tszUserPass, byMD5Buffer, &nPLen, false, XENGINE_OPENSSL_API_DIGEST_MD5);
+	Cryption_Api_Digest(st_AuthUser.tszUserPass, byMD5Buffer, &nPLen);
 	memset(st_AuthUser.tszUserPass, '\0', sizeof(st_AuthUser.tszUserPass));
-	BaseLib_OperatorString_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
+	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
 #endif
 
 	if (nDYCode > 0)
@@ -366,6 +376,17 @@ int AuthClient_GetPass()
 	Json::Value st_JsonObject;
 	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/pass");
 
+#ifdef _PASS_ENCRYPT
+	XCHAR tszPASSCodec[128] = {};
+	int nPLen = _tcsxlen(lpszPass);
+	XBYTE byMD5Buffer[MAX_PATH] = {};
+	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
+	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
+	st_JsonObject["tszUserPass"] = tszPASSCodec;
+#else
+	st_JsonObject["tszUserPass"] = lpszPass;
+#endif
+
 	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszEMailAddr"] = lpszEmail;
 	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
@@ -406,7 +427,18 @@ int AuthClient_GetTime()
 	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
 
 	st_JsonObject["tszUserName"] = lpszUser;
+
+#ifdef _PASS_ENCRYPT
+	XCHAR tszPASSCodec[128] = {};
+	int nPLen = _tcsxlen(lpszPass);
+	XBYTE byMD5Buffer[MAX_PATH] = {};
+	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
+	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
+	st_JsonObject["tszUserPass"] = tszPASSCodec;
+#else
 	st_JsonObject["tszUserPass"] = lpszPass;
+#endif
+	
 	st_JsonRoot["st_UserAuth"] = st_JsonObject;
 
 	int nMsgLen = 0;
@@ -440,8 +472,18 @@ int AuthClient_Delete()
 	Json::Value st_JsonObject;
 	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/delete");
 
-	st_JsonObject["tszUserName"] = lpszUser;
+#ifdef _PASS_ENCRYPT
+	XCHAR tszPASSCodec[128] = {};
+	int nPLen = _tcsxlen(lpszPass);
+	XBYTE byMD5Buffer[MAX_PATH] = {};
+	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
+	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
+	st_JsonObject["tszUserPass"] = tszPASSCodec;
+#else
 	st_JsonObject["tszUserPass"] = lpszPass;
+#endif
+
+	st_JsonObject["tszUserName"] = lpszUser;
 	st_JsonObject["tszEMailAddr"] = lpszEmail;
 	st_JsonObject["nPhoneNumber"] = (Json::Value::Int64)nPhoneNumber;
 	st_JsonObject["nIDNumber"] = (Json::Value::Int64)nIDNumber;
@@ -532,7 +574,7 @@ int main()
 	AuthClient_GetPass();
 	AuthClient_GetTime();
 
-	std::this_thread::sleep_for(std::chrono::seconds(100));
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	AuthClient_Delete();
 	AuthClient_Try();
 
