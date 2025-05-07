@@ -45,7 +45,7 @@ extern "C" bool AuthHelp_DynamicCode_Destory()
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Destory();
 }
-extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, int* pInt_DynamicCode)
+extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE * pxhToken, XSHOT* pInt_DynamicCode)
 {
 	return m_HelpDynamic.AuthHelp_DynamicCode_Create(pxhToken, pInt_DynamicCode);
 }

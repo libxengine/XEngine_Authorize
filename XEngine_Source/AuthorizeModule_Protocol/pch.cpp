@@ -63,7 +63,7 @@ extern "C" bool Protocol_Packet_HttpSerialList(XCHAR * ptszMsgBuffer, int* pInt_
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpSerialList(ptszMsgBuffer, pInt_MsgLen, pppSt_SerialList, nListCount);
 }
-extern "C" bool Protocol_Packet_HttpToken(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode)
+extern "C" bool Protocol_Packet_HttpToken(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, XSHOT nDCode)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpToken(ptszMsgBuffer, pInt_MsgLen, xhToken, nTimeout, nDCode);
 }

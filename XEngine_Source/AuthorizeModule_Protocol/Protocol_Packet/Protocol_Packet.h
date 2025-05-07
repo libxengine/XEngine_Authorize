@@ -26,7 +26,7 @@ public:
 	bool Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_USERTABLE* pSt_UserTable);
 	bool Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHSESSION_NETCLIENT*** pppSt_OnClient, int nOnCount, AUTHREG_USERTABLE*** pppSt_OffClient, int nOffCount);
 	bool Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialList, int nListCount);
-	bool Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode = 0);
+	bool Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, XSHOT nDCode = 0);
 	bool Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_FUNCTIONSWITCH* pSt_FunSwitch);
 	bool Protocol_Packet_HttpBanned(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_BANNED*** pppSt_BannedUser, int nUserCount, AUTHREG_BANNED*** pppSt_BannedAddr, int nAddrCount);
 	bool Protocol_Packet_HttpAnnouncement(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_ANNOUNCEMENT*** pppSt_Announcement, int nListCount);

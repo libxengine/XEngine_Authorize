@@ -51,7 +51,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 			return false;
 		}
 		//http://app.xyry.org:5302/api?function=dcode
-		int nDCode = 0;
+		XSHOT nDCode = 0;
 		XNETHANDLE xhToken = 0;
 		AuthHelp_DynamicCode_Create(&xhToken, &nDCode);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nDynamicTimeout, nDCode);

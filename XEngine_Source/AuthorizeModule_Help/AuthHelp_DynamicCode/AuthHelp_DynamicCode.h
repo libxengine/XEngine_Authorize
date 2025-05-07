@@ -13,7 +13,7 @@
 typedef struct  
 {
 	XNETHANDLE xhToken;
-	int nDynamicCode;
+	XSHOT nDynamicCode;
 	time_t nTimeStart;
 }AUTHHELP_DYNAMICCODE;
 
@@ -25,7 +25,7 @@ public:
 public:
 	bool AuthHelp_DynamicCode_Init(int nSecond);
 	bool AuthHelp_DynamicCode_Destory();
-	bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode);
+	bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, XSHOT* pInt_DynamicCode);
 	bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 protected:
 	static XHTHREAD CALLBACK AuthHelp_DynamicCode_Thread(XPVOID lParam);

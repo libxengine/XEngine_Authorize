@@ -89,7 +89,7 @@ bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Destory()
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode)
+bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, XSHOT* pInt_DynamicCode)
 {
 	Help_IsErrorOccur = false;
 	
@@ -104,7 +104,7 @@ bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, in
 
 	st_DynamicCode.nTimeStart = time(NULL);
 	BaseLib_Handle_Create(&st_DynamicCode.xhToken);
-	BaseLib_Handle_Create((XNETHANDLE*)&st_DynamicCode.nDynamicCode, 100001, 999999);
+	BaseLib_Handle_Create((XNETHANDLE*)&st_DynamicCode.nDynamicCode, 10001, 65535);
 	
 	*pxhToken = st_DynamicCode.xhToken;
 	*pInt_DynamicCode = st_DynamicCode.nDynamicCode;
