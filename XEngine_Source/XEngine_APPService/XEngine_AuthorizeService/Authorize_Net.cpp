@@ -162,33 +162,20 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 }
 bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass)
 {
-	XCHAR* ptszMsgBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
-	if (NULL == ptszMsgBuffer)
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-		return false;
-	}
-
+	CHttpMemory_PoolEx m_HTTPMemory(XENGINE_MEMORY_SIZE_MAX);
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
 		if (NULL == lpszPass)
 		{
-			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
 		else
 		{
-			XCHAR* ptszCodecBuffer = (XCHAR*)ManagePool_Memory_Alloc(xhMemPool, XENGINE_MEMORY_SIZE_MAX);
-			if (NULL == ptszCodecBuffer)
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，网络类型:%d 发送数据失败,内存申请失败,错误码:%d"), lpszClientAddr, nNetType, errno);
-				return false;
-			}
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
-			RfcComponents_WSCodec_EncodeMsg(ptszCodecBuffer, ptszMsgBuffer, &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
-			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
-			ptszCodecBuffer = NULL;
+			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
+			RfcComponents_WSCodec_EncodeMsg(m_CodecMemory.get(), m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
-		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, ptszMsgBuffer, nMsgLen);
+		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, m_HTTPMemory.get(), nMsgLen);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhWSHeart, lpszClientAddr);
 	}
 	else if (XENGINE_AUTH_APP_NETTYPE_TCP == nNetType)
@@ -206,7 +193,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		st_HDRParam.bIsClose = true;
 		if (NULL == lpszPass)
 		{
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
 		}
 		else
 		{
@@ -218,12 +205,11 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 			}
 
 			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)ptszCodecBuffer, lpszPass);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, ptszMsgBuffer, &nSDSize, &st_HDRParam, ptszCodecBuffer, nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, ptszCodecBuffer, nMsgLen);
 			ManagePool_Memory_Free(xhMemPool, ptszCodecBuffer);
 		}
-		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, ptszMsgBuffer, nSDSize);
+		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);
 	}
-	ManagePool_Memory_Free(xhMemPool, ptszMsgBuffer);
 	return true;
 }
