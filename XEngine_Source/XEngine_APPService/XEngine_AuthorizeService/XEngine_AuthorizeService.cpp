@@ -416,17 +416,10 @@ int main(int argc, char** argv)
 	//发送信息报告
 	if (st_AuthConfig.st_XReport.bEnable && !bIsTest)
 	{
-		if (InfoReport_APIMachine_Send(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName))
+		__int64x nTimeCount = 0;
+		if (InfoReport_APIMachine_Send(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName, &nTimeCount))
 		{
-			__int64x nTimeCount = 0;
-			if (InfoReport_APIMachine_GetTime(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName, &nTimeCount))
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动信息报告给API服务器:%s 成功,报告次数:%lld"), st_AuthConfig.st_XReport.tszAPIUrl, nTimeCount);
-			}
-			else
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，启动信息报告给API服务器:%s 成功,获取报告次数失败,错误:%lX"), st_AuthConfig.st_XReport.tszAPIUrl, InfoReport_GetLastError());
-			}
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动信息报告给API服务器:%s 成功,报告次数:%lld"), st_AuthConfig.st_XReport.tszAPIUrl, nTimeCount);
 		}
 		else
 		{
