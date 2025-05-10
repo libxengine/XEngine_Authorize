@@ -68,7 +68,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			Session_Token_UPDate(pSt_ProtocolHdr->xhToken);
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，句柄:%llu 心跳处理成功"), lpszClientAddr, pSt_ProtocolHdr->xhToken);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG, _X("客户端：%s，句柄:%llu 心跳处理成功"), lpszClientAddr, pSt_ProtocolHdr->xhToken);
 	}
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
@@ -94,7 +94,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		if (!bSuccess && st_FunSwitch.bSwitchBanned)
 		{
-			pSt_ProtocolHdr->wReserve = 423;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_BANNED;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
@@ -106,7 +106,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		//是否允许登录
 		if (!st_FunSwitch.bSwitchLogin)
 		{
-			pSt_ProtocolHdr->wReserve = 503;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_CLOSED;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录失败，因为登录功能被服务器关闭!"), lpszClientAddr);
@@ -114,7 +114,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		if (ENUM_PROTOCOL_FOR_DEVICE_TYPE_UNKNOW == st_AuthProtocol.enDeviceType)
 		{
-			pSt_ProtocolHdr->wReserve = 250;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_DEVICE;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，没有填写设备类型,无法继续"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -125,7 +125,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		{
 			if (!AuthHelp_DynamicCode_Get(pSt_ProtocolHdr->xhToken, _ttxoi(st_AuthProtocol.tszDCode)))
 			{
-				pSt_ProtocolHdr->wReserve = 257;
+				pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_DYNAMICCODE;
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，验证动态码失败,句柄:%llu,动态码;%s,错误码:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName, pSt_ProtocolHdr->xhToken, st_AuthProtocol.tszDCode, AuthHelp_GetLastError());
@@ -143,7 +143,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			APIClient_Http_Request(_X("POST"), st_AuthConfig.st_XLogin.st_PassUrl.tszPassLogin, tszSDBuffer, &nHTTPCode, &ptszMsgBuffer, &nHTTPLen);
 			if (200 != nHTTPCode)
 			{
-				pSt_ProtocolHdr->wReserve = 251;
+				pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_PASSVER;
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，三方验证失败,错误码:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, nHTTPCode);
@@ -169,7 +169,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 				if (!bSuccess)
 				{
-					pSt_ProtocolHdr->wReserve = 251;
+					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_USER;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -177,7 +177,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 				if ((_tcsxlen(st_AuthProtocol.tszUserPass) != _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_AuthProtocol.tszUserPass))))
 				{
-					pSt_ProtocolHdr->wReserve = 252;
+					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_PASS;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -188,7 +188,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			{
 				if (!st_FunSwitch.bSwitchHCLogin)
 				{
-					pSt_ProtocolHdr->wReserve = 251;
+					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_CLOSED;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，硬件码：%s，登录失败，服务端关闭此功能"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -205,7 +205,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				}
 				if ((_tcsxlen(st_AuthProtocol.tszUserName) != _tcsxlen(st_UserTable.tszHardCode)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserName, st_UserTable.tszHardCode, _tcsxlen(st_AuthProtocol.tszUserName))))
 				{
-					pSt_ProtocolHdr->wReserve = 252;
+					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_HARDCODE;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，硬件码：%s，登录失败，硬件码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -249,7 +249,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			else
 			{
-				pSt_ProtocolHdr->wReserve = 257;
+				pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_SERVER;
 				Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，服务端设置不正确"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -296,25 +296,16 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		//判断这次登录是否允许
 		if (bLogin)
 		{
-			pSt_ProtocolHdr->wReserve = 253;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_LOGINED;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，多端登录失败，用户已经登录,类型:%d"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.enDeviceType);
 			return false;
 		}
-		//是否被封禁
-		if (-1 == st_UserTable.st_UserInfo.nUserLevel)
-		{
-			pSt_ProtocolHdr->wReserve = 254;
-			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端已被封禁"), lpszClientAddr, st_AuthProtocol.tszUserName);
-			return false;
-		}
 		//分析充值类型
 		if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
-			pSt_ProtocolHdr->wReserve = 255;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_TIMELEFT;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，客户端时间已经耗尽,需要充值才能使用"), lpszClientAddr, st_AuthProtocol.tszUserName);
@@ -376,7 +367,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		st_UserTable.enDeviceType = st_AuthProtocol.enDeviceType;
 		if (!Session_Authorize_Insert(lpszClientAddr, &st_UserTable, pSt_ProtocolHdr->xhToken, nNetType))
 		{
-			pSt_ProtocolHdr->wReserve = 256;
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_SERVER;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，插入会话管理失败,错误:%lX"), lpszClientAddr, st_AuthProtocol.tszUserName);

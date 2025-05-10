@@ -43,9 +43,9 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth)
 {
 	return m_Connector.AuthClient_Connector_GetAuth(pbAuth);
 }
-extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode, XNETHANDLE xhToken)
+extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode, XNETHANDLE xhToken, XLONG dwCryption)
 {
-	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken);
+	return m_Connector.AuthClient_Connector_Login(lpszUser, lpszPass, nDYCode, xhToken, dwCryption);
 }
 extern "C" bool AuthClient_Connector_Heart(bool bEnable)
 {

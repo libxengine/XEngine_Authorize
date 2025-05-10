@@ -277,7 +277,7 @@ extern "C" bool Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int* pInt_M
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode = 0);
+extern "C" bool Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, XSHOT nDCode = 0);
 /********************************************************************
 函数名称：Protocol_Packet_HttpSwitch
 函数功能：打包开关功能选项

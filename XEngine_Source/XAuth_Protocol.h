@@ -32,6 +32,29 @@
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPDCODE 0x2011     
 #define XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT 0x2FFF        //通知客户端时间到期
 //////////////////////////////////////////////////////////////////////////
+//                            导出的错误码
+//////////////////////////////////////////////////////////////////////////
+#define ERROR_AUTHORIZE_PROTOCOL_USER 0x100                               //用户错误
+#define ERROR_AUTHORIZE_PROTOCOL_PASS 0x101                               //密码错误
+#define ERROR_AUTHORIZE_PROTOCOL_CLOSED 0x102                             //此功能关闭
+#define ERROR_AUTHORIZE_PROTOCOL_DEVICE 0x103                             //设备类型未知
+#define ERROR_AUTHORIZE_PROTOCOL_DYNAMICCODE 0x104                        //动态码错误
+#define ERROR_AUTHORIZE_PROTOCOL_PASSVER 0x105                            //三方验证错误
+#define ERROR_AUTHORIZE_PROTOCOL_BANNED 0x106                             //用户被禁用
+#define ERROR_AUTHORIZE_PROTOCOL_HARDCODE 0x107                           //硬件码错误
+#define ERROR_AUTHORIZE_PROTOCOL_LOGINED 0x108                            //已经登录
+#define ERROR_AUTHORIZE_PROTOCOL_TIMELEFT 0x109                           //时间耗尽
+#define ERROR_AUTHORIZE_PROTOCOL_REQUEST 0x110                            //请求内容错误
+#define ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE 0x111                        //未授权
+#define ERROR_AUTHORIZE_PROTOCOL_NOTFOUND 0x112                           //未找到请求的数据
+#define ERROR_AUTHORIZE_PROTOCOL_NOTSUPPORT 0x113                         //不支持
+#define ERROR_AUTHORIZE_PROTOCOL_NOTMATCH 0x114                           //数据不匹配
+#define ERROR_AUTHORIZE_PROTOCOL_TIMEOUT 0x115                            //超时
+#define ERROR_AUTHORIZE_PROTOCOL_PERMISSION 0x116                         //用户权限错误
+
+#define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
+#define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小
+//////////////////////////////////////////////////////////////////////////
 //                            导出的枚举型
 //////////////////////////////////////////////////////////////////////////
 #ifndef _MSC_BUILD

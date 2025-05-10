@@ -87,12 +87,17 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
   类型：句柄型
   可空：Y
   意思：输入动态码绑定的句柄
+ 参数.五：dwCryption
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入密码加密类型
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode = 0, XNETHANDLE xhToken = 0);
+extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
 /********************************************************************
 函数名称：AuthClient_Connector_Heart
 函数功能：启用禁用客户端心跳

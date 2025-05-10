@@ -371,32 +371,7 @@ int main(int argc, char** argv)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为关闭,采用明文传输"));
 	}
-	//发送信息报告
-	if (st_AuthConfig.st_XReport.bEnable && !bIsTest)
-	{
-		if (InfoReport_APIMachine_Send(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName))
-		{
-			__int64x nTimeCount = 0;
-			if (InfoReport_APIMachine_GetTime(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName, &nTimeCount))
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动信息报告给API服务器:%s 成功,报告次数:%lld"), st_AuthConfig.st_XReport.tszAPIUrl, nTimeCount);
-			}
-			else
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，启动信息报告给API服务器:%s 成功,获取报告次数失败,错误:%lX"), st_AuthConfig.st_XReport.tszAPIUrl, InfoReport_GetLastError());
-			}
-		}
-		else
-		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，启动信息报告给API服务器:%s 失败，错误：%lX"), st_AuthConfig.st_XReport.tszAPIUrl, InfoReport_GetLastError());
-		}
-	}
-	else
-	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
-	}
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin);
-
+	
 	pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("rb"));
 	if (NULL == pSt_File)
 	{
@@ -438,7 +413,26 @@ int main(int argc, char** argv)
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件失败，解密失败,数据不正确"));
 		}
 	}
-	
+#ifndef _DEBUG
+	//发送信息报告
+	if (st_AuthConfig.st_XReport.bEnable && !bIsTest)
+	{
+		__int64x nTimeCount = 0;
+		if (InfoReport_APIMachine_Send(st_AuthConfig.st_XReport.tszAPIUrl, st_AuthConfig.st_XReport.tszServiceName, &nTimeCount))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动信息报告给API服务器:%s 成功,报告次数:%lld"), st_AuthConfig.st_XReport.tszAPIUrl, nTimeCount);
+		}
+		else
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，启动信息报告给API服务器:%s 失败，错误：%lX"), st_AuthConfig.st_XReport.tszAPIUrl, InfoReport_GetLastError());
+		}
+	}
+	else
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
+	}
+#endif
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)

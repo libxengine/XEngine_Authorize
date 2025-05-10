@@ -342,7 +342,7 @@ XHTHREAD CSession_Token::Session_Token_Thread(XPVOID lParam)
             BaseLib_Time_GetSysTime(&st_LibTimer);                  //获取现在的系统时间
             __int64x nOnlineSpan = 0;                                       //在线时间
             //用户登录了多少秒
-            BaseLib_TimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+            BaseLib_TimeSpan_GetForStu(&stl_MapIterator->second.st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
             if (stl_MapIterator->second.nTimeout > 0)
             {
 				if (nOnlineSpan > stl_MapIterator->second.nTimeout)

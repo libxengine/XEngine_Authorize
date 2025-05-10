@@ -22,7 +22,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		AUTHREG_USERTABLE st_UserTable = {};
 		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable))
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
 			return false;
@@ -31,7 +31,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
 		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserTable.st_UserInfo.tszUserName))
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, Session_GetLastError());
 			return false;
@@ -45,13 +45,13 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	{
 		if (!st_FunSwitch.bSwitchDCode)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 503, "the function is closed");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，请求获得动态验证码失败,服务器已经关闭此功能!"), lpszClientAddr);
 			return false;
 		}
 		//http://app.xyry.org:5302/api?function=dcode
-		int nDCode = 0;
+		XSHOT nDCode = 0;
 		XNETHANDLE xhToken = 0;
 		AuthHelp_DynamicCode_Create(&xhToken, &nDCode);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nDynamicTimeout, nDCode);
@@ -67,7 +67,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		AUTHREG_USERTABLE st_UserTable = {};
 		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserTable))
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user not found");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取通告失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
 			return false;

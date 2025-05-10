@@ -575,7 +575,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int*
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, int nDCode /* = 0 */)
+bool CProtocol_Packet::Protocol_Packet_HttpToken(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XNETHANDLE xhToken, int nTimeout, XSHOT nDCode /* = 0 */)
 {
 	Protocol_IsErrorOccur = false;
 

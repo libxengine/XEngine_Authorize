@@ -140,12 +140,17 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
   类型：句柄型
   可空：Y
   意思：输入动态码绑定的句柄
+ 参数.五：dwCryption
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：输入密码加密类型
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, int nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */)
+bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */, XLONG dwCryption /* = 0 */)
 {
 	AuthClient_IsErrorOccur = false;
 
@@ -174,7 +179,18 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_MACOS;
 #endif
 	_tcsxcpy(st_AuthUser.tszUserName, lpszUser);
-	_tcsxcpy(st_AuthUser.tszUserPass, lpszPass);
+
+	if (dwCryption > 0)
+	{
+		int nPLen = _tcsxlen(lpszPass);
+		XBYTE byMD5Buffer[MAX_PATH] = {};
+		Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen, false, dwCryption);
+		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
+	}
+	else
+	{
+		_tcsxcpy(st_AuthUser.tszUserPass, lpszPass);
+	}
 	//是否有动态码
 	if (nDYCode > 0)
 	{

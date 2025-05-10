@@ -407,7 +407,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
                 //获取现在的系统时间
 				BaseLib_Time_GetSysTime(&st_LibTimer);                 
 				//用户登录了多少秒钟
-				BaseLib_TimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+				BaseLib_TimeSpan_GetForStu(&stl_ListIterator->st_LibTimer, &st_LibTimer, &nOnlineSpan, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
                 nTimeCount += nOnlineSpan;
 				//登陆成功的。我们要处理他过期
 				switch (stl_ListIterator->st_UserTable.enSerialType)
@@ -471,7 +471,7 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 						break;
 					}
 					//剩余天数,通过秒钟来处理
-					BaseLib_TimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_SPAN_TYPE_SECOND);
+					BaseLib_TimeSpan_GetForStu(&st_LibTimer, &st_TimeLeft, &nLeftTime, ENUM_XENGINE_BASELIB_TIME_TYPE_SECOND);
 					//获取过期时间
 					stl_ListIterator->nLeftTime = nLeftTime;
 					stl_ListIterator->nOnlineTime = nOnlineSpan;

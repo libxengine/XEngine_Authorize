@@ -622,7 +622,6 @@ bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lp
 	SQLPacket_IsErrorOccur = false;
 
 	XCHAR tszSQLStatement[1024];    //SQL语句
-	char** ppszResult = NULL;
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	XNETHANDLE xhTable = 0;
@@ -644,7 +643,7 @@ bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lp
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
 		return false;
 	}
-	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData, xhTable);
 	return true;
 }
 /********************************************************************

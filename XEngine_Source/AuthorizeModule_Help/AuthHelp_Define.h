@@ -58,7 +58,7 @@ extern "C" bool AuthHelp_DynamicCode_Destory();
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, int* pInt_DynamicCode);
+extern "C" bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, XSHOT* pInt_DynamicCode);
 /********************************************************************
 函数名称：AuthHelp_DynamicCode_Get
 函数功能：获取句柄和动态码绑定信息

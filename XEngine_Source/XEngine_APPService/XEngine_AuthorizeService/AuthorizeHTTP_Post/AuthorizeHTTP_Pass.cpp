@@ -30,14 +30,14 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		}
 		if (!bSuccess) 
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 404, "user notfound");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_USER, "user notfound");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("PASS客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_UserAuth.tszUserName);
 			return false;
 		}
 		if ((_tcsxlen(st_UserAuth.tszUserPass) != _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsxncmp(st_UserAuth.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_UserTable.st_UserInfo.tszUserPass))))
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, 400, "password is incorrent");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PASS, "password is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("PASS客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_UserAuth.tszUserName);
 			return false;
