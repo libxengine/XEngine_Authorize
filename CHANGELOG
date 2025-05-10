@@ -1,3 +1,40 @@
+XEngine_Authorize V3.18.0.1001
+
+added:more system release support
+added:unified error code
+update:depend library
+improved:send message use class memory instead
+improved:get time for report info
+modify:info report only release
+modify:pass encrypt via client only
+modify:user register level is 20
+modify:level choice range for management app
+modify:large memory use memory pool instead
+modify:add memory class file and modify http reply msg buffer to memory buffer
+modify:use XENGINE_MEMORY_SIZE_MAX instead macor
+modify:dynamic code size  and start code location
+fixed:web socket memory malloc is incorrect
+fixed:Window exception in some dpi
+fixed:print log is incorrect when client leave
+fixed:close client clear is incorrect when actively close client
+
+增加:更多系统发布支持
+增加:统一错误码
+优化:发送消息使用内存池类替换
+优化:信息报告获取时间
+修改:信息报告仅仅在release版本发送
+修改:密码加密仅在客户端实现
+修改:用户注册级别默认为20
+修改:管理程序的级别范围选择
+修改:大内存使用内存池替换
+修改:增加新的内存池消息类
+修改:使用XENGINE_MEMORY_SIZE_MAX替代内部宏
+修改:动态码大小修改
+修复:web socket内存申请错误
+修复:windows下部分dpi异常
+修复:客户端离开输出的日志错误
+修复:主动关闭客户端的时候处理不正确
+================================================================
 XEngine_Authorize V3.17.0.1001
 
 added:more ci release arm64 support
