@@ -25,19 +25,19 @@ jobs:
           skip_unpack: true
           if_no_artifact_found: fail
           path: ./XRelease/
-      - name: Download RockyLinux x86_64 build
+      - name: Download debian build
         uses: dawidd6/action-download-artifact@v6
         with:
-          workflow: RockyX86_64_build.yml
+          workflow: debian_build.yml
           workflow_conclusion: success
           check_artifacts: false
           skip_unpack: true
           if_no_artifact_found: fail
           path: ./XRelease/
-      - name: Download RockyLinux Arm64 build
+      - name: Download RockyLinux build
         uses: dawidd6/action-download-artifact@v6
         with:
-          workflow: RockyArm64_build.yml
+          workflow: Rocky_build.yml
           workflow_conclusion: success
           check_artifacts: false
           skip_unpack: true
