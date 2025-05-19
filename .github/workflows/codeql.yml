@@ -40,6 +40,9 @@ jobs:
           git submodule init
           git submodule update
 
+    - name: Set TERM variable
+      run: echo "TERM=xterm" >> $GITHUB_ENV
+
     - name: Set up Dependency Environment
       run: |
           cd libxengine

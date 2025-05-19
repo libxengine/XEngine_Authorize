@@ -39,6 +39,9 @@ jobs:
             git submodule init
             git submodule update
 
+      - name: Set TERM variable
+        run: echo "TERM=xterm" >> $GITHUB_ENV
+        
       - name: Set up Dependency ubuntu24.04 Environment
         if: matrix.os == 'ubuntu-24.04'
         run: |
@@ -48,48 +51,33 @@ jobs:
       - name: Set up Dependency ubuntu24.04 ARM64 Environment
         if: matrix.os == 'ubuntu-24.04-arm'
         run: |
-            cd libxengine
-            chmod 777 *
-            sudo ./XEngine_LINEnv.sh -i 0
-
             latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
             wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_UBuntu_24.04_Arm64.zip
             unzip ./XEngine_UBuntu_24.04_Arm64.zip -d ./XEngine_UBuntu_24.04_Arm64
             cd XEngine_UBuntu_24.04_Arm64
             
-            sudo cp -rf ./XEngine_Include /usr/local/include
-            sudo find ./XEngine_Linux -name "*.so" -exec cp {} /usr/local/lib \;         
-            sudo ldconfig
+            chmod 777 *
+            sudo ./XEngine_LINEnv.sh -i 3
       - name: Set up Dependency ubuntu22.04 Environment
         if: matrix.os == 'ubuntu-22.04'
         run: |
-            cd libxengine
-            chmod 777 *
-            sudo ./XEngine_LINEnv.sh -i 0
-
             latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
             wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_UBuntu_22.04_x86-64.zip
             unzip ./XEngine_UBuntu_22.04_x86-64.zip -d ./XEngine_UBuntu_22.04_x86-64
             cd XEngine_UBuntu_22.04_x86-64
             
-            sudo cp -rf ./XEngine_Include /usr/local/include
-            sudo find ./XEngine_Linux -name "*.so" -exec cp {} /usr/local/lib \;         
-            sudo ldconfig
+            chmod 777 *
+            sudo ./XEngine_LINEnv.sh -i 3
       - name: Set up Dependency ubuntu22.04 arm64 Environment
         if: matrix.os == 'ubuntu-22.04-arm'
         run: |
-            cd libxengine
-            chmod 777 *
-            sudo ./XEngine_LINEnv.sh -i 0
-
             latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
             wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_UBuntu_22.04_Arm64.zip
             unzip ./XEngine_UBuntu_22.04_Arm64.zip -d ./XEngine_UBuntu_22.04_Arm64
             cd XEngine_UBuntu_22.04_Arm64
             
-            sudo cp -rf ./XEngine_Include /usr/local/include
-            sudo find ./XEngine_Linux -name "*.so" -exec cp {} /usr/local/lib \;         
-            sudo ldconfig
+            chmod 777 *
+            sudo ./XEngine_LINEnv.sh -i 3
             
       - name: make x86
         if: matrix.os == 'ubuntu-24.04' || matrix.os == 'ubuntu-22.04'
