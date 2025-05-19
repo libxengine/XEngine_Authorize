@@ -79,11 +79,11 @@ jobs:
       - name: test
         run: |
             cd XEngine_Release
-            ./XEngine_ProxyServiceApp -t
+            ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_ProxyServiceApp-Fedora_${{ matrix.fedora-version }}_${{ matrix.artifact }}
+          name: XEngine_AuthorizeService-Fedora_${{ matrix.fedora-version }}_${{ matrix.artifact }}
           path: XEngine_Release/
           retention-days: 1
