@@ -77,23 +77,23 @@ void CDialog_User::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListCtrlClient.DeleteAllItems();
-	TCHAR tszIPAddr[MAX_PATH];
-	TCHAR tszIPPort[MAX_PATH];
-	TCHAR tszToken[MAX_PATH];
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszIPAddr[XPATH_MAX];
+	TCHAR tszIPPort[XPATH_MAX];
+	TCHAR tszToken[XPATH_MAX];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CString m_StrPosStart;
 	CString m_StrPosEnd;
 
-	memset(tszIPAddr, '\0', MAX_PATH);
-	memset(tszIPPort, '\0', MAX_PATH);
-	memset(tszToken, '\0', MAX_PATH);
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszIPAddr, '\0', XPATH_MAX);
+	memset(tszIPPort, '\0', XPATH_MAX);
+	memset(tszToken, '\0', XPATH_MAX);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/list"), W2A(tszIPAddr), W2A(tszIPPort));
 	int nMsgLen = 0;
@@ -210,8 +210,8 @@ void CDialog_User::OnBnClickedButton2()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/close"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 
@@ -301,8 +301,8 @@ void CDialog_User::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 

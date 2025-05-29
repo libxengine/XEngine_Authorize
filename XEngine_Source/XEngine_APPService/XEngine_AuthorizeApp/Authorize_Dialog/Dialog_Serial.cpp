@@ -101,8 +101,8 @@ void CDialog_Serial::OnBnClickedButton1()
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
@@ -186,10 +186,10 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -287,10 +287,10 @@ void CDialog_Serial::OnBnClickedButton4()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -403,9 +403,9 @@ void CDialog_Serial::OnBnClickedButton6()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("rb"));
 
-	XCHAR tszMsgBuffer[MAX_PATH];
+	XCHAR tszMsgBuffer[XPATH_MAX];
 	//跳过第一行
-	if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+	if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 	{
 		//没有数据
 		AfxMessageBox(_T("没有数据"));
@@ -414,9 +414,9 @@ void CDialog_Serial::OnBnClickedButton6()
 	list<AUTHREG_SERIALTABLE> stl_ListSerial;
 	while (true)
 	{
-		memset(tszMsgBuffer, '\0', MAX_PATH);
+		memset(tszMsgBuffer, '\0', XPATH_MAX);
 		//一行一行读取
-		if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+		if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 		{
 			break;
 		}
@@ -434,10 +434,10 @@ void CDialog_Serial::OnBnClickedButton6()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -539,8 +539,8 @@ void CDialog_Serial::OnBnClickedButton7()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 
-	XCHAR tszMsgBuffer[MAX_PATH];
-	memset(tszMsgBuffer, '\0', MAX_PATH);
+	XCHAR tszMsgBuffer[XPATH_MAX];
+	memset(tszMsgBuffer, '\0', XPATH_MAX);
 	//写字段头
 	int nRet = _xstprintf(tszMsgBuffer, _X("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime\r\n"));
 	fwrite(tszMsgBuffer, 1, nRet, pSt_File);
@@ -549,7 +549,7 @@ void CDialog_Serial::OnBnClickedButton7()
 	{
 		int nSerialType = 0;
 		int nUsedType = 0;
-		memset(tszMsgBuffer, '\0', MAX_PATH);
+		memset(tszMsgBuffer, '\0', XPATH_MAX);
 
 		USES_CONVERSION;
 		for (int j = 0; j < sizeof(lpszXSerialType) - 1; j++)

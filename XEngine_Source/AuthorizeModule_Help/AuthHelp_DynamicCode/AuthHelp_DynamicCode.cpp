@@ -158,7 +158,7 @@ bool CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDy
 //////////////////////////////////////////////////////////////////////////
 //                      保护函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CALLBACK CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Thread(XPVOID lParam)
+XHTHREAD XCALLBACK CAuthHelp_DynamicCode::AuthHelp_DynamicCode_Thread(XPVOID lParam)
 {
 	CAuthHelp_DynamicCode* pClass_This = (CAuthHelp_DynamicCode*)lParam;
 	//用于处理超时的token

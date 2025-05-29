@@ -105,7 +105,7 @@ typedef enum
 //////////////////////////////////////////////////////////////////////////
 typedef struct
 {
-	XCHAR tszAddr[MAX_PATH];                                             //服务器或者域名地址
+	XCHAR tszAddr[XPATH_MAX];                                             //服务器或者域名地址
 	int nPort;                                                           //端口号码,如果>0表示CDKEY验证失败后改为网络验证
 	//版本信息
 	struct
@@ -212,7 +212,7 @@ typedef struct
 typedef struct 
 {
 	__int64x nID;                                                         //ID
-	XCHAR tszUserName[MAX_PATH];                                           //用户名
+	XCHAR tszUserName[XPATH_MAX];                                           //用户名
 	XCHAR tszIPAddr[128];                                                  //IP
 	XCHAR tszLeftTime[64];                                                 //过期时间
 	XCHAR tszCreateTime[64];                                               //创建时间

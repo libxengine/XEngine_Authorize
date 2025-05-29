@@ -1067,12 +1067,12 @@ bool CAuthorize_CDKey::Authorize_CDKey_WriteTime(LPCXSTR lpszFileKey, int nCount
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_OPENFILE;
 		return false;
 	}
-    XCHAR tszMsgBuffer[MAX_PATH];
-	memset(tszMsgBuffer, '\0', MAX_PATH);
+    XCHAR tszMsgBuffer[XPATH_MAX];
+	memset(tszMsgBuffer, '\0', XPATH_MAX);
 	//查找是否有时间列表字段
 	while (1)
 	{
-		if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+		if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 		{
 			break;
 		}
@@ -1211,12 +1211,12 @@ bool CAuthorize_CDKey::Authorize_CDKey_ReadTime(LPCXSTR lpszFileKey, XCHAR*** pp
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_OPENFILE;
 		return false;
 	}
-    XCHAR tszMsgBuffer[MAX_PATH];
+    XCHAR tszMsgBuffer[XPATH_MAX];
 	//查找是否有时间列表字段
 	while (1)
 	{
         memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-		if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+		if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 		{
 			break;
 		}

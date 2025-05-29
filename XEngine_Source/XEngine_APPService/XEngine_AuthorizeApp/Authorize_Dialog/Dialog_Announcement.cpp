@@ -72,8 +72,8 @@ void CDialog_Announcement::OnBnClickedButton1()
 		AfxMessageBox(_T("内容不能小于1个字节"));
 		return;
 	}
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
@@ -169,8 +169,8 @@ void CDialog_Announcement::OnBnClickedButton2()
 	}
 	m_StrNotice = m_ListAnnouncement.GetItemText(nSelect, 0);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
@@ -249,8 +249,8 @@ void CDialog_Announcement::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/notice/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));

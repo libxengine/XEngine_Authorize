@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
+XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;

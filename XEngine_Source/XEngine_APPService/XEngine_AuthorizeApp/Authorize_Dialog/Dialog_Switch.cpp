@@ -70,10 +70,10 @@ void CDialog_Switch::OnBnClickedButton1()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -285,10 +285,10 @@ void CDialog_Switch::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);

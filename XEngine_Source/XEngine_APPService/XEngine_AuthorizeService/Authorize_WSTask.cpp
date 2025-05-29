@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
+XHTHREAD XCALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;
@@ -55,14 +55,14 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 	if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE == enOPCode)
 	{
 		int nSDLen = 0;
-		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		XCHAR tszMSGBuffer[XPATH_MAX] = {};
 		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}
 	else if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PING == enOPCode)
 	{
 		int nSDLen = 0;
-		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		XCHAR tszMSGBuffer[XPATH_MAX] = {};
 		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PONG);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}

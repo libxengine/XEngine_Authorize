@@ -645,8 +645,8 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
     }
     else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
     {
-        XCHAR tszLeftTime[MAX_PATH];
-        memset(tszLeftTime, '\0', MAX_PATH);
+        XCHAR tszLeftTime[XPATH_MAX];
+        memset(tszLeftTime, '\0', XPATH_MAX);
         _xstprintf(tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
         _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
     }

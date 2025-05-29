@@ -183,7 +183,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 	if (dwCryption > 0)
 	{
 		int nPLen = _tcsxlen(lpszPass);
-		XBYTE byMD5Buffer[MAX_PATH] = {};
+		XBYTE byMD5Buffer[XPATH_MAX] = {};
 		Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen, false, dwCryption);
 		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
 	}
@@ -293,7 +293,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Heart(bool bEnable /* = true */
 //////////////////////////////////////////////////////////////////////////
 //                      保护函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
+XHTHREAD XCALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
 {
 	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
 

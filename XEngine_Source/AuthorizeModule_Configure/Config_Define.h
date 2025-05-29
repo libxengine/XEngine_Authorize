@@ -42,8 +42,8 @@ typedef struct
 	{
 		struct  
 		{
-			XCHAR tszKeyFile[MAX_PATH];                         //本地CDKEY文件地址
-			XCHAR tszKeyPass[MAX_PATH];                         //本地CDKEY密码
+			XCHAR tszKeyFile[XPATH_MAX];                         //本地CDKEY文件地址
+			XCHAR tszKeyPass[XPATH_MAX];                         //本地CDKEY密码
 		}st_XCDKey;
 		struct
 		{
@@ -66,9 +66,9 @@ typedef struct
 		int nMultiMode;                                     //多端登录模式,0按照平台(PC,WEB,PAD,PHONE 4种),1按照类型(每种都可以),2无限制
 		struct  
 		{
-			XCHAR tszPassLogin[MAX_PATH];                   //三方认证登录验证
-			XCHAR tszPassLogout[MAX_PATH];                  //三方认证登出通知
-			XCHAR tszPassTimeout[MAX_PATH];                 //三方认证超时通知
+			XCHAR tszPassLogin[XPATH_MAX];                   //三方认证登录验证
+			XCHAR tszPassLogout[XPATH_MAX];                  //三方认证登出通知
+			XCHAR tszPassTimeout[XPATH_MAX];                 //三方认证超时通知
 		}st_PassUrl;
 		//多端登录支持的计时方式
 		struct  
@@ -97,12 +97,12 @@ typedef struct
 		}st_MYSQL;
 		struct 
 		{
-			XCHAR tszSQLite[MAX_PATH];                          //数据库文件位置
+			XCHAR tszSQLite[XPATH_MAX];                          //数据库文件位置
 		}st_SQLite;
 	}st_XSql;
 	struct
 	{
-		XCHAR tszLogFile[MAX_PATH];                         //日志文件
+		XCHAR tszLogFile[XPATH_MAX];                         //日志文件
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
@@ -111,7 +111,7 @@ typedef struct
 	struct  
 	{
 		bool bEnable;
-		XCHAR tszAPIUrl[MAX_PATH];
+		XCHAR tszAPIUrl[XPATH_MAX];
 		XCHAR tszServiceName[128];
 	}st_XReport;
 	struct  

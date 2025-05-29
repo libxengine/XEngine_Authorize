@@ -131,7 +131,7 @@ int AuthClient_Register()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPassCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPassCodec);
 	st_JsonUserInfo["tszUserPass"] = tszPassCodec;
@@ -275,7 +275,7 @@ int AuthClient_Login()
 
 #ifdef _PASS_ENCRYPT
 	int nPLen = _tcsxlen(st_AuthUser.tszUserPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(st_AuthUser.tszUserPass, byMD5Buffer, &nPLen);
 	memset(st_AuthUser.tszUserPass, '\0', sizeof(st_AuthUser.tszUserPass));
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
@@ -322,7 +322,7 @@ int AuthClient_Login()
 }
 int AuthClient_Notice()
 {
-	XCHAR tszURLStr[MAX_PATH] = {};
+	XCHAR tszURLStr[XPATH_MAX] = {};
 	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=notice&token=%lld"), xhToken);
 
 	int nMsgLen = 0;
@@ -379,7 +379,7 @@ int AuthClient_GetPass()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;
@@ -423,7 +423,7 @@ int AuthClient_GetTime()
 {
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	XCHAR tszURLStr[MAX_PATH] = {};
+	XCHAR tszURLStr[XPATH_MAX] = {};
 	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
 
 	st_JsonObject["tszUserName"] = lpszUser;
@@ -431,7 +431,7 @@ int AuthClient_GetTime()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;
@@ -475,7 +475,7 @@ int AuthClient_Delete()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;

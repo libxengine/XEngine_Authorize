@@ -35,7 +35,7 @@
 //WINDOWS支持VS2022 x86 debug 编译调试
 //g++ -std=c++17 -Wall -g Authorize_APPLocal.cpp -o Authorize_APPLocal.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_BaseLib -lXEngine_Cryption -lXEngine_SystemApi -lAuthorizeModule_CDKey -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
-XCHAR tszSerialStr[MAX_PATH] = {};
+XCHAR tszSerialStr[XPATH_MAX] = {};
 //1.创建CDKEY.或者由管理员创建.
 bool Authorize_APPLocal_Create(LPCXSTR lpszKeyFile, LPCXSTR lpszPasswd)
 {

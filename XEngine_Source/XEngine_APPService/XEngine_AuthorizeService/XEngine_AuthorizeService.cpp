@@ -98,7 +98,7 @@ static int ServiceApp_Deamon(int wait)
 LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	static int i = 0;
-	XCHAR tszFileStr[MAX_PATH] = {};
+	XCHAR tszFileStr[XPATH_MAX] = {};
 	XCHAR tszTimeStr[128] = {};
 	BaseLib_Time_TimeToStr(tszTimeStr);
 	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
