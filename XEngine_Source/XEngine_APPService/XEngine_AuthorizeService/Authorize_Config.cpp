@@ -57,6 +57,30 @@ bool Authorize_Service_Parament(int argc, char** argv)
 		{
 			bIsTest = true;
 		}
+		else if (0 == _tcsxcmp("-lt", argv[i]))
+		{
+			st_AuthConfig.st_XLog.nLogType = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-ll", argv[i]))
+		{
+			st_AuthConfig.st_XLog.nLogLeave = _ttxoi(argv[++i]);
+		}
+		else if (0 == _tcsxcmp("-l", argv[i]))
+		{
+			LPCXSTR lpszLogLevel = argv[++i];
+			if (0 == _tcsxcmp("debug", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG;
+			}
+			else if (0 == _tcsxcmp("detail", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DETAIL;
+			}
+			else if (0 == _tcsxcmp("info", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO;
+			}
+		}
     }
 
     return true;
