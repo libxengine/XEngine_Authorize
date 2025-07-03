@@ -99,32 +99,32 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;..\AuthorizeModule_Configure;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;..\AuthorizeModule_Configure;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_LibArm64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|ARM64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_LibArm64);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

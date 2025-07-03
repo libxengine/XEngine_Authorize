@@ -58,8 +58,8 @@ using namespace std;
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
 #include "../../AuthorizeModule_CDKey/CDKey_Define.h"
 #include "../../AuthorizeModule_CDKey/CDKey_Error.h"
-#include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
-#include "../../XEngine_Depend/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 
 extern bool bIsRun;
 extern bool bIsTest;

@@ -3,8 +3,8 @@ UNICODE = 0
 PLATFORM=linux
 FLAGS= 
 
-DEPEND_JSONCPP_PATH = ./XEngine_Depend/XEngine_Module/jsoncpp
-DEPEND_REPORT_PATH = ./XEngine_Depend/XEngine_Module/XEngine_InfoReport
+DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
+DEPEND_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
 
 AUTH_CDKEY_PATH = ./AuthorizeModule_CDKey
 AUTH_SESSION_PATH = ./AuthorizeModule_Session

@@ -3,7 +3,7 @@ PLATVER =
 FILEEXT = 
 LIBFLAG = 
 LOADHDR = -I ./
-LOADSO = -L ../../XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Depend/XEngine_Module/XEngine_InfoReport  \
+LOADSO = -L ../../XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport  \
          -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../AuthorizeModule_Help -L ../../AuthorizeModule_CDKey 
 LIB = -lXEngine_InfoReport -ljsoncpp   \
       -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lNetHelp_APIAddr -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lXEngine_ProcFile -lXEngine_SystemApi  \
