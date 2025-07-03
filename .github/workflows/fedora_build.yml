@@ -46,7 +46,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: libxengine/XEngine_OPenSource
-          path: XEngine_Source/XEngine_Depend
+          path: XEngine_Source/XEngine_DependLibrary
 
       - name: install system package
         run: |
