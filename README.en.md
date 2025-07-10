@@ -64,7 +64,7 @@ Linux Exection:sudo ./XEngine_LINEnv.sh -i 3
 Macos Exection:./XEngine_LINEnv.sh -i 3
 
 #### sub module
-Due to the dependent sub-modules, after you checkout the warehouse, execute the following command in the warehouse directory to pull the sub-modules  
+Due to the dependent sub-modules, after you checkout the resprepository, execute the following command in the resprepository directory to pull the sub-modules  
 git submodule init  
 git submodule update  
 
