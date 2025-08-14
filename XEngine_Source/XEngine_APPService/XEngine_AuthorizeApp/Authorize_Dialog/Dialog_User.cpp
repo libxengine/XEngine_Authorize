@@ -54,14 +54,14 @@ BOOL CDialog_User::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	m_ListCtrlClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
-	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
+	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 120);
 	m_ListCtrlClient.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 70);
-	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
+	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 150);
+	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 150);
 	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 60);
-	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 60);
+	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText(_T("10"));

@@ -78,17 +78,17 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_RadioUser.SetCheck(BST_CHECKED);
 
 	m_ListAddr.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListAddr.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
-	m_ListAddr.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListAddr.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 80);
+	m_ListAddr.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 250);
+	m_ListAddr.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 250);
+	m_ListAddr.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 250);
 	m_ListAddr.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_ListUser.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListUser.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
-	m_ListUser.InsertColumn(2, _T("用户名"), LVCFMT_LEFT, 120);
-	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
-	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListUser.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 80);
+	m_ListUser.InsertColumn(2, _T("用户名"), LVCFMT_LEFT, 250);
+	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 250);
+	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 250);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditPosStart.SetWindowText(_T("0"));

@@ -53,7 +53,7 @@ BOOL CDialog_Try::OnInitDialog()
 	m_ListTry.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 40);
 	m_ListTry.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 120);
 	m_ListTry.InsertColumn(2, _T("试用类型"), LVCFMT_LEFT, 100);
-	m_ListTry.InsertColumn(3, _T("试用时间"), LVCFMT_LEFT, 70);
+	m_ListTry.InsertColumn(3, _T("试用时间"), LVCFMT_LEFT, 100);
 	m_ListTry.InsertColumn(4, _T("剩余时间"), LVCFMT_LEFT, 100);
 	m_ListTry.InsertColumn(5, _T("创建时间"), LVCFMT_LEFT, 120);
 	m_ListTry.SetExtendedStyle(LVS_EX_FULLROWSELECT);
