@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib32);$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib64);../../XEngine_Source/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">

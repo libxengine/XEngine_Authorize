@@ -71,11 +71,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib32);../../XEngine_Source/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
+    <IncludePath>$(XEngine_Include);../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp;$(IncludePath)</IncludePath>
     <LibraryPath>$(XEngine_Lib64);../../XEngine_Source/x64/Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
