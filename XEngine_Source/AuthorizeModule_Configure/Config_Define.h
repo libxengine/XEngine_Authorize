@@ -103,10 +103,12 @@ typedef struct
 	struct
 	{
 		XCHAR tszLogFile[XPATH_MAX];                         //日志文件
+		XCHAR tszKeyFile[XPATH_MAX];
 		int nMaxSize;                                       //最大大小
 		int nMaxCount;                                      //备份个数
 		int nLogLeave;                                      //日志级别
 		int nLogType;                                      //日志类型
+		bool bLogStorage;                                   //强日志
 	}st_XLog;         
 	struct  
 	{

@@ -173,7 +173,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLUser, st_JsonXSql["SQLUser"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLPass, st_JsonXSql["SQLPass"].asCString());
 	//日志配置
-	if (st_JsonRoot["XLog"].empty() || (5 != st_JsonRoot["XLog"].size()))
+	if (st_JsonRoot["XLog"].empty() || (7 != st_JsonRoot["XLog"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XLOG;
@@ -184,8 +184,10 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.nMaxCount = st_JsonXLog["MaxCount"].asInt();
 	pSt_ServerConfig->st_XLog.nLogLeave = st_JsonXLog["LogLeave"].asInt();
 	pSt_ServerConfig->st_XLog.nLogType = st_JsonXLog["nLogType"].asInt();
+	pSt_ServerConfig->st_XLog.bLogStorage = st_JsonXLog["bLogStorage"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
-	
+	_tcsxcpy(pSt_ServerConfig->st_XLog.tszKeyFile, st_JsonXLog["tszKeyFile"].asCString());
+
 	if (st_JsonRoot["XReport"].empty() || (3 != st_JsonRoot["XReport"].size()))
 	{
 		Config_IsErrorOccur = true;

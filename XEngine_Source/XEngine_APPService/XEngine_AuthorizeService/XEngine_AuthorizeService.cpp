@@ -48,6 +48,7 @@ void ServiceApp_Stop(int signo)
 		ManagePool_Thread_NQDestroy(xhHttpPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
+		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
@@ -163,7 +164,11 @@ int main(int argc, char** argv)
 	}
 	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化日志系统成功,日志文件:%s"), st_AuthConfig.st_XLog.tszLogFile);
-
+	if (st_AuthConfig.st_XLog.bLogStorage)
+	{
+		HelpComponents_XLog_StrongOPen(xhLog, st_AuthConfig.st_XLog.tszKeyFile, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化关键日志存储功能成功..."));
+	}
 	if (st_AuthConfig.bDeamon)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，使用守护进程启动服务..."));
@@ -476,6 +481,7 @@ XENGINE_EXITAPP:
 		ManagePool_Thread_NQDestroy(xhHttpPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
+		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
