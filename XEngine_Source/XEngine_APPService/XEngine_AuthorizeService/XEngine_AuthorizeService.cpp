@@ -168,6 +168,11 @@ int main(int argc, char** argv)
 	{
 		HelpComponents_XLog_StrongOPen(xhLog, st_AuthConfig.st_XLog.tszKeyFile, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化关键日志存储功能成功..."));
+
+		HELPCOMPONENTS_XLOG_COLOR st_XLogColor = {};
+		st_XLogColor.wNotice = XENGINE_HELPCOMPONENTS_XLOG_TEXT_RED;
+		HelpComponents_XLog_SetLogColor(xhLog, &st_XLogColor);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化关键日志输出颜色成功..."));
 	}
 	if (st_AuthConfig.bDeamon)
 	{
