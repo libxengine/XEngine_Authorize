@@ -47,6 +47,7 @@ int nDYCode = 0;
 XSOCKET m_Socket = 0;
 LPCXSTR lpszUser = _X("123123aa");
 LPCXSTR lpszPass = _X("123123");
+LPCXSTR lpszHWCode = _X("2FDWAD02JD2091");
 LPCXSTR lpszSerial = _X("XAUTH-XYRYS-EWW60-UZO37-MHJAW-48386-Z806P");
 LPCXSTR lpszEmail = _X("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
@@ -145,7 +146,7 @@ int AuthClient_Register()
 	st_JsonUserInfo["nIDNumber"] = (Json::Value::Int64)nIDNumber;
 	st_JsonUserInfo["nUserLevel"] = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
-	st_JsonUserTable["tszHardCode"] = "2FDWAD02JD2091";
+	st_JsonUserTable["tszHardCode"] = lpszHWCode;
 	st_JsonUserTable["st_UserInfo"] = st_JsonUserInfo;
 
 	st_JsonRoot["st_UserTable"] = st_JsonUserTable;
@@ -257,21 +258,22 @@ int AuthClient_Login()
 {
 	XCHAR tszMsgBuffer[2048];
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;                    //协议头
-	XENGINE_PROTOCOL_USERAUTH st_AuthUser;
+	AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthUser;
 	
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
-	memset(&st_AuthUser, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+	memset(&st_AuthUser, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
 
 	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
 	st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN;
-	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
+	st_ProtocolHdr.unPacketSize = sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
 	strcpy(st_AuthUser.tszUserName, lpszUser);
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
+	strcpy(st_AuthUser.tszHWCode, lpszHWCode);
 
 #ifdef _PASS_ENCRYPT
 	int nPLen = _tcsxlen(st_AuthUser.tszUserPass);
@@ -306,7 +308,7 @@ int AuthClient_Login()
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), &st_AuthUser, st_ProtocolHdr.unPacketSize);
 
-		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(XENGINE_PROTOCOL_USERAUTH);
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	}
 
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
