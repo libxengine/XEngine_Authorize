@@ -442,7 +442,7 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
 #endif
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,硬件码绑定:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchHWBind);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)
