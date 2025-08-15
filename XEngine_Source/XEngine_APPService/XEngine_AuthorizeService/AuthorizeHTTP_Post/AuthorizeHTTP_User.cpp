@@ -117,9 +117,9 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		//禁止权限0和1注册
 		if (st_UserTable.st_UserInfo.nUserLevel < 10)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PERMISSION, "user and pass does not set");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PERMISSION, "user permission level incorrect");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，配置的用户权限错误"), lpszClientAddr);
 			return false;
 		}
 		//默认普通用户
@@ -130,6 +130,16 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
 			return false;
+		}
+		if (st_FunSwitch.bSwitchHWBind)
+		{
+			if (_tcsxlen(st_UserTable.tszHardCode) <= 0)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "not set hardware code");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，启用硬件绑定没有配置硬件吗"), lpszClientAddr);
+				return false;
+			}
 		}
 		bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -254,7 +264,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 
-		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol = {};
+		AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthProtocol = {};
 		_tcsxcpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		_tcsxcpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
 		Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);

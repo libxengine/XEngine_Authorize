@@ -39,7 +39,7 @@ extern "C" bool Protocol_Packet_HttpComm(XCHAR * ptszMsgBuffer, int* pInt_MsgLen
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpComm(ptszMsgBuffer, pInt_MsgLen, nCode, lpszMsgBuffer);
 }
-extern "C" bool Protocol_Packet_HttpUserPass(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+extern "C" bool Protocol_Packet_HttpUserPass(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth);
 }
@@ -94,7 +94,7 @@ extern "C" bool Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, pxhToken);
 }
-extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth)
+extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, pSt_UserAuth);
 }

@@ -154,7 +154,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -196,6 +196,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
 		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	if (!st_JsonProtocol["tszHWCode"].isNull())
+	{
+		_tcsxcpy(pSt_UserAuth->tszHWCode, st_JsonProtocol["tszHWCode"].asCString());
 	}
 	return true;
 }

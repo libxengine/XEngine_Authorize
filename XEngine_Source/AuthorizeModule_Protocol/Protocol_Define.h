@@ -98,7 +98,7 @@ extern "C" bool Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth);
+extern "C" bool Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Packet_UserTime
 函数功能：用户时间打包函数
@@ -473,7 +473,7 @@ extern "C" bool Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth);
+extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户信息

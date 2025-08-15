@@ -225,3 +225,7 @@ typedef struct
 	XCHAR tszCreateTime[64];                                               //创建时间
 	__int64x nID;                                                         //ID
 }AUTHREG_ANNOUNCEMENT, * LPAUTHREG_ANNOUNCEMENT;
+//扩展登录协议
+struct AUTHORIZE_PROTOCOL_USERAUTHEX : public XENGINE_PROTOCOL_USERAUTH {
+	XCHAR tszHWCode[64];
+};
