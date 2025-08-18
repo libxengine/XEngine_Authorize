@@ -582,6 +582,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		{
 			_tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, st_JsonArray[i]["tszCreateTime"].asCString());
 		}
+		if (!st_JsonArray[i]["tszExpiredTime"].isNull())
+		{
+			_tcsxcpy((*pppSt_SerialTable)[i]->tszExpiredTime, st_JsonArray[i]["tszExpiredTime"].asCString());
+		}
 		if (!st_JsonArray[i]["tszMaxTime"].isNull())
 		{
 			_tcsxcpy((*pppSt_SerialTable)[i]->tszMaxTime, st_JsonArray[i]["tszMaxTime"].asCString());

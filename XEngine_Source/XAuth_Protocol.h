@@ -51,6 +51,7 @@
 #define ERROR_AUTHORIZE_PROTOCOL_NOTMATCH 0x114                           //数据不匹配
 #define ERROR_AUTHORIZE_PROTOCOL_TIMEOUT 0x115                            //超时
 #define ERROR_AUTHORIZE_PROTOCOL_PERMISSION 0x116                         //用户权限错误
+#define ERROR_AUTHORIZE_PROTOCOL_EXPIRED 0x117                            //已经过期
 
 #define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
 #define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小
@@ -194,9 +195,10 @@ typedef struct tag_AuthReg_SerialTable
 	XCHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //使用者是谁
 	XCHAR tszSerialNumber[128];                                            //序列号
 	XCHAR tszMaxTime[64];                                                  //使用时间
-	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;               //充值卡类型
-	int bIsUsed;                                                         //是否已经使用
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;                        //充值卡类型
+	int bIsUsed;                                                           //是否已经使用
 	XCHAR tszCreateTime[64];                                               //创建时间
+	XCHAR tszExpiredTime[64];                                              //过期时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表
 typedef struct

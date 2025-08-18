@@ -533,6 +533,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["enSerialType"] = (*pppSt_SerialList)[i]->enSerialType;
 		st_JsonObject["bIsUsed"] = (*pppSt_SerialList)[i]->bIsUsed;
 		st_JsonObject["tszCreateTime"] = (*pppSt_SerialList)[i]->tszCreateTime;
+		st_JsonObject["tszExpiredTime"] = (*pppSt_SerialList)[i]->tszExpiredTime;
 		st_JsonArray.append(st_JsonObject);
 	}
 	st_JsonRoot["msg"] = "success";

@@ -809,6 +809,12 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		//超时时间
 		nFliedValue++;
 		_tcsxcpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
+		//过期时间
+		nFliedValue++;
+		if (NULL != ppszResult[nFliedValue])
+		{
+			_tcsxcpy(pSt_SerialTable->tszExpiredTime, ppszResult[nFliedValue]);
+		}
 	}
 
 	DataBase_MySQL_FreeResult(xhData, xhTable);
@@ -898,6 +904,12 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		//创建时间
 		_tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
 		nFliedValue++;
+		//过期时间
+		if (NULL != ppszResult[nFliedValue])
+		{
+			_tcsxcpy((*pppSt_SerialTable)[i]->tszExpiredTime, ppszResult[nFliedValue]);
+		}
+		nFliedValue++;
 	}
 	DataBase_MySQL_FreeResult(xhData, xhTable);
 	return true;
@@ -928,7 +940,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialT
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return false;
 	}
-	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'%s','%s','%s',%d,%d,'%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime);
+	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
