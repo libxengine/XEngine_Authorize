@@ -84,6 +84,11 @@ typedef struct
 		bool bEnable;                                       //是否启用加密传输 
 		int nPassword;                                      //密码
 	}st_XCrypto;
+	struct  
+	{
+		bool bEnable;                                       //是否启用HTTP接口权限验证
+		int nVType;                                         //验证方法,1 基本,2摘要
+	}st_XApiVer;
 	struct
 	{
 		int nDBType;

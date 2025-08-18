@@ -17,12 +17,12 @@ XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 		for (int i = 0; i < nListCount; i++)
 		{
 			int nMsgLen = 0;
+			int nHdrCount = 0;
+			XCHAR** ppszListHdr = NULL;
 			XCHAR* ptszMsgBuffer = NULL;
-			RFCCOMPONENTS_HTTP_REQPARAM st_HTTPParament;
+			RFCCOMPONENTS_HTTP_REQPARAM st_HTTPParament = {};
 
-			memset(&st_HTTPParament, '\0', sizeof(RFCCOMPONENTS_HTTP_REQPARAM));
-
-			if (HttpProtocol_Server_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament))
+			if (HttpProtocol_Server_GetMemoryEx(xhHttpPacket, ppSt_ListClient[i]->tszClientAddr, &ptszMsgBuffer, &nMsgLen, &st_HTTPParament, &ppszListHdr, &nHdrCount))
 			{
 				if (st_AuthConfig.st_XCrypto.bEnable)
 				{
@@ -34,21 +34,22 @@ XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 
 					_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
 					Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament);
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
 				}
 				else
 				{
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament);
+					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
 				}
 			}
 			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
+			BaseLib_Memory_Free((XPPPMEM)&ppszListHdr, nHdrCount);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
 	return 0;
 }
 
-bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM* pSt_HTTPParament)
+bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, RFCCOMPONENTS_HTTP_REQPARAM* pSt_HTTPParament, XCHAR** pptszListHdr, int nHdrCount)
 {
 	int nSDLen = 4096;
 	XCHAR tszSDBuffer[4096];
@@ -80,6 +81,27 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，登录连接被阻止，用户名或IP地址被禁用!"), lpszClientAddr);
 		return false;
 	}
+	//HTTP验证
+	if (st_AuthConfig.st_XApiVer.bEnable)
+	{
+		XCHAR tszUserName[64] = {};
+		XCHAR tszUserPass[64] = {};
+		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam = {};
+
+		st_HDRParam.nHttpCode = 401;
+		st_HDRParam.bIsClose = true;
+		
+		if (!AuthHelp_APIHelp_HttpAuth(tszUserName, tszUserPass, pptszListHdr, nHdrCount))
+		{
+			LPCXSTR lpszHTTPHdr = _X("WWW-Authenticate: Basic realm=\"XEngine Authorize\"\r\n");
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, lpszHTTPHdr);
+			NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszSDBuffer, nSDLen);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,错误:%lX"), lpszClientAddr, AuthHelp_GetLastError());
+			return false;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,验证通过,用户名:%s,密码:%s"), lpszClientAddr, tszUserName, tszUserPass);
+	}
+
 	if (0 == _tcsxnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodPost)))
 	{
 		XCHAR tszAPIType[64];

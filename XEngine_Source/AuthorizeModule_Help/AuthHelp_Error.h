@@ -39,3 +39,9 @@
 /*                     多端登录                                         */
 /************************************************************************/
 #define ERROR_AUTHORIZE_MODULE_HELP_MULTI_NOTSUPPORT 0x0050030            //不支持
+/************************************************************************/
+/*                     API帮助函数                                      */
+/************************************************************************/
+#define ERROR_AUTHORIZE_MODULE_HELP_APIHELP_NOTSUPPORT 0x0050040          //不支持
+#define ERROR_AUTHORIZE_MODULE_HELP_APIHELP_PARAMENT 0x0050041            //参数错误
+#define ERROR_AUTHORIZE_MODULE_HELP_APIHELP_FORMAT 0x0050042              //格式错误

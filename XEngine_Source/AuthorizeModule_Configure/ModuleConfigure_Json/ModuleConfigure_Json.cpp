@@ -155,6 +155,16 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
+	//接口验证
+	if (st_JsonRoot["XApiVer"].empty() || (2 != st_JsonRoot["XApiVer"].size()))
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XAPIVER;
+		return false;
+	}
+	Json::Value st_JsonXAPIVer = st_JsonRoot["XApiVer"];
+	pSt_ServerConfig->st_XApiVer.bEnable = st_JsonXAPIVer["bEnable"].asBool();
+	pSt_ServerConfig->st_XApiVer.nVType = st_JsonXAPIVer["nVerType"].asInt();
 	//数据库配置
 	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{

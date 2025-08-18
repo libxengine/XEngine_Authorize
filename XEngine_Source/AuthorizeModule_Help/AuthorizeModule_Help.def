@@ -10,6 +10,9 @@ EXPORTS
 
 	AuthHelp_MultiLogin_GetRange
 
+	AuthHelp_APIHelp_HttpAuth
+	AuthHelp_APIHelp_Digest
+
 	AuthHelp_ClipBoard_Set
 	AuthHelp_ClipBoard_Get
 	AuthHelp_ClipBoard_Clear

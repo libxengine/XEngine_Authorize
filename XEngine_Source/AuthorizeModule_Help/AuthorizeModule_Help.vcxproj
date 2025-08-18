@@ -248,6 +248,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AuthHelp_APIHelp\AuthHelp_APIHelp.h" />
     <ClInclude Include="AuthHelp_ClipBoard\AuthHelp_ClipBoard.h" />
     <ClInclude Include="AuthHelp_Define.h" />
     <ClInclude Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.h" />
@@ -258,6 +259,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AuthHelp_APIHelp\AuthHelp_APIHelp.cpp" />
     <ClCompile Include="AuthHelp_ClipBoard\AuthHelp_ClipBoard.cpp" />
     <ClCompile Include="AuthHelp_DynamicCode\AuthHelp_DynamicCode.cpp" />
     <ClCompile Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.cpp" />

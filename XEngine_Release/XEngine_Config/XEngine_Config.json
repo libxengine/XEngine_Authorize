@@ -54,6 +54,10 @@
         "bEnable": false,
         "nPass": 123123
     },
+    "XApiVer": {
+        "bEnable": true,
+        "nVerType": 1
+    },
     "XSql": {
         "nSQLType": 0,
         "SQLAddr": "127.0.0.1",

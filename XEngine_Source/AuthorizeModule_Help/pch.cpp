@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "AuthHelp_DynamicCode/AuthHelp_DynamicCode.h"
 #include "AuthHelp_MultiLogin/AuthHelp_MultiLogin.h"
+#include "AuthHelp_APIHelp/AuthHelp_APIHelp.h"
 #ifdef _MSC_BUILD
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
 #include "AuthHelp_Windows/AuthHelp_Windows.h"
@@ -21,6 +22,7 @@ XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_DynamicCode m_HelpDynamic;
 CAuthHelp_MultiLogin m_HelpLogin;
+CAuthHelp_APIHelp m_APIHelp;
 #ifdef _MSC_BUILD
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
@@ -59,6 +61,17 @@ extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode)
 extern "C" bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType)
 {
 	return m_HelpLogin.AuthHelp_MultiLogin_GetRange(nClientDevice, pInt_IDType);
+}
+/************************************************************************/
+/*                    API帮助函数导出定义                               */
+/************************************************************************/
+extern "C" bool AuthHelp_APIHelp_HttpAuth(XCHAR* ptszUser, XCHAR* ptszPass, XCHAR** pptszListHdr, int nHdrCount)
+{
+	return m_APIHelp.AuthHelp_APIHelp_HttpAuth(ptszUser, ptszPass, pptszListHdr, nHdrCount);
+}
+extern "C" bool AuthHelp_APIHelp_Digest(XCHAR* ptszResponseStr, LPCXSTR lpszUser, LPCXSTR lpszPass, LPCXSTR lpszRealm, LPCXSTR lpszMethod, LPCXSTR lpszUrl, LPCXSTR lpszNonce, LPCXSTR lpszCNonce, LPCXSTR lpszNC)
+{
+	return m_APIHelp.AuthHelp_APIHelp_Digest(ptszResponseStr, lpszUser, lpszPass, lpszRealm, lpszMethod, lpszUser, lpszNonce, lpszCNonce, lpszNC);
 }
 /************************************************************************/
 /*                    剪贴板导出定义                                    */
