@@ -156,7 +156,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
 	//接口验证
-	if (st_JsonRoot["XApiVer"].empty() || (2 != st_JsonRoot["XApiVer"].size()))
+	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XAPIVER;
@@ -165,6 +165,9 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	Json::Value st_JsonXAPIVer = st_JsonRoot["XApiVer"];
 	pSt_ServerConfig->st_XApiVer.bEnable = st_JsonXAPIVer["bEnable"].asBool();
 	pSt_ServerConfig->st_XApiVer.nVType = st_JsonXAPIVer["nVerType"].asInt();
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszUserName, st_JsonXAPIVer["tszUser"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszUserPass, st_JsonXAPIVer["tszPass"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszAPIUrl, st_JsonXAPIVer["tszAPIUrl"].asCString());
 	//数据库配置
 	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{

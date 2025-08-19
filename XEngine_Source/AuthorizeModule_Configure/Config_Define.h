@@ -86,8 +86,11 @@ typedef struct
 	}st_XCrypto;
 	struct  
 	{
-		bool bEnable;                                       //是否启用HTTP接口权限验证
+		XCHAR tszAPIUrl[XPATH_MID];                         //验证API地址
+		XCHAR tszUserName[128];                             //验证用户名
+		XCHAR tszUserPass[128];                             //验证密码
 		int nVType;                                         //验证方法,1 基本,2摘要
+		bool bEnable;                                       //是否启用HTTP接口权限验证
 	}st_XApiVer;
 	struct
 	{

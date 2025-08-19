@@ -56,7 +56,10 @@
     },
     "XApiVer": {
         "bEnable": true,
-        "nVerType": 1
+        "tszUser": "xengine",
+        "tszPass": "123123aa",
+        "tszAPIUrl": "",
+        "nVerType": 2
     },
     "XSql": {
         "nSQLType": 0,
