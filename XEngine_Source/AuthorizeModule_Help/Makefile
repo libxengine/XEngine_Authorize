@@ -6,7 +6,7 @@ LOADHDR = -I ./
 LOADSO = -L 
 LIB = -lXEngine_BaseLib
 LIBEX = 
-OBJECTS = AuthHelp_DynamicCode.o AuthHelp_MultiLogin.o pch.o
+OBJECTS = AuthHelp_DynamicCode.o AuthHelp_MultiLogin.o AuthHelp_APIHelp.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE  
@@ -53,6 +53,8 @@ AuthHelp_DynamicCode.o:./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_DynamicCode/AuthHelp_DynamicCode.cpp
 AuthHelp_MultiLogin.o:./AuthHelp_MultiLogin/AuthHelp_MultiLogin.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_MultiLogin/AuthHelp_MultiLogin.cpp
+AuthHelp_APIHelp.o:./AuthHelp_APIHelp/AuthHelp_APIHelp.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthHelp_APIHelp/AuthHelp_APIHelp.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp

@@ -101,13 +101,6 @@ extern "C" bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 *********************************************************************/
 extern "C" bool AuthHelp_MultiLogin_GetRange(int nClientDevice, int* pInt_IDType);
 /************************************************************************/
-/*                    API帮助函数导出定义                               */
-/************************************************************************/
-
-extern "C" bool AuthHelp_APIHelp_HttpAuth(XCHAR* ptszUser, XCHAR* ptszPass, XCHAR** pptszListHdr, int nHdrCount);
-
-extern "C" bool AuthHelp_APIHelp_Digest(XCHAR* ptszResponseStr, LPCXSTR lpszUser, LPCXSTR lpszPass, LPCXSTR lpszRealm, LPCXSTR lpszMethod, LPCXSTR lpszUrl, LPCXSTR lpszNonce, LPCXSTR lpszCNonce, LPCXSTR lpszNC = NULL);
-/************************************************************************/
 /*                    剪贴板导出定义                                    */
 /************************************************************************/
 #ifdef _MSC_BUILD

@@ -84,6 +84,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	//HTTP验证
 	if (st_AuthConfig.st_XApiVer.bEnable)
 	{
+		int nVType = 0;
 		XCHAR tszUserName[64] = {};
 		XCHAR tszUserPass[64] = {};
 		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam = {};
@@ -91,13 +92,32 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		st_HDRParam.nHttpCode = 401;
 		st_HDRParam.bIsClose = true;
 		
-		if (!AuthHelp_APIHelp_HttpAuth(tszUserName, tszUserPass, pptszListHdr, nHdrCount))
+		if (!Verification_HTTP_GetType(pptszListHdr, nHdrCount, &nVType))
 		{
-			LPCXSTR lpszHTTPHdr = _X("WWW-Authenticate: Basic realm=\"XEngine Authorize\"\r\n");
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, lpszHTTPHdr);
+			int nHDRLen = 0;
+			XCHAR tszHDRBuffer[XPATH_MAX] = {};
+			if (1 == st_AuthConfig.st_XApiVer.nVType)
+			{
+				Verification_HTTP_BasicServerPacket(tszHDRBuffer, &nHDRLen);
+			}
+			else
+			{
+				XCHAR tszNonceStr[64] = {};
+				XCHAR tszOpaqueStr[64] = {};
+				Verification_HTTP_DigestServerPacket(tszHDRBuffer, &nHDRLen, tszNonceStr, tszOpaqueStr);
+			}
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszHDRBuffer);
 			NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, tszSDBuffer, nSDLen);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,错误:%lX"), lpszClientAddr, AuthHelp_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,验证方式:%d,错误:%lX"), lpszClientAddr, st_AuthConfig.st_XApiVer.nVType, AuthHelp_GetLastError());
 			return false;
+		}
+		if (1 == nVType)
+		{
+			Verification_HTTP_Basic(tszUserName, tszUserPass, pptszListHdr, nHdrCount);
+		}
+		else if (2 == nVType)
+		{
+			Verification_HTTP_Digest("123123aa", "123123", pSt_HTTPParament->tszHttpMethod, pptszListHdr, nHdrCount);
 		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,验证通过,用户名:%s,密码:%s"), lpszClientAddr, tszUserName, tszUserPass);
 	}

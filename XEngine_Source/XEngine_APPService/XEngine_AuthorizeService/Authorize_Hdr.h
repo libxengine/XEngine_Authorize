@@ -60,6 +60,8 @@ using namespace std;
 #include "../../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
 
 extern bool bIsRun;
 extern bool bIsTest;
@@ -129,6 +131,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../x64/Debug/XEngine_Verification.lib")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Protocol.lib")
@@ -137,6 +140,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../ARM64/Debug/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../ARM64/Debug/XEngine_Verification.lib")
 #elif _M_IX86
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
@@ -145,6 +149,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Debug/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../Debug/XEngine_Verification.lib")
 #endif
 #else
 #ifdef _M_X64
@@ -155,6 +160,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../x64/Release/XEngine_Verification.lib")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Protocol.lib")
@@ -163,6 +169,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../ARM64/Release/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../ARM64/Release/XEngine_Verification.lib")
 #elif _M_IX86
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
@@ -171,6 +178,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Release/XEngine_InfoReport.lib")
+#pragma comment(lib,"../../Release/XEngine_Verification.lib")
 #endif
 #endif
 #endif
