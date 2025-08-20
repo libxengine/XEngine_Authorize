@@ -119,14 +119,59 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			return false;
 		}
 		bool bRet = false;
-		if (1 == nVType)
+		//通过什么方法获得用户密码
+		if (_tcsxlen(st_AuthConfig.st_XApiVer.tszAPIUrl) > 0)
 		{
-			bRet = Verification_HTTP_Basic(st_AuthConfig.st_XApiVer.tszUserName, st_AuthConfig.st_XApiVer.tszUserPass, pptszListHdr, nHdrCount);
+			int nHTTPCode = 0;
+			int nMSGLen = 0;
+			XCLIENT_APIHTTP st_APIHttp = {};
+			XCHAR* ptszMSGBuffer = NULL;
+			if (!APIClient_Http_Request(_X("GET"), st_AuthConfig.st_XApiVer.tszAPIUrl, NULL, &nHTTPCode, &ptszMSGBuffer, &nMSGLen, NULL, NULL, &st_APIHttp))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server is down,cant verification");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误码:%lX"), lpszClientAddr, st_AuthConfig.st_XApiVer.tszAPIUrl, APIClient_GetLastError());
+				return false;
+			}
+			if (200 != nHTTPCode)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server is down,cant verification");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误:%d"), lpszClientAddr, st_AuthConfig.st_XApiVer.tszAPIUrl, nHTTPCode);
+				return false;
+			}
+			AUTHORIZE_PROTOCOL_USERAUTHEX st_UserAuth = {};
+			if (!Protocol_Parse_HttpParseAuth(ptszMSGBuffer, nMsgLen, &st_UserAuth))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server reply failure,cant verification");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,返回内容:%s 错误,无法继续"), lpszClientAddr, ptszMSGBuffer);
+				BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMSGBuffer);
+				return false;
+			}
+			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMSGBuffer);
+
+			if (1 == nVType)
+			{
+				bRet = Verification_HTTP_Basic(st_UserAuth.tszUserName, st_UserAuth.tszUserPass, pptszListHdr, nHdrCount);
+			}
+			else if (2 == nVType)
+			{
+				bRet = Verification_HTTP_Digest(st_UserAuth.tszUserName, st_UserAuth.tszUserPass, pSt_HTTPParament->tszHttpMethod, pptszListHdr, nHdrCount);
+			}
 		}
-		else if (2 == nVType)
+		else
 		{
-			bRet = Verification_HTTP_Digest(st_AuthConfig.st_XApiVer.tszUserName, st_AuthConfig.st_XApiVer.tszUserPass, pSt_HTTPParament->tszHttpMethod, pptszListHdr, nHdrCount);
+			if (1 == nVType)
+			{
+				bRet = Verification_HTTP_Basic(st_AuthConfig.st_XApiVer.tszUserName, st_AuthConfig.st_XApiVer.tszUserPass, pptszListHdr, nHdrCount);
+			}
+			else if (2 == nVType)
+			{
+				bRet = Verification_HTTP_Digest(st_AuthConfig.st_XApiVer.tszUserName, st_AuthConfig.st_XApiVer.tszUserPass, pSt_HTTPParament->tszHttpMethod, pptszListHdr, nHdrCount);
+			}
 		}
+		
 		if (!bRet)
 		{
 			HttpProtocol_Server_SendMsgEx(xhHttpPacket, tszSDBuffer, &nSDLen, &st_HDRParam, NULL, 0, tszHDRBuffer);
