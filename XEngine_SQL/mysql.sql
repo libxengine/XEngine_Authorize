@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : mysql
+ Source Server         : QQCloud
  Source Server Type    : MySQL
- Source Server Version : 80041 (8.0.41-0ubuntu0.24.04.1)
- Source Host           : 10.0.2.6:3306
- Source Schema         : XEngine_Authorize
+ Source Server Version : 80043 (8.0.43-0ubuntu0.24.04.1)
+ Source Host           : 118.25.14.242:3306
+ Source Schema         : authorize
 
  Target Server Type    : MySQL
- Target Server Version : 80041 (8.0.41-0ubuntu0.24.04.1)
+ Target Server Version : 80043 (8.0.43-0ubuntu0.24.04.1)
  File Encoding         : 65001
 
- Date: 26/02/2025 14:14:00
+ Date: 20/08/2025 11:17:20
 */
 
 SET NAMES utf8mb4;
@@ -74,7 +74,7 @@ CREATE TABLE `Authorize_Login`  (
   `UserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `UserAddr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   `UserTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of Authorize_Login
@@ -92,6 +92,7 @@ CREATE TABLE `Authorize_Serial`  (
   `CardSerialType` int NULL DEFAULT NULL,
   `bIsUsed` tinyint(1) NULL DEFAULT NULL,
   `CreateTime` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ExpiredTime` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
