@@ -654,12 +654,17 @@ bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lp
   类型：常量字符指针
   可空：N
   意思：要插入的序列号
+ 参数.二：lpszExpiredTime
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：过期日期
 返回值
   类型：逻辑型
   意思：是否插入成功
 备注：
 *********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
+bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -682,26 +687,26 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
 	}
 	if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enAuthSerialType)
 	{
-		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType);
+		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW(),'%s')"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType, lpszExpiredTime);
 	}
 	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enAuthSerialType)
 	{
-		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
+		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW(),'%s')"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType, lpszExpiredTime);
 	}
 	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enAuthSerialType)
 	{
-		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW())"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
+		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%d','%d',0,NOW(),'%s')"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType, lpszExpiredTime);
 	}
 	else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
 	{
 		XCHAR tszLeftTime[XPATH_MAX];
 		memset(tszLeftTime, '\0', XPATH_MAX);
 		_xstprintf(tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
-		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s','%d',0,NOW())"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
+		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s','%d',0,NOW(),'%s')"), lpszSerialNumber, tszLeftTime, enAuthSerialType, lpszExpiredTime);
 	}
 	else
 	{
-		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s',0,'%d',0,NOW())"), lpszSerialNumber, enAuthSerialType);
+		_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s',0,'%d',0,NOW(),'%s')"), lpszSerialNumber, enAuthSerialType, lpszExpiredTime);
 	}
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))

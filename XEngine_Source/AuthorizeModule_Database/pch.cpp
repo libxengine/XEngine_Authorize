@@ -75,9 +75,9 @@ extern "C" bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUse
 {
 	return m_DBSQLite.DBModule_SQLite_QueryLogin(lpszUserName, lpszUserAddr);
 }
-extern "C" bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
+extern "C" bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime)
 {
-	return m_DBSQLite.DBModule_SQLite_SerialInsert(lpszSerialNumber);
+	return m_DBSQLite.DBModule_SQLite_SerialInsert(lpszSerialNumber, lpszExpiredTime);
 }
 extern "C" bool DBModule_SQLite_SerialDelete(LPCXSTR lpszSerialNumber)
 {
@@ -190,9 +190,9 @@ extern "C" bool DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int
 {
 	return m_DBMySQL.DBModule_MySQL_UserList(pppSt_UserInfo, pInt_ListCount, nPosStart, nPosEnd);
 }
-extern "C" bool DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber)
+extern "C" bool DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime)
 {
-	return m_DBMySQL.DBModule_MySQL_SerialInsert(lpszSerialNumber);
+	return m_DBMySQL.DBModule_MySQL_SerialInsert(lpszSerialNumber, lpszExpiredTime);
 }
 extern "C" bool DBModule_MySQL_SerialDelete(LPCXSTR lpszSerialNumber)
 {

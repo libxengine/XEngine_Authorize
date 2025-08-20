@@ -634,12 +634,17 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
   类型：字符指针
   可空：N
   意思：导出拥有时间
+ 参数.七：ptszExpiredTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出过期时间
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime)
+bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime, XCHAR* ptszExpiredTime)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -666,6 +671,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int
 	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
 	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
 	_tcsxcpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
+
+	if (!st_JsonObject["tszExpiredTime"].isNull())
+	{
+		_tcsxcpy(ptszExpiredTime, st_JsonObject["tszExpiredTime"].asCString());
+	}
 	return true;
 }
 /********************************************************************
