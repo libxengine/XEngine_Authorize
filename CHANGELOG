@@ -1,3 +1,35 @@
+XEngine_Authorize V3.19.0.1001
+
+added:more system support
+added:storage log support and use to user pay
+added:set color for key log
+added:hardware code bind with login and register
+added:hardware bind switch app support
+added:serial expired time support
+added:http basic and digest support
+update:depend library
+update:match xengine last version
+improved:parameter command
+modify:adjust windows app list size
+modify:depend library directory name
+modify:start parameter are not case sensitive
+fixed:sometime configure read memory leak
+
+增加:更新系统支持
+增加:强日志支持并且设置用户支付日志为强日志
+增加:设置关键日志输出颜色
+增加:支持登录注册硬件绑定
+增加:支持管理程序修改绑定登录注册
+增加:序列号过期支持
+增加:http接口基本和摘要验证
+更新:依赖库
+更新:匹配最新xengine版本
+优化:参数命令
+修改:调整管理程序窗口列表大小
+修改:依赖库目录名
+修改:启动参数不在区分大小写
+修正:某些时候配置读取内存溢出
+================================================================
 XEngine_Authorize V3.18.0.1001
 
 added:more system release support

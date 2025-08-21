@@ -154,7 +154,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -196,6 +196,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
 		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	if (!st_JsonProtocol["tszHWCode"].isNull())
+	{
+		_tcsxcpy(pSt_UserAuth->tszHWCode, st_JsonProtocol["tszHWCode"].asCString());
 	}
 	return true;
 }
@@ -578,6 +582,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		{
 			_tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, st_JsonArray[i]["tszCreateTime"].asCString());
 		}
+		if (!st_JsonArray[i]["tszExpiredTime"].isNull())
+		{
+			_tcsxcpy((*pppSt_SerialTable)[i]->tszExpiredTime, st_JsonArray[i]["tszExpiredTime"].asCString());
+		}
 		if (!st_JsonArray[i]["tszMaxTime"].isNull())
 		{
 			_tcsxcpy((*pppSt_SerialTable)[i]->tszMaxTime, st_JsonArray[i]["tszMaxTime"].asCString());
@@ -626,12 +634,17 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
   类型：字符指针
   可空：N
   意思：导出拥有时间
+ 参数.七：ptszExpiredTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出过期时间
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime)
+bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime, XCHAR* ptszExpiredTime)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -658,6 +671,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int
 	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
 	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
 	_tcsxcpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
+
+	if (!st_JsonObject["tszExpiredTime"].isNull())
+	{
+		_tcsxcpy(ptszExpiredTime, st_JsonObject["tszExpiredTime"].asCString());
+	}
 	return true;
 }
 /********************************************************************
@@ -847,6 +865,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchBanned = st_JsonObject["bSwitchBanned"].asBool();
 	pSt_FunSwitch->bSwitchTokenLogin = st_JsonObject["bSwitchTokenLogin"].asBool();
 	pSt_FunSwitch->bSwitchHCLogin = st_JsonObject["bSwitchHCLogin"].asBool();
+	pSt_FunSwitch->bSwitchHWBind = st_JsonObject["bSwitchHWBind"].asBool();
 	return true;
 }
 /********************************************************************

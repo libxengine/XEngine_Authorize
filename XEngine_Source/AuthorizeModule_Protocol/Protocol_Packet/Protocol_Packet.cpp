@@ -159,7 +159,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth)
+bool CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -174,6 +174,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* p
 
 	st_JsonUser["tszUserName"] = pSt_UserAuth->tszUserName;
 	st_JsonUser["tszUserPass"] = pSt_UserAuth->tszUserPass;
+	st_JsonUser["tszHWCode"] = pSt_UserAuth->tszHWCode;
 	st_JsonUser["enDeviceType"] = pSt_UserAuth->enDeviceType;
 	st_JsonUser["enClientType"] = pSt_UserAuth->enClientType;
 
@@ -532,6 +533,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["enSerialType"] = (*pppSt_SerialList)[i]->enSerialType;
 		st_JsonObject["bIsUsed"] = (*pppSt_SerialList)[i]->bIsUsed;
 		st_JsonObject["tszCreateTime"] = (*pppSt_SerialList)[i]->tszCreateTime;
+		st_JsonObject["tszExpiredTime"] = (*pppSt_SerialList)[i]->tszExpiredTime;
 		st_JsonArray.append(st_JsonObject);
 	}
 	st_JsonRoot["msg"] = "success";
@@ -664,6 +666,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchBanned"] = pSt_FunSwitch->bSwitchBanned;
 	st_JsonRoot["bSwitchTokenLogin"] = pSt_FunSwitch->bSwitchTokenLogin;
 	st_JsonRoot["bSwitchHCLogin"] = pSt_FunSwitch->bSwitchHCLogin;
+	st_JsonRoot["bSwitchHWBind"] = pSt_FunSwitch->bSwitchHWBind;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);

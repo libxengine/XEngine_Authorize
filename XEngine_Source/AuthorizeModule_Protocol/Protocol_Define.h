@@ -98,7 +98,7 @@ extern "C" bool Protocol_Packet_HttpComm(XCHAR* ptszMsgBuffer, int* pInt_MsgLen,
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTH* pSt_UserAuth);
+extern "C" bool Protocol_Packet_HttpUserPass(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Packet_UserTime
 函数功能：用户时间打包函数
@@ -473,7 +473,7 @@ extern "C" bool Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTH * pSt_UserAuth);
+extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseUser
 函数功能：解析用户信息
@@ -632,12 +632,17 @@ extern "C" bool Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLe
   类型：字符指针
   可空：N
   意思：导出拥有时间
+ 参数.七：ptszExpiredTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出过期时间
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR * ptszHasTime);
+extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR * ptszHasTime, XCHAR* ptszExpiredTime);
 /********************************************************************
 函数名称：Protocol_Parse_HttpParseOnline
 函数功能：解析在线列表

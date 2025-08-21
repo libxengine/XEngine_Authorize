@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
+XHTHREAD XCALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;
@@ -55,14 +55,14 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 	if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE == enOPCode)
 	{
 		int nSDLen = 0;
-		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		XCHAR tszMSGBuffer[XPATH_MAX] = {};
 		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_CLOSE);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}
 	else if (ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PING == enOPCode)
 	{
 		int nSDLen = 0;
-		XCHAR tszMSGBuffer[MAX_PATH] = {};
+		XCHAR tszMSGBuffer[XPATH_MAX] = {};
 		RfcComponents_WSCodec_EncodeMsg(NULL, tszMSGBuffer, &nSDLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_PONG);
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, tszMSGBuffer, nSDLen);
 	}
@@ -76,11 +76,11 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
 		{
-			XENGINE_PROTOCOL_USERAUTH st_UserAuth;
-			memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+			AUTHORIZE_PROTOCOL_USERAUTHEX st_UserAuth;
+			memset(&st_UserAuth, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
 
 			Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
-			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTH), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
+			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 		}
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN == st_ProtocolHdr.unOperatorCode)
 		{

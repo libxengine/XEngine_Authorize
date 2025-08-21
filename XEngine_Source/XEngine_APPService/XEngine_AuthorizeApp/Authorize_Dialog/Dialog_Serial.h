@@ -36,4 +36,5 @@ public:
 	afx_msg void OnBnClickedButton7();
 	CEdit m_EditPosStart;
 	CEdit m_EditPosEnd;
+	CEdit m_EditExpiredTime;
 };

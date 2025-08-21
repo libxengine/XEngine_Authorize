@@ -117,9 +117,9 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		//禁止权限0和1注册
 		if (st_UserTable.st_UserInfo.nUserLevel < 10)
 		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PERMISSION, "user and pass does not set");
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PERMISSION, "user permission level incorrect");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，配置的用户权限错误"), lpszClientAddr);
 			return false;
 		}
 		//默认普通用户
@@ -130,6 +130,16 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，没有设置用户和密码"), lpszClientAddr);
 			return false;
+		}
+		if (st_FunSwitch.bSwitchHWBind)
+		{
+			if (_tcsxlen(st_UserTable.tszHardCode) <= 0)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "not set hardware code");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，注册失败，启用硬件绑定没有配置硬件吗"), lpszClientAddr);
+				return false;
+			}
 		}
 		bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -167,6 +177,30 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		Protocol_Parse_HttpParsePay(lpszMsgBuffer, nMsgLen, &st_UserPay);
+		//判断序列号是否过期
+		AUTHREG_SERIALTABLE st_SerialTable = {};
+		if (!DBModule_SQLite_SerialQuery(st_UserPay.tszSerialNumber, &st_SerialTable))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "serial number not found");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，充值失败，充值序列卡:%s 不存在!"), lpszClientAddr, st_SerialTable.tszSerialNumber);
+			return false;
+		}
+		if (_tcsxlen(st_SerialTable.tszExpiredTime) > 1)
+		{
+			__int64x nTimeValue = 0;
+			XCHAR tszTimeStr[128] = {};
+			BaseLib_Time_TimeToStr(tszTimeStr);
+			BaseLib_TimeSpan_GetForStr(tszTimeStr, st_SerialTable.tszExpiredTime, &nTimeValue, 3);
+			if (nTimeValue < 0)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_EXPIRED, "serial was expired");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，充值失败，序列卡:%s 已经过期!"), lpszClientAddr, st_SerialTable.tszSerialNumber);
+				return false;
+			}
+		}
+		
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
@@ -180,7 +214,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTMATCH, "Serial number not available");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，充值失败，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, DBModule_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值失败，序列号：%s，无法继续，错误：%X"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, DBModule_GetLastError());
 			return false;
 		}
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -194,7 +228,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		Session_Authorize_SetUser(&st_UserInfo);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIPass, _tcsxlen(lpszAPIName)))
 	{
@@ -254,7 +288,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 
-		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol = {};
+		AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthProtocol = {};
 		_tcsxcpy(st_AuthProtocol.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		_tcsxcpy(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass);
 		Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);

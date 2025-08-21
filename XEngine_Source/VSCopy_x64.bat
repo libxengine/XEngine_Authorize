@@ -7,6 +7,7 @@ copy /y "%XEngine_Lib64%\XEngine_Core\XEngine_Cryption.dll" "./"
 
 copy /y "%XEngine_Lib64%\XEngine_NetHelp\NetHelp_APIHelp.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_NetHelp\NetHelp_APIAddr.dll" "./"
+copy /y "%XEngine_Lib64%\XEngine_NetHelp\NetHelp_XSocket.dll" "./"
 
 copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_DataBase.dll" "./"
 copy /y "%XEngine_Lib64%\XEngine_HelpComponents\HelpComponents_Packets.dll" "./"

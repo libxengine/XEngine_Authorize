@@ -78,17 +78,17 @@ BOOL CDialog_Banned::OnInitDialog()
 	m_RadioUser.SetCheck(BST_CHECKED);
 
 	m_ListAddr.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListAddr.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
-	m_ListAddr.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
-	m_ListAddr.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListAddr.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 80);
+	m_ListAddr.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 250);
+	m_ListAddr.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 250);
+	m_ListAddr.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 250);
 	m_ListAddr.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_ListUser.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 80);
-	m_ListUser.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 60);
-	m_ListUser.InsertColumn(2, _T("用户名"), LVCFMT_LEFT, 120);
-	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 120);
-	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListUser.InsertColumn(1, _T("是否启用"), LVCFMT_LEFT, 80);
+	m_ListUser.InsertColumn(2, _T("用户名"), LVCFMT_LEFT, 250);
+	m_ListUser.InsertColumn(3, _T("过期日期"), LVCFMT_LEFT, 250);
+	m_ListUser.InsertColumn(4, _T("创建日期"), LVCFMT_LEFT, 250);
 	m_ListUser.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditPosStart.SetWindowText(_T("0"));
@@ -118,8 +118,8 @@ void CDialog_Banned::OnBnClickedButton2()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/banned/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
@@ -223,8 +223,8 @@ void CDialog_Banned::OnBnClickedButton4()
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/banned/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
@@ -352,10 +352,10 @@ void CDialog_Banned::OnBnClickedButton3()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -454,8 +454,8 @@ void CDialog_Banned::OnBnClickedButton5()
 	m_EditUser.GetWindowText(m_StrUser);
 	m_DataTime.GetWindowText(m_StrTime);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/banned/modify"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;

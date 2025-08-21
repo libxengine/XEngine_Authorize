@@ -38,7 +38,10 @@ jobs:
 
       - name: brew install
         run: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-            
+
+      - name: Set TERM variable
+        run: echo "TERM=xterm" >> $GITHUB_ENV
+        
       - name: Set up Dependency x86_64 Environment 
         if: matrix.os == 'macos-13'
         run: |

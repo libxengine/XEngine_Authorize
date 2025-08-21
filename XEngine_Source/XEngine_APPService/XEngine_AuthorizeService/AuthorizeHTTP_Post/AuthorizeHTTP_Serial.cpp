@@ -49,14 +49,12 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	{
 		int nNumberCount = 0;
 		int nSerialCount = 0;
-		XCHAR tszHasTime[128];
-		XENGINE_LIBTIME st_AuthTimer;
-		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;
+		XCHAR tszHasTime[128] = {};
+		XCHAR tszExpiredTime[128] = {};
+		XENGINE_LIBTIME st_AuthTimer = {};
+		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = {};
 
-		memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
-		memset(tszHasTime, '\0', sizeof(tszHasTime));
-
-		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime);
+		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime, tszExpiredTime);
 		//解析类型
 		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enSerialType)
 		{
@@ -102,14 +100,14 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			for (int i = 0; i < nSerialCount; i++) //导入序列卡
 			{
-				DBModule_SQLite_SerialInsert(pptszSerialNumber[i]);
+				DBModule_SQLite_SerialInsert(pptszSerialNumber[i], tszExpiredTime);
 			}
 		}
 		else 
 		{
 			for (int i = 0; i < nSerialCount; i++) 
 			{
-				DBModule_MySQL_SerialInsert(pptszSerialNumber[i]);
+				DBModule_MySQL_SerialInsert(pptszSerialNumber[i], tszExpiredTime);
 			}
 		}
 		BaseLib_Memory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);

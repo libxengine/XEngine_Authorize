@@ -61,21 +61,12 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_OPENFILE;
 		return false;
 	}
-	size_t nCount = 0;
-	XCHAR tszMsgBuffer[4096];
-	while (1)
-	{
-		size_t nRet = fread(tszMsgBuffer + nCount, 1, 2048, pSt_File);
-		if (nRet <= 0)
-		{
-			break;
-		}
-		nCount += nRet;
-	}
+	XCHAR tszMsgBuffer[8192] = {};
+	size_t nRet = fread(tszMsgBuffer, 1, sizeof(tszMsgBuffer), pSt_File);
 	fclose(pSt_File);
 	//开始解析配置文件
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_JsonBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nCount, &st_JsonRoot, &st_JsonError))
+	if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nRet, &st_JsonRoot, &st_JsonError))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_PARSE;
@@ -164,6 +155,19 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
 	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
+	//接口验证
+	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XAPIVER;
+		return false;
+	}
+	Json::Value st_JsonXAPIVer = st_JsonRoot["XApiVer"];
+	pSt_ServerConfig->st_XApiVer.bEnable = st_JsonXAPIVer["bEnable"].asBool();
+	pSt_ServerConfig->st_XApiVer.nVType = st_JsonXAPIVer["nVerType"].asInt();
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszUserName, st_JsonXAPIVer["tszUser"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszUserPass, st_JsonXAPIVer["tszPass"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XApiVer.tszAPIUrl, st_JsonXAPIVer["tszAPIUrl"].asCString());
 	//数据库配置
 	if (st_JsonRoot["XSql"].empty() || (6 != st_JsonRoot["XSql"].size()))
 	{
@@ -182,7 +186,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLUser, st_JsonXSql["SQLUser"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XSql.st_MYSQL.tszSQLPass, st_JsonXSql["SQLPass"].asCString());
 	//日志配置
-	if (st_JsonRoot["XLog"].empty() || (5 != st_JsonRoot["XLog"].size()))
+	if (st_JsonRoot["XLog"].empty() || (7 != st_JsonRoot["XLog"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XLOG;
@@ -193,8 +197,10 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.nMaxCount = st_JsonXLog["MaxCount"].asInt();
 	pSt_ServerConfig->st_XLog.nLogLeave = st_JsonXLog["LogLeave"].asInt();
 	pSt_ServerConfig->st_XLog.nLogType = st_JsonXLog["nLogType"].asInt();
+	pSt_ServerConfig->st_XLog.bLogStorage = st_JsonXLog["bLogStorage"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
-	
+	_tcsxcpy(pSt_ServerConfig->st_XLog.tszKeyFile, st_JsonXLog["tszKeyFile"].asCString());
+
 	if (st_JsonRoot["XReport"].empty() || (3 != st_JsonRoot["XReport"].size()))
 	{
 		Config_IsErrorOccur = true;
@@ -360,5 +366,6 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchBanned = st_JsonRoot["bSwitchBanned"].asBool();
 	pSt_ServerConfig->bSwitchTokenLogin = st_JsonRoot["bSwitchTokenLogin"].asBool();
 	pSt_ServerConfig->bSwitchHCLogin = st_JsonRoot["bSwitchHCLogin"].asBool();
+	pSt_ServerConfig->bSwitchHWBind = st_JsonRoot["bSwitchHWBind"].asBool();
 	return true;
 }

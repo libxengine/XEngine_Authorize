@@ -37,6 +37,12 @@
     <Filter Include="源文件\AuthHelp_MultiLogin">
       <UniqueIdentifier>{92e4cc9f-02d7-4e6d-92a1-86e433e38fd2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\AuthHelp_APIHelp">
+      <UniqueIdentifier>{4d216925-f70a-4d9a-835c-4ff390e10949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\AuthHelp_APIHelp">
+      <UniqueIdentifier>{f52e587f-431d-4520-a7ec-a79025363795}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -63,6 +69,9 @@
     <ClInclude Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.h">
       <Filter>头文件\AuthHelp_MultiLogin</Filter>
     </ClInclude>
+    <ClInclude Include="AuthHelp_APIHelp\AuthHelp_APIHelp.h">
+      <Filter>头文件\AuthHelp_APIHelp</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -82,6 +91,9 @@
     </ClCompile>
     <ClCompile Include="AuthHelp_MultiLogin\AuthHelp_MultiLogin.cpp">
       <Filter>源文件\AuthHelp_MultiLogin</Filter>
+    </ClCompile>
+    <ClCompile Include="AuthHelp_APIHelp\AuthHelp_APIHelp.cpp">
+      <Filter>源文件\AuthHelp_APIHelp</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

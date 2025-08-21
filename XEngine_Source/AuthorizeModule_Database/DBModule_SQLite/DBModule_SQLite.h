@@ -33,7 +33,7 @@ public:
     bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
     bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 public:
-    bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber);                                     //插入序列卡
+    bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime);                                     //插入序列卡
     bool DBModule_SQLite_SerialDelete(LPCXSTR lpszSerialNumber);                                     //删除一个序列号
     bool DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                      //按照卡号或者用户查询
     bool DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount, int nPosStart, int nPosEnd);//查询所有序列卡

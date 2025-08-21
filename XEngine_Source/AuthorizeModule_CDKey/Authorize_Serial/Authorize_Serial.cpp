@@ -79,13 +79,13 @@ bool CAuthorize_Serial::Authorize_Serial_Creator(XCHAR*** ppptszSerialNumber, LP
         Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
         return false;
     }
-    BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+    BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, XPATH_MAX);
     srand((unsigned int)time(NULL));                //取随机因子
 
     for (int i = 0; i < nCardNumber; i++)
     {
-        XCHAR tszSerialNumber[MAX_PATH];
-        memset(tszSerialNumber, '\0', MAX_PATH);
+        XCHAR tszSerialNumber[XPATH_MAX];
+        memset(tszSerialNumber, '\0', XPATH_MAX);
         //检查生成类型
         switch (enSerialType)
         {
@@ -225,13 +225,13 @@ bool CAuthorize_Serial::Authorize_Serial_Create(XCHAR*** ppptszSerialNumber, LPC
 		Authorize_dwErrorCode = ERROR_AUTHORIZE_MODULE_CDKEY_PARAMENT;
 		return false;
 	}
-	BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, MAX_PATH);
+	BaseLib_Memory_Malloc((XPPPMEM)ppptszSerialNumber, nCardNumber, XPATH_MAX);
 	srand((unsigned int)time(NULL));                //取随机因子
 
 	for (int i = 0; i < nCardNumber; i++)
 	{
-        XCHAR tszSerialNumber[MAX_PATH];
-		memset(tszSerialNumber, '\0', MAX_PATH);;
+        XCHAR tszSerialNumber[XPATH_MAX];
+		memset(tszSerialNumber, '\0', XPATH_MAX);;
 
 		_xstprintf(tszSerialNumber, _X("%s"), lpszUserHeader);
 		if (!Authorize_Serial_Fill(tszSerialNumber, nFieldNumber))

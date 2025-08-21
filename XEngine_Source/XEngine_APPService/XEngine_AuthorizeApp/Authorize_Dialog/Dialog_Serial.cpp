@@ -31,6 +31,7 @@ void CDialog_Serial::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT2, m_EditHasTime);
 	DDX_Control(pDX, IDC_EDIT3, m_EditPosStart);
 	DDX_Control(pDX, IDC_EDIT7, m_EditPosEnd);
+	DDX_Control(pDX, IDC_EDIT8, m_EditExpiredTime);
 }
 
 
@@ -52,12 +53,13 @@ BOOL CDialog_Serial::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_ListSerial.InsertColumn(0, _T("使用者"), LVCFMT_LEFT, 80);
-	m_ListSerial.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 180);
+	m_ListSerial.InsertColumn(0, _T("使用者"), LVCFMT_LEFT, 100);
+	m_ListSerial.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 450);
 	m_ListSerial.InsertColumn(2, _T("时间/次数"), LVCFMT_LEFT, 90);
 	m_ListSerial.InsertColumn(3, _T("卡类型"), LVCFMT_LEFT, 80);
-	m_ListSerial.InsertColumn(4, _T("是否使用"), LVCFMT_LEFT, 60);
+	m_ListSerial.InsertColumn(4, _T("是否使用"), LVCFMT_LEFT, 80);
 	m_ListSerial.InsertColumn(5, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListSerial.InsertColumn(6, _T("过期日期"), LVCFMT_LEFT, 120);
 	m_ListSerial.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	for (int i = 0; i < 5; i++)
@@ -101,8 +103,8 @@ void CDialog_Serial::OnBnClickedButton1()
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/list"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	int nMsgLen = 0;
@@ -175,6 +177,7 @@ void CDialog_Serial::OnBnClickedButton1()
 			m_ListSerial.SetItemText(i, 4, _T("未使用"));
 		}
 		m_ListSerial.SetItemText(i, 5, A2W(st_JsonArray["tszCreateTime"].asCString()));
+		m_ListSerial.SetItemText(i, 6, A2W(st_JsonArray["tszExpiredTime"].asCString()));
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }
@@ -186,10 +189,10 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -197,9 +200,11 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrHasTime;
 	CString m_StrSerialCount;
 	CString m_StrNumberCount;
+	CString m_StrExpiredTime;
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
 
+	m_EditExpiredTime.GetWindowText(m_StrExpiredTime);
 	m_EditHasTime.GetWindowText(m_StrHasTime);
 	m_EditSerialCount.GetWindowText(m_StrSerialCount);
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
@@ -209,6 +214,7 @@ void CDialog_Serial::OnBnClickedButton2()
 	st_JsonObject["nNumberCount"] = _ttoi(m_StrNumberCount.GetBuffer());
 	st_JsonObject["nSerialCount"] = _ttoi(m_StrSerialCount.GetBuffer());
 	st_JsonObject["tszHasTime"] = W2A(m_StrHasTime.GetBuffer());
+	st_JsonObject["tszExpiredTime"] = W2A(m_StrExpiredTime.GetBuffer());
 	st_JsonRoot["st_SerialInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
@@ -279,7 +285,7 @@ void CDialog_Serial::OnBnClickedButton4()
 	int nSelect = m_ListSerial.GetNextSelectedItem(pSt_Sition);
 	if (nSelect < 0)
 	{
-		Authorize_Help_LogPrint(_T("你没有选择任何客户！"));
+		Authorize_Help_LogPrint(_T("你没有选择任何序列号！"));
 		return;
 	}
 	CString m_StrSerial = m_ListSerial.GetItemText(nSelect, 1);
@@ -287,10 +293,10 @@ void CDialog_Serial::OnBnClickedButton4()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -403,9 +409,9 @@ void CDialog_Serial::OnBnClickedButton6()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("rb"));
 
-	XCHAR tszMsgBuffer[MAX_PATH];
+	XCHAR tszMsgBuffer[XPATH_MAX];
 	//跳过第一行
-	if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+	if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 	{
 		//没有数据
 		AfxMessageBox(_T("没有数据"));
@@ -414,9 +420,9 @@ void CDialog_Serial::OnBnClickedButton6()
 	list<AUTHREG_SERIALTABLE> stl_ListSerial;
 	while (true)
 	{
-		memset(tszMsgBuffer, '\0', MAX_PATH);
+		memset(tszMsgBuffer, '\0', XPATH_MAX);
 		//一行一行读取
-		if (NULL == fgets(tszMsgBuffer, MAX_PATH, pSt_File))
+		if (NULL == fgets(tszMsgBuffer, XPATH_MAX, pSt_File))
 		{
 			break;
 		}
@@ -425,8 +431,7 @@ void CDialog_Serial::OnBnClickedButton6()
 		AUTHREG_SERIALTABLE st_SerialTable;
 		memset(&st_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
 		
-		int nRet = _stxscanf(tszMsgBuffer, _X("%d %s %s %s %d %d %s %s"), &nID, st_SerialTable.tszUserName, st_SerialTable.tszSerialNumber, st_SerialTable.tszMaxTime, &st_SerialTable.enSerialType, &st_SerialTable.bIsUsed, st_SerialTable.tszCreateTime, (st_SerialTable.tszCreateTime + 11));
-		st_SerialTable.tszCreateTime[10] = ' ';
+		int nRet = _stxscanf(tszMsgBuffer, _X("%d %s %s %s %d %d %19c %19c"), &nID, st_SerialTable.tszUserName, st_SerialTable.tszSerialNumber, st_SerialTable.tszMaxTime, &st_SerialTable.enSerialType, &st_SerialTable.bIsUsed, st_SerialTable.tszCreateTime, st_SerialTable.tszExpiredTime);
 		stl_ListSerial.push_back(st_SerialTable);
 	}
 	fclose(pSt_File);
@@ -434,10 +439,10 @@ void CDialog_Serial::OnBnClickedButton6()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
@@ -458,6 +463,7 @@ void CDialog_Serial::OnBnClickedButton6()
 		st_JsonObject["bIsUsed"] = stl_ListIterator->bIsUsed;
 		st_JsonObject["enSerialType"] = stl_ListIterator->enSerialType;
 		st_JsonObject["tszCreateTime"] = stl_ListIterator->tszCreateTime;
+		st_JsonObject["tszExpiredTime"] = stl_ListIterator->tszExpiredTime;
 		st_JsonObject["tszMaxTime"] = stl_ListIterator->tszMaxTime;
 		st_JsonObject["tszSerialNumber"] = stl_ListIterator->tszSerialNumber;
 		st_JsonObject["tszUserName"] = stl_ListIterator->tszUserName;
@@ -539,17 +545,17 @@ void CDialog_Serial::OnBnClickedButton7()
 	}
 	FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
 
-	XCHAR tszMsgBuffer[MAX_PATH];
-	memset(tszMsgBuffer, '\0', MAX_PATH);
+	XCHAR tszMsgBuffer[XPATH_MAX];
+	memset(tszMsgBuffer, '\0', XPATH_MAX);
 	//写字段头
-	int nRet = _xstprintf(tszMsgBuffer, _X("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime\r\n"));
+	int nRet = _xstprintf(tszMsgBuffer, _X("ID UserName SerialNumber MaxTime CardSerialType bIsUsed CreateTime ExpiredTime\r\n"));
 	fwrite(tszMsgBuffer, 1, nRet, pSt_File);
 
 	for (int i = 0; i < m_ListSerial.GetItemCount(); i++)
 	{
 		int nSerialType = 0;
 		int nUsedType = 0;
-		memset(tszMsgBuffer, '\0', MAX_PATH);
+		memset(tszMsgBuffer, '\0', XPATH_MAX);
 
 		USES_CONVERSION;
 		for (int j = 0; j < sizeof(lpszXSerialType) - 1; j++)
@@ -564,7 +570,7 @@ void CDialog_Serial::OnBnClickedButton7()
 		{
 			nUsedType = 0;
 		}
-		nRet = _xstprintf(tszMsgBuffer, _X("%d %s %s %s %d %d %s %s\r\n"), i, W2A(m_ListSerial.GetItemText(i, 0).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 1).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 2).GetBuffer()), nSerialType, nUsedType, W2A(m_ListSerial.GetItemText(i, 5).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 6).GetBuffer()));
+		nRet = _xstprintf(tszMsgBuffer, _X("%d %s %s %s %d %d %s %s %s\r\n"), i, W2A(m_ListSerial.GetItemText(i, 0).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 1).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 2).GetBuffer()), nSerialType, nUsedType, W2A(m_ListSerial.GetItemText(i, 5).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 6).GetBuffer()), W2A(m_ListSerial.GetItemText(i, 7).GetBuffer()));
 		fwrite(tszMsgBuffer, 1, nRet, pSt_File);
 	}
 	fclose(pSt_File);

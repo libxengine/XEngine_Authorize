@@ -53,7 +53,7 @@ BOOL CDialog_Try::OnInitDialog()
 	m_ListTry.InsertColumn(0, _T("ID"), LVCFMT_LEFT, 40);
 	m_ListTry.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 120);
 	m_ListTry.InsertColumn(2, _T("试用类型"), LVCFMT_LEFT, 100);
-	m_ListTry.InsertColumn(3, _T("试用时间"), LVCFMT_LEFT, 70);
+	m_ListTry.InsertColumn(3, _T("试用时间"), LVCFMT_LEFT, 100);
 	m_ListTry.InsertColumn(4, _T("剩余时间"), LVCFMT_LEFT, 100);
 	m_ListTry.InsertColumn(5, _T("创建时间"), LVCFMT_LEFT, 120);
 	m_ListTry.SetExtendedStyle(LVS_EX_FULLROWSELECT);
@@ -74,23 +74,23 @@ void CDialog_Try::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListTry.DeleteAllItems();
-	TCHAR tszIPAddr[MAX_PATH];
-	TCHAR tszIPPort[MAX_PATH];
-	TCHAR tszToken[MAX_PATH];
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszIPAddr[XPATH_MAX];
+	TCHAR tszIPPort[XPATH_MAX];
+	TCHAR tszToken[XPATH_MAX];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CString m_StrPosStart;
 	CString m_StrPosEnd;
 
-	memset(tszIPAddr, '\0', MAX_PATH);
-	memset(tszIPPort, '\0', MAX_PATH);
-	memset(tszToken, '\0', MAX_PATH);
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszIPAddr, '\0', XPATH_MAX);
+	memset(tszIPPort, '\0', XPATH_MAX);
+	memset(tszToken, '\0', XPATH_MAX);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, XPATH_MAX);
 
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/try/list"), W2A(tszIPAddr), W2A(tszIPPort));
@@ -184,8 +184,8 @@ void CDialog_Try::OnBnClickedButton2()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/try/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 
@@ -309,8 +309,8 @@ void CDialog_Try::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/try/modify"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 

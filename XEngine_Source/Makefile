@@ -3,8 +3,9 @@ UNICODE = 0
 PLATFORM=linux
 FLAGS= 
 
-DEPEND_JSONCPP_PATH = ./XEngine_Depend/XEngine_Module/jsoncpp
-DEPEND_REPORT_PATH = ./XEngine_Depend/XEngine_Module/XEngine_InfoReport
+DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
+DEPEND_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
+DEPEND_VERIFICATION_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_Verification
 
 AUTH_CDKEY_PATH = ./AuthorizeModule_CDKey
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
@@ -22,7 +23,7 @@ else ifeq ($(PLATFORM),mac)
 	FILEEXT = dylib
 endif
 
-XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so                                                                                    \
+XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
           libAuthorizeModule_CDKey.so libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
 	      XEngine_AuthorizeApp.exe 
 
@@ -41,6 +42,12 @@ ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_REPORT_PATH)/libXEngine_InfoReport.$(FILEEXT) ../XEngine_Release/
 else
 	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
+libXEngine_Verification.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_VERIFICATION_PATH)/libXEngine_Verification.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 
 libAuthorizeModule_CDKey.so:

@@ -32,7 +32,7 @@ using namespace std;
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
-//Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_Depend/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_Cryption -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
+//Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_Cryption -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define _DYNAMIC_CODE
 #define _PASS_ENCRYPT
@@ -47,7 +47,8 @@ int nDYCode = 0;
 XSOCKET m_Socket = 0;
 LPCXSTR lpszUser = _X("123123aa");
 LPCXSTR lpszPass = _X("123123");
-LPCXSTR lpszSerial = _X("XAUTH-XYRYD-NONN5-FSM45-XBLAZ-23475-28MNL-VUTJD-32956-AKF24");
+LPCXSTR lpszHWCode = _X("2FDWAD02JD2091");
+LPCXSTR lpszSerial = _X("XAUTH-XYRYS-JKG60-N510G-ZUFDH-54-V7I3H");
 LPCXSTR lpszEmail = _X("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
@@ -131,7 +132,7 @@ int AuthClient_Register()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPassCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPassCodec);
 	st_JsonUserInfo["tszUserPass"] = tszPassCodec;
@@ -145,7 +146,7 @@ int AuthClient_Register()
 	st_JsonUserInfo["nIDNumber"] = (Json::Value::Int64)nIDNumber;
 	st_JsonUserInfo["nUserLevel"] = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
-	st_JsonUserTable["tszHardCode"] = "2FDWAD02JD2091";
+	st_JsonUserTable["tszHardCode"] = lpszHWCode;
 	st_JsonUserTable["st_UserInfo"] = st_JsonUserInfo;
 
 	st_JsonRoot["st_UserTable"] = st_JsonUserTable;
@@ -257,25 +258,26 @@ int AuthClient_Login()
 {
 	XCHAR tszMsgBuffer[2048];
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;                    //协议头
-	XENGINE_PROTOCOL_USERAUTH st_AuthUser;
+	AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthUser;
 	
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
-	memset(&st_AuthUser, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
+	memset(&st_AuthUser, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
 
 	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
 	st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN;
-	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
+	st_ProtocolHdr.unPacketSize = sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
 	strcpy(st_AuthUser.tszUserName, lpszUser);
 	strcpy(st_AuthUser.tszUserPass, lpszPass);
+	strcpy(st_AuthUser.tszHWCode, lpszHWCode);
 
 #ifdef _PASS_ENCRYPT
 	int nPLen = _tcsxlen(st_AuthUser.tszUserPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(st_AuthUser.tszUserPass, byMD5Buffer, &nPLen);
 	memset(st_AuthUser.tszUserPass, '\0', sizeof(st_AuthUser.tszUserPass));
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
@@ -306,7 +308,7 @@ int AuthClient_Login()
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), &st_AuthUser, st_ProtocolHdr.unPacketSize);
 
-		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(XENGINE_PROTOCOL_USERAUTH);
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	}
 
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
@@ -322,7 +324,7 @@ int AuthClient_Login()
 }
 int AuthClient_Notice()
 {
-	XCHAR tszURLStr[MAX_PATH] = {};
+	XCHAR tszURLStr[XPATH_MAX] = {};
 	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=notice&token=%lld"), xhToken);
 
 	int nMsgLen = 0;
@@ -379,7 +381,7 @@ int AuthClient_GetPass()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;
@@ -423,7 +425,7 @@ int AuthClient_GetTime()
 {
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonObject;
-	XCHAR tszURLStr[MAX_PATH] = {};
+	XCHAR tszURLStr[XPATH_MAX] = {};
 	_xstprintf(tszURLStr, _X("http://127.0.0.1:5302/api?function=time&token=%lld"),xhToken);
 
 	st_JsonObject["tszUserName"] = lpszUser;
@@ -431,7 +433,7 @@ int AuthClient_GetTime()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;
@@ -475,7 +477,7 @@ int AuthClient_Delete()
 #ifdef _PASS_ENCRYPT
 	XCHAR tszPASSCodec[128] = {};
 	int nPLen = _tcsxlen(lpszPass);
-	XBYTE byMD5Buffer[MAX_PATH] = {};
+	XBYTE byMD5Buffer[XPATH_MAX] = {};
 	Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen);
 	BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszPASSCodec);
 	st_JsonObject["tszUserPass"] = tszPASSCodec;

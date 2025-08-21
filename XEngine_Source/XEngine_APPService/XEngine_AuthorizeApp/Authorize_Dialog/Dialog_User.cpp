@@ -54,14 +54,14 @@ BOOL CDialog_User::OnInitDialog()
 
 	// TODO:  在此添加额外的初始化
 	m_ListCtrlClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
-	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 85);
+	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 120);
 	m_ListCtrlClient.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 70);
-	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 120);
+	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 150);
+	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 150);
 	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 60);
-	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 60);
+	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText(_T("10"));
@@ -77,23 +77,23 @@ void CDialog_User::OnBnClickedButton1()
 {
 	// TODO: 在此添加控件通知处理程序代码
 	m_ListCtrlClient.DeleteAllItems();
-	TCHAR tszIPAddr[MAX_PATH];
-	TCHAR tszIPPort[MAX_PATH];
-	TCHAR tszToken[MAX_PATH];
-	XCHAR tszUrlAddr[MAX_PATH];
+	TCHAR tszIPAddr[XPATH_MAX];
+	TCHAR tszIPPort[XPATH_MAX];
+	TCHAR tszToken[XPATH_MAX];
+	XCHAR tszUrlAddr[XPATH_MAX];
 	CString m_StrPosStart;
 	CString m_StrPosEnd;
 
-	memset(tszIPAddr, '\0', MAX_PATH);
-	memset(tszIPPort, '\0', MAX_PATH);
-	memset(tszToken, '\0', MAX_PATH);
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	memset(tszIPAddr, '\0', XPATH_MAX);
+	memset(tszIPPort, '\0', XPATH_MAX);
+	memset(tszToken, '\0', XPATH_MAX);
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 
 	m_EditPosStart.GetWindowText(m_StrPosStart);
 	m_EditPosEnd.GetWindowText(m_StrPosEnd);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, MAX_PATH);
-	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, MAX_PATH);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT1), tszIPAddr, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT2), tszIPPort, XPATH_MAX);
+	::GetWindowText(::GetDlgItem(hConfigWnd, IDC_EDIT9), tszToken, XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/list"), W2A(tszIPAddr), W2A(tszIPPort));
 	int nMsgLen = 0;
@@ -210,8 +210,8 @@ void CDialog_User::OnBnClickedButton2()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/close"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 
@@ -301,8 +301,8 @@ void CDialog_User::OnBnClickedButton3()
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	USES_CONVERSION;
 	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/client/delete"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 

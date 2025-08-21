@@ -24,38 +24,50 @@ bool Authorize_Service_Parament(int argc, char** argv)
 
     for (int i = 0;i < argc;i++)
     {
-		if ((0 == _tcsxcmp("-h", argv[i])) || (0 == _tcsxcmp("-H", argv[i])))
+		if (0 == _tcsxicmp("-h", argv[i]))
 		{
 			Authorize_Service_ParamentHelp();
 			return false;
 		}
-		else if (0 == _tcsxcmp("-d", argv[i]))
+		else if (0 == _tcsxicmp("-d", argv[i]))
 		{
 			st_AuthConfig.bDeamon = _ttxoi(argv[++i]);
 		}
-		else if (0 == _tcsxcmp("-TP", argv[i]))
+		else if (0 == _tcsxicmp("-tp", argv[i]))
 		{
 			st_AuthConfig.nTCPPort = _ttxoi(argv[++i]);
 		}
-		else if (0 == _tcsxcmp("-WP", argv[i]))
+		else if (0 == _tcsxicmp("-wp", argv[i]))
 		{
 			st_AuthConfig.nWSPort = _ttxoi(argv[++i]);
 		}
-		else if (0 == _tcsxcmp("-HP", argv[i]))
+		else if (0 == _tcsxicmp("-hp", argv[i]))
 		{
 			st_AuthConfig.nHTTPPort = _ttxoi(argv[++i]);
 		}
-		else if (0 == _tcsxcmp("-LL", argv[i]))
+		else if (0 == _tcsxicmp("-t", argv[i]))
 		{
-			st_AuthConfig.st_XLog.nLogLeave = _ttxoi(argv[++i]);
+			bIsTest = true;
 		}
-		else if (0 == _tcsxcmp("-LT", argv[i]))
+		else if (0 == _tcsxicmp("-lt", argv[i]))
 		{
 			st_AuthConfig.st_XLog.nLogType = _ttxoi(argv[++i]);
 		}
-		else if (0 == _tcsxcmp("-t", argv[i]))
+		else if (0 == _tcsxicmp("-l", argv[i]))
 		{
-			bIsTest = true;
+			LPCXSTR lpszLogLevel = argv[++i];
+			if (0 == _tcsxicmp("debug", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG;
+			}
+			else if (0 == _tcsxicmp("detail", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DETAIL;
+			}
+			else if (0 == _tcsxicmp("info", lpszLogLevel))
+			{
+				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO;
+			}
 		}
     }
 

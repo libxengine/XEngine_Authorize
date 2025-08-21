@@ -1,77 +1,86 @@
 {
-    "nTCPPort":5300,
-    "nWSPort":5301,
-    "nHTTPPort":5302,
-    "bDeamon":false,
-    "bTimeNotify":false,
-    "XMax":{
-        "nMaxClient":10000,
-        "nMaxQueue":10000,
-        "nIOThread":2,
-        "nTCPThread":2,
-        "nWSThread":2,
-        "nHTTPThread":2
+    "nTCPPort": 5300,
+    "nWSPort": 5301,
+    "nHTTPPort": 5302,
+    "bDeamon": false,
+    "bTimeNotify": false,
+    "XMax": {
+        "nMaxClient": 10000,
+        "nMaxQueue": 10000,
+        "nIOThread": 2,
+        "nTCPThread": 2,
+        "nWSThread": 2,
+        "nHTTPThread": 2
     },
-    "XTime":{
-        "nHeartCheck":3,
-        "nTCPTime":5,
-        "nWSTime":5,
-        "nHTTPTime":5
+    "XTime": {
+        "nHeartCheck": 3,
+        "nTCPTime": 5,
+        "nWSTime": 5,
+        "nHTTPTime": 5
     },
-    "XVerification":{
-        "nTokenTimeout":3600,
-        "nDynamicTimeout":30,
-        "nVerTime":5,
-        "nVerMode":2,
-        "nTryTime":30,
-        "nTryMode":1,
-        "st_XCDKey":{
-            "tszKeyFile":"./APPVer.key",
-            "tszKeyPass":"123123qa"
+    "XVerification": {
+        "nTokenTimeout": 3600,
+        "nDynamicTimeout": 30,
+        "nVerTime": 5,
+        "nVerMode": 2,
+        "nTryTime": 30,
+        "nTryMode": 1,
+        "st_XCDKey": {
+            "tszKeyFile": "./APPVer.key",
+            "tszKeyPass": "123123qa"
         },
-        "st_XToken":{
-            "bAutoRenewal":false,
-            "nRenewalTime":-1
-        }   
-    },
-    "XLogin":{
-        "bHTTPAuth":false,
-        "bPassAuth":false,
-        "nMultiMode":0,
-        "st_PassUrl":{
-            "tszPassLogin":"http://127.0.0.1:5303/auth/pass/login",
-            "tszPassLogout":"http://127.0.0.1:5303/auth/pass/logout",
-            "tszPassTimeout":"http://127.0.0.1:5303/auth/pass/timeout"
-        },
-        "st_MulitLogin":{
-            "bSecond":true,
-            "bTime":true,
-            "bDay":true,
-            "bCustom":false
+        "st_XToken": {
+            "bAutoRenewal": false,
+            "nRenewalTime": -1
         }
     },
-    "XCrypto":{
-        "bEnable":false,
-        "nPass":123123
+    "XLogin": {
+        "bHTTPAuth": false,
+        "bPassAuth": false,
+        "nMultiMode": 0,
+        "st_PassUrl": {
+            "tszPassLogin": "http://127.0.0.1:5303/auth/pass/login",
+            "tszPassLogout": "http://127.0.0.1:5303/auth/pass/logout",
+            "tszPassTimeout": "http://127.0.0.1:5303/auth/pass/timeout"
+        },
+        "st_MulitLogin": {
+            "bSecond": true,
+            "bTime": true,
+            "bDay": true,
+            "bCustom": false
+        }
     },
-    "XSql":{
-        "nSQLType":0,
+    "XCrypto": {
+        "bEnable": false,
+        "nPass": 123123
+    },
+    "XApiVer": {
+        "bEnable": false,
+        "tszUser": "xengine",
+        "tszPass": "123123aa",
+        "tszAPIUrl": "",
+        "nVerType": 2
+    },
+    "XSql": {
+        "nSQLType": 0,
         "SQLAddr": "127.0.0.1",
         "SQLPort": 3306,
         "SQLUser": "root",
         "SQLPass": "123123",
-        "SQLFile":"./XEngine_DataBase/SQL_User.db"
+        "SQLFile": "./XEngine_DataBase/SQL_User.db"
     },
-    "XLog":{
-        "tszLogFile":"./XEngine_XLog/XEngine_Authorize.log",
-        "MaxSize":1024000,
-        "MaxCount":10,
-        "LogLeave":32,
-        "nLogType":17
+    "XLog": {
+        "tszLogFile": "./XEngine_XLog/XEngine_Authorize.log",
+        "tszKeyFile": "./XEngine_XLog/Storage/Key.log",
+        "MaxSize": 1024000,
+        "MaxCount": 10,
+        "LogLeave": 32,
+        "nLogType": 17,
+        "bLogStorage": true
     },
-    "XReport":{
-        "bEnable":true,
-        "tszServiceName":"XEngine_Authorize",
-        "tszAPIUrl":"http://app.xyry.org:5501/api?function=machine"
+    "XReport": {
+        "bEnable": true,
+        "tszServiceName": "XEngine_Authorize",
+        "tszAPIUrl": "http://app.xyry.org:5501/api?function=machine"
     }
 }

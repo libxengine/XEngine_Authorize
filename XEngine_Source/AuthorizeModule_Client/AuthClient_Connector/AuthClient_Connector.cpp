@@ -130,17 +130,22 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
   类型：常量字符指针
   可空：N
   意思：输入密码
- 参数.三：nDYCode
+ 参数.三：lpszHWCode
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入硬件码,如果服务器开启了硬件绑定
+ 参数.四：nDYCode
   In/Out：In
   类型：整数型
   可空：Y
   意思：输入动态码
- 参数.四：xhToken
+ 参数.五：xhToken
   In/Out：In
   类型：句柄型
   可空：Y
   意思：输入动态码绑定的句柄
- 参数.五：dwCryption
+ 参数.六：dwCryption
   In/Out：In
   类型：整数型
   可空：Y
@@ -150,7 +155,7 @@ bool CAuthClient_Connector::AuthClient_Connector_GetAuth(bool* pbAuth /* = NULL 
   意思：是否成功
 备注：
 *********************************************************************/
-bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */, XLONG dwCryption /* = 0 */)
+bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, LPCXSTR lpszHWCode /* = NULL */, XSHOT nDYCode /* = 0 */, XNETHANDLE xhToken /* = 0 */, XLONG dwCryption /* = 0 */)
 {
 	AuthClient_IsErrorOccur = false;
 
@@ -163,12 +168,12 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 #if (1 == _XAUTH_BUILD_SWITCH_CLIENT_TCP)
 	XCHAR tszMsgBuffer[2048] = {};
 	XENGINE_PROTOCOLHDR st_ProtocolHdr = {};                   
-	XENGINE_PROTOCOL_USERAUTH st_AuthUser = {};
+	AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthUser = {};
 	//协议头
 	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
 	st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN;
-	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTH);
+	st_ProtocolHdr.unPacketSize = sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
 #ifdef _MSC_BUILD
@@ -179,11 +184,15 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_MACOS;
 #endif
 	_tcsxcpy(st_AuthUser.tszUserName, lpszUser);
-
+	if (NULL != lpszHWCode)
+	{
+		_tcsxcpy(st_AuthUser.tszHWCode, lpszHWCode);
+	}
+	
 	if (dwCryption > 0)
 	{
 		int nPLen = _tcsxlen(lpszPass);
-		XBYTE byMD5Buffer[MAX_PATH] = {};
+		XBYTE byMD5Buffer[XPATH_MAX] = {};
 		Cryption_Api_Digest(lpszPass, byMD5Buffer, &nPLen, false, dwCryption);
 		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, st_AuthUser.tszUserPass);
 	}
@@ -216,7 +225,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), &st_AuthUser, st_ProtocolHdr.unPacketSize);
 
-		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(XENGINE_PROTOCOL_USERAUTH);
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
 	}
 	//发送数据
 	if (!XClient_TCPSelect_SendMsg(m_hSocket, tszMsgBuffer, nMsgLen))
@@ -293,7 +302,7 @@ bool CAuthClient_Connector::AuthClient_Connector_Heart(bool bEnable /* = true */
 //////////////////////////////////////////////////////////////////////////
 //                      保护函数
 //////////////////////////////////////////////////////////////////////////
-XHTHREAD CALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
+XHTHREAD XCALLBACK CAuthClient_Connector::AuthClient_Connector_Thread(XPVOID lParam)
 {
 	CAuthClient_Connector* pClass_This = (CAuthClient_Connector*)lParam;
 

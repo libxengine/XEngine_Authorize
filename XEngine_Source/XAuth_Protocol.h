@@ -51,6 +51,7 @@
 #define ERROR_AUTHORIZE_PROTOCOL_NOTMATCH 0x114                           //数据不匹配
 #define ERROR_AUTHORIZE_PROTOCOL_TIMEOUT 0x115                            //超时
 #define ERROR_AUTHORIZE_PROTOCOL_PERMISSION 0x116                         //用户权限错误
+#define ERROR_AUTHORIZE_PROTOCOL_EXPIRED 0x117                            //已经过期
 
 #define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
 #define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小
@@ -105,7 +106,7 @@ typedef enum
 //////////////////////////////////////////////////////////////////////////
 typedef struct
 {
-	XCHAR tszAddr[MAX_PATH];                                             //服务器或者域名地址
+	XCHAR tszAddr[XPATH_MAX];                                             //服务器或者域名地址
 	int nPort;                                                           //端口号码,如果>0表示CDKEY验证失败后改为网络验证
 	//版本信息
 	struct
@@ -194,9 +195,10 @@ typedef struct tag_AuthReg_SerialTable
 	XCHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //使用者是谁
 	XCHAR tszSerialNumber[128];                                            //序列号
 	XCHAR tszMaxTime[64];                                                  //使用时间
-	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;               //充值卡类型
-	int bIsUsed;                                                         //是否已经使用
+	ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType;                        //充值卡类型
+	int bIsUsed;                                                           //是否已经使用
 	XCHAR tszCreateTime[64];                                               //创建时间
+	XCHAR tszExpiredTime[64];                                              //过期时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表
 typedef struct
@@ -212,7 +214,7 @@ typedef struct
 typedef struct 
 {
 	__int64x nID;                                                         //ID
-	XCHAR tszUserName[MAX_PATH];                                           //用户名
+	XCHAR tszUserName[XPATH_MAX];                                           //用户名
 	XCHAR tszIPAddr[128];                                                  //IP
 	XCHAR tszLeftTime[64];                                                 //过期时间
 	XCHAR tszCreateTime[64];                                               //创建时间
@@ -225,3 +227,7 @@ typedef struct
 	XCHAR tszCreateTime[64];                                               //创建时间
 	__int64x nID;                                                         //ID
 }AUTHREG_ANNOUNCEMENT, * LPAUTHREG_ANNOUNCEMENT;
+//扩展登录协议
+struct AUTHORIZE_PROTOCOL_USERAUTHEX : public XENGINE_PROTOCOL_USERAUTH {
+	XCHAR tszHWCode[64];
+};

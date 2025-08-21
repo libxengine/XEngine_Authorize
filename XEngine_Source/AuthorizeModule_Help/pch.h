@@ -9,6 +9,7 @@
 
 #ifdef _MSC_BUILD
 // 添加要在此处预编译的标头
+#define _CRT_SECURE_NO_WARNINGS
 #include "framework.h"
 #include <tchar.h>
 #include <commctrl.h>
@@ -21,9 +22,15 @@
 #include <unordered_map>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_Types.h>
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Define.h>
+#include <XEngine_Include/XEngine_Core/Cryption_Error.h>
+#include <XEngine_Include/XEngine_Core/ManagePool_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
 #include "../XAuth_BuildSwitch.h"
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
@@ -45,4 +52,6 @@ extern XLONG Help_dwErrorCode;
 #ifdef _MSC_BUILD
 #pragma comment(lib,"Comctl32.lib")
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
+#pragma comment(lib,"XEngine_Core/XEngine_Cryption")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol")
 #endif

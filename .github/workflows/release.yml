@@ -34,6 +34,15 @@ jobs:
           skip_unpack: true
           if_no_artifact_found: fail
           path: ./XRelease/
+      - name: Download fedora build
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: fedora_build.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
       - name: Download RockyLinux build
         uses: dawidd6/action-download-artifact@v6
         with:

@@ -26,10 +26,10 @@ public:
 	bool AuthClient_Connector_Connect(LPCXSTR lpszClientAddr, int nPort, LPCXSTR lpszPass = NULL);
 	bool AuthClient_Connector_Close();
 	bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
-	bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
+	bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, LPCXSTR lpszHWCode = NULL, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
 	bool AuthClient_Connector_Heart(bool bEnable = true);
 protected:
-	static XHTHREAD CALLBACK AuthClient_Connector_Thread(XPVOID lParam);
+	static XHTHREAD XCALLBACK AuthClient_Connector_Thread(XPVOID lParam);
 private:
 	bool m_bRun = false;
 	bool m_bLogin = false;

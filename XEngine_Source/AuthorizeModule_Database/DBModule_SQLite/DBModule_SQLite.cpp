@@ -605,12 +605,17 @@ bool CDBModule_SQLite::DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR 
   类型：常量字符指针
   可空：N
   意思：要插入的序列号
+ 参数.二：lpszExpiredTime
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：过期日期
 返回值
   类型：逻辑型
   意思：是否插入成功
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
+bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -633,26 +638,26 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber)
     }
     if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enAuthSerialType)
     {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType, lpszExpiredTime);
     }
     else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enAuthSerialType)
     {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType, lpszExpiredTime);
     }
     else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enAuthSerialType)
     {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType, lpszExpiredTime);
     }
     else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
     {
-        XCHAR tszLeftTime[MAX_PATH];
-        memset(tszLeftTime, '\0', MAX_PATH);
+        XCHAR tszLeftTime[XPATH_MAX];
+        memset(tszLeftTime, '\0', XPATH_MAX);
         _xstprintf(tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, tszLeftTime, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, tszLeftTime, enAuthSerialType, lpszExpiredTime);
     }
     else
     {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s',0,'%d',0,datetime('now', 'localtime'))"), lpszSerialNumber, enAuthSerialType);
+        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s',0,'%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, enAuthSerialType, lpszExpiredTime);
     }
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
@@ -755,6 +760,12 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
         //超时时间
         nFliedValue++;
         _tcsxcpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
+		//过期时间
+		nFliedValue++;
+		if (NULL != ppszResult[nFliedValue])
+		{
+            _tcsxcpy(pSt_SerialTable->tszExpiredTime, ppszResult[nFliedValue]);
+		}
     }
 
     DataBase_SQLite_FreeTable(ppszResult);
@@ -838,6 +849,12 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
         //创建时间
         _tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
         nFliedValue++;
+		//过期时间
+        if (NULL != ppszResult[nFliedValue])
+        {
+            _tcsxcpy((*pppSt_SerialTable)[i]->tszExpiredTime, ppszResult[nFliedValue]);
+        }
+        nFliedValue++;
     }
     DataBase_SQLite_FreeTable(ppszResult);
     return true;
@@ -868,7 +885,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_Seria
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'%s','%s','%s',%d,%d,'%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {

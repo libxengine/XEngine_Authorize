@@ -106,8 +106,8 @@ void CDialog_Config::OnBnClickedButton1()
 	CString m_StrPass;
 	CString m_StrToken;
 	CString m_StrDCode;
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
@@ -120,7 +120,7 @@ void CDialog_Config::OnBnClickedButton1()
 	if (m_RadioPassEnable.GetCheck() == BST_CHECKED)
 	{
 		int nPLen = m_StrPass.GetLength();
-		XBYTE byMD5Buffer[MAX_PATH] = {};
+		XBYTE byMD5Buffer[XPATH_MAX] = {};
 		Cryption_Api_Digest(W2A(m_StrPass.GetBuffer()), byMD5Buffer, &nPLen, false, m_ComboPassCodec.GetCurSel() + 1);
 		BaseLib_String_StrToHex((LPCXSTR)byMD5Buffer, nPLen, tszMDBuffer);
 	}
@@ -195,8 +195,8 @@ void CDialog_Config::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
@@ -257,8 +257,8 @@ void CDialog_Config::OnBnClickedButton5()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);
@@ -329,8 +329,8 @@ void CDialog_Config::OnBnClickedButton8()
 	// TODO: 在此添加控件通知处理程序代码
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	//组合请求URL
 	m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	m_EditIPPort.GetWindowText(m_StrIPPort);

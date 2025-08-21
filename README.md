@@ -49,6 +49,7 @@ c c++network Authorize service
 17. 支持公告管理
 18. 支持动态验证码登录
 19. 支持多端登录和合并用时
+20. 用户绑定硬件码登录
 
 ## 架构预览
 XEngine_Authorize  
@@ -75,7 +76,7 @@ macos执行:./XEngine_LINEnv.sh -i 3
 由于依赖的子模块,在你checkout仓库后,在仓库目录下执行下面的命令拉取子模块  
 git submodule init  
 git submodule update  
-如果github访问失败,你也可以clone该项目,在主目录下使用命令:git clone https://gitee.com/xengine/XEngine_OPenSource.git XEngine_Source/XEngine_Depend
+如果github访问失败,你也可以clone该项目,在主目录下使用命令:git clone https://gitee.com/xengine/XEngine_OPenSource.git XEngine_Source/XEngine_DependLibrary
 
 #### Windows
 使用VS打开并且编译,支持WINDOWS 7SP1以上系统  
@@ -83,12 +84,10 @@ git submodule update
 XEngine_AuthorizeApp为PC端管理工具
 
 #### Linux
-Linux使用Makefile编译,UBUNTU22.04或者以上系统  
-在控制台运行,使用XEngine_AuthorizeService
+Linux使用Makefile编译,在控制台运行,使用XEngine_AuthorizeService
 
 #### Macos
-使用makefile编译,控制台运行,需要mac 13以及以上版本  
-在控制台运行,使用XEngine_AuthorizeService
+使用makefile编译,在控制台运行,使用XEngine_AuthorizeService
 
 ##### 编译命令
 在XEngine_Source目录下执行命令  
@@ -143,7 +142,7 @@ V3版本为全新版本,为了适应过多环境要求开发
 ## 更新指导
 数据库更新使用Navicat等数据库软件打开判断表和字段不同的地方进行修改  
 修改完毕后直接把数据库拷贝到新的版本进行覆盖,修改你的配置文件即可  
-3.11->3.12用户表增加了新的时间字段,请参考SQL文件
+3.19新增加了序列号过期字段
 
 ## 视频教程
 你也可以观看视频教程来了解我们的代码框架情况:https://www.bilibili.com/video/BV1iF4m177aG

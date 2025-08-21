@@ -219,12 +219,17 @@ extern "C" bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUse
   类型：常量字符指针
   可空：N
   意思：要插入的序列号
+ 参数.二：lpszExpiredTime
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：过期日期
 返回值
   类型：逻辑型
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber);
+extern "C" bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime);
 /********************************************************************
 函数名称：DBModule_SQLite_SerialDelete
 函数功能：从数据库删除指定序列号
@@ -547,7 +552,6 @@ extern "C" bool DBModule_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Ann
 备注：
 *********************************************************************/
 extern "C" bool DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);
-
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -713,12 +717,17 @@ extern "C" bool DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int
   类型：常量字符指针
   可空：N
   意思：要插入的序列号
+ 参数.二：lpszExpiredTime
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：过期日期
 返回值
   类型：逻辑型
   意思：是否插入成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber);
+extern "C" bool DBModule_MySQL_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime);
 /********************************************************************
 函数名称：DBModule_MySQL_SerialDelete
 函数功能：从数据库删除指定序列号

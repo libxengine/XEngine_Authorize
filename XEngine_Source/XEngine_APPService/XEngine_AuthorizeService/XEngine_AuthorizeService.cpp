@@ -48,6 +48,7 @@ void ServiceApp_Stop(int signo)
 		ManagePool_Thread_NQDestroy(xhHttpPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
+		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
@@ -98,7 +99,7 @@ static int ServiceApp_Deamon(int wait)
 LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 {
 	static int i = 0;
-	XCHAR tszFileStr[MAX_PATH] = {};
+	XCHAR tszFileStr[XPATH_MAX] = {};
 	XCHAR tszTimeStr[128] = {};
 	BaseLib_Time_TimeToStr(tszTimeStr);
 	_xstprintf(tszFileStr, _X("./XEngine_Coredump/dumpfile_%s_%d.dmp"), tszTimeStr, i++);
@@ -163,7 +164,16 @@ int main(int argc, char** argv)
 	}
 	HelpComponents_XLog_SetLogPriority(xhLog, st_AuthConfig.st_XLog.nLogLeave);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化日志系统成功,日志文件:%s"), st_AuthConfig.st_XLog.tszLogFile);
+	if (st_AuthConfig.st_XLog.bLogStorage)
+	{
+		HelpComponents_XLog_StrongOPen(xhLog, st_AuthConfig.st_XLog.tszKeyFile, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化关键日志存储功能成功..."));
 
+		HELPCOMPONENTS_XLOG_COLOR st_XLogColor = {};
+		st_XLogColor.wNotice = XENGINE_HELPCOMPONENTS_XLOG_TEXT_RED;
+		HelpComponents_XLog_SetLogColor(xhLog, &st_XLogColor);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化关键日志输出颜色成功..."));
+	}
 	if (st_AuthConfig.bDeamon)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，使用守护进程启动服务..."));
@@ -432,7 +442,7 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
 #endif
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,硬件码绑定:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchHWBind);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)
@@ -476,6 +486,7 @@ XENGINE_EXITAPP:
 		ManagePool_Thread_NQDestroy(xhHttpPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
+		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();

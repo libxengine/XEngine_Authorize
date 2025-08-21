@@ -28,7 +28,7 @@ public:
 	bool AuthHelp_DynamicCode_Create(XNETHANDLE* pxhToken, XSHOT* pInt_DynamicCode);
 	bool AuthHelp_DynamicCode_Get(XNETHANDLE xhToken, int nDynamicCode);
 protected:
-	static XHTHREAD CALLBACK AuthHelp_DynamicCode_Thread(XPVOID lParam);
+	static XHTHREAD XCALLBACK AuthHelp_DynamicCode_Thread(XPVOID lParam);
 private:
 	int m_nSescond = 0;
 	bool m_bRun = false;

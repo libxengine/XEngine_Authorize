@@ -77,17 +77,22 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
   类型：常量字符指针
   可空：N
   意思：输入密码
- 参数.三：nDYCode
+ 参数.三：lpszHWCode
+  In/Out：In
+  类型：常量字符指针
+  可空：Y
+  意思：输入硬件码,如果服务器开启了硬件绑定
+ 参数.四：nDYCode
   In/Out：In
   类型：整数型
   可空：Y
   意思：输入动态码
- 参数.四：xhToken
+ 参数.五：xhToken
   In/Out：In
   类型：句柄型
   可空：Y
   意思：输入动态码绑定的句柄
- 参数.五：dwCryption
+ 参数.六：dwCryption
   In/Out：In
   类型：整数型
   可空：Y
@@ -97,7 +102,7 @@ extern "C" bool AuthClient_Connector_GetAuth(bool* pbAuth = NULL);
   意思：是否成功
 备注：
 *********************************************************************/
-extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
+extern "C" bool AuthClient_Connector_Login(LPCXSTR lpszUser, LPCXSTR lpszPass, LPCXSTR lpszHWCode = NULL, XSHOT nDYCode = 0, XNETHANDLE xhToken = 0, XLONG dwCryption = 0);
 /********************************************************************
 函数名称：AuthClient_Connector_Heart
 函数功能：启用禁用客户端心跳

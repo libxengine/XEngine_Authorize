@@ -1,6 +1,6 @@
 ﻿#include "Authorize_Hdr.h"
 
-XHTHREAD CALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
+XHTHREAD XCALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 {
 	int nPoolIndex = *(int*)lParam;
 	int nThreadPos = nPoolIndex + 1;
@@ -73,12 +73,18 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		XENGINE_PROTOCOL_USERAUTH st_AuthProtocol;
+		AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthProtocol;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTH));
-		memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
-
+		memset(&st_AuthProtocol, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+		if (nMsgLen == sizeof(XENGINE_PROTOCOL_USERAUTH))
+		{
+			memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
+		}
+		else
+		{
+			memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+		}
 		_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
 		_tcsxcpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
 		APIAddr_IPAddr_SegAddr(st_Banned.tszIPAddr);
@@ -182,6 +188,17 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 					XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，密码错误"), lpszClientAddr, st_AuthProtocol.tszUserName);
 					return false;
+				}
+				if (st_FunSwitch.bSwitchHWBind)
+				{
+					if (0 != _tcsxnicmp(st_UserTable.tszHardCode, st_AuthProtocol.tszHWCode, _tcsxlen(st_UserTable.tszHardCode)))
+					{
+						pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_HARDCODE;
+						Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+						XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+						XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，硬件码:%s 错误"), lpszClientAddr, st_AuthProtocol.tszUserName, st_AuthProtocol.tszHWCode);
+						return false;
+					}
 				}
 			}
 			else

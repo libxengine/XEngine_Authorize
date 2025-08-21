@@ -83,8 +83,8 @@ BOOL CDialog_Modify::OnInitDialog()
 		CString m_StrIPAddr;
 		CString m_StrIPPort;
 		CString m_StrToken;
-		XCHAR tszUrlAddr[MAX_PATH];
-		memset(tszUrlAddr, '\0', MAX_PATH);
+		XCHAR tszUrlAddr[XPATH_MAX];
+		memset(tszUrlAddr, '\0', XPATH_MAX);
 		//组合请求URL
 		pConfigWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 		pConfigWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
@@ -225,8 +225,8 @@ void CDialog_Modify::OnBnClickedButton2()
 	CString m_StrToken;
 	CString m_StrBtnModify;
 
-	XCHAR tszUrlAddr[MAX_PATH];
-	memset(tszUrlAddr, '\0', MAX_PATH);
+	XCHAR tszUrlAddr[XPATH_MAX];
+	memset(tszUrlAddr, '\0', XPATH_MAX);
 	m_BtnModify.GetWindowText(m_StrBtnModify);
 	//组合请求URL
 	CDialog_Config* pConfigWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);

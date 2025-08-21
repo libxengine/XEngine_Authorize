@@ -1,6 +1,7 @@
 ﻿#include "pch.h"
 #include "AuthHelp_DynamicCode/AuthHelp_DynamicCode.h"
 #include "AuthHelp_MultiLogin/AuthHelp_MultiLogin.h"
+#include "AuthHelp_APIHelp/AuthHelp_APIHelp.h"
 #ifdef _MSC_BUILD
 #include "AuthHelp_ClipBoard/AuthHelp_ClipBoard.h"
 #include "AuthHelp_Windows/AuthHelp_Windows.h"
@@ -21,6 +22,7 @@ XLONG Help_dwErrorCode = 0;
 //////////////////////////////////////////////////////////////////////////
 CAuthHelp_DynamicCode m_HelpDynamic;
 CAuthHelp_MultiLogin m_HelpLogin;
+CAuthHelp_APIHelp m_APIHelp;
 #ifdef _MSC_BUILD
 CAuthHelp_ClipBoard m_HelpClipBoard;
 CAuthHelp_Windows m_HelpWindow;
