@@ -55,7 +55,7 @@
         "nPass": 123123
     },
     "XApiVer": {
-        "bEnable": true,
+        "bEnable": false,
         "tszUser": "xengine",
         "tszPass": "123123aa",
         "tszAPIUrl": "",
