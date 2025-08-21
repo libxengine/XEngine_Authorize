@@ -49,6 +49,7 @@ feature list:
 17. announecement management
 18. support dynamic verifaction code
 19. support mulit login and merge time
+20. user bind hardware code
 
 ## install
 
@@ -74,12 +75,10 @@ Just Run it,use XEngine_AuthorizeService
 XEngine_AuthorizeApp is pc management tools
 
 #### Linux
-use makefile compile,UBUNTU22.04 or above  
-Run it on the terminal,use XEngine_AuthorizeService
+use makefile compile,Run it on the terminal,use XEngine_AuthorizeService
 
 #### Macos
-use makefile compile,mac 13 and above  
-Run it on the terminal,use XEngine_AuthorizeService
+use makefile compile,Run it on the terminal,use XEngine_AuthorizeService
 
 ##### compile command
 execute command in XEngine_Source path   
@@ -132,7 +131,7 @@ The V3 version is a new version, developed to meet the requirements of many envi
 ## update guide
 Database update Use Navicat and other database software to open the judgment table and the different fields for modification  
 After modification, directly copy the database to the new version to overwrite, and modify your configuration file  
-3.11->3.12 A new time field has been added to the user table, please refer to the SQL file
+new db field for serial table by V3.19
 
 ## Follow us
 If you think this software is helpful to you, please give us a START  
