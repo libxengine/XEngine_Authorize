@@ -89,6 +89,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 		st_HDRParam.nHttpCode = 401;
 		st_HDRParam.bIsClose = true;
+		st_HDRParam.bAuth = true;
 		//打包验证信息
 		int nHDRLen = 0;
 		XCHAR tszHDRBuffer[XPATH_MAX] = {};
@@ -128,6 +129,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XCHAR* ptszMSGBuffer = NULL;
 			if (!APIClient_Http_Request(_X("GET"), st_AuthConfig.st_XApiVer.tszAPIUrl, NULL, &nHTTPCode, &ptszMSGBuffer, &nMSGLen, NULL, NULL, &st_APIHttp))
 			{
+				st_HDRParam.nHttpCode = 500;
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server is down,cant verification");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误码:%lX"), lpszClientAddr, st_AuthConfig.st_XApiVer.tszAPIUrl, APIClient_GetLastError());
@@ -135,6 +137,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			}
 			if (200 != nHTTPCode)
 			{
+				st_HDRParam.nHttpCode = 500;
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server is down,cant verification");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误:%d"), lpszClientAddr, st_AuthConfig.st_XApiVer.tszAPIUrl, nHTTPCode);
@@ -143,6 +146,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			AUTHORIZE_PROTOCOL_USERAUTHEX st_UserAuth = {};
 			if (!Protocol_Parse_HttpParseAuth(ptszMSGBuffer, nMsgLen, &st_UserAuth))
 			{
+				st_HDRParam.nHttpCode = 500;
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "api server reply failure,cant verification");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,返回内容:%s 错误,无法继续"), lpszClientAddr, ptszMSGBuffer);
