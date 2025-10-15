@@ -1,4 +1,4 @@
-name: debian build workflows
+name: alma build workflows
 
 on:
   push:
@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ${{ matrix.runner }}
     container:
-      image: debian:${{ matrix.name }}
+      image: almalinux:${{ matrix.version }}
       options: --platform ${{ matrix.platform }}
     strategy:
       matrix:
@@ -25,14 +25,22 @@ jobs:
             runner: ubuntu-24.04
             platform: linux/amd64
             artifact: x86-64
-            name: bookworm
-            version: 12
+            version: 9
           - arch: amd64
             runner: ubuntu-24.04
             platform: linux/amd64
             artifact: x86-64
-            name: trixie
-            version: 13
+            version: 10
+          - arch: arm64
+            runner: ubuntu-24.04-arm 
+            platform: linux/arm64
+            artifact: Arm64
+            version: 9
+          - arch: arm64
+            runner: ubuntu-24.04-arm 
+            platform: linux/arm64
+            artifact: Arm64
+            version: 10
 
     steps:
       - name: Checkout main repository code
@@ -50,20 +58,20 @@ jobs:
           repository: libxengine/XEngine_OPenSource
           path: XEngine_Source/XEngine_DependLibrary
 
-      - name: install system package
-        run: |
-            apt update -y
-            apt install gcc g++ make git jq unzip curl wget -y
-
       - name: Set TERM variable
         run: echo "TERM=xterm" >> $GITHUB_ENV
-        
+
+      - name: install system package
+        run: |
+            dnf update -y
+            dnf install gcc g++ make git jq unzip wget -y
+
       - name: install xengine library
         run: |
             latest_tag=$(curl -s https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
-            wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_Debian_${{ matrix.version }}_${{ matrix.artifact }}.zip
-            unzip ./XEngine_Debian_${{ matrix.version }}_${{ matrix.artifact }}.zip -d ./XEngine_Debian_${{ matrix.version }}_${{ matrix.artifact }}
-            cd XEngine_Debian_${{ matrix.version }}_${{ matrix.artifact }}
+            wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_RockyLinux_${{ matrix.version }}_${{ matrix.artifact }}.zip
+            unzip ./XEngine_RockyLinux_${{ matrix.version }}_${{ matrix.artifact }}.zip -d ./XEngine_RockyLinux_${{ matrix.version }}_${{ matrix.artifact }}
+            cd XEngine_RockyLinux_${{ matrix.version }}_${{ matrix.artifact }}
             
             chmod 777 *
             ./XEngine_LINEnv.sh -i 3
@@ -71,10 +79,6 @@ jobs:
       - name: make
         run: |
             cd XEngine_Source
-            make
-            make FLAGS=InstallAll
-            make FLAGS=CleanAll
-
             make RELEASE=1
             make FLAGS=InstallAll
             make FLAGS=CleanAll
@@ -87,6 +91,5 @@ jobs:
       - name: Upload folder as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: XEngine_AuthorizeService-Debian_${{ matrix.version }}_x86-64
+          name: XEngine_AuthorizeService-AlmaLinux_${{ matrix.version }}_${{ matrix.artifact }}
           path: XEngine_Release/
-          retention-days: 1
