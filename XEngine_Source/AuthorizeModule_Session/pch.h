@@ -27,7 +27,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
-#include "../XEngine_OPenSource/XEngine_Module/XEngine_Verification/Verification_Define.h"
+#include "../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../XAuth_Protocol.h"
 #include "Session_Define.h"
 #include "Session_Error.h"

@@ -109,7 +109,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		//填充写入数据
-		if (ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == st_UserTable.enSerialType)
+		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{
 			_xstprintf(st_UserTable.tszLeftTime, _X("%d"), st_AuthConfig.st_XVerification.nTryTime);
 			st_UserTable.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nTryMode;
@@ -329,7 +329,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			__int64x nTimeSpan = 0;
 			//根据方式来计算剩余时间
-			if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == st_VERTemp.enVMode)
+			if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == st_VERTemp.enSerialType)
 			{
 				//次数卡需要更新才可以
 				st_VERTemp.nLTime--;
@@ -366,7 +366,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				}
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_VERTemp.tszVSerial, lpszXSerialType[st_VERTemp.enVMode], nTimeSpan);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，类型:%s，临时验证成功，剩余时间:%lld"), lpszClientAddr, st_VERTemp.tszVSerial, lpszXSerialType[st_VERTemp.enSerialType], nTimeSpan);
 			}
 			else
 			{
@@ -379,9 +379,9 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		{
 			//填充写入数据
 			st_VERTemp.nVTime = st_AuthConfig.st_XVerification.nVerTime;
-			st_VERTemp.enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
+			st_VERTemp.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_AuthConfig.st_XVerification.nVerMode;
 			//看下是否启用了此功能,不支持分钟,因为不登录
-			if ((ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == st_VERTemp.enVMode) || (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == st_VERTemp.enVMode) || (st_VERTemp.nVTime <= 0))
+			if ((ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == st_VERTemp.enSerialType) || (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == st_VERTemp.enSerialType) || (st_VERTemp.nVTime <= 0))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function server unavailable");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

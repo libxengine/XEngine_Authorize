@@ -898,7 +898,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
         return false;
     }
     //插入数据库
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_TempVer(tszVSerial,nVMode,nVTime,nLTime,CreateTime) VALUES('%s',%d,%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->nVTime);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_TempVer(tszVSerial,nVMode,nVTime,nLTime,CreateTime) VALUES('%s',%d,%d,%d,datetime('now', 'localtime'))"), pSt_AuthVer->tszVSerial, pSt_AuthVer->enSerialType, pSt_AuthVer->nVTime, pSt_AuthVer->nVTime);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -956,7 +956,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
     //序列号
     nFliedValue++;
     //试用类型
-    pSt_AuthVer->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+    pSt_AuthVer->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
     nFliedValue++;
     //试用时间
     pSt_AuthVer->nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1054,7 +1054,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
         _tcsxcpy(st_AuthVer.tszVSerial, ppszResult[nFliedValue]);
         nFliedValue++;
         //模式
-        st_AuthVer.enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        st_AuthVer.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //测试时间
         st_AuthVer.nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1073,7 +1073,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
     for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
     {
         //判断是不是不关心注册的模式直接清理
-        if (ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == enVMode)
+        if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == enVMode)
         {
             if (nThanValue > stl_ListIterator->nVTime)
             {
@@ -1090,7 +1090,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
         }
         else
         {
-            if (enVMode == stl_ListIterator->enVMode)
+            if (enVMode == stl_ListIterator->enSerialType)
             {
                 memset(tszSQLStatement, '\0', 1024);
                 _xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_TempVer WHERE tszVSerial = '%s'"), stl_ListIterator->tszVSerial);
@@ -1127,7 +1127,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer)
     XCHAR tszSQLStatement[1024];
     memset(tszSQLStatement, '\0', sizeof(tszSQLStatement));
 
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_TempVer SET nVMode = '%d',nVTime = '%d',nLTime = '%d',CreateTime = '%s' WHERE tszVSerial = '%s'"), pSt_AuthVer->enVMode, pSt_AuthVer->nVTime, pSt_AuthVer->nLTime, pSt_AuthVer->tszVDate, pSt_AuthVer->tszVSerial);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_TempVer SET nVMode = '%d',nVTime = '%d',nLTime = '%d',CreateTime = '%s' WHERE tszVSerial = '%s'"), pSt_AuthVer->enSerialType, pSt_AuthVer->nVTime, pSt_AuthVer->nLTime, pSt_AuthVer->tszVDate, pSt_AuthVer->tszVSerial);
     //更新用户表
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -1195,7 +1195,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
         _tcsxcpy((*pppSt_AuthVer)[i]->tszVSerial, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//类型
-        (*pppSt_AuthVer)[i]->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_AuthVer)[i]->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//时间
         (*pppSt_AuthVer)[i]->nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1809,7 +1809,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
     if (en_AuthSerialType != en_AuthUserType)
     {
         //如果不等于,需要重写
-        if (ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW != en_AuthUserType)
+        if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW != en_AuthUserType)
         {
             //判断是否允许改写。
             if (!m_bChange)

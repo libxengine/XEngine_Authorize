@@ -390,7 +390,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 
 	if (!st_JsonProtocol["enVMode"].isNull())
 	{
-		pSt_NETTry->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
+		pSt_NETTry->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
 	}
 	if (!st_JsonProtocol["nID"].isNull())
 	{

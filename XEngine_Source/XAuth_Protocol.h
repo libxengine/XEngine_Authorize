@@ -116,13 +116,13 @@ typedef struct
 	__int64x nID;                                                        //ID
 	int nVTime;                                                          //试用时间
 	int nLTime;                                                          //剩余时间
-	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enVMode;                   //验证方式
+	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;                   //验证方式
 }AUTHREG_TEMPVER;
 //禁止列表
 typedef struct 
 {
 	__int64x nID;                                                         //ID
-	XCHAR tszUserName[XPATH_MAX];                                           //用户名
+	XCHAR tszUserName[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];          //用户名
 	XCHAR tszIPAddr[128];                                                  //IP
 	XCHAR tszLeftTime[64];                                                 //过期时间
 	XCHAR tszCreateTime[64];                                               //创建时间

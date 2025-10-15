@@ -320,7 +320,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//分析充值类型
-		if ((ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
+		if ((ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
 			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_TIMELEFT;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
