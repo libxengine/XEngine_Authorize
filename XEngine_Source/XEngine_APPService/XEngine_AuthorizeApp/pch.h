@@ -24,14 +24,13 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/Cryption_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
-#include "../../XAuth_BuildSwitch.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
-#include "../../AuthorizeModule_CDKey/CDKey_Define.h"
-#include "../../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "Authorize_Dialog/Dialog_Config.h"
 #include "Authorize_Dialog/Dialog_User.h"
 #include "Authorize_Dialog/Dialog_Serial.h"
@@ -57,30 +56,30 @@ extern LPCTSTR lpszStuType[2];
 #ifdef _DEBUG
 #ifdef _M_X64
 #pragma comment(lib,"../../x64/Debug/jsoncpp")
+#pragma comment(lib,"../../x64/Debug/XEngine_Verification")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help")
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Debug/jsoncpp")
+#pragma comment(lib,"../../ARM64/Debug/XEngine_Verification")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Help")
-#pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_CDKey")
 #elif _M_IX86
 #pragma comment(lib,"../../Debug/jsoncpp")
+#pragma comment(lib,"../../Debug/XEngine_Verification")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help")
-#pragma comment(lib,"../../Debug/AuthorizeModule_CDKey")
 #endif
 #else
 #ifdef _M_X64
 #pragma comment(lib,"../../x64/Release/jsoncpp")
+#pragma comment(lib,"../../x64/Release/XEngine_Verification")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help")
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Release/jsoncpp")
+#pragma comment(lib,"../../ARM64/Release/XEngine_Verification")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Help")
-#pragma comment(lib,"../../ARM64/Release/AuthorizeModule_CDKey")
 #elif _M_IX86
 #pragma comment(lib,"../../Release/jsoncpp")
+#pragma comment(lib,"../../Release/XEngine_Verification")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help")
-#pragma comment(lib,"../../Release/AuthorizeModule_CDKey")
 #endif
 #endif
 #endif

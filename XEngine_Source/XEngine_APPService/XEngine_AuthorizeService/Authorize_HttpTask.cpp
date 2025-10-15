@@ -143,7 +143,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,用户验证失败,GET请求验证服务:%s 失败,错误:%d"), lpszClientAddr, st_AuthConfig.st_XApiVer.tszAPIUrl, nHTTPCode);
 				return false;
 			}
-			AUTHORIZE_PROTOCOL_USERAUTHEX st_UserAuth = {};
+			XENGINE_PROTOCOL_USERAUTHEX st_UserAuth = {};
 			if (!Protocol_Parse_HttpParseAuth(ptszMSGBuffer, nMsgLen, &st_UserAuth))
 			{
 				st_HDRParam.nHttpCode = 500;

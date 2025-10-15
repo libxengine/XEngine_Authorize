@@ -214,7 +214,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	m_EditLeftTime.GetWindowText(m_StrUserInfo);
 	strcpy(st_UserTable.tszLeftTime, W2A(m_StrUserInfo.GetBuffer()));
 
-	st_UserTable.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)m_ComboSerial.GetCurSel();
+	st_UserTable.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)m_ComboSerial.GetCurSel();
 	st_UserTable.st_UserInfo.nUserLevel = m_ComboLeave.GetCurSel() - 1;
 
 	Json::Value st_JsonRoot;

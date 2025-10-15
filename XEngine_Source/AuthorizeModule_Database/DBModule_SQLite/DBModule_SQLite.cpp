@@ -212,7 +212,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
         _tcsxcpy(pSt_UserInfo->tszHardCode, ppszResult[nFliedValue]);
         //充值卡类型
         nFliedValue++;
-        pSt_UserInfo->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        pSt_UserInfo->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         //QQ号
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nPhoneNumber = _ttxoll(ppszResult[nFliedValue]);
@@ -292,25 +292,25 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
     //分析插入方式
     switch (st_SerialTable.enSerialType)
     {
-    case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
+    case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND:
         if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
-    case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
+    case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY:
         if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
-    case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
+    case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME:
         if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
         }
         break;
-    case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
+    case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM:
         if (!DBModule_SQLite_UserPayTime(lpszUserName, st_UserTable.tszLeftTime, st_SerialTable.tszMaxTime, st_SerialTable.enSerialType, st_UserTable.enSerialType))
         {
             return false;
@@ -350,7 +350,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
+    if ((ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == pSt_TimeProtocol->enSerialType) || (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM == pSt_TimeProtocol->enSerialType))
     {
         //天数卡只有剩余时间没有的时候才需要做处理
         if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -358,7 +358,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '0' WHERE UserName = '%s'"), pSt_TimeProtocol->tszUserName);
         }
     }
-    if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == pSt_TimeProtocol->enSerialType)
+    if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == pSt_TimeProtocol->enSerialType)
     {
         //分钟卡必须要有在线时间才能计算
         if (pSt_TimeProtocol->nTimeLeft <= 0)
@@ -367,7 +367,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
         }
         _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%lld' WHERE UserName = '%s'"), pSt_TimeProtocol->nTimeLeft, pSt_TimeProtocol->tszUserName);
     }
-    else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
+    else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == pSt_TimeProtocol->enSerialType)
     {
         //次数卡不需要在线时间,直接减去一次就可以了
         _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%lld' WHERE UserName = '%s'"), _ttxoll(pSt_TimeProtocol->tszLeftTime), pSt_TimeProtocol->tszUserName);
@@ -491,7 +491,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
         _tcsxcpy((*pppSt_UserInfo)[i]->tszHardCode, ppszResult[nFliedValue]);
         //充值卡类型
         nFliedValue++;
-        (*pppSt_UserInfo)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_UserInfo)[i]->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         //QQ号
         nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nPhoneNumber = _ttxoll(ppszResult[nFliedValue]);
@@ -600,65 +600,30 @@ bool CDBModule_SQLite::DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR 
 /********************************************************************
 函数名称：DBModule_SQLite_SerialInsert
 函数功能：插入一个序列号到数据库
- 参数.一：lpszSerialNumber
+ 参数.一：pSt_SerialTable
   In/Out：In
-  类型：常量字符指针
+  类型：数据结构指针
   可空：N
   意思：要插入的序列号
- 参数.二：lpszExpiredTime
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：过期日期
 返回值
   类型：逻辑型
   意思：是否插入成功
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime)
+bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(AUTHREG_SERIALTABLE *pSt_SerialTable)
 {
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    if (DBModule_SQLite_SerialQuery(lpszSerialNumber))
+    if (DBModule_SQLite_SerialQuery(pSt_SerialTable->tszSerialNumber))
     {
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enAuthSerialType;
-    XENGINE_LIBTIME st_AuthTimer;
-    memset(&st_AuthTimer, '\0', sizeof(st_AuthTimer));
-
-    if (!Authorize_Serial_GetType(lpszSerialNumber, &enAuthSerialType, &st_AuthTimer))
-    {
-        return false;
-    }
-    if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enAuthSerialType)
-    {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wSecond, enAuthSerialType, lpszExpiredTime);
-    }
-    else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enAuthSerialType)
-    {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wDay, enAuthSerialType, lpszExpiredTime);
-    }
-    else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enAuthSerialType)
-    {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%d','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, st_AuthTimer.wFlags, enAuthSerialType, lpszExpiredTime);
-    }
-    else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enAuthSerialType)
-    {
-        XCHAR tszLeftTime[XPATH_MAX];
-        memset(tszLeftTime, '\0', XPATH_MAX);
-        _xstprintf(tszLeftTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTimer.wYear, st_AuthTimer.wMonth, st_AuthTimer.wDay, st_AuthTimer.wHour, st_AuthTimer.wMinute, st_AuthTimer.wSecond);
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, tszLeftTime, enAuthSerialType, lpszExpiredTime);
-    }
-    else
-    {
-        _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s',0,'%d',0,datetime('now', 'localtime'),'%s')"), lpszSerialNumber, enAuthSerialType, lpszExpiredTime);
-    }
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s','%d',0,datetime('now', 'localtime'),'%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->tszExpiredTime);
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -753,7 +718,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
         _tcsxcpy(pSt_SerialTable->tszMaxTime, ppszResult[nFliedValue]);
         //序列卡类型
         nFliedValue++;
-        pSt_SerialTable->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        pSt_SerialTable->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
@@ -841,7 +806,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
         _tcsxcpy((*pppSt_SerialTable)[i]->tszMaxTime, ppszResult[nFliedValue]);
         nFliedValue++;
         //序列卡类型
-        (*pppSt_SerialTable)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_SerialTable)[i]->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //是否已经使用
         (*pppSt_SerialTable)[i]->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
@@ -991,7 +956,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
     //序列号
     nFliedValue++;
     //试用类型
-    pSt_AuthVer->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+    pSt_AuthVer->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
     nFliedValue++;
     //试用时间
     pSt_AuthVer->nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1058,7 +1023,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryDelete(LPCXSTR lpszSerial)
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVMode /* = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW */)
+bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATION_MODULE_SERIAL_TYPE enVMode /* = ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW */)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1089,7 +1054,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_AUTHORIZE_M
         _tcsxcpy(st_AuthVer.tszVSerial, ppszResult[nFliedValue]);
         nFliedValue++;
         //模式
-        st_AuthVer.enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        st_AuthVer.enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
         nFliedValue++;
         //测试时间
         st_AuthVer.nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1108,7 +1073,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_AUTHORIZE_M
     for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
     {
         //判断是不是不关心注册的模式直接清理
-        if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == enVMode)
+        if (ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == enVMode)
         {
             if (nThanValue > stl_ListIterator->nVTime)
             {
@@ -1230,7 +1195,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
         _tcsxcpy((*pppSt_AuthVer)[i]->tszVSerial, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//类型
-        (*pppSt_AuthVer)[i]->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
+        (*pppSt_AuthVer)[i]->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)_ttxoi(ppszResult[nFliedValue]);
 		nFliedValue++;
 		//时间
         (*pppSt_AuthVer)[i]->nVTime = _ttxoi(ppszResult[nFliedValue]);
@@ -1834,7 +1799,7 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthUserType)
+bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType)
 {
     SQLPacket_IsErrorOccur = false;
 
@@ -1844,7 +1809,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
     if (en_AuthSerialType != en_AuthUserType)
     {
         //如果不等于,需要重写
-        if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW != en_AuthUserType)
+        if (ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW != en_AuthUserType)
         {
             //判断是否允许改写。
             if (!m_bChange)
@@ -1867,41 +1832,30 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
         //处理卡类型
         switch (en_AuthSerialType)
         {
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND:
         {
             //如果是分钟卡
             //如果当前的充值卡类型不匹配，那么他以前的充值内容全部都会被删除！
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY:
         {
             //如果是天数卡
             //更新用户表的过期时间
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);      //更新用户表的过期时间
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME:
         {
             //如果是次数卡
             //更新用户表的过期时间
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), _ttxoi(lpszCardTime), lpszUserName);
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM:
         {
-            XCHAR tszTime[128];
-            XENGINE_LIBTIME st_AuthTime;
-            ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
-
-            memset(tszTime, '\0', sizeof(tszTime));
-            memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIME));
-            //获取重置卡类型和时间
-            if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
-            {
-                return false;
-            }
-            _xstprintf(tszTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTime.wYear, st_AuthTime.wMonth, st_AuthTime.wDay, st_AuthTime.wHour, st_AuthTime.wMinute, st_AuthTime.wSecond);
+            XCHAR tszTime[128] = {};
             //更新用户表的过期时间
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTime, lpszUserName);
         }
@@ -1914,14 +1868,14 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
     {
         switch (en_AuthSerialType)
         {
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND:
         {
             int nCardTime = _ttxoi(lpszCardTime);
             nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY:
         {
 			int nCardTime = _ttxoi(lpszCardTime);
 			nCardTime += _ttxoi(lpszUserTime);              //我们把用户以前的时间也加上
@@ -1929,7 +1883,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME:
         {
             //如果是次数卡
             int nCardTime = _ttxoi(lpszCardTime);
@@ -1937,21 +1891,10 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%d' WHERE UserName = '%s'"), nCardTime, lpszUserName);                    //更新用户表的过期时间
         }
         break;
-        case ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM:
+        case ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM:
         {
             //自定义卡,无法相加
-            XCHAR tszTime[128];
-            XENGINE_LIBTIME st_AuthTime;
-            ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_GeneraterSerialType;
-
-            memset(tszTime, '\0', sizeof(tszTime));
-            memset(&st_AuthTime, '\0', sizeof(XENGINE_LIBTIME));
-            //获取重置卡类型和时间
-            if (!Authorize_Serial_GetType(lpszCardTime, &en_GeneraterSerialType, &st_AuthTime))
-            {
-                return false;
-            }
-            _xstprintf(tszTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), st_AuthTime.wYear, st_AuthTime.wMonth, st_AuthTime.wDay, st_AuthTime.wHour, st_AuthTime.wMinute, st_AuthTime.wSecond);
+            XCHAR tszTime[128] = {};
             //更新用户表的过期时间
             _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET LeftTime = '%s' WHERE UserName = '%s'"), tszTime, lpszUserName);
         }

@@ -73,17 +73,17 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == pSt_ProtocolHdr->unOperatorCode)
 	{
 		AUTHREG_USERTABLE st_UserTable;
-		AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthProtocol;
+		XENGINE_PROTOCOL_USERAUTHEX st_AuthProtocol;
 
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_AuthProtocol, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+		memset(&st_AuthProtocol, '\0', sizeof(XENGINE_PROTOCOL_USERAUTHEX));
 		if (nMsgLen == sizeof(XENGINE_PROTOCOL_USERAUTH))
 		{
 			memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTH));
 		}
 		else
 		{
-			memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+			memcpy(&st_AuthProtocol, lpszMsgBuffer, sizeof(XENGINE_PROTOCOL_USERAUTHEX));
 		}
 		_tcsxcpy(st_Banned.tszIPAddr, lpszClientAddr);
 		_tcsxcpy(st_Banned.tszUserName, st_AuthProtocol.tszUserName);
@@ -277,28 +277,28 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		//对多端登录的类型进行验证
 		if (bLogin && st_FunSwitch.bSwitchMulti)
 		{
-			if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
+			if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == st_UserTable.enSerialType)
 			{
 				if (st_AuthConfig.st_XLogin.st_MulitLogin.bSecond)
 				{
 					bLogin = false;
 				}
 			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+			else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 			{
 				if (st_AuthConfig.st_XLogin.st_MulitLogin.bTime)
 				{
 					bLogin = false;
 				}
 			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+			else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 			{
 				if (st_AuthConfig.st_XLogin.st_MulitLogin.bDay)
 				{
 					bLogin = false;
 				}
 			}
-			else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
+			else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM == st_UserTable.enSerialType)
 			{
 				if (st_AuthConfig.st_XLogin.st_MulitLogin.bCustom)
 				{
@@ -320,7 +320,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//分析充值类型
-		if ((ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
+		if ((ENUM_VERIFICATION_MODULE_CDKEY_TYPE_UNKNOW == st_UserTable.enSerialType) || ('0' == st_UserTable.tszLeftTime[0]))
 		{
 			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_TIMELEFT;
 			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -329,7 +329,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			return false;
 		}
 		//如果是次数卡,需要优先处理
-		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
+		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == st_UserTable.enSerialType)
 		{
 			__int64x nTime = _ttxoll(st_UserTable.tszLeftTime) - 1;
 			_xstprintf(st_UserTable.tszLeftTime, _X("%lld"), nTime);
@@ -344,7 +344,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 			}
 			
 		}
-		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
+		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
 			bool bSuccess = false;
 			XCHAR tszIPAddr[128] = {};

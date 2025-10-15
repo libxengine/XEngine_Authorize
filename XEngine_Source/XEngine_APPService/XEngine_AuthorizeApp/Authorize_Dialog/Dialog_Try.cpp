@@ -328,7 +328,7 @@ void CDialog_Try::OnBnClickedButton3()
 	m_EditDate.GetWindowText(m_StrDate);
 
 	st_JsonObject["nID"] = _ttoi64(m_StrID.GetBuffer());
-	st_JsonObject["enVMode"] = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)m_ComboType.GetCurSel();
+	st_JsonObject["enVMode"] = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)m_ComboType.GetCurSel();
 	st_JsonObject["nVTime"] = _ttoi(m_StrTime.GetBuffer());
 	st_JsonObject["nLTime"] = _ttoi(m_StrLeft.GetBuffer());
 	st_JsonObject["tszVSerial"] = W2A(m_StrSerail.GetBuffer());

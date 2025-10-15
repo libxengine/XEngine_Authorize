@@ -52,23 +52,23 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XCHAR tszHasTime[128] = {};
 		XCHAR tszExpiredTime[128] = {};
 		XENGINE_LIBTIME st_AuthTimer = {};
-		ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enSerialType = {};
+		ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType = {};
 
 		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime, tszExpiredTime);
 		//解析类型
-		if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_SECOND == enSerialType)
+		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == enSerialType)
 		{
 			st_AuthTimer.wSecond = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_DAY == enSerialType)
+		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == enSerialType)
 		{
 			st_AuthTimer.wDay = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_TIME == enSerialType)
+		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == enSerialType)
 		{
 			st_AuthTimer.wFlags = _ttxoi(tszHasTime);
 		}
-		else if (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_CUSTOM == enSerialType)
+		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM == enSerialType)
 		{
 			if (6 != _stxscanf(tszHasTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
 			{
@@ -88,28 +88,6 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		//生成卡
 		XCHAR** pptszSerialNumber;
 		LPCXSTR lpszUserHdr = _X("XAUTH");
-		if (!Authorize_Serial_Creator(&pptszSerialNumber, lpszUserHdr, nSerialCount, nNumberCount, &st_AuthTimer, enSerialType))
-		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Internal Server Error");
-			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,创建序列卡失败,错误码:%lX"), lpszClientAddr, Authorize_GetLastError());
-			return false;
-		}
-		//导入序列卡
-		if (0 == st_AuthConfig.st_XSql.nDBType) 
-		{
-			for (int i = 0; i < nSerialCount; i++) //导入序列卡
-			{
-				DBModule_SQLite_SerialInsert(pptszSerialNumber[i], tszExpiredTime);
-			}
-		}
-		else 
-		{
-			for (int i = 0; i < nSerialCount; i++) 
-			{
-				DBModule_MySQL_SerialInsert(pptszSerialNumber[i], tszExpiredTime);
-			}
-		}
 		BaseLib_Memory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);
 		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

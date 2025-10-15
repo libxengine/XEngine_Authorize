@@ -154,7 +154,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
+bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -390,7 +390,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 
 	if (!st_JsonProtocol["enVMode"].isNull())
 	{
-		pSt_NETTry->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
+		pSt_NETTry->enVMode = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
 	}
 	if (!st_JsonProtocol["nID"].isNull())
 	{
@@ -463,7 +463,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
 
 	if (!st_UserTable["enSerialType"].isNull())
 	{
-		pSt_UserTable->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
+		pSt_UserTable->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
 	}
 	if (!st_UserTable["enDeviceType"].isNull())
 	{
@@ -576,7 +576,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		}
 		if (!st_JsonArray[i]["enSerialType"].isNull())
 		{
-			(*pppSt_SerialTable)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonArray[i]["enSerialType"].asInt();
+			(*pppSt_SerialTable)[i]->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonArray[i]["enSerialType"].asInt();
 		}
 		if (!st_JsonArray[i]["tszCreateTime"].isNull())
 		{
@@ -644,7 +644,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime, XCHAR* ptszExpiredTime)
+bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_VERIFICATION_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime, XCHAR* ptszExpiredTime)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -667,7 +667,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int
 	}
 	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];
 
-	*penSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonObject["enSerialType"].asInt();
+	*penSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonObject["enSerialType"].asInt();
 	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
 	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
 	_tcsxcpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
@@ -774,7 +774,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nM
 
 	if (!st_JsonProtocol["enSerialType"].isNull())
 	{
-		pSt_ProtocolTime->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonProtocol["enSerialType"].asInt();
+		pSt_ProtocolTime->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enSerialType"].asInt();
 	}
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
@@ -1078,7 +1078,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
+bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, VERIFICATION_XAUTHKEY* pSt_Authorize)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -1158,19 +1158,19 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int n
 	}
 	if (!st_JsonREGInfo["enSerialType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
 	}
 	if (!st_JsonREGInfo["enRegType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_VERIFICATION_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
 	}
 	if (!st_JsonREGInfo["enHWType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_VERIFICATION_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
 	}
 	if (!st_JsonREGInfo["enVModeType"].isNull())
 	{
-		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
+		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_VERIFICATION_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
 	}
 	//临时序列号
 	Json::Value st_JsonSerialInfo = st_JsonRoot["st_AuthSerial"];

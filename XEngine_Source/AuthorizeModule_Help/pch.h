@@ -31,7 +31,6 @@ using namespace std;
 #include <XEngine_Include/XEngine_Core/ManagePool_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
-#include "../XAuth_BuildSwitch.h"
 #include "AuthHelp_Define.h"
 #include "AuthHelp_Error.h"
 /********************************************************************
