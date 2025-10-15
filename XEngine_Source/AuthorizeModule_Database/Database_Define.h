@@ -288,20 +288,6 @@ extern "C" bool DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber,LPAUTHREG_S
 *********************************************************************/
 extern "C" bool DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);
 /********************************************************************
-函数名称：DBModule_SQLite_SerialPush
-函数功能：插入一条指定的序列号信息到服务器
- 参数.一：pSt_SerialTable
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要插入的信息
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-extern "C" bool DBModule_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
-/********************************************************************
 函数名称：DBModule_SQLite_TryInsert
 函数功能：网络使用模式插入一条数据
  参数.一：pSt_AuthVer
@@ -780,20 +766,6 @@ extern "C" bool DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_S
 备注：参数一需要调用基础库的释放内存函数进行内存释放
 *********************************************************************/
 extern "C" bool DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);
-/********************************************************************
-函数名称：DBModule_MySQL_SerialPush
-函数功能：插入一条指定的序列号信息到服务器
- 参数.一：pSt_SerialTable
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要插入的信息
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-extern "C" bool DBModule_MySQL_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
 /********************************************************************
 函数名称：DBModule_MySQL_TryInsert
 函数功能：网络使用模式插入一条数据

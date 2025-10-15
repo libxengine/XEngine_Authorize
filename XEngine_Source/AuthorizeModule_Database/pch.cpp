@@ -91,10 +91,6 @@ extern "C" bool DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE * **pppSt_Ser
 {
 	return m_DBSQLite.DBModule_SQLite_SerialQueryAll(pppSt_SerialTable, pInt_ListCount, nPosStart, nPosEnd);
 }
-extern "C" bool DBModule_SQLite_SerialPush(AUTHREG_SERIALTABLE * pSt_SerialTable)
-{
-	return m_DBSQLite.DBModule_SQLite_SerialPush(pSt_SerialTable);
-}
 extern "C" bool DBModule_SQLite_TryInsert(AUTHREG_TEMPVER * pSt_AuthVer)
 {
 	return m_DBSQLite.DBModule_SQLite_TryInsert(pSt_AuthVer);
@@ -205,10 +201,6 @@ extern "C" bool DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_S
 extern "C" bool DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd)
 {
 	return m_DBMySQL.DBModule_MySQL_SerialQueryAll(pppSt_SerialTable, pInt_ListCount, nPosStart, nPosEnd);
-}
-extern "C" bool DBModule_MySQL_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
-{
-	return m_DBMySQL.DBModule_MySQL_SerialPush(pSt_SerialTable);
 }
 extern "C" bool DBModule_MySQL_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer)
 {

@@ -672,7 +672,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(AUTHREG_SERIALTABLE* pSt_Seria
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return false;
 	}
-	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s','%d',0,NOW(),'%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->tszExpiredTime);
+	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
@@ -882,42 +882,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		nFliedValue++;
 	}
 	DataBase_MySQL_FreeResult(xhData, xhTable);
-	return true;
-}
-/********************************************************************
-函数名称：DBModule_MySQL_SerialPush
-函数功能：插入一条指定的序列号信息到服务器
- 参数.一：pSt_SerialTable
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：输入要插入的信息
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable)
-{
-	SQLPacket_IsErrorOccur = false;
-
-	XCHAR tszSQLStatement[1024];    //SQL语句
-	memset(tszSQLStatement, '\0', 1024);
-
-	if (DBModule_MySQL_SerialQuery(pSt_SerialTable->tszSerialNumber))
-	{
-		SQLPacket_IsErrorOccur = true;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
-		return false;
-	}
-	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
-
-	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
-	{
-		SQLPacket_IsErrorOccur = true;
-		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
-		return false;
-	}
 	return true;
 }
 /********************************************************************

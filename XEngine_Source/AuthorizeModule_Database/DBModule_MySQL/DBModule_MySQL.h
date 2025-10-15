@@ -37,7 +37,6 @@ public:
     bool DBModule_MySQL_SerialDelete(LPCXSTR lpszSerialNumber);                                     //删除一个序列号
     bool DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                      //按照卡号或者用户查询
     bool DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount, int nPosStart, int nPosEnd);//查询所有序列卡
-    bool DBModule_MySQL_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);//插入一条指定的序列号信息到服务器
 public:
     bool DBModule_MySQL_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);        //网络使用模式插入一条数据
     bool DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);         //试用序列号查询函数

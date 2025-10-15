@@ -6,7 +6,6 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	LPCXSTR lpszAPIList = _X("list");
 	LPCXSTR lpszAPIInsert = _X("insert");
 	LPCXSTR lpszAPIDelete = _X("delete");
-	LPCXSTR lpszAPIPush = _X("push");
 
 	CHttpMemory_PoolEx m_MemoryPool(XENGINE_MEMORY_SIZE_MAX);
 	if (0 == _tcsxnicmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
@@ -45,54 +44,6 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		ptszMsgBuffer = NULL;
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求序列号列表成功,个数:%d"), lpszClientAddr, nListCount);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
-	{
-		int nNumberCount = 0;
-		int nSerialCount = 0;
-		XCHAR tszHasTime[128] = {};
-		XCHAR tszExpiredTime[128] = {};
-		XENGINE_LIBTIME st_AuthTimer = {};
-		ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType = {};
-
-		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, &enSerialType, &nNumberCount, &nSerialCount, tszHasTime, tszExpiredTime);
-		//解析类型
-		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_SECOND == enSerialType)
-		{
-			st_AuthTimer.wSecond = _ttxoi(tszHasTime);
-		}
-		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == enSerialType)
-		{
-			st_AuthTimer.wDay = _ttxoi(tszHasTime);
-		}
-		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_TIME == enSerialType)
-		{
-			st_AuthTimer.wFlags = _ttxoi(tszHasTime);
-		}
-		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_CUSTOM == enSerialType)
-		{
-			if (6 != _stxscanf(tszHasTime, _X("%04d-%02d-%02d %02d:%02d:%02d"), &st_AuthTimer.wYear, &st_AuthTimer.wMonth, &st_AuthTimer.wDay, &st_AuthTimer.wHour, &st_AuthTimer.wMinute, &st_AuthTimer.wSecond))
-			{
-				Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "time request is failed");
-				XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求插入序列卡失败,时间格式错误"), lpszClientAddr);
-				return false;
-			}
-		}
-		else
-		{
-			Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTSUPPORT, "not support serial types");
-			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求插入序列卡失败,不支持的类型格式:%d"), lpszClientAddr, enSerialType);
-			return false;
-		}
-		//生成卡
-		XCHAR** pptszSerialNumber;
-		LPCXSTR lpszUserHdr = _X("XAUTH");
-		BaseLib_Memory_Free((XPPPMEM)&pptszSerialNumber, nSerialCount);
-		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
-		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求插入序列号成功,个数:%d"), lpszClientAddr, nSerialCount);
-	}
 	else if (0 == _tcsxnicmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
 	{
 		int nListCount = 0;
@@ -118,7 +69,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除序列号成功,删除个数:%d"), lpszClientAddr, nListCount);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIPush, lpszAPIName, _tcsxlen(lpszAPIPush)))
+	else if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		int nListCount = 0;
 		AUTHREG_SERIALTABLE** ppSt_SerialTable;
@@ -128,20 +79,20 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		{
 			for (int i = 0; i < nListCount; i++)
 			{
-				DBModule_SQLite_SerialPush(ppSt_SerialTable[i]);
+				DBModule_SQLite_SerialInsert(ppSt_SerialTable[i]);
 			}
 		}
 		else 
 		{
 			for (int i = 0; i < nListCount; i++)
 			{
-				DBModule_MySQL_SerialPush(ppSt_SerialTable[i]);
+				DBModule_SQLite_SerialInsert(ppSt_SerialTable[i]);
 			}
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求推送自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求插入自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);
 	}
 	return true;
 }

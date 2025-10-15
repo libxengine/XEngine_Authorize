@@ -186,6 +186,11 @@ void CDialog_Serial::OnBnClickedButton1()
 void CDialog_Serial::OnBnClickedButton2()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	if (m_ComboSerialType.GetCurSel() == ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW)
+	{
+		AfxMessageBox(_T("没有选择序列卡类型"));
+		return;
+	}
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
@@ -202,20 +207,32 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrNumberCount;
 	CString m_StrExpiredTime;
 	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
 	Json::Value st_JsonObject;
 
 	m_EditExpiredTime.GetWindowText(m_StrExpiredTime);
 	m_EditHasTime.GetWindowText(m_StrHasTime);
 	m_EditSerialCount.GetWindowText(m_StrSerialCount);
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
-
 	USES_CONVERSION;
-	st_JsonObject["enSerialType"] = m_ComboSerialType.GetCurSel();
-	st_JsonObject["nNumberCount"] = _ttoi(m_StrNumberCount.GetBuffer());
-	st_JsonObject["nSerialCount"] = _ttoi(m_StrSerialCount.GetBuffer());
-	st_JsonObject["tszHasTime"] = W2A(m_StrHasTime.GetBuffer());
-	st_JsonObject["tszExpiredTime"] = W2A(m_StrExpiredTime.GetBuffer());
-	st_JsonRoot["st_SerialInfo"] = st_JsonObject;
+	XCHAR tszTimeStr[XPATH_MIN] = {};
+	BaseLib_Time_TimeToStr(tszTimeStr);
+	for (int i = 0; i < _ttoi(m_StrSerialCount.GetBuffer()); i++)
+	{
+		Json::Value st_JsonObject;
+		XCHAR tszSerialStr[XPATH_MIN] = {};
+		Verification_XAuthKey_KeySerial(tszSerialStr, _ttoi(m_StrNumberCount.GetBuffer()), 0);
+
+		st_JsonObject["bIsUsed"] = false;
+		st_JsonObject["enSerialType"] = m_ComboSerialType.GetCurSel();
+		st_JsonObject["tszCreateTime"] = tszTimeStr;
+		st_JsonObject["tszExpiredTime"] = W2A(m_StrExpiredTime.GetBuffer());
+		st_JsonObject["tszMaxTime"] = W2A(m_StrHasTime.GetBuffer());
+		st_JsonObject["tszSerialNumber"] = tszSerialStr;
+		st_JsonObject["tszUserName"] = "NOT";
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["Array"] = st_JsonArray;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());
 
 	int nMsgLen = 0;
@@ -475,7 +492,7 @@ void CDialog_Serial::OnBnClickedButton6()
 	int nMsgLen = 0;
 	XCHAR* ptszMsgBuffer = NULL;
 	USES_CONVERSION;
-	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/push"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
+	_xstprintf(tszUrlAddr, _X("http://%s:%s/auth/serial/insert"), W2A(m_StrIPAddr.GetBuffer()), W2A(m_StrIPPort.GetBuffer()));
 	//是否加密
 	TCHAR tszPassBuffer[64];
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
