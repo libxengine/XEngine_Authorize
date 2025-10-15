@@ -124,14 +124,17 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 
 	USES_CONVERSION;
 	XCHAR tszSerialStr[XPATH_MIN] = {};
-	Verification_XAuthKey_KeySerial(tszSerialStr, 9, 0);
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
 	m_EditSerialTimeNumber.SetWindowText(A2W(tszSerialStr));
-	Verification_XAuthKey_KeySerial(tszSerialStr, 9, 0);
+
 	memset(tszSerialStr, 0, XPATH_MIN);
-	m_EditSerialTimeNumber.SetWindowText(A2W(tszSerialStr));
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+	m_EditSerialDataNumber.SetWindowText(A2W(tszSerialStr));
+
 	memset(tszSerialStr, 0, XPATH_MIN);
-	Verification_XAuthKey_KeySerial(tszSerialStr, 9, 0);
-	m_EditSerialTimeNumber.SetWindowText(A2W(tszSerialStr));
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+	m_EditSerialUnlimitNumber.SetWindowText(A2W(tszSerialStr));
+
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
 	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 
@@ -409,15 +412,8 @@ void CDialog_CDKey::OnBnClickedButton11()
 	CFileDialog m_FileDlg(false, _T(".key"), _T("CDKey"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("CDKey文件(*.key)|*.key|"));
 	if (IDOK == m_FileDlg.DoModal())
 	{
-		int nMSGLen = 0;
-		XCHAR tszDEBuffer[4096] = {};
-		XBYTE tszENBuffer[4096] = {};
-		//Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
 		USES_CONVERSION;
-		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, W2A(m_StrPass.GetBuffer()));
-		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
-		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
-		fclose(pSt_File);
+		Verification_XAuthKey_FileWrite(&st_AuthorizeCDKey, W2A(m_FileDlg.GetPathName()), W2A(m_StrPass.GetBuffer()));
 	}
 	AfxMessageBox(_T("授权CDKEY成功"));
 }
