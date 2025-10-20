@@ -71,10 +71,6 @@ jobs:
       - name: make
         run: |
             cd XEngine_Source
-            make
-            make FLAGS=InstallAll
-            make FLAGS=CleanAll
-
             make RELEASE=1
             make FLAGS=InstallAll
             make FLAGS=CleanAll
