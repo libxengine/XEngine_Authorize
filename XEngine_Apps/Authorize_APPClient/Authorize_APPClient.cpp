@@ -29,6 +29,7 @@ using namespace std;
 #include <XEngine_Include/XEngine_Client/XClient_Error.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Define.h>
 #include <XEngine_Include/XEngine_Client/APIClient_Error.h>
+#include "../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../../XEngine_Source/XAuth_Protocol.h"
 
 //Windows::vs2022 x86 debug 编译即可
@@ -48,7 +49,7 @@ XSOCKET m_Socket = 0;
 LPCXSTR lpszUser = _X("123123aa");
 LPCXSTR lpszPass = _X("123123");
 LPCXSTR lpszHWCode = _X("2FDWAD02JD2091");
-LPCXSTR lpszSerial = _X("XAUTH-XYRYS-JKG60-N510G-ZUFDH-54-V7I3H");
+LPCXSTR lpszSerial = _X("Y5V0Y-03O2L-E7G8Y-NX1DR-3EGVO-UDIRQ-GBBKO-FGX0C");
 LPCXSTR lpszEmail = _X("486179@qq.com");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
@@ -91,7 +92,7 @@ XHTHREAD AuthClient_Thread()
 					printf(_X("登录失败,错误:%d\n"), st_ProtocolHdr.wReserve);
 				}
 			}
-			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_TIMEDOUT == st_ProtocolHdr.unOperatorCode)
+			else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_EXPIRED == st_ProtocolHdr.unOperatorCode)
 			{
 				bTimeOut = false;
 				printf(_X("用户过期\n"));
@@ -258,16 +259,16 @@ int AuthClient_Login()
 {
 	XCHAR tszMsgBuffer[2048];
 	XENGINE_PROTOCOLHDR st_ProtocolHdr;                    //协议头
-	AUTHORIZE_PROTOCOL_USERAUTHEX st_AuthUser;
+	XENGINE_PROTOCOL_USERAUTHEX st_AuthUser;
 	
 	memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 	memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
-	memset(&st_AuthUser, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+	memset(&st_AuthUser, '\0', sizeof(XENGINE_PROTOCOL_USERAUTHEX));
 
 	st_ProtocolHdr.wHeader = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_HEADER;
 	st_ProtocolHdr.unOperatorType = ENUM_XENGINE_COMMUNICATION_PROTOCOL_TYPE_AUTH;
 	st_ProtocolHdr.unOperatorCode = XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN;
-	st_ProtocolHdr.unPacketSize = sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
+	st_ProtocolHdr.unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTHEX);
 	st_ProtocolHdr.wTail = XENGIEN_COMMUNICATION_PACKET_PROTOCOL_TAIL;
 
 	st_AuthUser.enDeviceType = ENUM_PROTOCOL_FOR_DEVICE_TYPE_PC_WINDOWS;
@@ -308,7 +309,7 @@ int AuthClient_Login()
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), &st_AuthUser, st_ProtocolHdr.unPacketSize);
 
-		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX);
+		nMsgLen = sizeof(XENGINE_PROTOCOLHDR) + sizeof(XENGINE_PROTOCOL_USERAUTHEX);
 	}
 
 	if (!XClient_TCPSelect_SendMsg(m_Socket, tszMsgBuffer, nMsgLen))
@@ -516,40 +517,6 @@ int AuthClient_Delete()
 	}
 	return 0;
 }
-int AuthClient_Try()
-{
-	Json::Value st_JsonRoot;
-	Json::Value st_JsonObject;
-	LPCXSTR lpszSerialNet = _X("cpuid:112233"); //通过此可以做临时网络验证,安全性比本地临时验证高
-	LPCXSTR lpszUrl = _X("http://127.0.0.1:5302/auth/user/try");
-
-	st_JsonObject["tszVSerial"] = lpszSerialNet;
-	st_JsonRoot["st_VERTemp"] = st_JsonObject;
-
-	int nMsgLen = 0;
-	XCHAR* ptszMsgBuffer = NULL;
-
-	if (bEncrypto)
-	{
-		XCHAR tszENBuffer[2048] = {};
-		XCHAR tszDEBuffer[2048] = {};
-
-		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
-		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
-
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
-		printf("AuthClient_Try:\n%s\n", tszDEBuffer);
-		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-	}
-	else
-	{
-		APIClient_Http_Request(_X("POST"), lpszUrl, st_JsonRoot.toStyledString().c_str(), NULL, &ptszMsgBuffer, &nMsgLen);
-		printf("AuthClient_Try:\n%s\n", ptszMsgBuffer);
-		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
-	}
-	return 0;
-}
 int main()
 {
 #ifdef _MSC_BUILD
@@ -578,7 +545,6 @@ int main()
 
 	std::this_thread::sleep_for(std::chrono::seconds(10));
 	AuthClient_Delete();
-	AuthClient_Try();
 
 	bRun = false;
 	XClient_TCPSelect_Close(m_Socket);
