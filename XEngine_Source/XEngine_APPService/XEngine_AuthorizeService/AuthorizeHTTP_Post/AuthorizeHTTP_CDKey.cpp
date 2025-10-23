@@ -19,31 +19,14 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 	}
 	if (0 == _tcsxnicmp(lpszAPICreate, lpszAPIName, _tcsxlen(lpszAPICreate)))
 	{
-		VERIFICATION_XAUTHKEY st_Authorize;
-		memset(&st_Authorize, '\0', sizeof(VERIFICATION_XAUTHKEY));
+		VERIFICATION_XAUTHKEY st_Authorize = {};
 
-		Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, &st_Authorize);
-
-		st_Authorize.st_AuthSerial.st_TimeLimit.nTimeCount = 9999;
-		memset(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, 0, XPATH_MIN);
-		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, 8, 0);
-
-		memset(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, 0, XPATH_MIN);
-		XENGINE_LIBTIME st_LibTime = {};
-		BaseLib_Time_GetSysTime(&st_LibTime);
-		st_LibTime.wYear += 1; //一年后过期
-		st_Authorize.st_AuthSerial.st_DataLimit.bTimeAdd = false;
-		BaseLib_Time_TimeToStr(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, NULL, true, &st_LibTime);
-		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, 8, 0);
-
-		memset(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, 0, XPATH_MIN);
-		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, 8, 0);
-
+		Verification_XAuthKey_KeyInit(&st_Authorize);
 		if (!Verification_XAuthKey_WriteMemory(m_MemoryPoolRecv.get(), &nRVLen, &st_Authorize))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Not Acceptable,write key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求创建CDKEY协议失败,服务器内部错误：%lX"), lpszClientAddr, Verification_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolRecv.get(), nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -51,33 +34,47 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 	}
 	else if (0 == _tcsxnicmp(lpszAPIAuth, lpszAPIName, _tcsxlen(lpszAPIAuth)))
 	{
-		VERIFICATION_XAUTHKEY st_Authorize;
-		memset(&st_Authorize, '\0', sizeof(VERIFICATION_XAUTHKEY));
-
-		Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+		VERIFICATION_XAUTHKEY st_Authorize = {};
+		if (!Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize))
+		{
+			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CDKEY, "Not Acceptable,read key failed");
+			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建授权CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
+			return false;
+		}
 		//授权
-		
+		if (!Verification_XAuthKey_UserRegister(&st_Authorize, st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial))
+		{
+			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Not Acceptable,read key failed");
+			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建授权CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
+			return false;
+		}
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolRecv.get(), nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求授权CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIVer, lpszAPIName, _tcsxlen(lpszAPIVer)))
 	{
-		VERIFICATION_XAUTHKEY st_Authorize;
-		memset(&st_Authorize, '\0', sizeof(VERIFICATION_XAUTHKEY));
-
-		Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
+		VERIFICATION_XAUTHKEY st_Authorize = {};
+		if (!Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize))
+		{
+			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CDKEY, "Not Acceptable,read key failed");
+			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建授权CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
+			return false;
+		}
 		if (ENUM_VERIFICATION_MODULE_VERMODE_TYPE_NETWORK != st_Authorize.st_AuthRegInfo.enVModeType)
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "unsupport,cdkey is not authorized");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Verification_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
 		if (!Verification_XAuthKey_KeyParse(&st_Authorize))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "Unauthorized,cdkey is not authorized");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Verification_GetLastError());
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
 		Verification_XAuthKey_WriteMemory(m_MemoryPoolRecv.get(), &nRVLen, &st_Authorize);

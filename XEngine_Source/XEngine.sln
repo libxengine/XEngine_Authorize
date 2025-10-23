@@ -33,6 +33,7 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_AuthorizeService", "XEngine_APPService\XEngine_AuthorizeService\XEngine_AuthorizeService.vcxproj", "{A29DFD8D-2818-4BE3-A2DB-07F241B4BFC9}"
 	ProjectSection(ProjectDependencies) = postProject
 		{1391B739-713B-4A3A-9233-FEAB92E0566C} = {1391B739-713B-4A3A-9233-FEAB92E0566C}
+		{51DCBDC7-50CB-4A44-B10B-FCF90309914D} = {51DCBDC7-50CB-4A44-B10B-FCF90309914D}
 		{5FA1874A-32F4-4176-9C23-4E22BE183660} = {5FA1874A-32F4-4176-9C23-4E22BE183660}
 		{6B926D00-DCD2-49E3-86A9-3230C9872E65} = {6B926D00-DCD2-49E3-86A9-3230C9872E65}
 		{A8E43EC0-698A-4807-8A61-B2BE5FAB7256} = {A8E43EC0-698A-4807-8A61-B2BE5FAB7256}
@@ -65,6 +66,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_InfoReport", "XEngi
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_Verification", "XEngine_DependLibrary\XEngine_Module\XEngine_Verification\XEngine_Verification.vcxproj", "{A8E43EC0-698A-4807-8A61-B2BE5FAB7256}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB} = {F1736B3F-03A2-4FC7-B045-A12BA8D724FB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

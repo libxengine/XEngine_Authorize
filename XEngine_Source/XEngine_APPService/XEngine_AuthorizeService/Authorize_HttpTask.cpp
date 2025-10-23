@@ -215,8 +215,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求的API:%s 不支持"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 			return false;
 		}
-		AUTHREG_USERTABLE st_UserTable;
-		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+		AUTHREG_USERTABLE st_UserTable = {};
 		//得到TOKEN
 		if (Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken))
 		{

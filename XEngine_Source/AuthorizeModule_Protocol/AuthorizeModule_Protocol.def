@@ -31,5 +31,4 @@ EXPORTS
 	Protocol_Parse_HttpParsePos
 	Protocol_Parse_HttpParseBanned
 	Protocol_Parse_HttpParseBanned2
-	Protocol_Parse_HttpParseCDKey
 	Protocol_Parse_HttpParseAnnouncement

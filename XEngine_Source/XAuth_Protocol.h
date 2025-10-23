@@ -43,6 +43,7 @@
 #define ERROR_AUTHORIZE_PROTOCOL_TIMEOUT 0x115                            //超时
 #define ERROR_AUTHORIZE_PROTOCOL_PERMISSION 0x116                         //用户权限错误
 #define ERROR_AUTHORIZE_PROTOCOL_EXPIRED 0x117                            //已经过期
+#define ERROR_AUTHORIZE_PROTOCOL_CDKEY 0x118                              //CDKEY错误
 
 #define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
 #define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小

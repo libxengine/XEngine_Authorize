@@ -142,10 +142,6 @@ extern "C" bool Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgL
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseBanned2(lpszMsgBuffer, nMsgLen, pInt_POSStart, pInt_POSEnd);
 }
-extern "C" bool Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, VERIFICATION_XAUTHKEY * pSt_Authorize)
-{
-	return m_ProtocolParse.Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, pSt_Authorize);
-}
 extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT * pSt_Announcement)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, pSt_Announcement);
