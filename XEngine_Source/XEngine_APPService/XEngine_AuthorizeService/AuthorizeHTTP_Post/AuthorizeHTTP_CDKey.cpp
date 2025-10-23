@@ -24,32 +24,21 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 
 		Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, &st_Authorize);
 
-		if (_tcsxlen(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial) <= 0)
-		{
-			XCHAR tszSerialStr[XPATH_MIN] = {};
-			Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+		st_Authorize.st_AuthSerial.st_TimeLimit.nTimeCount = 9999;
+		memset(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, 0, XPATH_MIN);
+		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, 8, 0);
 
-			st_Authorize.st_AuthSerial.st_TimeLimit.nTimeCount = 9999;
-			_tcsxcpy(st_Authorize.st_AuthSerial.st_TimeLimit.tszTimeSerial, tszSerialStr);
+		memset(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, 0, XPATH_MIN);
+		XENGINE_LIBTIME st_LibTime = {};
+		BaseLib_Time_GetSysTime(&st_LibTime);
+		st_LibTime.wYear += 1; //一年后过期
+		st_Authorize.st_AuthSerial.st_DataLimit.bTimeAdd = false;
+		BaseLib_Time_TimeToStr(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, NULL, true, &st_LibTime);
+		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, 8, 0);
 
-			memset(tszSerialStr, '\0', sizeof(tszSerialStr));
-			Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
-			st_Authorize.st_AuthSerial.st_DataLimit.bTimeAdd = false;
-			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataSerial, tszSerialStr);
+		memset(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, 0, XPATH_MIN);
+		Verification_XAuthKey_KeySerial(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, 8, 0);
 
-			XCHAR tszTimeStr[128] = {};
-			XENGINE_LIBTIME st_LibTime = {};
-			BaseLib_Time_GetSysTime(&st_LibTime);
-			st_LibTime.wYear += 1; //一年后过期
-			BaseLib_Time_TimeToStr(tszTimeStr, NULL, true, &st_LibTime);
-
-			memset(tszSerialStr, '\0', sizeof(tszSerialStr));
-			Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
-
-			_tcsxcpy(st_Authorize.st_AuthSerial.st_DataLimit.tszDataTime, tszTimeStr);
-			_tcsxcpy(st_Authorize.st_AuthSerial.st_UNLimit.tszUNLimitSerial, tszSerialStr);
-		}
-		
 		if (!Verification_XAuthKey_WriteMemory(m_MemoryPoolRecv.get(), &nRVLen, &st_Authorize))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Not Acceptable,write key failed");
@@ -77,7 +66,6 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		memset(&st_Authorize, '\0', sizeof(VERIFICATION_XAUTHKEY));
 
 		Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize);
-
 		if (ENUM_VERIFICATION_MODULE_VERMODE_TYPE_NETWORK != st_Authorize.st_AuthRegInfo.enVModeType)
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "unsupport,cdkey is not authorized");
