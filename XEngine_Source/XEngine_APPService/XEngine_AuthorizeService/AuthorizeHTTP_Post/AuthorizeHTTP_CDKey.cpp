@@ -3,13 +3,11 @@
 bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 0;
-	int nRVLen = 0;
 	LPCXSTR lpszAPICreate = _X("create");
 	LPCXSTR lpszAPIAuth = _X("auth");
 	LPCXSTR lpszAPIVer = _X("ver");
 
 	CHttpMemory_PoolEx m_MemoryPoolSend(XENGINE_MEMORY_SIZE_MAX);
-	CHttpMemory_PoolEx m_MemoryPoolRecv(XENGINE_MEMORY_SIZE_MAX);
 	if (!st_FunSwitch.bSwitchCDKey)
 	{
 		Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
@@ -22,20 +20,20 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		VERIFICATION_XAUTHKEY st_Authorize = {};
 
 		Verification_XAuthKey_KeyInit(&st_Authorize);
-		if (!Verification_XAuthKey_WriteMemory(m_MemoryPoolRecv.get(), &nRVLen, &st_Authorize))
+		if (!Verification_XAuthKey_MemoryWrite(&st_Authorize, m_MemoryPoolSend.get(), &nSDLen))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_SERVER, "Not Acceptable,write key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolRecv.get(), nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求创建CDKEY成功,APP名:%s,APP版本:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIAuth, lpszAPIName, _tcsxlen(lpszAPIAuth)))
 	{
 		VERIFICATION_XAUTHKEY st_Authorize = {};
-		if (!Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize))
+		if (!Verification_XAuthKey_MemoryRead(&st_Authorize, lpszMsgBuffer, nMsgLen))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CDKEY, "Not Acceptable,read key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -50,13 +48,14 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建授权CDKEY协议失败,读取CDKEY失败：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
-		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolRecv.get(), nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		Verification_XAuthKey_MemoryWrite(&st_Authorize, m_MemoryPoolSend.get(), &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求授权CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIVer, lpszAPIName, _tcsxlen(lpszAPIVer)))
 	{
 		VERIFICATION_XAUTHKEY st_Authorize = {};
-		if (!Verification_XAuthKey_ReadMemory(lpszMsgBuffer, nMsgLen, &st_Authorize))
+		if (!Verification_XAuthKey_MemoryRead(&st_Authorize, lpszMsgBuffer, nMsgLen))
 		{
 			Protocol_Packet_HttpComm(m_MemoryPoolSend.get(), &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CDKEY, "Not Acceptable,read key failed");
 			XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -77,8 +76,8 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求验证CDKEY失败,cdkey未授权或者已超时,错误：%lX"), lpszClientAddr, Verification_GetLastError());
 			return false;
 		}
-		Verification_XAuthKey_WriteMemory(m_MemoryPoolRecv.get(), &nRVLen, &st_Authorize);
-		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolRecv.get(), nRVLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		Verification_XAuthKey_MemoryWrite(&st_Authorize, m_MemoryPoolSend.get(), &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求验证CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
 	else
