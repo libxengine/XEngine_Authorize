@@ -3,10 +3,12 @@
 #include <Windows.h>
 #include <tchar.h>
 #include <locale.h>
+#include <io.h>
 #include <minidumpapiset.h>
 #else
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 #include <unistd.h>
 #endif
 #include <stdio.h>
@@ -44,7 +46,10 @@ using namespace std;
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
-#include "../../XAuth_BuildSwitch.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
@@ -56,12 +61,6 @@ using namespace std;
 #include "../../AuthorizeModule_Protocol/Protocol_Error.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Define.h"
 #include "../../AuthorizeModule_Help/AuthHelp_Error.h"
-#include "../../AuthorizeModule_CDKey/CDKey_Define.h"
-#include "../../AuthorizeModule_CDKey/CDKey_Error.h"
-#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
-#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
-#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
-#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
 
 extern bool bIsRun;
 extern bool bIsTest;
@@ -129,7 +128,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../x64/Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_Verification.lib")
 #elif _M_ARM64
@@ -138,7 +136,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../ARM64/Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../ARM64/Debug/XEngine_Verification.lib")
 #elif _M_IX86
@@ -147,7 +144,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Debug/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../Debug/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../Debug/XEngine_Verification.lib")
 #endif
@@ -158,7 +154,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../x64/Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_Verification.lib")
 #elif _M_ARM64
@@ -167,7 +162,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../ARM64/Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../ARM64/Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../ARM64/Release/XEngine_Verification.lib")
 #elif _M_IX86
@@ -176,7 +170,6 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Release/AuthorizeModule_Session.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Database.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
-#pragma comment(lib,"../../Release/AuthorizeModule_CDKey.lib")
 #pragma comment(lib,"../../Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../Release/XEngine_Verification.lib")
 #endif

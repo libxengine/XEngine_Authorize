@@ -25,10 +25,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
-#include "../XAuth_BuildSwitch.h"
+#include "../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../XAuth_Protocol.h"
-#include "../AuthorizeModule_CDKey/CDKey_Define.h"
-#include "../AuthorizeModule_CDKey/CDKey_Error.h"
 #include "Database_Define.h"
 #include "Database_Error.h"
 /********************************************************************
@@ -46,24 +44,7 @@ extern bool SQLPacket_IsErrorOccur;
 extern XLONG SQLPacket_dwErrorCode;
 
 
-#ifdef _WINDOWS
+#ifdef _MSC_BUILD
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_DataBase.lib")
-#ifdef _DEBUG
-#ifdef _M_X64
-#pragma comment(lib,"../x64/Debug/AuthorizeModule_CDKey")
-#elif _M_ARM64
-#pragma comment(lib,"../ARM64/Debug/AuthorizeModule_CDKey")
-#elif _M_IX86
-#pragma comment(lib,"../Debug/AuthorizeModule_CDKey")
-#endif
-#else
-#ifdef _M_X64
-#pragma comment(lib,"../x64/Release/AuthorizeModule_CDKey")
-#elif _M_ARM64
-#pragma comment(lib,"../ARM64/Release/AuthorizeModule_CDKey")
-#elif _M_IX86
-#pragma comment(lib,"../Release/AuthorizeModule_CDKey")
-#endif
-#endif
 #endif

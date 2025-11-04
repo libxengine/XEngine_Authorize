@@ -7,13 +7,11 @@ DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
 DEPEND_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
 DEPEND_VERIFICATION_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_Verification
 
-AUTH_CDKEY_PATH = ./AuthorizeModule_CDKey
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
 AUTH_DATABASE_PATH = ./AuthorizeModule_Database
 AUTH_PROTOCOL_PATH = ./AuthorizeModule_Protocol
 AUTH_CONFIGURE_PATH = ./AuthorizeModule_Configure
 AUTH_HELP_PATH = ./AuthorizeModule_Help
-AUTH_CLIENT_PATH = ./AuthorizeModule_Client
 
 AUTH_APP_PATH = ./XEngine_APPService/XEngine_AuthorizeService
 
@@ -24,7 +22,7 @@ else ifeq ($(PLATFORM),mac)
 endif
 
 XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
-          libAuthorizeModule_CDKey.so libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so libAuthorizeModule_Client.so   \
+          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
 	      XEngine_AuthorizeApp.exe 
 
 .PHONY:MakeAll 
@@ -50,8 +48,6 @@ else
 	make -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 
-libAuthorizeModule_CDKey.so:
-	make -C $(AUTH_CDKEY_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Session.so:
 	make -C $(AUTH_SESSION_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Database.so:
@@ -62,8 +58,6 @@ libAuthorizeModule_Configure.so:
 	make -C $(AUTH_CONFIGURE_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Help.so:
 	make -C $(AUTH_HELP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
-libAuthorizeModule_Client.so:
-	make -C $(AUTH_CLIENT_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 
 XEngine_AuthorizeApp.exe:
 	make -C $(AUTH_APP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)

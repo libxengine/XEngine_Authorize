@@ -72,6 +72,7 @@ bool CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, X
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+	pSt_ProtocolHdr->unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTHEX);
 	if (!st_JsonRoot["xhToken"].isNull())
 	{
 		pSt_ProtocolHdr->xhToken = st_JsonRoot["xhToken"].asUInt64();
@@ -154,7 +155,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int n
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
+bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	Protocol_IsErrorOccur = false;
 
@@ -185,10 +186,6 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	{
 		_tcsxcpy(pSt_UserAuth->tszUserPass, st_JsonProtocol["tszUserPass"].asCString());
 	}
-	if (!st_JsonProtocol["tszDCode"].isNull())
-	{
-		_tcsxcpy(pSt_UserAuth->tszDCode, st_JsonProtocol["tszDCode"].asCString());
-	}
 	if (!st_JsonProtocol["enClientType"].isNull())
 	{
 		pSt_UserAuth->enClientType = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["enClientType"].asInt();
@@ -196,6 +193,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
 		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	if (!st_JsonProtocol["tszDCode"].isNull())
+	{
+		_tcsxcpy(pSt_UserAuth->tszDCode, st_JsonProtocol["tszDCode"].asCString());
 	}
 	if (!st_JsonProtocol["tszHWCode"].isNull())
 	{
@@ -390,7 +391,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTry(LPCXSTR lpszMsgBuffer, int nMs
 
 	if (!st_JsonProtocol["enVMode"].isNull())
 	{
-		pSt_NETTry->enVMode = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
+		pSt_NETTry->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enVMode"].asInt();
 	}
 	if (!st_JsonProtocol["nID"].isNull())
 	{
@@ -463,7 +464,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
 
 	if (!st_UserTable["enSerialType"].isNull())
 	{
-		pSt_UserTable->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
+		pSt_UserTable->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_UserTable["enSerialType"].asInt();
 	}
 	if (!st_UserTable["enDeviceType"].isNull())
 	{
@@ -576,7 +577,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		}
 		if (!st_JsonArray[i]["enSerialType"].isNull())
 		{
-			(*pppSt_SerialTable)[i]->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonArray[i]["enSerialType"].asInt();
+			(*pppSt_SerialTable)[i]->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonArray[i]["enSerialType"].asInt();
 		}
 		if (!st_JsonArray[i]["tszCreateTime"].isNull())
 		{
@@ -598,83 +599,6 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int 
 		{
 			_tcsxcpy((*pppSt_SerialTable)[i]->tszUserName, st_JsonArray[i]["tszUserName"].asCString());
 		}
-	}
-	return true;
-}
-/********************************************************************
-函数名称：Protocol_Parse_HttpParseSerial2
-函数功能：解析HTTP序列号
- 参数.一：lpszMsgBuffer
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：输入要解析的缓冲区
- 参数.二：nMsgLen
-  In/Out：In
-  类型：整数型
-  可空：N
-  意思：输入要解析的大小
- 参数.三：penSerialType
-  In/Out：Out
-  类型：枚举型指针
-  可空：N
-  意思：导出序列卡类型
- 参数.四：pInt_NumberCount
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：导出序列卡长度
- 参数.五：pInt_SerialCount
-  In/Out：Out
-  类型：整数型指针
-  可空：N
-  意思：导出序列卡个数
- 参数.六：ptszHasTime
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：导出拥有时间
- 参数.七：ptszExpiredTime
-  In/Out：Out
-  类型：字符指针
-  可空：N
-  意思：导出过期时间
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE* penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR* ptszHasTime, XCHAR* ptszExpiredTime)
-{
-	Protocol_IsErrorOccur = false;
-
-	if ((NULL == lpszMsgBuffer) || (NULL == penSerialType))
-	{
-		Protocol_IsErrorOccur = true;
-		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return false;
-	}
-	Json::Value st_JsonRoot;
-	JSONCPP_STRING st_JsonError;
-	Json::CharReaderBuilder st_ReaderBuilder;
-
-	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-	{
-		Protocol_IsErrorOccur = true;
-		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return false;
-	}
-	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];
-
-	*penSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonObject["enSerialType"].asInt();
-	*pInt_NumberCount = st_JsonObject["nNumberCount"].asInt();
-	*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
-	_tcsxcpy(ptszHasTime, st_JsonObject["tszHasTime"].asCString());
-
-	if (!st_JsonObject["tszExpiredTime"].isNull())
-	{
-		_tcsxcpy(ptszExpiredTime, st_JsonObject["tszExpiredTime"].asCString());
 	}
 	return true;
 }
@@ -774,7 +698,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTime(LPCXSTR lpszMsgBuffer, int nM
 
 	if (!st_JsonProtocol["enSerialType"].isNull())
 	{
-		pSt_ProtocolTime->enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonProtocol["enSerialType"].asInt();
+		pSt_ProtocolTime->enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonProtocol["enSerialType"].asInt();
 	}
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
@@ -1052,168 +976,6 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int
 	if (!st_JsonObject["nPosEnd"].isNull())
 	{
 		*pInt_POSEnd = st_JsonObject["nPosEnd"].asInt();
-	}
-	return true;
-}
-/********************************************************************
-函数名称：Protocol_Parse_HttpParseCDKey
-函数功能：解析CDKEY
- 参数.一：lpszMsgBuffer
-  In/Out：In
-  类型：常量字符指针
-  可空：N
-  意思：输入要解析的缓冲区
- 参数.二：nMsgLen
-  In/Out：In
-  类型：整数型
-  可空：N
-  意思：输入缓冲区大小
- 参数.三：pSt_Authorize
-  In/Out：Out
-  类型：数据结构指针
-  可空：N
-  意思：输出解析后的信息
-返回值
-  类型：逻辑型
-  意思：是否成功
-备注：
-*********************************************************************/
-bool CProtocol_Parse::Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL* pSt_Authorize)
-{
-	Protocol_IsErrorOccur = false;
-
-	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Authorize))
-	{
-		Protocol_IsErrorOccur = true;
-		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
-		return false;
-	}
-	Json::Value st_JsonRoot;
-	JSONCPP_STRING st_JsonError;
-	Json::CharReaderBuilder st_ReaderBuilder;
-	//解析JSON
-	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
-	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-	{
-		Protocol_IsErrorOccur = true;
-		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
-		return false;
-	}
-
-	if (!st_JsonRoot["tszAddr"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->tszAddr, st_JsonRoot["tszAddr"].asCString());
-	}
-	if (!st_JsonRoot["nPort"].isNull())
-	{
-		pSt_Authorize->nPort = st_JsonRoot["nPort"].asInt();
-	}
-	//应用信息
-	Json::Value st_JsonAPPInfo = st_JsonRoot["st_AuthAppInfo"];
-	if (!st_JsonAPPInfo["nExecTime"].isNull())
-	{
-		pSt_Authorize->st_AuthAppInfo.nExecTime = st_JsonAPPInfo["nExecTime"].asInt();
-	}
-	if (!st_JsonAPPInfo["bInit"].isNull())
-	{
-		pSt_Authorize->st_AuthAppInfo.bInit = st_JsonAPPInfo["bInit"].asBool();
-	}
-	if (!st_JsonAPPInfo["tszAppName"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthAppInfo.tszAppName, st_JsonAPPInfo["tszAppName"].asCString());
-	}
-	if (!st_JsonAPPInfo["tszAppVer"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthAppInfo.tszAppVer, st_JsonAPPInfo["tszAppVer"].asCString());
-	}
-	//注册信息
-	Json::Value st_JsonREGInfo = st_JsonRoot["st_AuthRegInfo"];
-	if (!st_JsonREGInfo["tszHardware"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszHardware, st_JsonREGInfo["tszHardware"].asCString());
-	}
-	if (!st_JsonREGInfo["tszCreateTime"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszCreateTime, st_JsonREGInfo["tszCreateTime"].asCString());
-	}
-	if (!st_JsonREGInfo["tszRegisterTime"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszRegisterTime, st_JsonREGInfo["tszRegisterTime"].asCString());
-	}
-	if (!st_JsonREGInfo["tszLeftTime"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszLeftTime, st_JsonREGInfo["tszLeftTime"].asCString());
-	}
-	if (!st_JsonREGInfo["tszStartTime"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszStartTime, st_JsonREGInfo["tszStartTime"].asCString());
-	}
-	if (!st_JsonREGInfo["tszExpiryTime"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthRegInfo.tszExpiryTime, st_JsonREGInfo["tszExpiryTime"].asCString());
-	}
-	if (!st_JsonREGInfo["nHasTime"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.nHasTime = st_JsonREGInfo["nHasTime"].asInt();
-	}
-	if (!st_JsonREGInfo["enSerialType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)st_JsonREGInfo["enSerialType"].asInt();
-	}
-	if (!st_JsonREGInfo["enRegType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)st_JsonREGInfo["enRegType"].asInt();
-	}
-	if (!st_JsonREGInfo["enHWType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)st_JsonREGInfo["enHWType"].asInt();
-	}
-	if (!st_JsonREGInfo["enVModeType"].isNull())
-	{
-		pSt_Authorize->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)st_JsonREGInfo["enVModeType"].asInt();
-	}
-	//临时序列号
-	Json::Value st_JsonSerialInfo = st_JsonRoot["st_AuthSerial"];
-	if (!st_JsonSerialInfo.isNull())
-	{
-		if (!st_JsonSerialInfo["tszTimeSerial"].isNull())
-		{
-			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_TimeLimit.tszTimeSerial, st_JsonSerialInfo["tszTimeSerial"].asCString());
-		}
-		if (!st_JsonSerialInfo["nTimeCount"].isNull())
-		{
-			pSt_Authorize->st_AuthSerial.st_TimeLimit.nTimeCount = st_JsonSerialInfo["nTimeCount"].asInt();
-		}
-		if (!st_JsonSerialInfo["tszTimeSerial"].isNull())
-		{
-			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_DataLimit.tszDataSerial, st_JsonSerialInfo["tszTimeSerial"].asCString());
-		}
-		if (!st_JsonSerialInfo["tszDataTime"].isNull())
-		{
-			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_DataLimit.tszDataTime, st_JsonSerialInfo["tszDataTime"].asCString());
-		}
-		if (!st_JsonSerialInfo["bTimeAdd"].isNull())
-		{
-			pSt_Authorize->st_AuthSerial.st_DataLimit.bTimeAdd = st_JsonSerialInfo["bTimeAdd"].asBool();
-		}
-		if (!st_JsonSerialInfo["tszUNLimitSerial"].isNull())
-		{
-			_tcsxcpy(pSt_Authorize->st_AuthSerial.st_UNLimit.tszUNLimitSerial, st_JsonSerialInfo["tszUNLimitSerial"].asCString());
-		}
-	}
-	//CDKEY用户信息
-	Json::Value st_JsonUserInfo = st_JsonRoot["st_AuthUserInfo"];
-	if (!st_JsonUserInfo["tszUserName"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthUserInfo.tszUserName, st_JsonUserInfo["tszUserName"].asCString());
-	}
-	if (!st_JsonUserInfo["tszUserContact"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthUserInfo.tszUserContact, st_JsonUserInfo["tszUserContact"].asCString());
-	}
-	if (!st_JsonUserInfo["tszCustom"].isNull())
-	{
-		_tcsxcpy(pSt_Authorize->st_AuthUserInfo.tszCustom, st_JsonUserInfo["tszCustom"].asCString());
 	}
 	return true;
 }

@@ -122,14 +122,19 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditRegHaveTime.SetWindowText(_T("5"));
 	m_EditRegLeftTime.SetWindowText(_T("5"));
 
-	int nSerialCount = 3;
-	XCHAR** pptszSerialList;
 	USES_CONVERSION;
-	Authorize_Serial_Create(&pptszSerialList, _X("XAUTH"), nSerialCount, 9);
-	m_EditSerialTimeNumber.SetWindowText(A2W(pptszSerialList[0]));
-	m_EditSerialDataNumber.SetWindowText(A2W(pptszSerialList[1]));
-	m_EditSerialUnlimitNumber.SetWindowText(A2W(pptszSerialList[2]));
-	BaseLib_Memory_Free((XPPPMEM)&pptszSerialList, nSerialCount);
+	XCHAR tszSerialStr[XPATH_MIN] = {};
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+	m_EditSerialTimeNumber.SetWindowText(A2W(tszSerialStr));
+
+	memset(tszSerialStr, 0, XPATH_MIN);
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+	m_EditSerialDataNumber.SetWindowText(A2W(tszSerialStr));
+
+	memset(tszSerialStr, 0, XPATH_MIN);
+	Verification_XAuthKey_KeySerial(tszSerialStr, 8, 0);
+	m_EditSerialUnlimitNumber.SetWindowText(A2W(tszSerialStr));
+
 	m_EditSerialTimeCount.SetWindowText(_T("9999"));
 	m_CheckSerialDataAdd.SetCheck(BST_CHECKED);
 
@@ -151,7 +156,7 @@ bool CDialog_CDKey::Dialog_CDKey_Init()
 	m_EditUserContact.SetWindowText(_T("www.xyry.org"));
 	return true;
 }
-bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey)
+bool CDialog_CDKey::Dialog_CDKey_Read(VERIFICATION_XAUTHKEY* pSt_AuthorizeCDKey)
 {
 	//网络信息
 	CString m_StrIPAddr;
@@ -192,10 +197,10 @@ bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKe
 	m_StrRegInfo.ReleaseBuffer();
 	m_DateTimeStart.GetWindowText(m_StrRegInfo);
 	strcpy(pSt_AuthorizeCDKey->st_AuthRegInfo.tszStartTime, W2A(m_StrRegInfo.GetBuffer()));
-	pSt_AuthorizeCDKey->st_AuthRegInfo.enSerialType = (ENUM_AUTHORIZE_MODULE_SERIAL_TYPE)m_ComboRegSerial.GetCurSel();
-	pSt_AuthorizeCDKey->st_AuthRegInfo.enRegType = (ENUM_AUTHORIZE_MODULE_CDKEY_TYPE)m_ComboRegType.GetCurSel();
-	pSt_AuthorizeCDKey->st_AuthRegInfo.enHWType = (ENUM_AUTHORIZE_MODULE_HW_TYPE)m_ComboRegHard.GetCurSel();
-	pSt_AuthorizeCDKey->st_AuthRegInfo.enVModeType = (ENUM_AUTHORIZE_MODULE_VERMODE_TYPE)m_ComboRegVer.GetCurSel();
+	pSt_AuthorizeCDKey->st_AuthRegInfo.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)m_ComboRegSerial.GetCurSel();
+	pSt_AuthorizeCDKey->st_AuthRegInfo.enRegType = (ENUM_VERIFICATION_MODULE_CDKEY_TYPE)m_ComboRegType.GetCurSel();
+	pSt_AuthorizeCDKey->st_AuthRegInfo.enHWType = (ENUM_VERIFICATION_MODULE_HW_TYPE)m_ComboRegHard.GetCurSel();
+	pSt_AuthorizeCDKey->st_AuthRegInfo.enVModeType = (ENUM_VERIFICATION_MODULE_VERMODE_TYPE)m_ComboRegVer.GetCurSel();
 	//序列信息
 	CString m_StrSerialInfo;
 	m_EditSerialTimeCount.GetWindowText(m_StrSerialInfo);
@@ -229,7 +234,7 @@ bool CDialog_CDKey::Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKe
 	strcpy(pSt_AuthorizeCDKey->st_AuthUserInfo.tszCustom, W2A(m_StrUserInfo.GetBuffer()));
 	return true;
 }
-bool CDialog_CDKey::Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey)
+bool CDialog_CDKey::Dialog_CDKey_Write(VERIFICATION_XAUTHKEY* pSt_AuthorizeCDKey)
 {
 	CString m_StrFormat;
 	//网络信息
@@ -317,27 +322,18 @@ void CDialog_CDKey::OnBnClickedButton1()
 		AfxMessageBox(_T("密码必须设置"));
 		return;
 	}
-	XENGINE_AUTHORIZE_LOCAL st_AuthorizeCDKey = {};
+	VERIFICATION_XAUTHKEY st_AuthorizeCDKey = {};
 	Dialog_CDKey_Read(&st_AuthorizeCDKey);
 
 	CFileDialog m_FileDlg(false, _T(".key"),_T("CDKey"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("CDKey文件(*.key)|*.key|"));
 	if (IDOK == m_FileDlg.DoModal())
 	{
-		int nMSGLen = 0;
-		XCHAR tszDEBuffer[4096] = {};
-		XBYTE tszENBuffer[4096] = {};
-		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
-
 		USES_CONVERSION;
-		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, W2A(m_StrPass.GetBuffer()));
-		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
-		if (NULL == pSt_File)
+		if (!Verification_XAuthKey_FileWrite(&st_AuthorizeCDKey, W2A(m_FileDlg.GetPathName()), W2A(m_StrPass.GetBuffer())))
 		{
 			AfxMessageBox(_T("创建CDKEY文件失败"));
 			return;
 		}
-		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
-		fclose(pSt_File);
 	}
 }
 
@@ -351,27 +347,13 @@ void CDialog_CDKey::OnBnClickedButton9()
 		AfxMessageBox(_T("密码必须设置"));
 		return;
 	}
-	XENGINE_AUTHORIZE_LOCAL st_AuthorizeCDKey = {};
+	VERIFICATION_XAUTHKEY st_AuthorizeCDKey = {};
 
 	CFileDialog m_FileDlg(true, _T(".key"), _T("CDKey"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("CDKey文件(*.key)|*.key|"));
 	if (IDOK == m_FileDlg.DoModal())
 	{
-		int nMSGLen = 0;
-		XCHAR tszDEBuffer[4096] = {};
-		XCHAR tszENBuffer[4096] = {};
-
-		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("rb"));
-		nMSGLen = fread(tszENBuffer, 1, sizeof(tszENBuffer), pSt_File);
-		fclose(pSt_File);
-
 		USES_CONVERSION;
-		if (!Cryption_XCrypto_Decoder(tszENBuffer, &nMSGLen, tszDEBuffer, W2A(m_StrPass.GetBuffer())))
-		{
-			AfxMessageBox(_T("解密CDKEY失败"));
-			return;
-		}
-
-		if (!Authorize_CDKey_ReadMemory(tszDEBuffer, nMSGLen, &st_AuthorizeCDKey))
+		if (!Verification_XAuthKey_FileRead(&st_AuthorizeCDKey, W2A(m_FileDlg.GetPathName()), W2A(m_StrPass.GetBuffer())))
 		{
 			AfxMessageBox(_T("CDKEY读取失败"));
 			return;
@@ -397,7 +379,7 @@ void CDialog_CDKey::OnBnClickedButton11()
 		AfxMessageBox(_T("没有打开要授权的文件"));
 		return;
 	}
-	XENGINE_AUTHORIZE_LOCAL st_AuthorizeCDKey = {};
+	VERIFICATION_XAUTHKEY st_AuthorizeCDKey = {};
 	Dialog_CDKey_Read(&st_AuthorizeCDKey);
 
 	CString m_StrLeftTime;
@@ -405,14 +387,14 @@ void CDialog_CDKey::OnBnClickedButton11()
 
 	if (3 == m_ComboRegSerial.GetCurSel())
 	{
-		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, _ttoi64(m_StrLeftTime.GetBuffer()));
+		//Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, _ttoi64(m_StrLeftTime.GetBuffer()));
 	}
 	else if (4 == m_ComboRegSerial.GetCurSel())
 	{
 		XENGINE_LIBTIME st_LibTime = {};
 		USES_CONVERSION;
 		BaseLib_Time_StrToTime(W2A(m_StrLeftTime.GetBuffer()), &st_LibTime);
-		Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
+		//Authorize_CDKey_BuildKeyTime(&st_AuthorizeCDKey, 0, &st_LibTime);
 	}
 	else
 	{
@@ -430,15 +412,8 @@ void CDialog_CDKey::OnBnClickedButton11()
 	CFileDialog m_FileDlg(false, _T(".key"), _T("CDKey"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, _T("CDKey文件(*.key)|*.key|"));
 	if (IDOK == m_FileDlg.DoModal())
 	{
-		int nMSGLen = 0;
-		XCHAR tszDEBuffer[4096] = {};
-		XBYTE tszENBuffer[4096] = {};
-		Authorize_CDKey_WriteMemory(tszDEBuffer, &nMSGLen, &st_AuthorizeCDKey);
 		USES_CONVERSION;
-		Cryption_XCrypto_Encoder(tszDEBuffer, &nMSGLen, tszENBuffer, W2A(m_StrPass.GetBuffer()));
-		FILE* pSt_File = _tfopen(m_FileDlg.GetPathName(), _T("wb"));
-		fwrite(tszENBuffer, 1, nMSGLen, pSt_File);
-		fclose(pSt_File);
+		Verification_XAuthKey_FileWrite(&st_AuthorizeCDKey, W2A(m_FileDlg.GetPathName()), W2A(m_StrPass.GetBuffer()));
 	}
 	AfxMessageBox(_T("授权CDKEY成功"));
 }

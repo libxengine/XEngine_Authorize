@@ -6,8 +6,8 @@ LOADHDR = -I ./
 LOADSO = -L ../../XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification  \
          -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../AuthorizeModule_Help -L ../../AuthorizeModule_CDKey 
 LIB = -lXEngine_InfoReport -ljsoncpp -lXEngine_Verification  \
-      -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lNetHelp_APIAddr -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lXEngine_ProcFile -lXEngine_SystemApi  \
-      -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help -lAuthorizeModule_CDKey
+      -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lNetHelp_APIAddr -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lXEngine_SystemApi  \
+      -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help
 LIBEX = 
 OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o XEngine_AuthorizeService.o \
           AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o\

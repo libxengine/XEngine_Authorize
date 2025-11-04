@@ -39,7 +39,7 @@ extern "C" bool Protocol_Packet_HttpComm(XCHAR * ptszMsgBuffer, int* pInt_MsgLen
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpComm(ptszMsgBuffer, pInt_MsgLen, nCode, lpszMsgBuffer);
 }
-extern "C" bool Protocol_Packet_HttpUserPass(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
+extern "C" bool Protocol_Packet_HttpUserPass(XCHAR * ptszMsgBuffer, int* pInt_MsgLen, XENGINE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpUserPass(ptszMsgBuffer, pInt_MsgLen, pSt_UserAuth);
 }
@@ -94,7 +94,7 @@ extern "C" bool Protocol_Parse_HttpParseToken(LPCXSTR lpszMsgBuffer, int nMsgLen
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, pxhToken);
 }
-extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHORIZE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
+extern "C" bool Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_PROTOCOL_USERAUTHEX* pSt_UserAuth)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, pSt_UserAuth);
 }
@@ -117,10 +117,6 @@ extern "C" bool Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen
 extern "C" bool Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE * **pppSt_SerialTable, int* pInt_ListCount)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, pppSt_SerialTable, pInt_ListCount);
-}
-extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE * penSerialType, int* pInt_NumberCount, int* pInt_SerialCount, XCHAR * ptszHasTime, XCHAR* ptszExpiredTime)
-{
-	return m_ProtocolParse.Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, penSerialType, pInt_NumberCount, pInt_SerialCount, ptszHasTime, ptszExpiredTime);
 }
 extern "C" bool Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, bool * pbOnline)
 {
@@ -145,10 +141,6 @@ extern "C" bool Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLe
 extern "C" bool Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_POSStart, int* pInt_POSEnd)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseBanned2(lpszMsgBuffer, nMsgLen, pInt_POSStart, pInt_POSEnd);
-}
-extern "C" bool Protocol_Parse_HttpParseCDKey(LPCXSTR lpszMsgBuffer, int nMsgLen, XENGINE_AUTHORIZE_LOCAL * pSt_Authorize)
-{
-	return m_ProtocolParse.Protocol_Parse_HttpParseCDKey(lpszMsgBuffer, nMsgLen, pSt_Authorize);
 }
 extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT * pSt_Announcement)
 {

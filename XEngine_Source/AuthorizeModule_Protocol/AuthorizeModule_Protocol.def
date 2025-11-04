@@ -25,12 +25,10 @@ EXPORTS
 	Protocol_Parse_HttpParseTry
 	Protocol_Parse_HttpParseTable
 	Protocol_Parse_HttpParseSerial
-	Protocol_Parse_HttpParseSerial2
 	Protocol_Parse_HttpParseOnline
 	Protocol_Parse_HttpParseTime
 	Protocol_Parse_HttpParseSwitch
 	Protocol_Parse_HttpParsePos
 	Protocol_Parse_HttpParseBanned
 	Protocol_Parse_HttpParseBanned2
-	Protocol_Parse_HttpParseCDKey
 	Protocol_Parse_HttpParseAnnouncement

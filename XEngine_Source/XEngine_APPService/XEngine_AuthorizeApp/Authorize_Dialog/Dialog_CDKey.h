@@ -24,8 +24,8 @@ protected:
 public:
 	bool bOPenCDKey = false;
 	bool Dialog_CDKey_Init();
-	bool Dialog_CDKey_Read(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey);
-	bool Dialog_CDKey_Write(XENGINE_AUTHORIZE_LOCAL* pSt_AuthorizeCDKey);
+	bool Dialog_CDKey_Read(VERIFICATION_XAUTHKEY* pSt_AuthorizeCDKey);
+	bool Dialog_CDKey_Write(VERIFICATION_XAUTHKEY* pSt_AuthorizeCDKey);
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnBnClickedButton1();

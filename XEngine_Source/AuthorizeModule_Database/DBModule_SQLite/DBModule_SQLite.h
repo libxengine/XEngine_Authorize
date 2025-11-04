@@ -33,16 +33,15 @@ public:
     bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
     bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 public:
-    bool DBModule_SQLite_SerialInsert(LPCXSTR lpszSerialNumber, LPCXSTR lpszExpiredTime);                                     //插入序列卡
+    bool DBModule_SQLite_SerialInsert(AUTHREG_SERIALTABLE* pSt_SerialTable);                                     //插入序列卡
     bool DBModule_SQLite_SerialDelete(LPCXSTR lpszSerialNumber);                                     //删除一个序列号
     bool DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber,LPAUTHREG_SERIALTABLE pSt_SerialTable = NULL);                      //按照卡号或者用户查询
     bool DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE ***pppSt_SerialTable,int *pInt_ListCount, int nPosStart, int nPosEnd);//查询所有序列卡
-    bool DBModule_SQLite_SerialPush(AUTHREG_SERIALTABLE* pSt_SerialTable);
 public:
     bool DBModule_SQLite_TryInsert(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryDelete(LPCXSTR lpszSerial);
-    bool DBModule_SQLite_TryClear(int nThanValue, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE enVerMode = ENUM_AUTHORIZE_MODULE_SERIAL_TYPE_UNKNOW);
+    bool DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATION_MODULE_SERIAL_TYPE enVerMode = ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW);
     bool DBModule_SQLite_TrySet(AUTHREG_TEMPVER* pSt_AuthVer);
     bool DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, int* pInt_ListCount, int nPosStart = 0, int nPosEnd = 1000);
 public:
@@ -56,7 +55,7 @@ public:
 	bool DBModule_SQLite_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);
     bool DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);
 protected:
-    bool DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_AUTHORIZE_MODULE_SERIAL_TYPE en_AuthUserType);
+    bool DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType);
 private:
     bool m_bChange;
     XNETHANDLE xhData;                 //数据库句柄

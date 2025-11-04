@@ -12,10 +12,10 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 
 	if (0 == _tcsxnicmp(lpszAPIName, lpszAPILogin, _tcsxlen(lpszAPIName)))
 	{
-		AUTHORIZE_PROTOCOL_USERAUTHEX st_UserAuth;
+		XENGINE_PROTOCOL_USERAUTHEX st_UserAuth;
 		AUTHREG_USERTABLE st_UserTable;
 
-		memset(&st_UserAuth, '\0', sizeof(AUTHORIZE_PROTOCOL_USERAUTHEX));
+		memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTHEX));
 		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
 
 		Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);

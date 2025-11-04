@@ -3,8 +3,8 @@ PLATVER =
 FILEEXT = 
 LIBFLAG = 
 LOADHDR = -I ./
-LOADSO = -L ../AuthorizeModule_CDKey
-LIB = -lXEngine_BaseLib -lHelpComponents_DataBase -lAuthorizeModule_CDKey
+LOADSO = 
+LIB = -lXEngine_BaseLib -lHelpComponents_DataBase
 LIBEX = 
 OBJECTS = DBModule_SQLite.o DBModule_MySQL.o pch.o
 

@@ -70,6 +70,24 @@ jobs:
           skip_unpack: true
           if_no_artifact_found: fail
           path: ./XRelease/
+      - name: Download Alma Linux
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: Alma_build.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
+      - name: Download CentOS
+        uses: dawidd6/action-download-artifact@v6
+        with:
+          workflow: Centos_build.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
 
       - name: Display structure of downloaded files
         run: ls -al ./XRelease/

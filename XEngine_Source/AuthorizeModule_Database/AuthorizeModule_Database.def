@@ -20,7 +20,6 @@ EXPORTS
 	DBModule_SQLite_SerialDelete
 	DBModule_SQLite_SerialQuery
 	DBModule_SQLite_SerialQueryAll
-	DBModule_SQLite_SerialPush
 
 	DBModule_SQLite_TryInsert
 	DBModule_SQLite_TryQuery
@@ -56,7 +55,6 @@ EXPORTS
 	DBModule_MySQL_SerialDelete
 	DBModule_MySQL_SerialQuery
 	DBModule_MySQL_SerialQueryAll
-	DBModule_MySQL_SerialPush
 
 	DBModule_MySQL_TryInsert
 	DBModule_MySQL_TryQuery

@@ -136,7 +136,6 @@ int main(int argc, char** argv)
 #endif
 	bIsRun = true;
 	int nRet = -1;
-	FILE* pSt_File = NULL;
 	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
@@ -382,46 +381,23 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为关闭,采用明文传输"));
 	}
 	
-	pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("rb"));
-	if (NULL == pSt_File)
+	if (0 == _xtaccess(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, 0))
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，授权文件没有找到"));
-	}
-	else
-	{
+		VERIFICATION_XAUTHKEY st_AuthLocal = {};
 		//一个简单的示例,没有验证硬件码
-		XCHAR tszENCodecBuffer[4096] = {};
-		XCHAR tszDECodecBuffer[4096] = {};
-		XENGINE_AUTHORIZE_LOCAL st_AuthLocal = {};
-
-		int nRet = fread(tszENCodecBuffer, 1, sizeof(tszENCodecBuffer), pSt_File);
-		fclose(pSt_File);
-
-		if (Cryption_XCrypto_Decoder(tszENCodecBuffer, &nRet, tszDECodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
+		if (Verification_XAuthKey_FileRead(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
 		{
-			Authorize_CDKey_ReadMemory(tszDECodecBuffer, nRet, &st_AuthLocal);
-			bool bRet = Authorize_CDKey_GetLeftTimer(&st_AuthLocal);
-			//无论成功失败需要重写CDKEY
-			memset(tszENCodecBuffer, '\0', sizeof(tszENCodecBuffer));
-			memset(tszDECodecBuffer, '\0', sizeof(tszDECodecBuffer));
-			Authorize_CDKey_WriteMemory(tszDECodecBuffer, &nRet, &st_AuthLocal);
-			Cryption_XCrypto_Encoder(tszDECodecBuffer, &nRet, (XBYTE*)tszENCodecBuffer, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
-			pSt_File = _xtfopen(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, _X("wb"));
-			fwrite(tszENCodecBuffer, 1, nRet, pSt_File);
-			fclose(pSt_File);
-			if (bRet)
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，授权文件验证成功，总可运行次数:%s,剩余可运行次数:%lld"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime);
-			}
-			else
-			{
-				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，总可运行次数:%s,剩余可运行次数:%lld，错误码:%lX"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime, Authorize_GetLastError());
-			}
+			Verification_XAuthKey_FileWrite(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，授权文件验证成功，总可运行次数:%s,剩余可运行次数:%lld"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime);
 		}
 		else
 		{
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件失败，解密失败,数据不正确"));
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，总可运行次数:%s,剩余可运行次数:%lld，错误码:%lX"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime, Verification_GetLastError());
 		}
+	}
+	else
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，授权文件没有找到"));
 	}
 #ifndef _DEBUG
 	//发送信息报告
