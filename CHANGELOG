@@ -1,3 +1,29 @@
+XEngine_Authorize V3.20.0.1001
+
+ci:centos and alma linux and debian 13 system support
+modify:cdkey module to verification module from depend library
+modify:delete push serial and use custom serial insert instead
+modify:re generator serial key when cdkey network create
+fixed:http verification status incorrect
+fixed:sometimes memory leak when read configure
+update:depend library
+delete:client module
+delete:cd key module
+delete:more protocol define
+delete:parse cdkey protocol and use verification read instead
+
+工作流:支持centos和alma以及debian13系统支持
+修改:cdkey模块功能使用了依赖库的验证模块替换
+修改:序列号现在使用自定义序列号替换了
+修改:网络验证创建的CDKEY现在需要通过服务器重新生成的序列号
+修正:http验证状态错误
+修正:某些时候读取配置内存溢出
+更新:依赖库
+删除:客户端模块
+删除:cdkey模块
+删除:多余的协议定义
+删除:解析CDKEY协议并且使用验证模块读取替换
+================================================================
 XEngine_Authorize V3.19.0.1001
 
 added:more system support
