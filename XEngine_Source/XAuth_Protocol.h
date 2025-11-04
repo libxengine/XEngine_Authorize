@@ -44,23 +44,9 @@
 #define ERROR_AUTHORIZE_PROTOCOL_PERMISSION 0x116                         //用户权限错误
 #define ERROR_AUTHORIZE_PROTOCOL_EXPIRED 0x117                            //已经过期
 #define ERROR_AUTHORIZE_PROTOCOL_CDKEY 0x118                              //CDKEY错误
-
+//////////////////////////////////////////////////////////////////////////
 #define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
 #define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小
-//////////////////////////////////////////////////////////////////////////
-//                            导出的枚举型
-//////////////////////////////////////////////////////////////////////////
-#ifndef _MSC_BUILD
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-static LPCXSTR lpszXSerialType[5] = { "UNKNOW","SECOND","DAY","TIME","CUSTOM" };
-static LPCXSTR lpszXRegType[6] = { "UNKNOW","TEMP","TRY","OFFICIAL","UNLIMIT","EXPIRED" };
-static LPCXSTR lpszXHDType[6] = { "UNKNOW","CPU","DISK","BOARD","MAC","BIOS" };
-static LPCXSTR lpszXVerType[6] = { "UNKNOW","LOCAL","NETWORK" };
-#ifndef _MSC_BUILD
-#pragma GCC diagnostic pop
-#endif
 //////////////////////////////////////////////////////////////////////////
 //                            导出的结构体
 //////////////////////////////////////////////////////////////////////////

@@ -72,6 +72,7 @@ bool CProtocol_Parse::Protocol_Parse_WSHdr(LPCXSTR lpszMsgBuffer, int nMsgLen, X
 	pSt_ProtocolHdr->unOperatorCode = st_JsonRoot["unOperatorCode"].asInt();
 	pSt_ProtocolHdr->byIsReply = st_JsonRoot["byIsReply"].asInt();
 	pSt_ProtocolHdr->wCrypto = st_JsonRoot["wCrypto"].asInt();
+	pSt_ProtocolHdr->unPacketSize = sizeof(XENGINE_PROTOCOL_USERAUTHEX);
 	if (!st_JsonRoot["xhToken"].isNull())
 	{
 		pSt_ProtocolHdr->xhToken = st_JsonRoot["xhToken"].asUInt64();
@@ -185,10 +186,6 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	{
 		_tcsxcpy(pSt_UserAuth->tszUserPass, st_JsonProtocol["tszUserPass"].asCString());
 	}
-	if (!st_JsonProtocol["tszDCode"].isNull())
-	{
-		_tcsxcpy(pSt_UserAuth->tszDCode, st_JsonProtocol["tszDCode"].asCString());
-	}
 	if (!st_JsonProtocol["enClientType"].isNull())
 	{
 		pSt_UserAuth->enClientType = (ENUM_PROTOCOLCLIENT_TYPE)st_JsonProtocol["enClientType"].asInt();
@@ -196,6 +193,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAuth(LPCXSTR lpszMsgBuffer, int nM
 	if (!st_JsonProtocol["enDeviceType"].isNull())
 	{
 		pSt_UserAuth->enDeviceType = (ENUM_PROTOCOLDEVICE_TYPE)st_JsonProtocol["enDeviceType"].asInt();
+	}
+	if (!st_JsonProtocol["tszDCode"].isNull())
+	{
+		_tcsxcpy(pSt_UserAuth->tszDCode, st_JsonProtocol["tszDCode"].asCString());
 	}
 	if (!st_JsonProtocol["tszHWCode"].isNull())
 	{

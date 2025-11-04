@@ -76,9 +76,7 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQLOGIN == st_ProtocolHdr.unOperatorCode)
 		{
-			XENGINE_PROTOCOL_USERAUTHEX st_UserAuth;
-			memset(&st_UserAuth, '\0', sizeof(XENGINE_PROTOCOL_USERAUTHEX));
-
+			XENGINE_PROTOCOL_USERAUTHEX st_UserAuth = {};
 			Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
 			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTHEX), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 		}
