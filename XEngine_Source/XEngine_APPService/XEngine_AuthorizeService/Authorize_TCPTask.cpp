@@ -412,6 +412,20 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("客户端：%s，用户名：%s，登录成功,注册类型:%s,剩余时间:%s"), lpszClientAddr, st_AuthProtocol.tszUserName, lpszXSerialType[st_UserTable.enSerialType], st_UserTable.tszLeftTime);
 	}
+	else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == pSt_ProtocolHdr->unOperatorCode)
+	{
+		AUTHSESSION_NETCLIENT st_AuthClient = {};
+		if (!Session_Authorize_GetUserForAddr(lpszClientAddr, &st_AuthClient))
+		{
+			pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_NOTFOUND;
+			Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, nNetType);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，查找用户失败,没有找到,错误:%lX"), lpszClientAddr, Session_GetLastError());
+			return false;
+		}
+		XEngine_Client_TaskSend(lpszClientAddr, (LPCXSTR)&st_AuthClient, sizeof(AUTHSESSION_NETCLIENT), nNetType);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功"), lpszClientAddr, st_AuthClient.st_UserTable.st_UserInfo.tszUserName);
+	}
 	else
 	{
 		Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
