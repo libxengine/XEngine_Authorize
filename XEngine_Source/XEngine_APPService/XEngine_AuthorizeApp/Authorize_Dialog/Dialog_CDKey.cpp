@@ -81,7 +81,7 @@ BOOL CDialog_CDKey::OnInitDialog()
 		USES_CONVERSION;
 		m_ComboRegSerial.InsertString(i, A2W(lpszXSerialType[i]));
 	}
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < 9; i++)
 	{
 		USES_CONVERSION;
 		m_ComboRegType.InsertString(i, A2W(lpszXRegType[i]));
