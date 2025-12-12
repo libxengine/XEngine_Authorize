@@ -8,6 +8,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 	LPCXSTR lpszAPIRegister = _X("register");
 	LPCXSTR lpszAPIPay = _X("pay");
 	LPCXSTR lpszAPIPass = _X("pass");
+	LPCXSTR lpszAPITime = _X("time");
 	LPCXSTR lpszAPITry = _X("try");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
@@ -296,6 +297,66 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		Protocol_Packet_HttpUserPass(tszSDBuffer, &nSDLen, &st_AuthProtocol);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，找回重置密码成功"), lpszClientAddr, st_UserInfo.tszUserName);
+	}
+	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITime, _tcsxlen(lpszAPIName)))
+	{
+		if (!st_FunSwitch.bSwitchTime)
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取用户时间信息失败，获取用户时间功能已经被服务器关闭!"), lpszClientAddr);
+			return false;
+		}
+		XENGINE_PROTOCOL_USERAUTHEX st_UserAuth = {};
+		if (!Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_PARSE, "protocol parse is incorrect");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s,获取用户时间信息失败,协议错误:%s"), lpszClientAddr, lpszMsgBuffer);
+			return false;
+		}
+		int nListCount = 0;
+		AUTHREG_USERTABLE st_UserTable = {};
+		AUTHSESSION_NETCLIENT** ppSt_ListClient;
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserAuth.tszUserName))
+		{
+			//没在线,获取数据库信息
+			bool bSuccess = false;
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				bSuccess = DBModule_SQLite_UserQuery(st_UserAuth.tszUserName, &st_UserTable);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_UserQuery(st_UserAuth.tszUserName, &st_UserTable);
+			}
+			if (!bSuccess)
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%lX"), lpszClientAddr, st_UserAuth.tszUserName, DBModule_GetLastError());
+				return false;
+			}
+			nListCount = 1;
+			BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListClient, 1, sizeof(AUTHSESSION_NETCLIENT));
+			_tcsxcpy((*ppSt_ListClient)[0].st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+			_tcsxcpy((*ppSt_ListClient)[0].tszLeftTime, st_UserTable.tszLeftTime);
+			(*ppSt_ListClient)[0].nLeftTime = _ttxoll(st_UserTable.tszLeftTime);
+			(*ppSt_ListClient)[0].st_UserTable.enDeviceType = st_UserTable.enDeviceType;
+			(*ppSt_ListClient)[0].st_UserTable.enSerialType = st_UserTable.enSerialType;
+		}
+		//安全验证判断
+		if ((0 != _tcsxncmp(st_UserAuth.tszUserName, st_UserTable.st_UserInfo.tszUserName, _tcsxlen(st_UserTable.st_UserInfo.tszUserName))) || (0 == _tcsxncmp(st_UserAuth.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_UserTable.st_UserInfo.tszUserPass))))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTMATCH, "user information is incorrent");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，验证信息失败"), lpszClientAddr, st_UserAuth.tszUserName);
+			return false;
+		}
+		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 	}
 	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITry, _tcsxlen(lpszAPIName)))
 	{
