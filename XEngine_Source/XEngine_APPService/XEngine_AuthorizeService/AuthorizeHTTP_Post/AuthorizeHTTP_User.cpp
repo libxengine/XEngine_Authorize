@@ -337,22 +337,23 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%lX"), lpszClientAddr, st_UserAuth.tszUserName, DBModule_GetLastError());
 				return false;
 			}
-			nListCount = 1;
-			BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListClient, 1, sizeof(AUTHSESSION_NETCLIENT));
-			_tcsxcpy((*ppSt_ListClient)[0].st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.tszUserName);
-			_tcsxcpy((*ppSt_ListClient)[0].tszLeftTime, st_UserTable.tszLeftTime);
-			(*ppSt_ListClient)[0].nLeftTime = _ttxoll(st_UserTable.tszLeftTime);
-			(*ppSt_ListClient)[0].st_UserTable.enDeviceType = st_UserTable.enDeviceType;
-			(*ppSt_ListClient)[0].st_UserTable.enSerialType = st_UserTable.enSerialType;
 		}
 		//安全验证判断
-		if ((0 != _tcsxncmp(st_UserAuth.tszUserName, st_UserTable.st_UserInfo.tszUserName, _tcsxlen(st_UserTable.st_UserInfo.tszUserName))) || (0 == _tcsxncmp(st_UserAuth.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_UserTable.st_UserInfo.tszUserPass))))
+		if ((0 != _tcsxncmp(st_UserAuth.tszUserName, st_UserTable.st_UserInfo.tszUserName, _tcsxlen(st_UserTable.st_UserInfo.tszUserName))) && (0 != _tcsxncmp(st_UserAuth.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_UserTable.st_UserInfo.tszUserPass))))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTMATCH, "user information is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，验证信息失败"), lpszClientAddr, st_UserAuth.tszUserName);
 			return false;
 		}
+		nListCount = 1;
+		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListClient, 1, sizeof(AUTHSESSION_NETCLIENT));
+		_tcsxcpy((*ppSt_ListClient)[0].st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+		_tcsxcpy((*ppSt_ListClient)[0].tszLeftTime, st_UserTable.tszLeftTime);
+		(*ppSt_ListClient)[0].nLeftTime = _ttxoll(st_UserTable.tszLeftTime);
+		(*ppSt_ListClient)[0].st_UserTable.enDeviceType = st_UserTable.enDeviceType;
+		(*ppSt_ListClient)[0].st_UserTable.enSerialType = st_UserTable.enSerialType;
+
 		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
