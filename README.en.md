@@ -115,6 +115,22 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/7.png "在这里输入图片标题")
 ![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/8.png "在这里输入图片标题")
 
+## No-Code License Authorization & Verification Support
+If you do not have software development capabilities, do not want to implement authorization yourself, or want to add license verification to existing software, we also provide an authorization packaging service. This service allows your program to be directly packaged with our verification system.  
+What does this mean? It’s actually very easy to understand. You simply provide us with an executable file, and we package it into our verification client for you. You do not need to write any code or provide the program’s source code. We integrate your program into our verification client so that when it runs, our verification client starts first. After successful verification, your program will then be launched. This makes it very convenient to use.  
+This service is paid, priced at 200 per package. It supports both x86 and x64 programs, does not modify your program, and only requires you to provide your server address, port, and verification mode. The process is as follows:  
+Payment → Send the program to us → We package it → Verification testing → Send the packaged program to you → Completed  
+After packaging, when the program is launched, the following window will open first. Only after a successful login will your program start. As shown below, once launched, the main interface will be displayed. After login, the main interface will close and your program will then start.  
+![Main Interface](./XEngine_Picture/packet_1.png "Main Interface")
+![CDKEY Login](./XEngine_Picture/packet_2.png "CDKEY Login")
+![User Registration](./XEngine_Picture/packet_3.png "User Registration")
+![User Recharge](./XEngine_Picture/packet_4.png "User Recharge")
+![Password Recovery](./XEngine_Picture/packet_5.png "Password Recovery")
+![Remaining Time](./XEngine_Picture/packet_6.png "Remaining Time")
+
+The verification timer will automatically stop. Supported features include login, local CDKEY verification, registration, recharge, password recovery, and remaining time query.  
+Note: This feature is only a packaging replacement. If you require full encryption, shell protection, and higher security, you must implement it yourself through code development.  
+
 ## Participate in contribution
 
 1.  Fork this code
