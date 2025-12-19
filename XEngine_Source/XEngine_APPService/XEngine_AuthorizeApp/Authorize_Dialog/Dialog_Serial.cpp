@@ -194,6 +194,11 @@ void CDialog_Serial::OnBnClickedButton2()
 	CString m_StrIPAddr;
 	CString m_StrIPPort;
 	CString m_StrToken;
+	CString m_StrHasTime;
+	CString m_StrSerialCount;
+	CString m_StrNumberCount;
+	CString m_StrExpiredTime;
+
 	XCHAR tszUrlAddr[XPATH_MAX];
 	CDialog_Config* pWnd = (CDialog_Config*)CDialog_Config::FromHandle(hConfigWnd);
 
@@ -201,18 +206,21 @@ void CDialog_Serial::OnBnClickedButton2()
 	pWnd->m_EditIPAddr.GetWindowText(m_StrIPAddr);
 	pWnd->m_EditIPPort.GetWindowText(m_StrIPPort);
 	pWnd->m_EditToken.GetWindowText(m_StrToken);
+	m_EditExpiredTime.GetWindowText(m_StrExpiredTime);
+	m_EditHasTime.GetWindowText(m_StrHasTime);
+	m_EditSerialCount.GetWindowText(m_StrSerialCount);
 
-	CString m_StrHasTime;
-	CString m_StrSerialCount;
-	CString m_StrNumberCount;
-	CString m_StrExpiredTime;
+	if (m_StrHasTime.IsEmpty() || m_StrSerialCount.IsEmpty())
+	{
+		AfxMessageBox(_T("必须配置卡拥有的时间和生成数量"));
+		return;
+	}
+	
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonArray;
 	Json::Value st_JsonObject;
 
-	m_EditExpiredTime.GetWindowText(m_StrExpiredTime);
-	m_EditHasTime.GetWindowText(m_StrHasTime);
-	m_EditSerialCount.GetWindowText(m_StrSerialCount);
+	
 	m_ComboNumber.GetLBText(m_ComboNumber.GetCurSel(), m_StrNumberCount);
 	USES_CONVERSION;
 	XCHAR tszTimeStr[XPATH_MIN] = {};
