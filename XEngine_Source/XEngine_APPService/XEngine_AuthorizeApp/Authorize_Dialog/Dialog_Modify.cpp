@@ -215,7 +215,7 @@ void CDialog_Modify::OnBnClickedButton2()
 	strcpy(st_UserTable.tszLeftTime, W2A(m_StrUserInfo.GetBuffer()));
 
 	st_UserTable.enSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)m_ComboSerial.GetCurSel();
-	st_UserTable.st_UserInfo.nUserLevel = m_ComboLeave.GetCurSel() - 1;
+	st_UserTable.st_UserInfo.nUserLevel = m_ComboLeave.GetCurSel();
 
 	Json::Value st_JsonRoot;
 	Json::Value st_JsonTable;
