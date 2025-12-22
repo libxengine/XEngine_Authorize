@@ -374,7 +374,7 @@ int main(int argc, char** argv)
 
 	if (st_AuthConfig.st_XCrypto.bEnable)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为开启,密码:%d"), st_AuthConfig.st_XCrypto.nPassword);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为开启,密码:%s"), st_AuthConfig.st_XCrypto.tszCryptoKey);
 	}
 	else
 	{

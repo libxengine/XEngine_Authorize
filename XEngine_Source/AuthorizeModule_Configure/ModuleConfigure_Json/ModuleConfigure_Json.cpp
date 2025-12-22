@@ -154,7 +154,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	}
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
-	pSt_ServerConfig->st_XCrypto.nPassword = st_JsonXCrypto["nPass"].asInt();
+	_tcsxcpy(pSt_ServerConfig->st_XCrypto.tszCryptoKey, st_JsonXCrypto["tszPassKey"].asCString());
 	//接口验证
 	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))
 	{

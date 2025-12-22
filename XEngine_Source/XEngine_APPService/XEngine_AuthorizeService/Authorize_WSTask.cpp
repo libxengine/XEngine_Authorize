@@ -27,14 +27,8 @@ XHTHREAD XCALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 			}
 			if (st_AuthConfig.st_XCrypto.bEnable)
 			{
-				XCHAR tszPassword[64];
-				XCHAR tszDeBuffer[2048];
-
-				memset(tszPassword, '\0', sizeof(tszPassword));
-				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
-
-				_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				XCHAR tszDeBuffer[2048] = {};
+				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
 				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode);
 			}
 			else
