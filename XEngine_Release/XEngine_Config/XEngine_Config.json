@@ -51,7 +51,7 @@
         }
     },
     "XCrypto": {
-        "bEnable": true,
+        "bEnable": false,
         "tszPassKey": "123123aa"
     },
     "XApiVer": {
