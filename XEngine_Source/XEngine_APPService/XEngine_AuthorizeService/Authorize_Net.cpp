@@ -159,11 +159,7 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 {
 	if (st_AuthConfig.st_XCrypto.bEnable)
 	{
-		XCHAR tszPassword[64];
-		memset(tszPassword, '\0', sizeof(tszPassword));
-
-		_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType, tszPassword);
+		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType, st_AuthConfig.st_XCrypto.tszCryptoKey);
 	}
 	else
 	{

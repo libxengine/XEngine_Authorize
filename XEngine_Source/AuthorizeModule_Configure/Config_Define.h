@@ -81,8 +81,8 @@ typedef struct
 	}st_XLogin;
 	struct  
 	{
+		XCHAR tszCryptoKey[32];                             //加密传输密钥
 		bool bEnable;                                       //是否启用加密传输 
-		int nPassword;                                      //密码
 	}st_XCrypto;
 	struct  
 	{

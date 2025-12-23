@@ -1,3 +1,23 @@
+XEngine_Authorize V3.21.0.1001
+
+增加:http 用户可以获取用户时间信息
+更新:cdkey管理器序列号类型
+优化:获取用户时间处理流程
+修改:加密通信支持英文字母密码了
+修改:序列号生成检测
+修正:用户等级修改不正确的问题
+修正:插入序列号失败的问题
+修正:重置密码错误
+
+added:get time info for http user
+update:cdkey management serial type
+improved:get user time protocol process
+modify:crypt communication pass word support
+modify:serial generator check
+fixed:user level incorrect when modify user info
+fixed:insert serial number failure
+fixed:reset password is incorrect
+================================================================
 XEngine_Authorize V3.20.0.1001
 
 ci:centos and alma linux and debian 13 system support

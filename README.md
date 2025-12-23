@@ -117,14 +117,36 @@ Linux or macos:直接运行即可
 端口:http 5302 用于服务端管理 传输验证密码:无加密  
 
 ## 程序截图
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/7.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/8.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_1.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_2.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_3.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_4.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_5.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_6.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_7.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_8.png "在这里输入图片标题")
+
+## 无代码授权验证支持
+#### 程序打包服务
+如果你没有开发软件能力或者不想自己实现或者想给其他软件添加授权验证,我们也提供了授权打包服务,这个服务可以直接让你的程序打包我们的验证.  
+程序打包服务是一个付费服务,你可以为任意程序打包加验证.不需要源代码不修改你的程序就可以集成我们的验证服务,当打包完成后,当下次运行,就会先运行我们的验证客户端,验证通过后再运行你提供的程序,非常方便使用.  
+此服务需要付费,200元3次,不限制x86或者x64位程序,你只需要告诉我们你的服务器地址端口验证模式即可.流程如下:  
+付费->发送程序给我们->我们打包->测试验证->发送打包程序给你->完成  
+当打包后,运行程序会优先打开下面的窗口,登录成功后才会启动你的程序,如下图,开启后会显示主界面,登录后主界面会关闭,然后启动你的程序  
+![主界面](./XEngine_Picture/packet_1.png "主界面")  
+![CDKEY登录](./XEngine_Picture/packet_2.png "CDKEY登录")  
+![用户注册](./XEngine_Picture/packet_3.png "用户注册")  
+![用户充值](./XEngine_Picture/packet_4.png "用户充值")  
+![找回密码](./XEngine_Picture/packet_5.png "找回密码")  
+![剩余时间](./XEngine_Picture/packet_6.png "剩余时间")  
+
+会自动结束验证计时.支持登录,本地CDKEY验证,注册,充值,找回密码,获取剩余时间.  
+注意:此功能只是替代打包,如果你想要完全的加密加壳安全性高的,必须自己使用代码开发.  
+#### 打包器
+我们也可以提供原始打包器,如果你有更多打包需求.打包器目前优惠活动中,500元.  
+可以选择我们的验证程序,然后选择你要打包的程序.在选择配置文件即可,支持自动更新程序图标为你的软件图标.  
+配置文件支持配置加解密通信和验证模式  
+![主界面](./XEngine_Picture/packer_1.png "主界面")  
 
 ## 参与贡献
 

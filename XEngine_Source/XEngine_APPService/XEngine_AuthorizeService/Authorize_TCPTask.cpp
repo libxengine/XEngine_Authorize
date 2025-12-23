@@ -29,14 +29,8 @@ XHTHREAD XCALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 			}
 			if (st_AuthConfig.st_XCrypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
 			{
-				XCHAR tszPassword[64];
-				XCHAR tszDeBuffer[2048];
-
-				memset(tszPassword, '\0', sizeof(tszPassword));
-				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
-
-				_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
+				XCHAR tszDeBuffer[2048] = {};
+				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
 				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 			else
@@ -181,7 +175,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("客户端：%s，用户名：%s，登录失败，用户名不存在"), lpszClientAddr, st_AuthProtocol.tszUserName);
 					return false;
 				}
-				if ((_tcsxlen(st_AuthProtocol.tszUserPass) != _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_AuthProtocol.tszUserPass))))
+				if (0 != _tcsxncmp(st_AuthProtocol.tszUserPass, st_UserTable.st_UserInfo.tszUserPass, _tcsxlen(st_UserTable.st_UserInfo.tszUserPass)))
 				{
 					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_PASS;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);
@@ -220,7 +214,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 				{
 					bSuccess = DBModule_MySQL_UserQuery(st_AuthProtocol.tszUserName, &st_UserTable, false);
 				}
-				if ((_tcsxlen(st_AuthProtocol.tszUserName) != _tcsxlen(st_UserTable.tszHardCode)) || (0 != _tcsxncmp(st_AuthProtocol.tszUserName, st_UserTable.tszHardCode, _tcsxlen(st_AuthProtocol.tszUserName))))
+				if (0 != _tcsxncmp(st_AuthProtocol.tszUserName, st_UserTable.tszHardCode, _tcsxlen(st_UserTable.tszHardCode)))
 				{
 					pSt_ProtocolHdr->wReserve = ERROR_AUTHORIZE_PROTOCOL_HARDCODE;
 					Protocol_Packet_HDRComm(tszSDBuffer, &nSDLen, pSt_ProtocolHdr, nNetType);

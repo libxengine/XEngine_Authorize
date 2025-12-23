@@ -106,14 +106,36 @@ address:app.xyry.org
 port :tcp port 5300,websocket port 5301,http management port 5302,Transmission verification password: no encryption
 
 ## Screenshot of the program
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/1.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/2.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/3.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/4.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/5.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/6.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/7.png "在这里输入图片标题")
-![输入图片说明](https://www.xyry.org/XEngine_StructPic/authorize/8.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_1.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_2.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_3.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_4.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_5.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_6.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_7.png "在这里输入图片标题")
+![输入图片说明](./XEngine_Picture/authorize_8.png "在这里输入图片标题")
+
+## No-Code License Authorization & Verification Support
+#### app packet service
+If you don't have software development capabilities, don't want to implement it yourself, or want to add authorization verification to other software, we also provide an authorization packaging service, which allows your program to directly package our verification.  
+Program Packaging Service is a paid service, and you can package and add verification to any program. You can integrate our verification service without requiring source code or modifying your program. After packaging is complete, when it is run next time, our verification client will run first, and then your provided program will run after verification is successful, which is very convenient to use.  
+This service is paid, priced at 200 per package. It supports both x86 and x64 programs, and only requires you to provide your server address, port, and verification mode. The process is as follows:  
+Payment → Send the program to us → We package it → Verification testing → Send the packaged program to you → Completed  
+After packaging, when the program is launched, the following window will open first. Only after a successful login will your program start. As shown below, once launched, the main interface will be displayed. After login, the main interface will close and your program will then start.  
+![Main Interface](./XEngine_Picture/packet_1.png "Main Interface")  
+![CDKEY Login](./XEngine_Picture/packet_2.png "CDKEY Login")  
+![User Registration](./XEngine_Picture/packet_3.png "User Registration")  
+![User Recharge](./XEngine_Picture/packet_4.png "User Recharge")  
+![Password Recovery](./XEngine_Picture/packet_5.png "Password Recovery")  
+![Remaining Time](./XEngine_Picture/packet_6.png "Remaining Time")  
+
+The verification timer will automatically stop. Supported features include login, local CDKEY verification, registration, recharge, password recovery, and remaining time query.  
+Note: This feature is only a packaging replacement. If you require full encryption, shell protection, and higher security, you must implement it yourself through code development.  
+#### Packager
+We can also provide the original packager if you have more packaging needs. The packager is currently in a promotional campaign, 500 yuan.  
+You can choose our verification program, then select the program you want to package. Then select the configuration file, and that's it. It supports automatically updating the program icon to your software icon.  
+Configuration file supports configuring encryption and decryption communication and authentication mode  
+![Main Interface](./XEngine_Picture/packer_1.png "Main Interface")
 
 ## Participate in contribution
 
