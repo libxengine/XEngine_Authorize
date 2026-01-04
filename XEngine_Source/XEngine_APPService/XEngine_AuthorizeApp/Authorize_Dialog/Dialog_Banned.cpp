@@ -158,7 +158,7 @@ void CDialog_Banned::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -174,7 +174,7 @@ void CDialog_Banned::OnBnClickedButton2()
 		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -248,7 +248,7 @@ void CDialog_Banned::OnBnClickedButton4()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -264,7 +264,7 @@ void CDialog_Banned::OnBnClickedButton4()
 		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
@@ -376,7 +376,7 @@ void CDialog_Banned::OnBnClickedButton3()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -392,7 +392,7 @@ void CDialog_Banned::OnBnClickedButton3()
 		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析删除黑名单接口数据错误,无法继续"));
@@ -494,7 +494,7 @@ void CDialog_Banned::OnBnClickedButton5()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (UCHAR*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -510,7 +510,7 @@ void CDialog_Banned::OnBnClickedButton5()
 		XCHAR tszMsgBuffer[2048];
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));

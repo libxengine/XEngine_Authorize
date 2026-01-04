@@ -30,7 +30,10 @@ XHTHREAD XCALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 			if (st_AuthConfig.st_XCrypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
 			{
 				XCHAR tszDeBuffer[2048] = {};
-				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
+				if (nMsgLen > 0)
+				{
+					Cryption_XCrypto_Decoder((LPCXBTR)tszMsgBuffer, &nMsgLen, (XBYTE*)tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
+				}
 				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 			}
 			else

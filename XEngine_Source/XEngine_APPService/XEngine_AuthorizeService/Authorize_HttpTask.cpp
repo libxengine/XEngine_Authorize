@@ -27,7 +27,10 @@ XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 				if (st_AuthConfig.st_XCrypto.bEnable)
 				{
 					XCHAR tszDeBuffer[2048] = {};
-					Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
+					if (nMsgLen > 0)
+					{
+						Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
+					}
 					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
 				}
 				else

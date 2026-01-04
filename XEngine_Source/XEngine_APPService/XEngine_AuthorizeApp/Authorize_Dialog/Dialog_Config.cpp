@@ -153,7 +153,7 @@ void CDialog_Config::OnBnClickedButton1()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
@@ -220,7 +220,7 @@ void CDialog_Config::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
@@ -281,7 +281,7 @@ void CDialog_Config::OnBnClickedButton5()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
@@ -353,7 +353,7 @@ void CDialog_Config::OnBnClickedButton8()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
+		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
 		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));

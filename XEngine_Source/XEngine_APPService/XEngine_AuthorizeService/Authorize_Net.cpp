@@ -179,7 +179,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		else
 		{
 			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
+			Cryption_XCrypto_Encoder((LPCXBTR)lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
 			RfcComponents_WSCodec_EncodeMsg(m_CodecMemory.get(), m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, m_HTTPMemory.get(), nMsgLen);
@@ -205,7 +205,7 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		else
 		{
 			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
+			Cryption_XCrypto_Encoder((LPCXBTR)lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
 			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
