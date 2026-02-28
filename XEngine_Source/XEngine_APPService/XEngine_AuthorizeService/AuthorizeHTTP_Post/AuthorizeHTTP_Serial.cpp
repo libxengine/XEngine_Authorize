@@ -71,28 +71,39 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	}
 	else if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
-		int nListCount = 0;
-		AUTHREG_SERIALTABLE** ppSt_SerialTable;
+		int nSerialCount = 0;
+		int nFieldCount = 0;
+		ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;
+		XCHAR tszExpiredTime[64] = {};
+		XCHAR tszMaxTime[64] = {};
+		XCHAR tszCreateTime[64] = {};
 
-		Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, &ppSt_SerialTable, &nListCount);
-		if (0 == st_AuthConfig.st_XSql.nDBType) 
+		Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, tszExpiredTime, tszMaxTime, &nSerialCount, &nFieldCount, &enSerialType);
+		BaseLib_Time_TimeToStr(tszCreateTime);
+
+		for (int i = 0; i < nSerialCount; i++)
 		{
-			for (int i = 0; i < nListCount; i++)
+			AUTHREG_SERIALTABLE st_SerialTable = {};
+			st_SerialTable.bIsUsed = false;
+			st_SerialTable.enSerialType = enSerialType;
+			_xstprintf(st_SerialTable.tszUserName, _X("NOT"));
+			_tcsxcpy(st_SerialTable.tszCreateTime, tszCreateTime);
+			_tcsxcpy(st_SerialTable.tszExpiredTime, tszExpiredTime);
+			_tcsxcpy(st_SerialTable.tszMaxTime, tszMaxTime);
+			Verification_XAuthKey_KeySerial(st_SerialTable.tszSerialNumber, nFieldCount, 0);
+
+			if (0 == st_AuthConfig.st_XSql.nDBType)
 			{
-				DBModule_SQLite_SerialInsert(ppSt_SerialTable[i]);
+				DBModule_SQLite_SerialInsert(&st_SerialTable);
+			}
+			else
+			{
+				DBModule_SQLite_SerialInsert(&st_SerialTable);
 			}
 		}
-		else 
-		{
-			for (int i = 0; i < nListCount; i++)
-			{
-				DBModule_SQLite_SerialInsert(ppSt_SerialTable[i]);
-			}
-		}
-		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求插入自定义序列号成功,个数:%d"), lpszClientAddr, nListCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求插入自定义序列号成功,个数:%d"), lpszClientAddr, nSerialCount);
 	}
 	return true;
 }

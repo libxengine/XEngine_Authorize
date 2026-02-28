@@ -87,7 +87,7 @@ BOOL CDialog_Config::OnInitDialog()
 	m_ListEncrypto.InsertString(0, _T("不启用"));
 	m_ListEncrypto.InsertString(1, _T("AES128"));
 	m_ListEncrypto.InsertString(2, _T("AES256"));
-	m_ListEncrypto.SetCurSel(0);
+	m_ListEncrypto.SetCurSel(1);
 	m_ListEncrypto.EnableWindow(false);
 
 	m_EditPassword.SetWindowText(_T("123123aa"));

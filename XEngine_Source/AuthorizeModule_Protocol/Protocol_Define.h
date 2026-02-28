@@ -600,6 +600,50 @@ extern "C" bool Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int nMsgLen
 *********************************************************************/
 extern "C" bool Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_SERIALTABLE*** pppSt_SerialTable, int* pInt_ListCount);
 /********************************************************************
+函数名称：Protocol_Parse_HttpParseSerial
+函数功能：解析HTTP序列号信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
+ 参数.三：ptszOUTTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出过期时间
+ 参数.四：ptszHASTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出拥有时间
+ 参数.五：pInt_SerialCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出序列号个数
+ 参数.六：pInt_FieldCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出字段个数
+ 参数.七：penSerialType
+  In/Out：Out
+  类型：枚举型指针
+  可空：N
+  意思：输出生成类型
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszExpiredTime, XCHAR* ptszMaxTime, int* pInt_SerialCount, int* pInt_FieldCount, ENUM_VERIFICATION_MODULE_SERIAL_TYPE* penSerialType);
+/********************************************************************
 函数名称：Protocol_Parse_HttpParseOnline
 函数功能：解析在线列表
  参数.一：lpszMsgBuffer
