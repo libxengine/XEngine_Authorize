@@ -15,7 +15,7 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，CDKey验证授权失败，功能已经被服务器关闭!"), lpszClientAddr);
 		return false;
 	}
-	if (0 == _tcsxnicmp(lpszAPICreate, lpszAPIName, _tcsxlen(lpszAPICreate)))
+	if (0 == _tcsxncmp(lpszAPICreate, lpszAPIName, _tcsxlen(lpszAPICreate)))
 	{
 		VERIFICATION_XAUTHKEY st_Authorize = {};
 
@@ -30,7 +30,7 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求创建CDKEY成功,APP名:%s,APP版本:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIAuth, lpszAPIName, _tcsxlen(lpszAPIAuth)))
+	else if (0 == _tcsxncmp(lpszAPIAuth, lpszAPIName, _tcsxlen(lpszAPIAuth)))
 	{
 		VERIFICATION_XAUTHKEY st_Authorize = {};
 		if (!Verification_XAuthKey_MemoryRead(&st_Authorize, lpszMsgBuffer, nMsgLen))
@@ -52,7 +52,7 @@ bool XEngine_AuthorizeHTTP_CDKey(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPoolSend.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端:%s,请求授权CDKEY成功,APP名:%s,APP版本:%s,授权期限:%s"), lpszClientAddr, st_Authorize.st_AuthAppInfo.tszAppName, st_Authorize.st_AuthAppInfo.tszAppVer, st_Authorize.st_AuthRegInfo.tszLeftTime);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIVer, lpszAPIName, _tcsxlen(lpszAPIVer)))
+	else if (0 == _tcsxncmp(lpszAPIVer, lpszAPIName, _tcsxlen(lpszAPIVer)))
 	{
 		VERIFICATION_XAUTHKEY st_Authorize = {};
 		if (!Verification_XAuthKey_MemoryRead(&st_Authorize, lpszMsgBuffer, nMsgLen))

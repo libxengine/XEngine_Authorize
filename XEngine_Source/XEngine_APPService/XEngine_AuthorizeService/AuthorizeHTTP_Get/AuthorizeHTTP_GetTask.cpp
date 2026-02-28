@@ -13,7 +13,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 
-	if (0 == _tcsxnicmp(lpszAPITime, tszURLValue, _tcsxlen(lpszAPITime)))
+	if (0 == _tcsxncmp(lpszAPITime, tszURLValue, _tcsxlen(lpszAPITime)))
 	{
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
@@ -41,7 +41,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, nListCount);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIDCode, tszURLValue, _tcsxlen(lpszAPIDCode)))
+	else if (0 == _tcsxncmp(lpszAPIDCode, tszURLValue, _tcsxlen(lpszAPIDCode)))
 	{
 		if (!st_FunSwitch.bSwitchDCode)
 		{
@@ -58,7 +58,7 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获得动态验证码成功,TOKEN:%lld,验证码:%d"), lpszClientAddr, xhToken, nDCode);
 	}
-	else if (0 == _tcsxnicmp(lpszAPINotice, tszURLValue, _tcsxlen(lpszAPINotice)))
+	else if (0 == _tcsxncmp(lpszAPINotice, tszURLValue, _tcsxlen(lpszAPINotice)))
 	{
 		XCHAR tszUserToken[128];
 		memset(tszUserToken, '\0', sizeof(tszUserToken));
