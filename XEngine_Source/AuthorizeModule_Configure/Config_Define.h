@@ -82,6 +82,7 @@ typedef struct
 	struct  
 	{
 		XCHAR tszCryptoKey[32];                             //加密传输密钥
+		int nCryptionType;									//加密传输类型,参考:ENUM_XENGINE_CRYPTION_SYMMETRIC
 		bool bEnable;                                       //是否启用加密传输 
 	}st_XCrypto;
 	struct  

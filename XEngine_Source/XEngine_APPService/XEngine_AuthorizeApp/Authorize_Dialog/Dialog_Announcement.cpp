@@ -95,44 +95,28 @@ void CDialog_Announcement::OnBnClickedButton1()
 	memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 	memset(tszPassBuffer, '\0', sizeof(tszPassBuffer));
 	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
+	::GetDlgItemText(hConfigWnd, IDC_EDIT6, tszPassBuffer, sizeof(tszPassBuffer));
 
 	nMsgLen = Json::writeString(st_JsonBuilder, st_JsonRoot).length();
 	BaseLib_Charset_AnsiToUTF(Json::writeString(st_JsonBuilder, st_JsonRoot).c_str(), tszCodecBuffer, &nMsgLen);
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
+		Cryption_Api_CryptEncodec(NULL, (XBYTE *)tszCodecBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
+	}
+	APIClient_Http_Request(_X("POST"), tszUrlAddr, tszCodecBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Encoder((LPCXBTR)tszCodecBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
-		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
-	}
-	else
-	{
-		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszCodecBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
-	}
 	JSONCPP_STRING st_JsonError;
 	Json::CharReaderBuilder st_ReaderBuilder;
 	st_JsonRoot.clear();
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
+		return;
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
@@ -191,7 +175,7 @@ void CDialog_Announcement::OnBnClickedButton2()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszMsgBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -204,23 +188,12 @@ void CDialog_Announcement::OnBnClickedButton2()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE *)ptszMsgBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
+		return;
 	}
 
 	if (0 == st_JsonRoot["code"].asInt())
@@ -269,7 +242,7 @@ void CDialog_Announcement::OnBnClickedButton3()
 		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder((LPCXBTR)st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszMsgBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
 		APIClient_Http_Request(_X("POST"), tszUrlAddr, tszMsgBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 	}
 	else
@@ -282,23 +255,12 @@ void CDialog_Announcement::OnBnClickedButton3()
 	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
 	if (bCrypto)
 	{
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
-		Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszMsgBuffer, W2A(tszPassBuffer));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(tszPassBuffer), (ENUM_XENGINE_CRYPTION_SYMMETRIC)pWnd->m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("解析客户列表接口数据错误,无法继续"));
+		return;
 	}
 
 	for (unsigned int i = 0; i < st_JsonRoot["Array"].size(); i++)

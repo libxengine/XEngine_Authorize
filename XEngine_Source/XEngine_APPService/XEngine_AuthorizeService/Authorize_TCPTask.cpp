@@ -27,19 +27,11 @@ XHTHREAD XCALLBACK XEngine_AuthService_TCPThread(XPVOID lParam)
 			{
 				continue;
 			}
-			if (st_AuthConfig.st_XCrypto.bEnable && (ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT == st_ProtocolHdr.wCrypto))
+			if (st_AuthConfig.st_XCrypto.bEnable)
 			{
-				XCHAR tszDeBuffer[2048] = {};
-				if (nMsgLen > 0)
-				{
-					Cryption_XCrypto_Decoder((LPCXBTR)tszMsgBuffer, &nMsgLen, (XBYTE*)tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
-				}
-				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
+				Cryption_Api_CryptDecodec(NULL, (XBYTE*)tszMsgBuffer, &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
 			}
-			else
-			{
-				XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
-			}
+			XEngine_Client_TCPTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_TCP);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}

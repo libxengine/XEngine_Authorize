@@ -26,17 +26,9 @@ XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 			{
 				if (st_AuthConfig.st_XCrypto.bEnable)
 				{
-					XCHAR tszDeBuffer[2048] = {};
-					if (nMsgLen > 0)
-					{
-						Cryption_XCrypto_Decoder((LPCXBTR)ptszMsgBuffer, &nMsgLen, (XBYTE*)tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
-					}
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
+					Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
 				}
-				else
-				{
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
-				}
+				XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
 			}
 			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			BaseLib_Memory_Free((XPPPMEM)&ppszListHdr, nHdrCount);

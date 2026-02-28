@@ -146,7 +146,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bSecond = st_JsonMulitLogin["bSecond"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
 	//加密配置
-	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
+	if (st_JsonRoot["XCrypto"].empty() || (3 != st_JsonRoot["XCrypto"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XCRYPTO;
@@ -154,6 +154,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	}
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
+	pSt_ServerConfig->st_XCrypto.nCryptionType = st_JsonXCrypto["nCryptionType"].asInt();
 	_tcsxcpy(pSt_ServerConfig->st_XCrypto.tszCryptoKey, st_JsonXCrypto["tszPassKey"].asCString());
 	//接口验证
 	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))

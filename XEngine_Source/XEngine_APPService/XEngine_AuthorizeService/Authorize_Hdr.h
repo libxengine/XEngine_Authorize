@@ -46,6 +46,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Error.h>
+#include <XEngine_Include/XEngine_RfcComponents/MQTTProtocol_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/MQTTProtocol_Error.h>
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Define.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
@@ -96,6 +98,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "Authorize_TCPTask.h"
 #include "Authorize_WSTask.h"
 #include "Authorize_HttpTask.h"
+#include "Authorize_MQTTTask.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_User.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Client.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Serial.h"
@@ -121,6 +124,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol.lib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_MQTTProtocol.lib")
 #ifdef _DEBUG
 #ifdef _M_X64
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Configure.lib")
