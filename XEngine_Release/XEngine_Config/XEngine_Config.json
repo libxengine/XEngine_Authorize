@@ -2,6 +2,7 @@
     "nTCPPort": 5300,
     "nWSPort": 5301,
     "nHTTPPort": 5302,
+    "nMQTTPort": 5303,
     "bDeamon": false,
     "bTimeNotify": false,
     "XMax": {
@@ -10,7 +11,8 @@
         "nIOThread": 2,
         "nTCPThread": 2,
         "nWSThread": 2,
-        "nHTTPThread": 2
+        "nHTTPThread": 2,
+        "nMQTTThread": 2
     },
     "XTime": {
         "nHeartCheck": 3,
@@ -51,7 +53,7 @@
         }
     },
     "XCrypto": {
-        "bEnable": false,
+        "bEnable": true,
         "nCryptionType": 1,
         "tszPassKey": "123123aa"
     },

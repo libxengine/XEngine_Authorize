@@ -20,6 +20,7 @@ typedef struct
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
 	int nHTTPPort;                                          //HTTP管理端口
+	int nMQTTPort;                                          //MQTT端口
 	bool bDeamon;                                           //守护进程,LINUX
 	bool bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct
@@ -30,6 +31,7 @@ typedef struct
 		int nTCPThread;                                     //TCP业务线程个数
 		int nWSThread;                                      //WEBSOCKET业务线程个数
 		int nHTTPThread;                                    //HTTP业务线程个数
+		int nMQTTThread;                                    //MQTT业务线程个数
 	}st_XMax;
 	struct  
 	{

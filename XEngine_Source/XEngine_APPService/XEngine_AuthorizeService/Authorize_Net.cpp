@@ -88,6 +88,26 @@ void XCALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket,
 	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
+bool XCALLBACK XEngine_Client_MQTTLogin(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
+{
+	MQTTProtocol_Parse_Insert(lpszClientAddr);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("MQTT客户端:%s,链接到服务器"), lpszClientAddr);
+	return true;
+}
+void XCALLBACK XEngine_Client_MQTTRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
+{
+	if (!MQTTProtocol_Parse_Send(lpszClientAddr, lpszRecvMsg, nMsgLen))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("MQTT客户端:%s,投递MQTT数据包到消息队列失败，错误：%lX"), lpszClientAddr, MQTTProtocol_GetLastError());
+		return;
+	}
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG, _X("MQTT客户端:%s,投递MQTT数据包到消息队列成功,%d"), lpszClientAddr, nMsgLen);
+}
+void XCALLBACK XEngine_Client_MQTTLeave(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, 0);
+}
+//////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 {
 	xstring m_StrLeave;
@@ -96,6 +116,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhMQTTSocket, lpszClientAddr);
 
 		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
@@ -114,15 +135,15 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhMQTTSocket, lpszClientAddr);
 		m_StrLeave = _X("心跳断开");
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	HttpProtocol_Server_CloseClinetEx(xhHttpPacket, lpszClientAddr);
-	
-	AUTHSESSION_NETCLIENT st_NETClient;
-	memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
+	MQTTProtocol_Parse_Delete(lpszClientAddr);
 
+	AUTHSESSION_NETCLIENT st_NETClient = {};
 	if (Session_Authorize_GetUserForAddr(lpszClientAddr, &st_NETClient))
 	{
 		AUTHREG_PROTOCOL_TIME st_AuthTime;
@@ -178,6 +199,14 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	{
 		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhTCPHeart, lpszClientAddr);
+	}
+	else if (XENGINE_AUTH_APP_NETTYPE_MQTT == nNetType)
+	{
+		if (!NetCore_TCPXCore_SendEx(xhMQTTSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("发送数据给MQTT客户端：%s，失败，错误：%lX"), lpszClientAddr, NetCore_GetLastError());
+			return false;
+		}
 	}
 	else
 	{

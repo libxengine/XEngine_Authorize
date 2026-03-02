@@ -70,6 +70,7 @@ extern XHANDLE xhLog;
 extern XHANDLE xhTCPSocket;
 extern XHANDLE xhWSSocket;
 extern XHANDLE xhHttpSocket;
+extern XHANDLE xhMQTTSocket;
 
 extern XHANDLE xhTCPPacket;
 extern XHANDLE xhWSPacket;
@@ -83,13 +84,10 @@ extern XHANDLE xhMemPool;
 extern XHANDLE xhTCPPool;
 extern XHANDLE xhWSPool;
 extern XHANDLE xhHttpPool;
+extern XHANDLE xhMQTTPool;
 
 extern XENGINE_SERVICECONFIG st_AuthConfig;
 extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
-
-#define XENGINE_AUTH_APP_NETTYPE_TCP 0
-#define XENGINE_AUTH_APP_NETTYPE_WS 1
-#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
 
 #include "Authorize_HttpMemory.h"
 #include "Authorize_Config.h"

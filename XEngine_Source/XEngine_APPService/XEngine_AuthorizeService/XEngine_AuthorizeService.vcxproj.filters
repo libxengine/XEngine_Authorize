@@ -81,6 +81,9 @@
     <ClCompile Include="AuthorizeHTTP_Get\AuthorizeHTTP_GetTask.cpp">
       <Filter>源文件\AuthorizeHTTP_Get</Filter>
     </ClCompile>
+    <ClCompile Include="Authorize_MQTTTask.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Authorize_Config.h">
@@ -138,6 +141,9 @@
       <Filter>头文件\AuthorizeHTTP_Get</Filter>
     </ClInclude>
     <ClInclude Include="Authorize_HttpMemory.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Authorize_MQTTTask.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

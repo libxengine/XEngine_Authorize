@@ -75,10 +75,11 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->nTCPPort = st_JsonRoot["nTCPPort"].asInt();
 	pSt_ServerConfig->nWSPort = st_JsonRoot["nWSPort"].asInt();
 	pSt_ServerConfig->nHTTPPort = st_JsonRoot["nHTTPPort"].asInt();
+	pSt_ServerConfig->nMQTTPort = st_JsonRoot["nMQTTPort"].asInt();
 	pSt_ServerConfig->bDeamon = st_JsonRoot["bDeamon"].asBool();
 	pSt_ServerConfig->bTimeNotify = st_JsonRoot["bTimeNotify"].asBool();
 	//最大配置
-	if (st_JsonRoot["XMax"].empty() || (6 != st_JsonRoot["XMax"].size()))
+	if (st_JsonRoot["XMax"].empty() || (7 != st_JsonRoot["XMax"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XMAX;
@@ -91,6 +92,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nTCPThread = st_JsonXMax["nTCPThread"].asInt();
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
+	pSt_ServerConfig->st_XMax.nMQTTThread = st_JsonXMax["nMQTTThread"].asInt();
 	//时间配置
 	if (st_JsonRoot["XTime"].empty() || (4 != st_JsonRoot["XTime"].size()))
 	{
