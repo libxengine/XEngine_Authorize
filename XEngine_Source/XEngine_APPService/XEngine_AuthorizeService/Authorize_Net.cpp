@@ -157,30 +157,19 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType)
 {
-	if (st_AuthConfig.st_XCrypto.bEnable)
-	{
-		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType, st_AuthConfig.st_XCrypto.tszCryptoKey);
-	}
-	else
-	{
-		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType);
-	}
-	return true;
-}
-bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass)
-{
 	CHttpMemory_PoolEx m_HTTPMemory(XENGINE_MEMORY_SIZE_MAX);
+
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
-		if (NULL == lpszPass)
-		{
-			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
-		}
-		else
+		if (st_AuthConfig.st_XCrypto.bEnable)
 		{
 			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
 			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
 			RfcComponents_WSCodec_EncodeMsg(m_CodecMemory.get(), m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+		}
+		else
+		{
+			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, m_HTTPMemory.get(), nMsgLen);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhWSHeart, lpszClientAddr);
@@ -198,15 +187,15 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = true;
-		if (NULL == lpszPass)
+		if (st_AuthConfig.st_XCrypto.bEnable)
 		{
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
 		}
 		else
 		{
-			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, lpszPass, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);

@@ -17,4 +17,3 @@ void XCALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket,
 
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType = 0);
 bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType);
-bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass = NULL);
