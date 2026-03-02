@@ -496,10 +496,12 @@ XENGINE_EXITAPP:
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
+		MQTTProtocol_Parse_Destory();
 
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+		NetCore_TCPXCore_DestroyEx(xhMQTTSocket);
 
 		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
@@ -508,6 +510,7 @@ XENGINE_EXITAPP:
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		ManagePool_Thread_NQDestroy(xhHttpPool);
+		ManagePool_Thread_NQDestroy(xhMQTTPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
 		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
