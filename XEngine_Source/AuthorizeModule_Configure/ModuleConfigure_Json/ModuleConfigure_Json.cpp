@@ -94,7 +94,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
 	pSt_ServerConfig->st_XMax.nMQTTThread = st_JsonXMax["nMQTTThread"].asInt();
 	//时间配置
-	if (st_JsonRoot["XTime"].empty() || (4 != st_JsonRoot["XTime"].size()))
+	if (st_JsonRoot["XTime"].empty() || (5 != st_JsonRoot["XTime"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XTIME;
@@ -105,6 +105,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XTime.nTCPTime = st_JsonXTime["nTCPTime"].asInt();
 	pSt_ServerConfig->st_XTime.nWSTime = st_JsonXTime["nWSTime"].asInt();
 	pSt_ServerConfig->st_XTime.nHTTPTime = st_JsonXTime["nHTTPTime"].asInt();
+	pSt_ServerConfig->st_XTime.nMQTime = st_JsonXTime["nMQTTTime"].asInt();
 	//验证配置
 	if (st_JsonRoot["XVerification"].empty() || (8 != st_JsonRoot["XVerification"].size()))
 	{

@@ -18,7 +18,8 @@
         "nHeartCheck": 3,
         "nTCPTime": 5,
         "nWSTime": 5,
-        "nHTTPTime": 5
+        "nHTTPTime": 5,
+        "nMQTTTime": 5
     },
     "XVerification": {
         "nTokenTimeout": 3600,

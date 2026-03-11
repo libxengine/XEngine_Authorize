@@ -101,11 +101,16 @@ void XCALLBACK XEngine_Client_MQTTRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("MQTT客户端:%s,投递MQTT数据包到消息队列失败，错误：%lX"), lpszClientAddr, MQTTProtocol_GetLastError());
 		return;
 	}
+	SocketOpt_HeartBeat_ActiveAddrEx(xhMQTTSocket, lpszClientAddr);
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG, _X("MQTT客户端:%s,投递MQTT数据包到消息队列成功,%d"), lpszClientAddr, nMsgLen);
 }
 void XCALLBACK XEngine_Client_MQTTLeave(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
 {
 	XEngine_CloseClient(lpszClientAddr, 0);
+}
+void XCALLBACK XEngine_Client_MQTTHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
@@ -207,6 +212,7 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("发送数据给MQTT客户端：%s，失败，错误：%lX"), lpszClientAddr, NetCore_GetLastError());
 			return false;
 		}
+		SocketOpt_HeartBeat_ActiveAddrEx(xhMQTTSocket, lpszClientAddr);
 	}
 	else
 	{

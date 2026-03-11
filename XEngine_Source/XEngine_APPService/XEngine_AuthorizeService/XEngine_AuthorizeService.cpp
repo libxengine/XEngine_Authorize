@@ -16,6 +16,7 @@ XHANDLE xhHttpPacket = NULL;
 XHANDLE xhTCPHeart = NULL;
 XHANDLE xhWSHeart = NULL;
 XHANDLE xhHTTPHeart = NULL;
+XHANDLE xhMQTTHeart = NULL;
 
 XHANDLE xhMemPool = NULL;
 XHANDLE xhTCPPool = NULL;
@@ -46,6 +47,7 @@ void ServiceApp_Stop(int signo)
 		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhMQTTHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
@@ -398,6 +400,21 @@ int main(int argc, char** argv)
 		NetCore_TCPXCore_RegisterCallBackEx(xhMQTTSocket, XEngine_Client_MQTTLogin, XEngine_Client_MQTTRecv, XEngine_Client_MQTTLeave);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，注册MQTT网络事件成功"));
 
+		if (st_AuthConfig.st_XTime.nMQTime > 0)
+		{
+			xhMQTTHeart = SocketOpt_HeartBeat_InitEx(st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nMQTime, XEngine_Client_MQTTHeart);
+			if (NULL == xhMQTTHeart)
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化MQTT心跳服务失败，错误：%lX"), NetCore_GetLastError());
+				goto XENGINE_EXITAPP;
+			}
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化MQTT心跳服务成功,检测次数:%d,检测时间:%d"), st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nMQTime);
+		}
+		else
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，检测到MQTT心跳服务没有启用"));
+		}
+
 		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListMQTTParam, st_AuthConfig.st_XMax.nMQTTThread, sizeof(THREADPOOL_PARAMENT));
 		for (int i = 0; i < st_AuthConfig.st_XMax.nMQTTThread; i++)
 		{
@@ -506,6 +523,7 @@ XENGINE_EXITAPP:
 		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhMQTTHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);

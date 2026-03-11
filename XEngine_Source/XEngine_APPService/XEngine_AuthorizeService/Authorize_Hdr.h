@@ -79,6 +79,7 @@ extern XHANDLE xhHttpPacket;
 extern XHANDLE xhTCPHeart;
 extern XHANDLE xhWSHeart;
 extern XHANDLE xhHTTPHeart;
+extern XHANDLE xhMQTTHeart;
 
 extern XHANDLE xhMemPool;
 extern XHANDLE xhTCPPool;
