@@ -12,7 +12,7 @@ jobs:
     steps:
         # 检出代码并包含标签
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0 
 

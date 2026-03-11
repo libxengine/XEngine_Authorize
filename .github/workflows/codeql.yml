@@ -25,12 +25,12 @@ jobs:
         - language: c-cpp
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
           ref: 'develop'
           
     - name: Checkout dependency repository (xengine)
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         repository: libxengine/libxengine
         path: libxengine
