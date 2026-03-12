@@ -82,7 +82,7 @@ jobs:
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: XEngine_AuthorizeService-Fedora_${{ matrix.fedora-version }}_${{ matrix.artifact }}
           path: XEngine_Release/

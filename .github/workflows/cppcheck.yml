@@ -29,7 +29,7 @@ jobs:
       continue-on-error: true
 
     - name: Upload Cppcheck Results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: cppcheck_results
         path: static_analysis/log.xml
