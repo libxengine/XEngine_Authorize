@@ -45,6 +45,8 @@ jobs:
     steps:
       - name: Checkout main repository code
         uses: actions/checkout@v6
+        with:
+          ref: 'develop'
 
       - name: Checkout dependency repository (xengine)
         uses: actions/checkout@v6
