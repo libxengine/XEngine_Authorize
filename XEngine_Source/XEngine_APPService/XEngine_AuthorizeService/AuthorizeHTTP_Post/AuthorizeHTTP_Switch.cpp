@@ -9,13 +9,13 @@ bool XEngine_AuthorizeHTTP_Switch(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
-	if (0 == _tcsxnicmp(lpszAPIGet, lpszAPIName, _tcsxlen(lpszAPIGet)))
+	if (0 == _tcsxncmp(lpszAPIGet, lpszAPIName, _tcsxlen(lpszAPIGet)))
 	{
 		Protocol_Packet_HttpSwitch(tszSDBuffer, &nSDLen, &st_FunSwitch);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获取功能开关成功,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,多端登录:%d,临时试用:%d,普通Token:%d,硬件码登录:%d,硬件码绑定:%d"), lpszClientAddr, st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchHWBind);
 	}
-	else if (0 == _tcsxnicmp(lpszAPISet, lpszAPIName, _tcsxlen(lpszAPISet)))
+	else if (0 == _tcsxncmp(lpszAPISet, lpszAPIName, _tcsxlen(lpszAPISet)))
 	{
 		Protocol_Parse_HttpParseSwitch(lpszMsgBuffer, nMsgLen, &st_FunSwitch);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);

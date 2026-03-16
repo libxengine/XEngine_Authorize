@@ -1,3 +1,22 @@
+XEngine_Authorize V3.22.0.1001
+
+ci:更新库依赖环境
+增加:mqtt协议和心跳支持
+优化:发送消息处理流程
+修改:http api函数不区分大小写
+修改:启动参数不区分大小写
+修改:加密通信类型
+修改:序列号生成服务器生成了
+
+ci:update version depend
+added:mqtt protocol support and heart support
+update:depend library
+improved:send message process
+modify:does not case-sensitive for http api name
+modify:start parameter does not case-sensitive
+modify:crypt type modify xcrypt to api and improved app manamgent crypt code
+modify:Serial number generation is only available after the server has generated it
+================================================================
 XEngine_Authorize V3.21.0.1001
 
 增加:http 用户可以获取用户时间信息

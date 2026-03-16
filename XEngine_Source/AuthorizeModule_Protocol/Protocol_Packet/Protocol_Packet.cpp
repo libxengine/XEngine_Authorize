@@ -60,10 +60,76 @@ bool CProtocol_Packet::Protocol_Packet_HDRComm(XCHAR* ptszMsgBuffer, int* pInt_M
 		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
 		return false;
 	}
-	if (0 == enDeviceType)
+
+	if (XENGINE_AUTH_APP_NETTYPE_TCP == enDeviceType)
 	{
 		*pInt_MsgLen = sizeof(XENGINE_PROTOCOLHDR);
 		memcpy(ptszMsgBuffer, pSt_ProtocolHdr, *pInt_MsgLen);
+	}
+	else if (XENGINE_AUTH_APP_NETTYPE_MQTT == enDeviceType)
+	{
+		int nRVLen = 0;
+		XCHAR tszRVBuffer[1024] = {};
+
+		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REPLOGIN == pSt_ProtocolHdr->unOperatorCode)
+		{
+			if (0 == pSt_ProtocolHdr->wReserve)
+			{
+				int nRVLen = 0;
+				int nListCount = 6;
+				XCHAR tszRVBuffer[1024];
+				MQTTPROTOCOL_HDRPROPERTY** ppSt_HDRProperty;
+
+				BaseLib_Memory_Malloc((XPPPMEM)&ppSt_HDRProperty, nListCount, sizeof(MQTTPROTOCOL_HDRPROPERTY));
+
+				ppSt_HDRProperty[0]->nProLen = 4;
+				ppSt_HDRProperty[0]->st_unValue.nValue = 1024000;
+				ppSt_HDRProperty[0]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_PACKMAX;
+
+				ppSt_HDRProperty[1]->nProLen = 1;
+				ppSt_HDRProperty[1]->st_unValue.byValue = 1;
+				ppSt_HDRProperty[1]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_REVERAVAI;
+
+				ppSt_HDRProperty[2]->nProLen = 1;
+				ppSt_HDRProperty[2]->st_unValue.byValue = 1;
+				ppSt_HDRProperty[2]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_SHAREDSUBAVAI;
+
+				ppSt_HDRProperty[3]->nProLen = 1;
+				ppSt_HDRProperty[3]->st_unValue.byValue = 1;
+				ppSt_HDRProperty[3]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_SUBIDAVAI;
+
+				ppSt_HDRProperty[4]->nProLen = 2;
+				ppSt_HDRProperty[4]->st_unValue.wValue = 65535;
+				ppSt_HDRProperty[4]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_ALIASMAX;
+
+				ppSt_HDRProperty[5]->nProLen = 1;
+				ppSt_HDRProperty[5]->st_unValue.byValue = 1;
+				ppSt_HDRProperty[5]->byProFlag = XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_PROPERTY_WILDCARDSUBAVAI;
+
+				MQTTProtocol_Packet_REPConnect(tszRVBuffer, &nRVLen, 0, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_REASON_SUCCESS, &ppSt_HDRProperty, nListCount);
+				MQTTProtocol_Packet_Header(ptszMsgBuffer, pInt_MsgLen, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_TYPE_CONNACK, tszRVBuffer, nRVLen);
+				BaseLib_Memory_Free((XPPPMEM)&ppSt_HDRProperty, nListCount);
+			}
+			else
+			{
+				MQTTProtocol_Packet_REPConnect(tszRVBuffer, &nRVLen, 0, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_REASON_USERPASS);
+				MQTTProtocol_Packet_Header(ptszMsgBuffer, pInt_MsgLen, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_TYPE_CONNACK, tszRVBuffer, nRVLen);
+			}
+		}
+		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_EXPIRED == pSt_ProtocolHdr->unOperatorCode)
+		{
+			Json::Value st_JsonRoot;
+			st_JsonRoot["wHeader"] = pSt_ProtocolHdr->wHeader;
+			st_JsonRoot["wTail"] = pSt_ProtocolHdr->wTail;
+			st_JsonRoot["xhToken"] = (Json::Value::UInt64)pSt_ProtocolHdr->xhToken;
+			st_JsonRoot["unOperatorType"] = pSt_ProtocolHdr->unOperatorType;
+			st_JsonRoot["unOperatorCode"] = pSt_ProtocolHdr->unOperatorCode;
+			st_JsonRoot["wCrypto"] = pSt_ProtocolHdr->wCrypto;
+			st_JsonRoot["wReserve"] = pSt_ProtocolHdr->wReserve;
+
+			MQTTProtocol_Packet_REQPublish(tszRVBuffer, &nRVLen, _X("authorize"), st_JsonRoot.toStyledString().c_str(), st_JsonRoot.toStyledString().length());
+			MQTTProtocol_Packet_Header(ptszMsgBuffer, pInt_MsgLen, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_TYPE_PUBLISH, tszRVBuffer, nRVLen);
+		}
 	}
 	else
 	{

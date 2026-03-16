@@ -11,7 +11,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
-	if (0 == _tcsxnicmp(lpszAPIName, lpszAPIList, _tcsxlen(lpszAPIName)))
+	if (0 == _tcsxncmp(lpszAPIName, lpszAPIList, _tcsxlen(lpszAPIName)))
 	{
 		int nPosStart = 0;
 		int nPosEnd = 0;
@@ -34,7 +34,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		XEngine_Client_TaskSend(lpszClientAddr, m_HTTPMemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，临时验证获取列表成功,列表个数:%d"), lpszClientAddr, nListCount);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
+	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIDelete, _tcsxlen(lpszAPIName)))
 	{
 		AUTHREG_TEMPVER st_VERTemp;
 		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));
@@ -52,7 +52,7 @@ bool XEngine_AuthorizeHTTP_Try(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCX
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，序列号：%s，临时验证删除成功"), lpszClientAddr, st_VERTemp.tszVSerial);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPIModify, _tcsxlen(lpszAPIName)))
+	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIModify, _tcsxlen(lpszAPIName)))
 	{
 		AUTHREG_TEMPVER st_VERTemp;
 		memset(&st_VERTemp, '\0', sizeof(AUTHREG_TEMPVER));

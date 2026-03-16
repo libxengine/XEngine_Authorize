@@ -75,10 +75,11 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->nTCPPort = st_JsonRoot["nTCPPort"].asInt();
 	pSt_ServerConfig->nWSPort = st_JsonRoot["nWSPort"].asInt();
 	pSt_ServerConfig->nHTTPPort = st_JsonRoot["nHTTPPort"].asInt();
+	pSt_ServerConfig->nMQTTPort = st_JsonRoot["nMQTTPort"].asInt();
 	pSt_ServerConfig->bDeamon = st_JsonRoot["bDeamon"].asBool();
 	pSt_ServerConfig->bTimeNotify = st_JsonRoot["bTimeNotify"].asBool();
 	//最大配置
-	if (st_JsonRoot["XMax"].empty() || (6 != st_JsonRoot["XMax"].size()))
+	if (st_JsonRoot["XMax"].empty() || (7 != st_JsonRoot["XMax"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XMAX;
@@ -91,8 +92,9 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XMax.nTCPThread = st_JsonXMax["nTCPThread"].asInt();
 	pSt_ServerConfig->st_XMax.nWSThread = st_JsonXMax["nWSThread"].asInt();
 	pSt_ServerConfig->st_XMax.nHTTPThread = st_JsonXMax["nHTTPThread"].asInt();
+	pSt_ServerConfig->st_XMax.nMQTTThread = st_JsonXMax["nMQTTThread"].asInt();
 	//时间配置
-	if (st_JsonRoot["XTime"].empty() || (4 != st_JsonRoot["XTime"].size()))
+	if (st_JsonRoot["XTime"].empty() || (5 != st_JsonRoot["XTime"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XTIME;
@@ -103,6 +105,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XTime.nTCPTime = st_JsonXTime["nTCPTime"].asInt();
 	pSt_ServerConfig->st_XTime.nWSTime = st_JsonXTime["nWSTime"].asInt();
 	pSt_ServerConfig->st_XTime.nHTTPTime = st_JsonXTime["nHTTPTime"].asInt();
+	pSt_ServerConfig->st_XTime.nMQTime = st_JsonXTime["nMQTTTime"].asInt();
 	//验证配置
 	if (st_JsonRoot["XVerification"].empty() || (8 != st_JsonRoot["XVerification"].size()))
 	{
@@ -146,7 +149,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bSecond = st_JsonMulitLogin["bSecond"].asBool();
 	pSt_ServerConfig->st_XLogin.st_MulitLogin.bTime = st_JsonMulitLogin["bTime"].asBool();
 	//加密配置
-	if (st_JsonRoot["XCrypto"].empty() || (2 != st_JsonRoot["XCrypto"].size()))
+	if (st_JsonRoot["XCrypto"].empty() || (3 != st_JsonRoot["XCrypto"].size()))
 	{
 		Config_IsErrorOccur = true;
 		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XCRYPTO;
@@ -154,6 +157,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	}
 	Json::Value st_JsonXCrypto = st_JsonRoot["XCrypto"];
 	pSt_ServerConfig->st_XCrypto.bEnable = st_JsonXCrypto["bEnable"].asBool();
+	pSt_ServerConfig->st_XCrypto.nCryptionType = st_JsonXCrypto["nCryptionType"].asInt();
 	_tcsxcpy(pSt_ServerConfig->st_XCrypto.tszCryptoKey, st_JsonXCrypto["tszPassKey"].asCString());
 	//接口验证
 	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))

@@ -10,7 +10,7 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 
-	if (0 == _tcsxnicmp(lpszAPIName, lpszAPILogin, _tcsxlen(lpszAPIName)))
+	if (0 == _tcsxncmp(lpszAPIName, lpszAPILogin, _tcsxlen(lpszAPIName)))
 	{
 		XENGINE_PROTOCOL_USERAUTHEX st_UserAuth;
 		AUTHREG_USERTABLE st_UserTable;
@@ -46,7 +46,7 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("PASS客户端:%s,请求登录用户:%s 成功"), lpszClientAddr, st_UserAuth.tszUserName);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPILogout, _tcsxlen(lpszAPIName)))
+	else if (0 == _tcsxncmp(lpszAPIName, lpszAPILogout, _tcsxlen(lpszAPIName)))
 	{
 		AUTHREG_PROTOCOL_TIME st_ProtocolTime;
 		memset(&st_ProtocolTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
@@ -65,7 +65,7 @@ bool XEngine_AuthorizeHTTP_Pass(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPC
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("PASS客户端：%s，用户名：%s，请求离开服务成功"), lpszClientAddr, st_ProtocolTime.tszUserName);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIName, lpszAPITimeout, _tcsxlen(lpszAPIName)))
+	else if (0 == _tcsxncmp(lpszAPIName, lpszAPITimeout, _tcsxlen(lpszAPIName)))
 	{
 		AUTHREG_PROTOCOL_TIME st_ProtocolTime;
 		memset(&st_ProtocolTime, '\0', sizeof(AUTHREG_PROTOCOL_TIME));

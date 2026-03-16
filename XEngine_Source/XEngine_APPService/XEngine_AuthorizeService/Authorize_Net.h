@@ -15,6 +15,10 @@ void XCALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, 
 void XCALLBACK XEngine_Client_HttpClose(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam);
 void XCALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam);
 
+bool XCALLBACK XEngine_Client_MQTTLogin(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam);
+void XCALLBACK XEngine_Client_MQTTRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam);
+void XCALLBACK XEngine_Client_MQTTLeave(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam);
+void XCALLBACK XEngine_Client_MQTTHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam);
+
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType = 0);
 bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType);
-bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass = NULL);

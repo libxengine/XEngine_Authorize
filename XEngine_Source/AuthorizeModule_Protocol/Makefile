@@ -4,7 +4,7 @@ FILEEXT =
 LIBFLAG = 
 LOADHDR = -I ./ -I ../XEngine_DependLibrary/XEngine_Module/jsoncpp
 LOADSO = -L ../XEngine_DependLibrary/XEngine_Module/jsoncpp 
-LIB = -ljsoncpp -lXEngine_BaseLib
+LIB = -ljsoncpp -lXEngine_BaseLib -lRfcComponents_MQTTProtocol
 LIBEX = 
 OBJECTS = Protocol_Packet.o Protocol_Parse.o pch.o
 

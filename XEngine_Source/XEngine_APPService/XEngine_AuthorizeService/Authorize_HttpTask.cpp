@@ -26,14 +26,9 @@ XHTHREAD XCALLBACK XEngine_AuthService_HttpThread(XPVOID lParam)
 			{
 				if (st_AuthConfig.st_XCrypto.bEnable)
 				{
-					XCHAR tszDeBuffer[2048] = {};
-					Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDeBuffer, st_AuthConfig.st_XCrypto.tszCryptoKey);
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
+					Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
 				}
-				else
-				{
-					XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
-				}
+				XEngine_Client_HttpTask(ppSt_ListClient[i]->tszClientAddr, ptszMsgBuffer, nMsgLen, &st_HTTPParament, ppszListHdr, nHdrCount);
 			}
 			BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 			BaseLib_Memory_Free((XPPPMEM)&ppszListHdr, nHdrCount);
@@ -180,7 +175,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,HTTP验证类型:%d 通过"), lpszClientAddr, nVType);
 	}
 
-	if (0 == _tcsxnicmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodPost)))
+	if (0 == _tcsxncmp(lpszMethodPost, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodPost)))
 	{
 		XCHAR tszAPIType[64];
 		XCHAR tszAPIVer[64];
@@ -202,7 +197,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszAPIName, '\0', sizeof(tszAPIName));
 
 		HttpProtocol_ServerHelp_GetUrlApi(pSt_HTTPParament->tszHttpUri, tszAPIType, tszAPIVer, tszAPIName);
-		if (0 != _tcsxnicmp(lpszAPIType, tszAPIType, _tcsxlen(lpszAPIType)))
+		if (0 != _tcsxncmp(lpszAPIType, tszAPIType, _tcsxlen(lpszAPIType)))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "request url is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -221,7 +216,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				return false;
 			}
 
-			if (0 == _tcsxnicmp(lpszAPIVerClient, tszAPIVer, _tcsxlen(lpszAPIVerClient)))
+			if (0 == _tcsxncmp(lpszAPIVerClient, tszAPIVer, _tcsxlen(lpszAPIVerClient)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -233,7 +228,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Client(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerSerial, tszAPIVer, _tcsxlen(lpszAPIVerSerial)))
+			else if (0 == _tcsxncmp(lpszAPIVerSerial, tszAPIVer, _tcsxlen(lpszAPIVerSerial)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -245,7 +240,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Serial(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerSwitch, tszAPIVer, _tcsxlen(lpszAPIVerSwitch)))
+			else if (0 == _tcsxncmp(lpszAPIVerSwitch, tszAPIVer, _tcsxlen(lpszAPIVerSwitch)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -257,7 +252,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Switch(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerBanned, tszAPIVer, _tcsxlen(lpszAPIVerBanned)))
+			else if (0 == _tcsxncmp(lpszAPIVerBanned, tszAPIVer, _tcsxlen(lpszAPIVerBanned)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -269,7 +264,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Banned(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerNotice, tszAPIVer, _tcsxlen(lpszAPIVerNotice)))
+			else if (0 == _tcsxncmp(lpszAPIVerNotice, tszAPIVer, _tcsxlen(lpszAPIVerNotice)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -281,7 +276,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 				}
 				XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerTry, tszAPIVer, _tcsxlen(lpszAPIVerTry)))
+			else if (0 == _tcsxncmp(lpszAPIVerTry, tszAPIVer, _tcsxlen(lpszAPIVerTry)))
 			{
 				//验证权限
 				if (0 != st_UserTable.st_UserInfo.nUserLevel)
@@ -303,15 +298,15 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		}
 		else
 		{
-			if (0 == _tcsxnicmp(lpszAPIVerPass, tszAPIVer, _tcsxlen(lpszAPIVerPass)))
+			if (0 == _tcsxncmp(lpszAPIVerPass, tszAPIVer, _tcsxlen(lpszAPIVerPass)))
 			{
 				XEngine_AuthorizeHTTP_Pass(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerCDKey, tszAPIVer, _tcsxlen(lpszAPIVerCDKey)))
+			else if (0 == _tcsxncmp(lpszAPIVerCDKey, tszAPIVer, _tcsxlen(lpszAPIVerCDKey)))
 			{
 				XEngine_AuthorizeHTTP_CDKey(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
-			else if (0 == _tcsxnicmp(lpszAPIVerUser, tszAPIVer, _tcsxlen(lpszAPIVerUser)))
+			else if (0 == _tcsxncmp(lpszAPIVerUser, tszAPIVer, _tcsxlen(lpszAPIVerUser)))
 			{
 				XEngine_AuthorizeHTTP_User(xhToken, lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
@@ -324,7 +319,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			}
 		}
 	}
-	else if (0 == _tcsxnicmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodGet)))
+	else if (0 == _tcsxncmp(lpszMethodGet, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodGet)))
 	{
 		int nListCount = 0;
 		XCHAR** pptszList;
@@ -336,7 +331,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
-		if ((nListCount < 1) || (0 != _tcsxnicmp(lpszFuncName, tszUrlName, _tcsxlen(lpszFuncName))))
+		if ((nListCount < 1) || (0 != _tcsxncmp(lpszFuncName, tszUrlName, _tcsxlen(lpszFuncName))))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "request is failed");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -351,8 +346,8 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		memset(tszURLValue, '\0', sizeof(tszURLValue));
 
 		BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
-		if (0 == _tcsxnicmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxnicmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) ||
-			0 == _tcsxnicmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
+		if (0 == _tcsxncmp(lpszAPIVerDCode, tszURLValue, _tcsxlen(lpszAPIVerDCode)) || 0 == _tcsxncmp(lpszAPIVerTime, tszURLValue, _tcsxlen(lpszAPIVerTime)) ||
+			0 == _tcsxncmp(lpszAPIVerNotice, tszURLValue, _tcsxlen(lpszAPIVerNotice)))
 		{
 			XEngine_AuthorizeHTTP_GetTask(lpszClientAddr, pptszList, nListCount);
 		}
@@ -362,7 +357,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		}
 		BaseLib_Memory_Free((XPPPMEM)&pptszList, nListCount);
 	}
-	else if (0 == _tcsxnicmp(lpszMethodOPtion, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodOPtion)))
+	else if (0 == _tcsxncmp(lpszMethodOPtion, pSt_HTTPParament->tszHttpMethod, _tcsxlen(lpszMethodOPtion)))
 	{
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

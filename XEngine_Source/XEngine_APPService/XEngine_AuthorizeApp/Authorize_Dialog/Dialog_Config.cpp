@@ -84,11 +84,13 @@ BOOL CDialog_Config::OnInitDialog()
 	m_ComboPassCodec.InsertString(3, _T("SHA256"));
 	m_ComboPassCodec.SetCurSel(1);
 
-	m_ListEncrypto.AddString(_T("XCrypto(X加密)"));
-	m_ListEncrypto.SetCurSel(0);
+	m_ListEncrypto.InsertString(0, _T("不启用"));
+	m_ListEncrypto.InsertString(1, _T("AES128"));
+	m_ListEncrypto.InsertString(2, _T("AES256"));
+	m_ListEncrypto.SetCurSel(1);
 	m_ListEncrypto.EnableWindow(false);
 
-	m_EditPassword.SetWindowText(_T("123123"));
+	m_EditPassword.SetWindowText(_T("123123aa"));
 	m_EditPassword.EnableWindow(false);
 
 	hConfigWnd = m_hWnd;
@@ -149,27 +151,16 @@ void CDialog_Config::OnBnClickedButton1()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
-			AuthHelp_Windows_Dithering(hMainWnd);
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(m_StrCodecPass.GetBuffer()), (ENUM_XENGINE_CRYPTION_SYMMETRIC)m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("登录失败,无法继续"));
-			AuthHelp_Windows_Dithering(hMainWnd);
-			return;
-		}
+		Authorize_Help_LogPrint(_T("登录失败,无法继续"));
+		AuthHelp_Windows_Dithering(hMainWnd);
+		return;
 	}
+
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		Authorize_Help_LogPrint(_T("登录失败,无法继续"));
@@ -216,25 +207,15 @@ void CDialog_Config::OnBnClickedButton2()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(m_StrCodecPass.GetBuffer()), (ENUM_XENGINE_CRYPTION_SYMMETRIC)m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
+		return;
 	}
+
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		Authorize_Help_LogPrint(_T("关闭失败,无法继续"));
@@ -277,25 +258,15 @@ void CDialog_Config::OnBnClickedButton5()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(m_StrCodecPass.GetBuffer()), (ENUM_XENGINE_CRYPTION_SYMMETRIC)m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("续期失败,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("续期失败,无法继续"));
+		return;
 	}
+
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		Authorize_Help_LogPrint(_T("续期失败,无法继续"));
@@ -349,25 +320,15 @@ void CDialog_Config::OnBnClickedButton8()
 	if (BST_CHECKED == m_CheckCodecEnable.GetCheck())
 	{
 		CString m_StrCodecPass;
-		XCHAR tszMsgBuffer[2048];
-		memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
 		m_EditPassword.GetWindowText(m_StrCodecPass);
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, W2A(m_StrCodecPass.GetBuffer()));
-		if (!pSt_JsonReader->parse(tszMsgBuffer, tszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
-			return;
-		}
+		Cryption_Api_CryptDecodec(NULL, (XBYTE*)ptszMsgBuffer, &nMsgLen, W2A(m_StrCodecPass.GetBuffer()), (ENUM_XENGINE_CRYPTION_SYMMETRIC)m_ListEncrypto.GetCurSel());
 	}
-	else
+	if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 	{
-		if (!pSt_JsonReader->parse(ptszMsgBuffer, ptszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
-		{
-			Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
-			return;
-		}
+		Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
+		return;
 	}
+
 	if (0 != st_JsonRoot["code"].asInt())
 	{
 		Authorize_Help_LogPrint(_T("获取验证码失败,无法继续"));
