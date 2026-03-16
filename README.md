@@ -30,7 +30,7 @@ c c++network Authorize service
 我们的功能列表不仅包括下面的，还有很多待开发的功能正在计划中。  
 你可以参考这个网页了解我们未来支持的功能列表:https://github.com/libxengine/XEngine_Authorize/issues  
 软件特性:  
-1. 支持TCP,WEBSOCKET协议
+1. 支持TCP,WEBSOCKET,MQTT协议
 2. 支持加密通信
 3. 支持用户管理
 4. 支持序列卡管理

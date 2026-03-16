@@ -30,7 +30,7 @@ Our product is completely free and offers both free and paid technical support. 
 Our feature list not only includes the following but also has many features in development.  
 You can refer to this webpage to learn about the features we plan to support in the future: https://github.com/libxengine/XEngine_Authorize/issues  
 feature list:  
-1. support http.websocket protocols
+1. support http.websocket,MQTT protocols
 2. Support Encrypto communication
 3. Support User Management
 4. Support Serial Management

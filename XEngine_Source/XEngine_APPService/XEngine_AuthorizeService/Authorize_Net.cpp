@@ -217,8 +217,7 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 	else
 	{
 		int nSDSize = XENGINE_MEMORY_SIZE_MAX;
-		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
-		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
+		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam = {};
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = true;
