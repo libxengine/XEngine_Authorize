@@ -5,7 +5,7 @@ on:
 
 engine:
   id: codex
-  model: gpt-5.4
+  model: gpt-5.3
   env:
     OPENAI_BASE_URL: "https://api.zhizengzeng.com/v1"
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
