@@ -16,10 +16,17 @@ network:
 
 sandbox:
   agent: false
+
 strict: false
+
+tools:
+  github:
+    min-integrity: none
 
 permissions:
   issues: read
+  contents: read
+  pull-requests: read
 
 safe-outputs:
   threat-detection: false
