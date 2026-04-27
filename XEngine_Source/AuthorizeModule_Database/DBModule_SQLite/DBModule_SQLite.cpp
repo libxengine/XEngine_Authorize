@@ -257,6 +257,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
 bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = false;
+    const int nVipUserLevel = 0;
 
     AUTHREG_SERIALTABLE st_SerialTable;
     AUTHREG_USERTABLE st_UserTable;
@@ -321,6 +322,14 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTSUPPORT;
         return false;
     }
+    //充值成功后自动升级为可登录等级
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET nUserLevel = '%d' WHERE UserName = '%s'"), nVipUserLevel, lpszUserName);
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+        return false;
+    }
     _xstprintf(tszSQLStatement, _X("UPDATE Authorize_Serial SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"), lpszUserName, lpszSerialName);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -346,6 +355,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
 bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = false;
+    const int nNormalUserLevel = 20;
 
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
@@ -384,6 +394,16 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
         SQLPacket_IsErrorOccur = true;
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
         return false;
+    }
+    if (pSt_TimeProtocol->nTimeLeft <= 0)
+    {
+        _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET nUserLevel = '%d' WHERE UserName = '%s'"), nNormalUserLevel, pSt_TimeProtocol->tszUserName);
+        if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+        {
+            SQLPacket_IsErrorOccur = true;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+            return false;
+        }
     }
     return true;
 }
