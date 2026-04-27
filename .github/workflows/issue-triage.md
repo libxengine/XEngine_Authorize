@@ -16,7 +16,6 @@ network:
 
 sandbox:
   agent: false
-
 strict: false
 
 tools:
@@ -63,5 +62,5 @@ safe-outputs:
    - 感谢用户提交 Issue
    - 说明你打的标签和原因
    - 如果是 bug，请用户补充：复现步骤、环境信息、错误日志
-   - 如果是 question，尝试根据仓库代码给出初步解答
+   - 如果是 question，尝试根据仓库代码和文档给出初步解答
    - 预计处理时间（普通问题 3 个工作日内）
