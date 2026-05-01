@@ -3,11 +3,7 @@ name: CodeQL Advanced
 on:
   push:
     branches: 
-      - 'develop'
-    paths:
-      - 'XEngine_Source/**'
-      - 'XEngine_Release/**'
-      - '.github/**'
+      - 'master'
 
 jobs:
   analyze:
@@ -26,19 +22,12 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v6
-      with:
-          ref: 'develop'
           
     - name: Checkout dependency repository (xengine)
       uses: actions/checkout@v6
       with:
         repository: libxengine/libxengine
         path: libxengine
-
-    - name: sub module checkout (opensource)
-      run: |
-          git submodule init
-          git submodule update
 
     - name: Set TERM variable
       run: echo "TERM=xterm" >> $GITHUB_ENV
@@ -53,11 +42,35 @@ jobs:
       uses: github/codeql-action/init@v4
       with:
         languages: ${{ matrix.language }}
+        build-mode: manual 
+        queries: security-and-quality
         
     - name: make
       run: | 
-          cd XEngine_Source
-          make
+            cd XEngine_Module
+            cd jsoncpp
+            make
+            cd ..
+            cd tinyxml2
+            make
+            cd ..
+            cd XEngine_InfoReport
+            make
+            cd ..
+            cd XEngine_Token
+            make
+            cd ..
+            cd XEngine_MSGNotify
+            make
+            cd ..
+            cd XEngine_AIApi
+            make
+            cd ..
+            cd XEngine_Verification
+            make
+            cd ..
+            cd XEngine_PluginExtension
+            make
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v4
