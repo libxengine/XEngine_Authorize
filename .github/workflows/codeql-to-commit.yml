@@ -48,6 +48,7 @@ jobs:
 
             echo "--- Alert #$NUMBER [$SEC_LEVEL] ---"
 
+            # 检查是否已有 autofix
             EXISTING=$(gh api \
               /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
               --jq '.status' 2>/dev/null || echo "none")
@@ -77,14 +78,14 @@ jobs:
               continue
             fi
 
+            # 检查分支是否已存在
             BRANCH_STATUS=$(gh api \
               /repos/$OWNER/$REPO/git/refs/heads/$BRANCH \
               --silent 2>/dev/null && echo "exists" || echo "not_found")
             echo "DEBUG branch status: $BRANCH_STATUS"
 
-            HAS_CODE_FIX=false
-
             if [ "$BRANCH_STATUS" = "not_found" ]; then
+              # 创建分支
               SHA=$(gh api /repos/$OWNER/$REPO/git/refs/heads/$DEFAULT_BRANCH \
                 --jq '.object.sha')
 
@@ -93,6 +94,7 @@ jobs:
                 -f sha="$SHA" 2>/dev/null || true
               echo "🌿 Created branch: $BRANCH"
 
+              # 提交 fix
               COMMIT_RESULT=$(gh api -X POST \
                 /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix/commits \
                 -f target_ref="$BRANCH" 2>&1)
@@ -100,12 +102,14 @@ jobs:
 
               if echo "$COMMIT_RESULT" | grep -q "target_ref"; then
                 echo "✅ Committed fix to branch: $BRANCH"
-                HAS_CODE_FIX=true
               else
-                echo "⚠️ No code changes generated, advisory PR only"
-                HAS_CODE_FIX=false
+                echo "⚠️ No code changes generated, deleting branch and skipping"
+                gh api -X DELETE \
+                  /repos/$OWNER/$REPO/git/refs/heads/$BRANCH 2>/dev/null || true
+                continue
               fi
             else
+              # 分支已存在，检查是否已有 open PR
               EXISTING_PR=$(gh pr list \
                 --repo "$OWNER/$REPO" \
                 --head "$BRANCH" \
@@ -119,9 +123,9 @@ jobs:
               fi
 
               echo "🌿 Branch exists, creating PR with existing branch"
-              HAS_CODE_FIX=true
             fi
 
+            # 获取 alert 详情
             ALERT_INFO=$(gh api \
               /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER)
 
@@ -137,12 +141,7 @@ jobs:
               /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
               --jq '.description // "暂无 AI 修复说明"')
 
-            if [ "$HAS_CODE_FIX" = "true" ]; then
-              FIX_NOTE="> 此 PR 包含 Copilot Autofix 自动生成的代码修复，请审核后 merge。"
-            else
-              FIX_NOTE="> ⚠️ **此 alert 没有自动代码修复**，AI 仅提供了修复建议，需要**手动按照上方 AI 修复思路修改代码**后再 merge。"
-            fi
-
+            # 创建 Draft PR
             gh pr create \
               --repo "$OWNER/$REPO" \
               --base "$DEFAULT_BRANCH" \
@@ -189,8 +188,8 @@ jobs:
 
           ---
 
-          $FIX_NOTE" && \
-              echo "🎉 PR created for alert #$NUMBER" || \
-              echo "❌ Failed to create PR for alert #$NUMBER"
-              
-            done
+          > 此 PR 由 GitHub Copilot Autofix 自动生成，请仔细审核后再 merge。" && \
+            echo "🎉 PR created for alert #$NUMBER" || \
+            echo "❌ Failed to create PR for alert #$NUMBER"
+
+          done
