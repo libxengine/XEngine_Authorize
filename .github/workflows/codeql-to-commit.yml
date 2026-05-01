@@ -22,6 +22,7 @@ jobs:
           OWNER: ${{ github.repository_owner }}
           REPO: ${{ github.event.repository.name }}
         run: |
+          set +e
           DEFAULT_BRANCH=$(gh api /repos/$OWNER/$REPO --jq '.default_branch')
           echo "Default branch: $DEFAULT_BRANCH"
 
@@ -91,9 +92,8 @@ jobs:
               # 创建分支
               gh api -X POST /repos/$OWNER/$REPO/git/refs \
                 -f ref="refs/heads/$BRANCH" \
-                -f sha="$SHA" 2>/dev/null && \
-                echo "🌿 Created branch: $BRANCH" || \
-                echo "🌿 Branch already exists: $BRANCH"
+                -f sha="$SHA" 2>/dev/null || true
+              echo "🌿 Branch created or already exists: $BRANCH"
 
               # 提交 fix
               COMMIT_RESULT=$(gh api -X POST \
