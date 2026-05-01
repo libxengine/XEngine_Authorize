@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "ModuleConfigure_Json.h"
+#include <new>
 /********************************************************************
 //    Created:     2021/12/02  16:14:11
 //    File Name:   D:\XEngine_ServiceApp\XEngine_Source\XEngine_ModuleConfigure\ModuleConfigure_Json\ModuleConfigure_Json.cpp
@@ -284,7 +285,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Versions(LPCXSTR lpszConfigFile
 		return false;
 	}
 	Json::Value st_JsonXVer = st_JsonRoot["XVer"];
-	pSt_ServerConfig->st_XVer.pStl_ListVer = new list<string>;
+	pSt_ServerConfig->st_XVer.pStl_ListVer = new (std::nothrow) list<string>;
 	if (NULL == pSt_ServerConfig->st_XVer.pStl_ListVer)
 	{
 		Config_IsErrorOccur = true;
