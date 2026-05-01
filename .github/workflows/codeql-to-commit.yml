@@ -96,14 +96,17 @@ jobs:
                 echo "🌿 Branch already exists: $BRANCH"
 
               # 提交 fix
-              gh api -X POST \
+              COMMIT_RESULT=$(gh api -X POST \
                 /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix/commits \
-                -f target_ref="$BRANCH" || {
+                -f target_ref="$BRANCH" 2>&1)
+              echo "DEBUG commit result: $COMMIT_RESULT"
+
+              if echo "$COMMIT_RESULT" | grep -q "target_ref"; then
+                echo "✅ Committed fix to branch: $BRANCH"
+              else
                 echo "❌ Failed to commit fix for alert #$NUMBER"
                 continue
-              }
-              echo "✅ Committed fix to branch: $BRANCH"
-
+              fi
               # 获取 alert 详情
               ALERT_INFO=$(gh api \
                 /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER)
