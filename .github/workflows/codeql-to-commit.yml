@@ -48,7 +48,6 @@ jobs:
 
             echo "--- Alert #$NUMBER [$SEC_LEVEL] ---"
 
-            # 检查是否已有 autofix
             EXISTING=$(gh api \
               /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
               --jq '.status' 2>/dev/null || echo "none")
@@ -78,7 +77,6 @@ jobs:
               continue
             fi
 
-            # 检查分支是否已存在
             BRANCH_STATUS=$(gh api \
               /repos/$OWNER/$REPO/git/refs/heads/$BRANCH \
               --silent 2>/dev/null && echo "exists" || echo "not_found")
@@ -87,7 +85,6 @@ jobs:
             HAS_CODE_FIX=false
 
             if [ "$BRANCH_STATUS" = "not_found" ]; then
-              # 分支不存在，创建分支并提交 fix
               SHA=$(gh api /repos/$OWNER/$REPO/git/refs/heads/$DEFAULT_BRANCH \
                 --jq '.object.sha')
 
@@ -109,7 +106,6 @@ jobs:
                 HAS_CODE_FIX=false
               fi
             else
-              # 分支已存在，检查是否已有 open PR
               EXISTING_PR=$(gh pr list \
                 --repo "$OWNER/$REPO" \
                 --head "$BRANCH" \
@@ -126,7 +122,6 @@ jobs:
               HAS_CODE_FIX=true
             fi
 
-            # 获取 alert 详情
             ALERT_INFO=$(gh api \
               /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER)
 
@@ -148,7 +143,6 @@ jobs:
               FIX_NOTE="> ⚠️ **此 alert 没有自动代码修复**，AI 仅提供了修复建议，需要**手动按照上方 AI 修复思路修改代码**后再 merge。"
             fi
 
-            # 创建 Draft PR
             gh pr create \
               --repo "$OWNER/$REPO" \
               --base "$DEFAULT_BRANCH" \
@@ -198,3 +192,5 @@ jobs:
           $FIX_NOTE" && \
               echo "🎉 PR created for alert #$NUMBER" || \
               echo "❌ Failed to create PR for alert #$NUMBER"
+              
+            done
