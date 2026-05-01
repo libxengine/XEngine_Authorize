@@ -7,6 +7,7 @@ XHANDLE xhLog = NULL;
 XHANDLE xhTCPSocket = NULL;
 XHANDLE xhWSSocket = NULL;
 XHANDLE xhHttpSocket = NULL;
+XHANDLE xhMQTTSocket = NULL;
 
 XHANDLE xhTCPPacket = NULL;
 XHANDLE xhWSPacket = NULL;
@@ -15,11 +16,13 @@ XHANDLE xhHttpPacket = NULL;
 XHANDLE xhTCPHeart = NULL;
 XHANDLE xhWSHeart = NULL;
 XHANDLE xhHTTPHeart = NULL;
+XHANDLE xhMQTTHeart = NULL;
 
 XHANDLE xhMemPool = NULL;
 XHANDLE xhTCPPool = NULL;
 XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
+XHANDLE xhMQTTPool = NULL;
 
 XENGINE_SERVICECONFIG st_AuthConfig;
 XENGINE_FUNCTIONSWITCH st_FunSwitch;
@@ -34,18 +37,22 @@ void ServiceApp_Stop(int signo)
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
+		MQTTProtocol_Parse_Destory();
 
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+		NetCore_TCPXCore_DestroyEx(xhMQTTSocket);
 
 		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhMQTTHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		ManagePool_Thread_NQDestroy(xhHttpPool);
+		ManagePool_Thread_NQDestroy(xhMQTTPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
 		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);
@@ -140,6 +147,8 @@ int main(int argc, char** argv)
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
 	THREADPOOL_PARAMENT** ppSt_ListHttpThread;
+	THREADPOOL_PARAMENT** ppSt_ListMQTTParam;
+
 	LPCXSTR lpszHTTPMime = _X("./XEngine_Config/HttpMime.types");
 	LPCXSTR lpszHTTPCode = _X("./XEngine_Config/HttpCode.types");
 
@@ -286,7 +295,7 @@ int main(int argc, char** argv)
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化WebSocket组包器失败，错误：%lX"), WSFrame_GetLastError());
 			goto XENGINE_EXITAPP;
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化WebSocket组包器成功,任务池个数:%d"), st_AuthConfig.st_XMax.nWSThread);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化WEBSOCKET组包器成功,任务池个数:%d"), st_AuthConfig.st_XMax.nWSThread);
 
 		xhWSSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nWSPort, st_AuthConfig.st_XMax.nMaxQueue, st_AuthConfig.st_XMax.nIOThread);
 		if (NULL == xhWSSocket)
@@ -371,10 +380,66 @@ int main(int argc, char** argv)
 		xhHttpPool = ManagePool_Thread_NQCreate(&ppSt_ListHttpThread, st_AuthConfig.st_XMax.nHTTPThread);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化HTTP任务线程池成功,线程个数:%d"), st_AuthConfig.st_XMax.nHTTPThread);
 	}
+	//MQTT服务
+	if (st_AuthConfig.nMQTTPort > 0)
+	{
+		if (!MQTTProtocol_Parse_Init(st_AuthConfig.st_XMax.nMQTTThread))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务器中，初始化MQTT组包失败，错误：%lX"), MQTTProtocol_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化MQTT组包成功，IO线程个数:%d"), st_AuthConfig.st_XMax.nMQTTThread);
+
+		xhMQTTSocket = NetCore_TCPXCore_StartEx(st_AuthConfig.nMQTTPort, st_AuthConfig.st_XMax.nMaxClient, st_AuthConfig.st_XMax.nMQTTThread);
+		if (NULL == xhMQTTSocket)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动MQTT网络服务器失败，错误：%lX"), NetCore_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动MQTT网络服务器成功,MQTT端口:%d,IO:%d"), st_AuthConfig.nMQTTPort, st_AuthConfig.st_XMax.nMQTTThread);
+		NetCore_TCPXCore_RegisterCallBackEx(xhMQTTSocket, XEngine_Client_MQTTLogin, XEngine_Client_MQTTRecv, XEngine_Client_MQTTLeave);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，注册MQTT网络事件成功"));
+
+		if (st_AuthConfig.st_XTime.nMQTime > 0)
+		{
+			xhMQTTHeart = SocketOpt_HeartBeat_InitEx(st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nMQTime, XEngine_Client_MQTTHeart);
+			if (NULL == xhMQTTHeart)
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化MQTT心跳服务失败，错误：%lX"), NetCore_GetLastError());
+				goto XENGINE_EXITAPP;
+			}
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化MQTT心跳服务成功,检测次数:%d,检测时间:%d"), st_AuthConfig.st_XTime.nHeartCheck, st_AuthConfig.st_XTime.nMQTime);
+		}
+		else
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，检测到MQTT心跳服务没有启用"));
+		}
+
+		BaseLib_Memory_Malloc((XPPPMEM)&ppSt_ListMQTTParam, st_AuthConfig.st_XMax.nMQTTThread, sizeof(THREADPOOL_PARAMENT));
+		for (int i = 0; i < st_AuthConfig.st_XMax.nMQTTThread; i++)
+		{
+			int* pInt_Pos = new int;
+
+			*pInt_Pos = i;
+			ppSt_ListMQTTParam[i]->lParam = pInt_Pos;
+			ppSt_ListMQTTParam[i]->fpCall_ThreadsTask = Authorize_MQTTTask_Thread;
+		}
+		xhWSPool = ManagePool_Thread_NQCreate(&ppSt_ListMQTTParam, st_AuthConfig.st_XMax.nMQTTThread);
+		if (NULL == xhWSPool)
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动MQTT线程池服务失败，错误：%lX"), ManagePool_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，启动MQTT线程池服务成功,启动个数:%d"), st_AuthConfig.st_XMax.nMQTTThread);
+	}
+	else
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，MQTT消息服务没有被启用"));
+	}
 
 	if (st_AuthConfig.st_XCrypto.bEnable)
 	{
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为开启,密码:%d"), st_AuthConfig.st_XCrypto.nPassword);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为开启,密码:%s"), st_AuthConfig.st_XCrypto.tszCryptoKey);
 	}
 	else
 	{
@@ -448,18 +513,22 @@ XENGINE_EXITAPP:
 		HelpComponents_Datas_Destory(xhTCPPacket);
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
+		MQTTProtocol_Parse_Destory();
 
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
+		NetCore_TCPXCore_DestroyEx(xhMQTTSocket);
 
 		SocketOpt_HeartBeat_DestoryEx(xhTCPHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhWSHeart);
 		SocketOpt_HeartBeat_DestoryEx(xhHTTPHeart);
+		SocketOpt_HeartBeat_DestoryEx(xhMQTTHeart);
 
 		ManagePool_Thread_NQDestroy(xhTCPPool);
 		ManagePool_Thread_NQDestroy(xhWSPool);
 		ManagePool_Thread_NQDestroy(xhHttpPool);
+		ManagePool_Thread_NQDestroy(xhMQTTPool);
 		ManagePool_Memory_Destory(xhMemPool);
 
 		HelpComponents_XLog_StrongClose(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE);

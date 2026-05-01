@@ -17,7 +17,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		return false;
 	}
 
-	if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
+	if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		AUTHREG_BANNED st_Banned;
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
@@ -35,7 +35,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,插入禁用列表成功,禁用的用户:%s,禁用的IP地址:%s"), lpszClientAddr, st_Banned.tszUserName, st_Banned.tszIPAddr);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
+	else if (0 == _tcsxncmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
 	{
 		AUTHREG_BANNED st_Banned;
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
@@ -53,7 +53,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,删除禁用列表成功,删除禁用的用户:%s,删除禁用的IP地址:%s"), lpszClientAddr, st_Banned.tszUserName, st_Banned.tszIPAddr);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
+	else if (0 == _tcsxncmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
 	{
 		int nCountAddr = 0;
 		int nCountUser = 0;
@@ -78,7 +78,7 @@ bool XEngine_AuthorizeHTTP_Banned(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_BannedUser, nCountUser);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,查询禁用列表成功,禁用的用户个数:%d,禁用的IP地址个数:%d"), lpszClientAddr, nCountUser, nCountAddr);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIModify, lpszAPIName, _tcsxlen(lpszAPIModify)))
+	else if (0 == _tcsxncmp(lpszAPIModify, lpszAPIName, _tcsxlen(lpszAPIModify)))
 	{
 		AUTHREG_BANNED st_Banned;
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));

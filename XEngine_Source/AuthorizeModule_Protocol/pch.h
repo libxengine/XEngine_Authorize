@@ -24,6 +24,9 @@ using namespace std;
 #include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Define.h>
 #include <XEngine_Include/XEngine_BaseLib/BaseLib_Error.h>
+#include <XEngine_Include/XEngine_Core/ManagePool_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/MQTTProtocol_Define.h>
+#include <XEngine_Include/XEngine_RfcComponents/MQTTProtocol_Error.h>
 #include "../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../XAuth_Protocol.h"
 #include "../AuthorizeModule_Configure/Config_Define.h"
@@ -47,6 +50,7 @@ extern XLONG Protocol_dwErrorCode;
 
 #ifdef _MSC_BUILD
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib")
+#pragma comment(lib,"XEngine_RfcComponents/RfcComponents_MQTTProtocol.lib")
 #ifdef _DEBUG
 #ifdef _M_X64
 #pragma comment(lib,"../x64/Debug/jsoncpp")

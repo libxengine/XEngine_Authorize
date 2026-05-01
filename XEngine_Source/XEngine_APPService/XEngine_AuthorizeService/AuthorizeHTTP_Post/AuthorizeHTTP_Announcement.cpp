@@ -16,7 +16,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		return false;
 	}
 
-	if (0 == _tcsxnicmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
+	if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		int nListCount = 0;
 		AUTHREG_ANNOUNCEMENT st_Announcement;
@@ -57,7 +57,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,插入公告成功,公告信息:%s"), lpszClientAddr, st_Announcement.tszContext);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
+	else if (0 == _tcsxncmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
 	{
 		AUTHREG_ANNOUNCEMENT st_Announcement;
 		memset(&st_Announcement, '\0', sizeof(AUTHREG_ANNOUNCEMENT));
@@ -75,7 +75,7 @@ bool XEngine_AuthorizeHTTP_Announcement(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIN
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,删除公告成功.删除公告ID:%lld"), lpszClientAddr, st_Announcement.nID);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
+	else if (0 == _tcsxncmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
 	{
 		int nListCount = 0;
 		AUTHREG_ANNOUNCEMENT** ppSt_Announcement;

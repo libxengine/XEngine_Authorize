@@ -20,6 +20,7 @@ typedef struct
 	int nTCPPort;                                           //TCP端口
 	int nWSPort;                                            //WEBSOCKET端口
 	int nHTTPPort;                                          //HTTP管理端口
+	int nMQTTPort;                                          //MQTT端口
 	bool bDeamon;                                           //守护进程,LINUX
 	bool bTimeNotify;                                       //超时通知设置,真为一直通知,假为通知一次关闭客户端
 	struct
@@ -30,12 +31,14 @@ typedef struct
 		int nTCPThread;                                     //TCP业务线程个数
 		int nWSThread;                                      //WEBSOCKET业务线程个数
 		int nHTTPThread;                                    //HTTP业务线程个数
+		int nMQTTThread;                                    //MQTT业务线程个数
 	}st_XMax;
 	struct  
 	{
 		int nHeartCheck;                                    //检测次数
 		int nTCPTime;                                       //TCP检测时间
 		int nWSTime;                                        //WEBSOCKET检测时间
+		int nMQTime;                                        //MQTT检测时间
 		int nHTTPTime;                                      //HTTP检测时间
 	}st_XTime;
 	struct   
@@ -81,8 +84,9 @@ typedef struct
 	}st_XLogin;
 	struct  
 	{
+		XCHAR tszCryptoKey[32];                             //加密传输密钥
+		int nCryptionType;									//加密传输类型,参考:ENUM_XENGINE_CRYPTION_SYMMETRIC
 		bool bEnable;                                       //是否启用加密传输 
-		int nPassword;                                      //密码
 	}st_XCrypto;
 	struct  
 	{

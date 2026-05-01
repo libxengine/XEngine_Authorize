@@ -530,6 +530,94 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
   类型：整数型
   可空：N
   意思：输入要解析的大小
+ 参数.三：ptszOUTTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出过期时间
+ 参数.四：ptszHASTime
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：输出拥有时间
+ 参数.五：pInt_SerialCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出序列号个数
+ 参数.六：pInt_FieldCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出字段个数
+ 参数.七：penSerialType
+  In/Out：Out
+  类型：枚举型指针
+  可空：N
+  意思：输出生成类型
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Parse::Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszExpiredTime, XCHAR* ptszMaxTime, int* pInt_SerialCount, int* pInt_FieldCount, ENUM_VERIFICATION_MODULE_SERIAL_TYPE* penSerialType)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == ptszMaxTime))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return false;
+	}
+	Json::Value st_JsonObject = st_JsonRoot["st_SerialInfo"];
+
+	if (!st_JsonObject["tszExpiredTime"].isNull())
+	{
+		_tcsxcpy(ptszExpiredTime, st_JsonObject["tszExpiredTime"].asCString());
+	}
+	if (!st_JsonObject["tszMaxTime"].isNull())
+	{
+		_tcsxcpy(ptszMaxTime, st_JsonObject["tszMaxTime"].asCString());
+	}
+	if (!st_JsonObject["nSerialCount"].isNull())
+	{
+		*pInt_SerialCount = st_JsonObject["nSerialCount"].asInt();
+	}
+	if (!st_JsonObject["nFieldCount"].isNull())
+	{
+		*pInt_FieldCount = st_JsonObject["nFieldCount"].asInt();
+	}
+	if (!st_JsonObject["enSerialType"].isNull())
+	{
+		*penSerialType = (ENUM_VERIFICATION_MODULE_SERIAL_TYPE)st_JsonObject["enSerialType"].asInt();
+	}
+	return true;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseSerial
+函数功能：解析HTTP序列号信息
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入要解析的大小
  参数.三：pppSt_SerialTable
   In/Out：Out
   类型：三级指针

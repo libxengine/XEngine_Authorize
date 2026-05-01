@@ -20,13 +20,13 @@ jobs:
     
     steps:
       - name: Checkout main repository code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: 'develop'
         
        # 检出依赖的xengine仓库到指定的xengine目录
       - name: Checkout dependency repository (xengine)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: libxengine/libxengine
           path: libxengine
@@ -85,14 +85,14 @@ jobs:
 
       - name: Upload folder as artifact with mac x64
         if: matrix.os == 'macos-15-intel'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: XEngine_AuthorizeService-Mac_x86-64
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with mac arm
         if: matrix.os == 'macos-15'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: XEngine_AuthorizeService-Mac_Arm64
           path: XEngine_Release/

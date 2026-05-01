@@ -15,7 +15,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 	memset(tszURLValue, '\0', sizeof(tszURLValue));
 	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 
-	if (0 == _tcsxnicmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
+	if (0 == _tcsxncmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
 	{
 		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=1
 		XCHAR tszUserName[128];
@@ -116,7 +116,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录获得TOKEN:%lld 成功,用户级别:%d"), lpszClientAddr, xhToken, st_UserTable.st_UserInfo.nUserLevel);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIUPDate, tszURLValue, _tcsxlen(lpszAPIUPDate)))
+	else if (0 == _tcsxncmp(lpszAPIUPDate, tszURLValue, _tcsxlen(lpszAPIUPDate)))
 	{
 		//http://app.xyry.org:5302/api?function=update&token=1000112345
 		XCHAR tszUserToken[128];
@@ -135,7 +135,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求更新TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
 	}
-	else if (0 == _tcsxnicmp(lpszAPIClose, tszURLValue, _tcsxlen(lpszAPIClose)))
+	else if (0 == _tcsxncmp(lpszAPIClose, tszURLValue, _tcsxlen(lpszAPIClose)))
 	{
 		//http://app.xyry.org:5302/api?function=close&token=1000112345
 		XCHAR tszUserToken[128];

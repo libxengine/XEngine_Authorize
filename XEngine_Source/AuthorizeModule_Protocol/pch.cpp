@@ -118,6 +118,10 @@ extern "C" bool Protocol_Parse_HttpParseSerial(LPCXSTR lpszMsgBuffer, int nMsgLe
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseSerial(lpszMsgBuffer, nMsgLen, pppSt_SerialTable, pInt_ListCount);
 }
+extern "C" bool Protocol_Parse_HttpParseSerial2(LPCXSTR lpszMsgBuffer, int nMsgLen, XCHAR* ptszExpiredTime, XCHAR* ptszMaxTime, int* pInt_SerialCount, int* pInt_FieldCount, ENUM_VERIFICATION_MODULE_SERIAL_TYPE* penSerialType)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseSerial2(lpszMsgBuffer, nMsgLen, ptszExpiredTime, ptszMaxTime, pInt_SerialCount, pInt_FieldCount, penSerialType);
+}
 extern "C" bool Protocol_Parse_HttpParseOnline(LPCXSTR lpszMsgBuffer, int nMsgLen, bool * pbOnline)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseOnline(lpszMsgBuffer, nMsgLen, pbOnline);

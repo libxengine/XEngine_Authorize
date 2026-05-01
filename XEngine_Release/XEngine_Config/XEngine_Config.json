@@ -2,6 +2,7 @@
     "nTCPPort": 5300,
     "nWSPort": 5301,
     "nHTTPPort": 5302,
+    "nMQTTPort": 5303,
     "bDeamon": false,
     "bTimeNotify": false,
     "XMax": {
@@ -10,13 +11,15 @@
         "nIOThread": 2,
         "nTCPThread": 2,
         "nWSThread": 2,
-        "nHTTPThread": 2
+        "nHTTPThread": 2,
+        "nMQTTThread": 2
     },
     "XTime": {
         "nHeartCheck": 3,
         "nTCPTime": 5,
         "nWSTime": 5,
-        "nHTTPTime": 5
+        "nHTTPTime": 5,
+        "nMQTTTime": 5
     },
     "XVerification": {
         "nTokenTimeout": 3600,
@@ -51,8 +54,9 @@
         }
     },
     "XCrypto": {
-        "bEnable": false,
-        "nPass": 123123
+        "bEnable": true,
+        "nCryptionType": 1,
+        "tszPassKey": "123123aa"
     },
     "XApiVer": {
         "bEnable": false,

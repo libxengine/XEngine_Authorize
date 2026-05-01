@@ -88,6 +88,31 @@ void XCALLBACK XEngine_Client_HttpHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket,
 	XEngine_CloseClient(lpszClientAddr, 2);
 }
 //////////////////////////////////////////////////////////////////////////
+bool XCALLBACK XEngine_Client_MQTTLogin(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
+{
+	MQTTProtocol_Parse_Insert(lpszClientAddr);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("MQTT客户端:%s,链接到服务器"), lpszClientAddr);
+	return true;
+}
+void XCALLBACK XEngine_Client_MQTTRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
+{
+	if (!MQTTProtocol_Parse_Send(lpszClientAddr, lpszRecvMsg, nMsgLen))
+	{
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("MQTT客户端:%s,投递MQTT数据包到消息队列失败，错误：%lX"), lpszClientAddr, MQTTProtocol_GetLastError());
+		return;
+	}
+	SocketOpt_HeartBeat_ActiveAddrEx(xhMQTTSocket, lpszClientAddr);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_DEBUG, _X("MQTT客户端:%s,投递MQTT数据包到消息队列成功,%d"), lpszClientAddr, nMsgLen);
+}
+void XCALLBACK XEngine_Client_MQTTLeave(LPCXSTR lpszClientAddr, XSOCKET hSocket, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, 0);
+}
+void XCALLBACK XEngine_Client_MQTTHeart(LPCXSTR lpszClientAddr, XSOCKET hSocket, int nStatus, XPVOID lParam)
+{
+	XEngine_CloseClient(lpszClientAddr, 2);
+}
+//////////////////////////////////////////////////////////////////////////
 bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 {
 	xstring m_StrLeave;
@@ -96,6 +121,7 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhMQTTSocket, lpszClientAddr);
 
 		SocketOpt_HeartBeat_DeleteAddrEx(xhTCPHeart, lpszClientAddr);
 		SocketOpt_HeartBeat_DeleteAddrEx(xhWSHeart, lpszClientAddr);
@@ -114,15 +140,15 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 		NetCore_TCPXCore_CloseForClientEx(xhTCPSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhWSSocket, lpszClientAddr);
 		NetCore_TCPXCore_CloseForClientEx(xhHttpSocket, lpszClientAddr);
+		NetCore_TCPXCore_CloseForClientEx(xhMQTTSocket, lpszClientAddr);
 		m_StrLeave = _X("心跳断开");
 	}
 	HelpComponents_Datas_DeleteEx(xhTCPPacket, lpszClientAddr);
 	RfcComponents_WSPacket_DeleteEx(xhWSPacket, lpszClientAddr);
 	HttpProtocol_Server_CloseClinetEx(xhHttpPacket, lpszClientAddr);
-	
-	AUTHSESSION_NETCLIENT st_NETClient;
-	memset(&st_NETClient, '\0', sizeof(AUTHSESSION_NETCLIENT));
+	MQTTProtocol_Parse_Delete(lpszClientAddr);
 
+	AUTHSESSION_NETCLIENT st_NETClient = {};
 	if (Session_Authorize_GetUserForAddr(lpszClientAddr, &st_NETClient))
 	{
 		AUTHREG_PROTOCOL_TIME st_AuthTime;
@@ -157,34 +183,19 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 //////////////////////////////////////////////////////////////////////////
 bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType)
 {
-	if (st_AuthConfig.st_XCrypto.bEnable)
-	{
-		XCHAR tszPassword[64];
-		memset(tszPassword, '\0', sizeof(tszPassword));
-
-		_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType, tszPassword);
-	}
-	else
-	{
-		XEngine_SendMsg(lpszClientAddr, lpszMsgBuffer, nMsgLen, nNetType);
-	}
-	return true;
-}
-bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen, int nNetType, LPCXSTR lpszPass)
-{
 	CHttpMemory_PoolEx m_HTTPMemory(XENGINE_MEMORY_SIZE_MAX);
+
 	if (XENGINE_AUTH_APP_NETTYPE_WS == nNetType)
 	{
-		if (NULL == lpszPass)
+		if (st_AuthConfig.st_XCrypto.bEnable)
 		{
-			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
+			RfcComponents_WSCodec_EncodeMsg(m_CodecMemory.get(), m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
 		else
 		{
-			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
-			RfcComponents_WSCodec_EncodeMsg(m_CodecMemory.get(), m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
+			RfcComponents_WSCodec_EncodeMsg(lpszMsgBuffer, m_HTTPMemory.get(), &nMsgLen, ENUM_XENGINE_RFCOMPONENTS_WEBSOCKET_OPCODE_TEXT);
 		}
 		NetCore_TCPXCore_SendEx(xhWSSocket, lpszClientAddr, m_HTTPMemory.get(), nMsgLen);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhWSHeart, lpszClientAddr);
@@ -194,23 +205,31 @@ bool XEngine_SendMsg(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nMsgLen,
 		NetCore_TCPXCore_SendEx(xhTCPSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhTCPHeart, lpszClientAddr);
 	}
+	else if (XENGINE_AUTH_APP_NETTYPE_MQTT == nNetType)
+	{
+		if (!NetCore_TCPXCore_SendEx(xhMQTTSocket, lpszClientAddr, lpszMsgBuffer, nMsgLen))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("发送数据给MQTT客户端：%s，失败，错误：%lX"), lpszClientAddr, NetCore_GetLastError());
+			return false;
+		}
+		SocketOpt_HeartBeat_ActiveAddrEx(xhMQTTSocket, lpszClientAddr);
+	}
 	else
 	{
 		int nSDSize = XENGINE_MEMORY_SIZE_MAX;
-		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam;
-		memset(&st_HDRParam, '\0', sizeof(RFCCOMPONENTS_HTTP_HDRPARAM));
+		RFCCOMPONENTS_HTTP_HDRPARAM st_HDRParam = {};
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = true;
-		if (NULL == lpszPass)
+		if (st_AuthConfig.st_XCrypto.bEnable)
 		{
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
 		}
 		else
 		{
-			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_XCrypto_Encoder(lpszMsgBuffer, &nMsgLen, (XBYTE*)m_CodecMemory.get(), lpszPass);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);

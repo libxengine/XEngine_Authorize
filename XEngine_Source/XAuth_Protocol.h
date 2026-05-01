@@ -10,6 +10,11 @@
 //    Purpose:     验证协议头
 //    History:
 *********************************************************************/
+#define XENGINE_AUTH_APP_NETTYPE_TCP 0
+#define XENGINE_AUTH_APP_NETTYPE_WS 1
+#define XENGINE_AUTH_APP_NETTYPE_HTTP 2
+#define XENGINE_AUTH_APP_NETTYPE_MQTT 3
+
 #define XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME 32
 //////////////////////////////////////////////////////////////////////////
 //                         导出的协议定义

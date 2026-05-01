@@ -27,20 +27,9 @@ XHTHREAD XCALLBACK XEngine_AuthService_WSThread(XPVOID lParam)
 			}
 			if (st_AuthConfig.st_XCrypto.bEnable)
 			{
-				XCHAR tszPassword[64];
-				XCHAR tszDeBuffer[2048];
-
-				memset(tszPassword, '\0', sizeof(tszPassword));
-				memset(tszDeBuffer, '\0', sizeof(tszDeBuffer));
-
-				_xstprintf(tszPassword, _X("%d"), st_AuthConfig.st_XCrypto.nPassword);
-				Cryption_XCrypto_Decoder(tszMsgBuffer, &nMsgLen, tszDeBuffer, tszPassword);
-				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszDeBuffer, nMsgLen, enOPCode);
+				Cryption_Api_CryptDecodec(NULL, (XBYTE*)tszMsgBuffer, &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
 			}
-			else
-			{
-				XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
-			}
+			XEngine_Client_WSTask(ppSt_ListClient[i]->tszClientAddr, tszMsgBuffer, nMsgLen, enOPCode);
 		}
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
 	}
@@ -79,10 +68,6 @@ bool XEngine_Client_WSTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int nM
 			XENGINE_PROTOCOL_USERAUTHEX st_UserAuth = {};
 			Protocol_Parse_HttpParseAuth(lpszMsgBuffer, nMsgLen, &st_UserAuth);
 			XEngine_Client_TCPTask(lpszClientAddr, (LPCXSTR)&st_UserAuth, sizeof(XENGINE_PROTOCOL_USERAUTHEX), &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
-		}
-		else if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_AUTH_REQGETTIME == st_ProtocolHdr.unOperatorCode)
-		{
-			XEngine_Client_TCPTask(lpszClientAddr, NULL, 0, &st_ProtocolHdr, XENGINE_AUTH_APP_NETTYPE_WS);
 		}
 		if (XENGINE_COMMUNICATION_PROTOCOL_OPERATOR_CODE_HB_SYN == st_ProtocolHdr.unOperatorCode)
 		{
