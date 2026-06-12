@@ -4,19 +4,20 @@ on:
     types: [labeled]
 
 engine:
-  id: codex
-  model: gpt-5.3-codex
+  id: copilot
   env:
-    OPENAI_BASE_URL: "https://api.zhizengzeng.com/v1"
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
+    COPILOT_PROVIDER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_TYPE: openai
 
 network:
   allowed:
-    - api.zhizengzeng.com
+    - defaults
+    - ark.cn-beijing.volces.com
 
 sandbox:
   agent: false
-
 strict: false
 
 tools:
@@ -52,7 +53,7 @@ safe-outputs:
 ## Bug 修复流程
 
 1. 阅读 Issue 的完整标题和正文，理解问题现象
-2. 浏览仓库代码，定位问题所在的文件和函数
+2. 浏览仓库代码和文档，定位问题所在的文件和函数
 3. 分析根本原因
 4. 实现修复方案，注意：
    - 保持与现有代码风格一致
@@ -70,7 +71,7 @@ safe-outputs:
 ## 新功能开发流程
 
 1. 阅读 Issue 的完整标题和正文，理解需求目标
-2. 浏览仓库现有代码结构，找到最相关的模块和文件
+2. 浏览仓库现有代码结构和文档，找到最相关的模块和文件
 3. 制定实现方案：
    - 需要新增哪些文件或函数
    - 需要修改哪些现有文件

@@ -4,15 +4,17 @@ on:
     types: [opened, reopened]
 
 engine:
-  id: codex
-  model: gpt-5.3-codex
+  id: copilot
   env:
-    OPENAI_BASE_URL: "https://api.zhizengzeng.com/v1"
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
+    COPILOT_PROVIDER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_PROVIDER_TYPE: openai
 
 network:
   allowed:
-    - api.zhizengzeng.com
+    - defaults
+    - ark.cn-beijing.volces.com
 
 sandbox:
   agent: false

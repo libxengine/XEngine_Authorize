@@ -85,14 +85,14 @@ jobs:
 
       - name: Upload folder as artifact with mac x64
         if: matrix.os == 'macos-15-intel'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-Mac_x86-64
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with mac arm
         if: matrix.os == 'macos-15'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-Mac_Arm64
           path: XEngine_Release/
