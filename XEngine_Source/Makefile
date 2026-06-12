@@ -1,6 +1,7 @@
 RELEASE = 0
 UNICODE = 0
 PLATFORM=linux
+BUILDTYPE=0
 FLAGS= 
 
 DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
@@ -21,9 +22,20 @@ else ifeq ($(PLATFORM),mac)
 	FILEEXT = dylib
 endif
 
-XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
-          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
-	      XEngine_AuthorizeApp.exe 
+# 第三方库模块
+MODULES_THIRD = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
+# 业务模块 + 应用
+MODULES_APP = libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
+    		XEngine_AuthorizeApp.exe 
+
+# 根据 BUILDTYPE 决定编译目标
+ifeq ($(BUILDTYPE),0)
+	XENGINE_MODULES = $(MODULES_THIRD) $(MODULES_APP)
+else ifeq ($(BUILDTYPE),1)
+	XENGINE_MODULES = $(MODULES_THIRD)
+else ifeq ($(BUILDTYPE),2)
+	XENGINE_MODULES = $(MODULES_APP)
+endif
 
 .PHONY:MakeAll 
 MakeAll:$(XENGINE_MODULES)
