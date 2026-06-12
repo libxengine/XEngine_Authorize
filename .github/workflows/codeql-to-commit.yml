@@ -1,0 +1,194 @@
+name: Auto Copilot Autofix (High & Medium Only)
+
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CodeQL Advanced"]
+    types: [completed]
+
+jobs:
+  auto-fix:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    permissions:
+      security-events: read
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Trigger Autofix for High & Medium alerts
+        env:
+          GH_TOKEN: ${{ secrets.AUTOFIX_TOKEN }}
+          OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          set +e
+          DEFAULT_BRANCH=$(gh api /repos/$OWNER/$REPO --jq '.default_branch')
+          echo "Default branch: $DEFAULT_BRANCH"
+
+          ALERTS=$(gh api "/repos/$OWNER/$REPO/code-scanning/alerts?state=open&per_page=100" \
+            --jq '[.[] | select(.rule.security_severity_level == "critical" or .rule.security_severity_level == "high" or .rule.security_severity_level == "medium" or .rule.severity == "warning") | {number: .number, level: (.rule.security_severity_level // .rule.severity)}]')
+
+          COUNT=$(echo $ALERTS | jq 'length')
+          echo "Found $COUNT alerts with high / medium / warning"
+          echo "$ALERTS" | jq -r '.[] | "  Alert #\(.number) [\(.level)]"'
+
+          if [ "$COUNT" -eq 0 ]; then
+            echo "No alerts to process, exiting."
+            exit 0
+          fi
+
+          for ROW in $(echo $ALERTS | jq -r '.[] | @base64'); do
+            _jq() { echo "$ROW" | base64 -d | jq -r "$1"; }
+
+            NUMBER=$(_jq '.number')
+            SEC_LEVEL=$(_jq '.level')
+            BRANCH="autofix/${SEC_LEVEL}/alert-${NUMBER}"
+
+            echo "--- Alert #$NUMBER [$SEC_LEVEL] ---"
+
+            # 检查是否已有 autofix
+            EXISTING=$(gh api \
+              /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
+              --jq '.status' 2>/dev/null || echo "none")
+
+            if [ "$EXISTING" = "success" ]; then
+              echo "✅ Fix already exists"
+            else
+              echo "⏳ Generating fix..."
+              gh api -X POST \
+                /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix || {
+                echo "⚠️ Failed to trigger autofix for #$NUMBER, skipping"
+                continue
+              }
+
+              for i in 1 2 3; do
+                sleep 30
+                EXISTING=$(gh api \
+                  /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
+                  --jq '.status' 2>/dev/null || echo "none")
+                echo "  Attempt $i: status = $EXISTING"
+                [ "$EXISTING" = "success" ] && break
+              done
+            fi
+
+            if [ "$EXISTING" != "success" ]; then
+              echo "⚠️ Autofix not available for alert #$NUMBER (status: $EXISTING), skipping"
+              continue
+            fi
+
+            # 检查分支是否已存在
+            BRANCH_STATUS=$(gh api \
+              /repos/$OWNER/$REPO/git/refs/heads/$BRANCH \
+              --silent 2>/dev/null && echo "exists" || echo "not_found")
+            echo "DEBUG branch status: $BRANCH_STATUS"
+
+            if [ "$BRANCH_STATUS" = "not_found" ]; then
+              # 创建分支
+              SHA=$(gh api /repos/$OWNER/$REPO/git/refs/heads/$DEFAULT_BRANCH \
+                --jq '.object.sha')
+
+              gh api -X POST /repos/$OWNER/$REPO/git/refs \
+                -f ref="refs/heads/$BRANCH" \
+                -f sha="$SHA" 2>/dev/null || true
+              echo "🌿 Created branch: $BRANCH"
+
+              # 提交 fix
+              COMMIT_RESULT=$(gh api -X POST \
+                /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix/commits \
+                -f target_ref="$BRANCH" 2>&1)
+              echo "DEBUG commit result: $COMMIT_RESULT"
+
+              if echo "$COMMIT_RESULT" | grep -q "target_ref"; then
+                echo "✅ Committed fix to branch: $BRANCH"
+              else
+                echo "⚠️ No code changes generated, deleting branch and skipping"
+                gh api -X DELETE \
+                  /repos/$OWNER/$REPO/git/refs/heads/$BRANCH 2>/dev/null || true
+                continue
+              fi
+            else
+              # 分支已存在，检查是否已有 open PR
+              EXISTING_PR=$(gh pr list \
+                --repo "$OWNER/$REPO" \
+                --head "$BRANCH" \
+                --state open \
+                --json number \
+                --jq '.[0].number // empty')
+
+              if [ -n "$EXISTING_PR" ]; then
+                echo "⏭️ PR #$EXISTING_PR already exists, skipping"
+                continue
+              fi
+
+              echo "🌿 Branch exists, creating PR with existing branch"
+            fi
+
+            # 获取 alert 详情
+            ALERT_INFO=$(gh api \
+              /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER)
+
+            ALERT_TITLE=$(echo $ALERT_INFO | jq -r '.rule.description')
+            ALERT_HELP=$(echo $ALERT_INFO | jq -r '.rule.help // "暂无详细说明"' | head -c 800)
+            ALERT_TAGS=$(echo $ALERT_INFO | jq -r '.rule.tags // [] | join(", ")')
+            ALERT_FILE=$(echo $ALERT_INFO | jq -r '.most_recent_instance.location.path // "未知文件"')
+            ALERT_LINE=$(echo $ALERT_INFO | jq -r '.most_recent_instance.location.start_line // "未知行"')
+            ALERT_URL=$(echo $ALERT_INFO | jq -r '.html_url')
+            CWE_TAGS=$(echo $ALERT_INFO | jq -r '[.rule.tags[] | select(startswith("external/cwe/"))] | join(", ")')
+
+            AUTOFIX_DESC=$(gh api \
+              /repos/$OWNER/$REPO/code-scanning/alerts/$NUMBER/autofix \
+              --jq '.description // "暂无 AI 修复说明"')
+
+            # 创建 Draft PR
+            gh pr create \
+              --repo "$OWNER/$REPO" \
+              --base "$DEFAULT_BRANCH" \
+              --head "$BRANCH" \
+              --draft \
+              --title "[Autofix][$SEC_LEVEL] Alert #$NUMBER: $ALERT_TITLE" \
+              --body "## 🤖 Copilot Autofix 自动修复报告
+
+          ---
+
+          ### 📋 基本信息
+
+          | 字段 | 内容 |
+          |------|------|
+          | **Alert ID** | [#$NUMBER]($ALERT_URL) |
+          | **安全级别** | $SEC_LEVEL |
+          | **规则名称** | $ALERT_TITLE |
+          | **问题文件** | \`$ALERT_FILE\` 第 $ALERT_LINE 行 |
+          | **CWE 分类** | $CWE_TAGS |
+          | **规则标签** | $ALERT_TAGS |
+
+          ---
+
+          ### 🔍 问题说明
+
+          $ALERT_HELP
+
+          ---
+
+          ### 🤖 AI 修复思路
+
+          $AUTOFIX_DESC
+
+          ---
+
+          ### ✅ Review 检查清单
+
+          - [ ] 理解了漏洞的成因和影响范围
+          - [ ] 确认 AI 修复逻辑正确，没有遗漏边界情况
+          - [ ] 确认修复没有改变原有业务逻辑
+          - [ ] 确认没有引入新的安全问题
+          - [ ] CI / 单元测试全部通过
+          - [ ] 如有必要，已补充对应的测试用例
+
+          ---
+
+          > 此 PR 由 GitHub Copilot Autofix 自动生成，请仔细审核后再 merge。" && \
+            echo "🎉 PR created for alert #$NUMBER" || \
+            echo "❌ Failed to create PR for alert #$NUMBER"
+
+          done

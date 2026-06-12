@@ -16,10 +16,6 @@ network:
     - defaults
     - ark.cn-beijing.volces.com
 
-sandbox:
-  agent: false
-strict: false
-
 tools:
   github:
     min-integrity: none
