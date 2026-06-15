@@ -297,6 +297,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
 	SQLPacket_IsErrorOccur = false;
+	const int nVipUserLevel = 0;
 
 	AUTHREG_SERIALTABLE st_SerialTable;
 	AUTHREG_USERTABLE st_UserTable;
@@ -361,6 +362,14 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTSUPPORT;
 		return false;
 	}
+	//充值成功后自动升级为可登录等级
+	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET nUserLevel = '%d' WHERE UserName = '%s'"), nVipUserLevel, lpszUserName);
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+		return false;
+	}
 	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_Serial` SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"), lpszUserName, lpszSerialName);
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
@@ -386,6 +395,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 bool CDBModule_MySQL::DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
 	SQLPacket_IsErrorOccur = false;
+	const int nNormalUserLevel = 20;
 
 	XCHAR tszSQLStatement[1024];       //SQL语句
 	memset(tszSQLStatement, '\0', 1024);
@@ -425,6 +435,16 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimePr
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
 		return false;
+	}
+	if (pSt_TimeProtocol->nTimeLeft <= 0)
+	{
+		_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET nUserLevel = '%d' WHERE UserName = '%s'"), nNormalUserLevel, pSt_TimeProtocol->tszUserName);
+		if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
+		{
+			SQLPacket_IsErrorOccur = true;
+			SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+			return false;
+		}
 	}
 	return true;
 }
@@ -2015,4 +2035,3 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR l
 	}
 	return true;
 }
-
