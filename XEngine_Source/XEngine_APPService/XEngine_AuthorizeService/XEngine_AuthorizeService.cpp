@@ -126,14 +126,31 @@ LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
+/**
+ * @brief Authorize service process entry point.
+ *
+ * This function coordinates the full service lifecycle:
+ * 1) platform/runtime bootstrap (network stack, locale, crash handler),
+ * 2) configuration and parameter handling,
+ * 3) initialization of logging, protocol stacks, and worker components,
+ * 4) service run loop and signal-controlled shutdown,
+ * 5) orderly release of all allocated resources.
+ *
+ * Notes:
+ * - Platform-specific startup paths are guarded by compile-time macros.
+ * - Error paths return early to avoid continuing in a partially initialized state.
+ */
 int main(int argc, char** argv)
 {
 #ifdef _WINDOWS
+	// Initialize Winsock for all subsequent socket-based modules.
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 
+	// Register unhandled exception filter to generate a dump file on crash.
 	SetUnhandledExceptionFilter(Coredump_ExceptionFilter);
 #ifndef _DEBUG
+	// Ensure UTF-8 locale in release builds for consistent text processing/logging.
 	if (setlocale(LC_ALL, ".UTF8") == NULL)
 	{
 		fprintf(stderr, "Error setting locale.\n");
