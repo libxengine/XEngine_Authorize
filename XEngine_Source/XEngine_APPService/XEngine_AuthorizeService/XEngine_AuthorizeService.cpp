@@ -243,7 +243,7 @@ int main(int argc, char** argv)
 		goto XENGINE_EXITAPP;
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化会话客户端服务成功"));
-	if (!Session_Token_Init(st_AuthConfig.st_XVerification.nTokenTimeout, XEngine_TaskEvent_Token))
+	if (!Session_Token_Init(st_AuthConfig.st_XVerification.nTokenTimeout, true, XEngine_TaskEvent_Token))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化会话TOKEN服务失败，错误：%lX"), Session_GetLastError());
 		goto XENGINE_EXITAPP;

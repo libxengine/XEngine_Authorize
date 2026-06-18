@@ -253,7 +253,6 @@
     <ClInclude Include="Session_Authorize\Session_Authorize.h" />
     <ClInclude Include="Session_Define.h" />
     <ClInclude Include="Session_Error.h" />
-    <ClInclude Include="Session_Token\Session_Token.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />

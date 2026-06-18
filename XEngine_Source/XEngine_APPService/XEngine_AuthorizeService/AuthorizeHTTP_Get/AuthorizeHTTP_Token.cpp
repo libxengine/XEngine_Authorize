@@ -18,16 +18,11 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 	if (0 == _tcsxncmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
 	{
 		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=1
-		XCHAR tszUserName[128];
-		XCHAR tszUserPass[128];
-		XCHAR tszDeviceType[128];
+		XCHAR tszUserName[128] = {};
+		XCHAR tszUserPass[128] = {};
+		XCHAR tszDeviceType[128] = {};
 		XNETHANDLE xhToken = 0;
-		AUTHREG_USERTABLE st_UserTable;
-
-		memset(tszUserName, '\0', sizeof(tszUserName));
-		memset(tszUserPass, '\0', sizeof(tszUserPass));
-		memset(tszDeviceType, '\0', sizeof(tszDeviceType));
-		memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+		AUTHREG_USERTABLE st_UserTable = {};
 
 		if (nListCount < 4)
 		{
@@ -111,7 +106,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		{
 			BaseLib_Handle_Create(&xhToken);
 		}
-		Session_Token_Insert(xhToken, &st_UserTable);
+		Session_Token_Insert(xhToken, &st_UserTable.st_UserInfo);
 		Protocol_Packet_HttpToken(tszSDBuffer, &nSDLen, xhToken, st_AuthConfig.st_XVerification.nTokenTimeout);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求登录获得TOKEN:%lld 成功,用户级别:%d"), lpszClientAddr, xhToken, st_UserTable.st_UserInfo.nUserLevel);
@@ -124,7 +119,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 
 		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 
-		if (!Session_Token_UPDate(_ttxoll(tszUserToken)))
+		if (!Session_Token_UPDateStr(tszUserToken))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -143,7 +138,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 
 		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
 		//主动关闭
-		Session_Token_Delete(_ttxoll(tszUserToken));
+		Session_Token_DeleteStr(tszUserToken);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);

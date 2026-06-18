@@ -208,7 +208,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		//得到TOKEN
 		if (Protocol_Parse_HttpParseToken(lpszMsgBuffer, nMsgLen, &xhToken))
 		{
-			if (!Session_Token_Get(xhToken, &st_UserTable))
+			if (!Session_Token_Get(xhToken, &st_UserTable.st_UserInfo))
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "Unauthorized");
 				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);

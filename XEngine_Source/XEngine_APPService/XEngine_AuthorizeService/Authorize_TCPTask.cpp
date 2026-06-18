@@ -381,7 +381,7 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		if (st_FunSwitch.bSwitchTokenLogin)
 		{
-			Session_Token_Insert(pSt_ProtocolHdr->xhToken, &st_UserTable);
+			Session_Token_Insert(pSt_ProtocolHdr->xhToken, &st_UserTable.st_UserInfo);
 		}
 		//记录每次登陆
 		XCHAR tszIPAddr[128] = {};
