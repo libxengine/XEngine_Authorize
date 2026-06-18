@@ -58,22 +58,5 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获得动态验证码成功,TOKEN:%lld,验证码:%d"), lpszClientAddr, xhToken, nDCode);
 	}
-	else if (0 == _tcsxncmp(lpszAPINotice, tszURLValue, _tcsxlen(lpszAPINotice)))
-	{
-		XCHAR tszUserToken[128];
-		memset(tszUserToken, '\0', sizeof(tszUserToken));
-		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserToken);
-
-		XENGINE_PROTOCOL_USERINFO st_UserInfo = {};
-		if (!Session_Token_Get(_ttxoll(tszUserToken), &st_UserInfo))
-		{
-			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
-			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取通告失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
-			return false;
-		}
-		//http://app.xyry.org:5302/api?function=notice
-		XEngine_AuthorizeHTTP_Announcement(lpszClientAddr, _X("list"), NULL, 0);
-	}
 	return true;
 }
