@@ -7,6 +7,7 @@ FLAGS=
 DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
 DEPEND_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
 DEPEND_VERIFICATION_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_Verification
+DEPEND_MSGNOTIFY_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_MSGNotify
 
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
 AUTH_DATABASE_PATH = ./AuthorizeModule_Database
@@ -23,7 +24,7 @@ else ifeq ($(PLATFORM),mac)
 endif
 
 # 第三方库模块
-MODULES_THIRD = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
+MODULES_THIRD = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so  libXEngine_MSGNotify.so                                            \
 # 业务模块 + 应用
 MODULES_APP = libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
     		XEngine_AuthorizeApp.exe 
@@ -58,6 +59,12 @@ ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_VERIFICATION_PATH)/libXEngine_Verification.$(FILEEXT) ../XEngine_Release/
 else
 	make -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
+libXEngine_MSGNotify.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_MSGNOTIFY_PATH)/libXEngine_MSGNotify.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(DEPEND_MSGNOTIFY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 
 libAuthorizeModule_Session.so:

@@ -122,6 +122,17 @@ typedef struct
 		int nLogType;                                      //日志类型
 		bool bLogStorage;                                   //强日志
 	}st_XLog;         
+	struct
+	{
+		struct 
+		{
+			bool bEnable;
+			XCHAR tszServiceAddr[XPATH_MAX];
+			XCHAR tszUser[128];
+			XCHAR tszPass[128];
+			XCHAR tszSendAddr[128];
+		}st_EMailNotify;
+	}st_XNotify;
 	struct  
 	{
 		bool bEnable;

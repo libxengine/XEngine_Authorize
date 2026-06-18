@@ -156,11 +156,8 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 	}
 	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIPay, _tcsxlen(lpszAPIName)))
 	{
-		AUTHREG_PROTOCOL_USERPAY st_UserPay;
-		AUTHREG_USERTABLE st_UserInfo;
-
-		memset(&st_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
-		memset(&st_UserPay, '\0', sizeof(AUTHREG_PROTOCOL_USERPAY));
+		AUTHREG_PROTOCOL_USERPAY st_UserPay = {};
+		AUTHREG_USERTABLE st_UserInfo = {};
 
 		if (!st_FunSwitch.bSwitchPay)
 		{
@@ -221,6 +218,23 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		Session_Authorize_SetUser(&st_UserInfo);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+
+		if (st_AuthConfig.st_XNotify.st_EMailNotify.bEnable)
+		{
+			LPCXSTR lpszSubject = _X("XEngine_AuthorizeService User Pay notify!");
+			XCHAR tszPayload[1024] = {};
+			XCHAR tszTimeStr[128] = {};
+			BaseLib_Time_TimeToStr(tszTimeStr);
+			_xstprintf(tszPayload, _X("http client:%s ,user name:%s ,user pay serial number:%s time on %s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, tszTimeStr);
+			if (MSGNotify_EMail_Send(st_AuthConfig.st_XNotify.st_EMailNotify.tszServiceAddr, st_AuthConfig.st_XNotify.st_EMailNotify.tszUser, st_AuthConfig.st_XNotify.st_EMailNotify.tszPass, st_AuthConfig.st_XNotify.st_EMailNotify.tszSendAddr, lpszSubject, tszPayload))
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，消息通知发送成功"), lpszClientAddr);
+			}
+			else
+			{
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，消息通知发送失败，错误：%lX"), lpszClientAddr, MSGNotify_GetLastError());
+			}
+		}
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
 	}
 	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIPass, _tcsxlen(lpszAPIName)))

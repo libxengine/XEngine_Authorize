@@ -257,7 +257,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
 bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = false;
-    const int nVipUserLevel = 0;
+    const int nVipUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_VIP;
 
     AUTHREG_SERIALTABLE st_SerialTable;
     AUTHREG_USERTABLE st_UserTable;
@@ -355,7 +355,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
 bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = false;
-    const int nNormalUserLevel = 20;
+    const int nNormalUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
