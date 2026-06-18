@@ -19,9 +19,6 @@
     <Filter Include="源文件\Session_Authorize">
       <UniqueIdentifier>{98019e80-6680-48fa-a755-702b5b3aab78}</UniqueIdentifier>
     </Filter>
-    <Filter Include="源文件\Session_Token">
-      <UniqueIdentifier>{0b721944-f23e-4671-81dc-beb1970fe840}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -49,9 +46,6 @@
     </ClCompile>
     <ClCompile Include="Session_Authorize\Session_Authorize.cpp">
       <Filter>源文件\Session_Authorize</Filter>
-    </ClCompile>
-    <ClCompile Include="Session_Token\Session_Token.cpp">
-      <Filter>源文件\Session_Token</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
