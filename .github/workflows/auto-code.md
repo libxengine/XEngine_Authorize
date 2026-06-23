@@ -37,6 +37,7 @@ safe-outputs:
   threat-detection: false
   create-pull-request:
     base-branch: develop
+    protected-files: allowed
   add-comment:
     max: 1
 ---
