@@ -4,15 +4,12 @@ on:
     types: [opened, reopened]
 
 engine:
-  id: codex
+  id: copilot
   env:
-    OPENAI_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-    CODEX_MODEL: doubao-seed-2-0-code-preview-260215
-  model: doubao-seed-2-0-code-preview-260215
-  token-weights:
-    multipliers:
-      doubao: 0.5
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_PROVIDER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
+    COPILOT_PROVIDER_TYPE: openai
 
 network:
   allowed:
@@ -29,6 +26,7 @@ permissions:
   issues: read
   contents: read
   pull-requests: read
+  copilot-requests: write
 
 safe-outputs:
   threat-detection: false
