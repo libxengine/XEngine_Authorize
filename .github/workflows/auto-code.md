@@ -4,15 +4,19 @@ on:
     types: [labeled]
 
 engine:
-  id: codex
+  id: copilot
   env:
-    OPENAI_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
-    OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-    CODEX_MODEL: doubao-seed-2-0-code-preview-260215
-  model: doubao-seed-2-0-code-preview-260215 
-  token-weights:
-    multipliers:
-      doubao: 0.5
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_PROVIDER_BEARER_TOKEN: ${{ secrets.OPENAI_API_KEY }}
+    COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
+    COPILOT_PROVIDER_TYPE: openai
+    COPILOT_PROVIDER_WIRE_API: responses
+
+features:
+  dangerously-disable-sandbox-agent: "controlled environment for issue triage automation"
+sandbox:
+  agent: false
+strict: false
 
 network:
   allowed:
