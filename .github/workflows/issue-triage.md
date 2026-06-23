@@ -5,16 +5,10 @@ on:
 
 engine:
   id: codex
+  model: doubao-seed-2-0-code-preview-260215
   env:
     OPENAI_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3/responses"
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-    CODEX_MODEL: doubao-seed-2-0-code-preview-260215
-  model: doubao-seed-2-0-code-preview-260215
-  token-weights:
-    multipliers:
-      doubao: 1.0
-
-max-ai-credits: -1
 
 features:
   dangerously-disable-sandbox-agent: "controlled environment for issue triage automation"
