@@ -10,11 +10,16 @@ engine:
     OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
     CODEX_MODEL: doubao-seed-2-0-code-preview-260215
   model: doubao-seed-2-0-code-preview-260215 
+  token-weights:
+    multipliers:
+      doubao: 0.5
 
 network:
   allowed:
     - defaults
     - ark.cn-beijing.volces.com
+    - github.com        
+    - api.github.com 
 
 tools:
   github:
