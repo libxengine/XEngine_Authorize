@@ -6,7 +6,7 @@ on:
 engine:
   id: copilot
   env:
-    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3/responses"
+    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
     COPILOT_PROVIDER_BEARER_TOKEN: ${{ secrets.OPENAI_API_KEY }}
     COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
     COPILOT_PROVIDER_TYPE: openai

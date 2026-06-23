@@ -1,4 +1,4 @@
-# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"39f23d88a92aca3024c2d52d770c8bf621563823691394ae53ad3082b6b136ff","body_hash":"bf4f8784cdac578e246f253a70aa7f7acce80a6fcf1c9116a0f5867b9ece3260","compiler_version":"v0.79.6","agent_id":"copilot","engine_versions":{"copilot":"1.0.60"}}
+# gh-aw-metadata: {"schema_version":"v4","frontmatter_hash":"6755cb1b3db280f418be9daf8f20588c0332414b28bf418786db7dc30de58d26","body_hash":"bf4f8784cdac578e246f253a70aa7f7acce80a6fcf1c9116a0f5867b9ece3260","compiler_version":"v0.79.6","agent_id":"copilot","engine_versions":{"copilot":"1.0.60"}}
 # gh-aw-manifest: {"version":1,"secrets":["GH_AW_GITHUB_MCP_SERVER_TOKEN","GH_AW_GITHUB_TOKEN","GITHUB_TOKEN","OPENAI_API_KEY"],"actions":[{"repo":"actions/checkout","sha":"df4cb1c069e1874edd31b4311f1884172cec0e10","version":"v6.0.3"},{"repo":"actions/download-artifact","sha":"3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c","version":"v8.0.1"},{"repo":"actions/github-script","sha":"3a2844b7e9c422d3c10d287c895573f7108da1b3","version":"v9.0.0"},{"repo":"actions/upload-artifact","sha":"043fb46d1a93c77aae656e7c1c64a875d1fc6a0a","version":"v7.0.1"},{"repo":"github/gh-aw-actions/setup","sha":"5c2fe865bb4dc46e1450f6ee0d0541d759aea73a","version":"v0.79.6"}],"containers":[{"image":"ghcr.io/github/github-mcp-server:v1.1.2","digest":"sha256:30197479d8036c7811892bc07e06f9a05c9ef3cdd79bc59f256d50647f95788c","pinned_image":"ghcr.io/github/github-mcp-server:v1.1.2@sha256:30197479d8036c7811892bc07e06f9a05c9ef3cdd79bc59f256d50647f95788c"}]}
 #    ___                   _   _      
 #   / _ \                 | | (_)     
@@ -770,7 +770,7 @@ jobs:
         env:
           COPILOT_AGENT_RUNNER_TYPE: STANDALONE
           COPILOT_MODEL: doubao-seed-2-0-code-preview-260215
-          COPILOT_PROVIDER_BASE_URL: https://ark.cn-beijing.volces.com/api/v3/responses
+          COPILOT_PROVIDER_BASE_URL: https://ark.cn-beijing.volces.com/api/v3
           COPILOT_PROVIDER_BEARER_TOKEN: ${{ secrets.OPENAI_API_KEY }}
           COPILOT_PROVIDER_TYPE: openai
           COPILOT_PROVIDER_WIRE_API: responses
