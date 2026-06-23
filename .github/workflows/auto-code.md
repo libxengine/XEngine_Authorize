@@ -22,8 +22,6 @@ network:
   allowed:
     - defaults
     - ark.cn-beijing.volces.com
-    - github.com        
-    - api.github.com 
 
 tools:
   github:
@@ -33,6 +31,7 @@ permissions:
   contents: read
   issues: read
   pull-requests: read
+  copilot-requests: write
 
 safe-outputs:
   threat-detection: false
@@ -44,13 +43,14 @@ safe-outputs:
 
 # 自动处理 Issue
 
-当 Issue 被打上 `bug` 或 `enhancement` 标签时触发。其他标签直接退出，不做任何操作。
+当 Issue 被打上 `bug` 或 `enhancement` 或 `feature` 标签时触发。其他标签直接退出，不做任何操作。
 
 ## 判断任务类型
 
 读取 Issue #${{ github.event.issue.number }} 当前的标签：
 - 如果包含 `bug` 标签 → 执行【Bug 修复流程】
-- 如果包含 `enhancement` 标签 → 执行【新功能开发流程】
+- 如果包含 `feature` 标签 → 执行【新功能开发流程】
+- 如果包含 `enhancement` 标签 → 执行【功能改进开发流程】
 - 其他情况 → 直接退出
 
 ---
@@ -67,7 +67,7 @@ safe-outputs:
    - 问题根因
    - 修复方式
    - 如何验证
-6. 在原 Issue 下用中文回复，说明已提交 PR 及修复思路
+6. 在原 Issue 下使用用户提问的语言进行回复，说明已提交 PR 及修复思路
 
 如果问题过于复杂或信息不足，在 Issue 下用中文说明原因，不创建 PR。
 
@@ -88,6 +88,29 @@ safe-outputs:
    - 实现了哪些功能
    - 涉及哪些文件改动
    - 如何验证/测试
-6. 在原 Issue 下用中文回复，说明已提交 PR、实现思路和测试建议
+6. 在原 Issue 下使用用户提问的语言进行回复，说明已提交 PR、实现思路和测试建议
 
 如果需求描述不清晰或实现风险过大，在 Issue 下用中文说明原因，不创建 PR。
+
+---
+
+## 功能改进开发流程
+
+1. 阅读 Issue 的完整标题和正文，明确功能改进与优化的具体目标（如性能提升、代码结构重构、用户体验优化等）。
+2. 浏览仓库现有代码，评估受影响的范围，定位需要进行优化或重构的核心文件及函数。
+3. 制定改进方案，需特别注意：
+   - **向下兼容性**：确保本次改进不会破坏现有的公开接口（API）和已有功能。
+   - **防御性编程**：优化逻辑的同时，不能降低代码的健壮性。
+4. 按照方案实施代码改动，注意：
+   - 保持与现有代码风格高度一致。
+   - 仅针对性能、可读性或结构进行局部优化，严禁引入未经需求的无关大范围改动。
+5. 创建 Pull Request，根据改进的核心侧重点选择标题格式：
+   - 侧重于代码重构/可读性优化：`refactor: <Issue 标题>`
+   - 侧重于运行运行效率/性能优化：`perf: <Issue 标题>`
+   在 PR 描述中说明：
+   - 优化的动机与改进点
+   - 改进前后的对比或预期收益
+   - 验证优化是否生效的测试方法
+6. 在原 Issue 下使用用户提问的语言进行回复，说明已提交 PR、优化思路及预期的提升效果。
+
+如果功能改进可能带来重大的破坏性变更（Breaking Changes）或者现有代码结构不支持盲目优化，在 Issue 下用中文说明原因，保持维持原状，不创建 PR。
