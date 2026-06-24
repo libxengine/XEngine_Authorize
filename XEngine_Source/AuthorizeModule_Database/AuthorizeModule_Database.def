@@ -14,6 +14,7 @@ EXPORTS
 	DBModule_SQLite_UserSet
 	DBModule_SQLite_UserList
 	DBModule_SQLite_UserLogin
+	DBModule_SQLite_UserTime
 	DBModule_SQLite_QueryLogin
 
 	DBModule_SQLite_SerialInsert
@@ -49,6 +50,7 @@ EXPORTS
 	DBModule_MySQL_UserSet
 	DBModule_MySQL_UserList
 	DBModule_MySQL_UserLogin
+	DBModule_MySQL_UserTime
 	DBModule_MySQL_QueryLogin
 
 	DBModule_MySQL_SerialInsert

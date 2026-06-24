@@ -123,7 +123,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInf
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,%d,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,%d,0,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
     if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -202,14 +202,18 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		{
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserName, pptszResult[nFliedValue]);
 		}
-
 		//密码
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
 		{
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, pptszResult[nFliedValue]);
 		}
-
+		//TOKEN
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->st_UserInfo.xhToken = _ttxoll(pptszResult[nFliedValue]);
+		}
 		//过期时间
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue]) 
@@ -258,7 +262,12 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		{
 			pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(pptszResult[nFliedValue]);
 		}
-
+		//总时间
+		nFliedValue++;
+		if (NULL != pptszResult[nFliedValue])
+		{
+			pSt_UserInfo->nTimeCount = _ttxoll(pptszResult[nFliedValue]);
+		}
 		//登录日期
 		nFliedValue++;
 		if (NULL != pptszResult[nFliedValue] && _tcsxlen(pptszResult[nFliedValue]) > 0)
@@ -468,7 +477,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 	XCHAR tszSQLStatement[1024];       //SQL语句
 	memset(tszSQLStatement, '\0', 1024);
 
-	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',UPTime = NOW(),CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel/*, pSt_UserTable->st_UserInfo.tszLoginTime*/, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
+	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET Password = '%s',Token = '%lld',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CountTime = '%lld',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.xhToken, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->nTimeCount, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
 
 	//更新用户剩余时间
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
@@ -548,6 +557,9 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		//密码
 		nFliedValue++;
 		_tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
+		//TOKEN
+		nFliedValue++;
+		(*pppSt_UserInfo)[i]->st_UserInfo.xhToken = _ttxoll(ppszResult[nFliedValue]);
 		//过期时间
 		nFliedValue++;
 		_tcsxcpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
@@ -569,6 +581,9 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		//用户级别 -1表示封禁
 		nFliedValue++;
 		(*pppSt_UserInfo)[i]->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
+		//总时间
+		nFliedValue++;
+		(*pppSt_UserInfo)[i]->nTimeCount = _ttxoll(ppszResult[nFliedValue]);
 		//登录日期
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
@@ -610,6 +625,38 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lps
 	BaseLib_Time_TimeToStr(tszTimeStr, NULL, false);
 
 	_xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Login(UserName, UserAddr, UserTime) values('%s','%s','%s')"), lpszUserName, lpszUserAddr, tszTimeStr);
+
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_UserTime
+函数功能：增加用户在线时间
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：nTime
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：增加的时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_UserTime(LPCXSTR lpszUserName, __int64x nTime)
+{
+	SQLPacket_IsErrorOccur = false;
+	XCHAR tszSQLStatement[1024] = {};
+	_xstprintf(tszSQLStatement, _X("UPDATE Authorize_Login SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{

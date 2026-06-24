@@ -193,6 +193,25 @@ extern "C" bool DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, in
 *********************************************************************/
 extern "C" bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
 /********************************************************************
+函数名称：DBModule_SQLite_UserTime
+函数功能：增加用户在线时间
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：nTime
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：增加的时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_UserTime(LPCXSTR lpszUserName, __int64x nTime);
+/********************************************************************
 函数名称：DBModule_SQLite_QueryLogin
 函数功能：用户登录记录查询
  参数.一：lpszUserName
@@ -1031,6 +1050,25 @@ extern "C" bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_A
 备注：
 *********************************************************************/
 extern "C" bool DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr);
+/********************************************************************
+函数名称：DBModule_MySQL_UserTime
+函数功能：增加用户在线时间
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：nTime
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：增加的时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_UserTime(LPCXSTR lpszUserName, __int64x nTime);
 /********************************************************************
 函数名称：DBModule_MySQL_QueryLogin
 函数功能：用户登录记录查询

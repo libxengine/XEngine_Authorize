@@ -81,7 +81,8 @@ typedef struct tag_AuthReg_UserTable
 	XCHAR tszADDInfo[2048];                                                //附加信息
 	XCHAR tszLeftTime[64];                                                 //剩余日期
 	XCHAR tszHardCode[32];                                                 //硬件码
-	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;                        //充值卡类型
+	__int64u nTimeCount;											       //在线时间
+	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;                     //充值卡类型
 	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                                 //设备类型
 }AUTHREG_USERTABLE, * LPAUTHREG_USERTABLE;
 //注册序列号表
