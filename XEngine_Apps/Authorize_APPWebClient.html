@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>XEngine Authorize - Web 客户端示例</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #333; padding: 20px; }
+.container { max-width: 1100px; margin: 0 auto; }
+h1 { text-align: center; margin-bottom: 20px; color: #1a73e8; }
+.panel { background: #fff; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+.panel h2 { font-size: 16px; margin-bottom: 12px; color: #555; border-left: 4px solid #1a73e8; padding-left: 10px; }
+.form-row { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; align-items: center; }
+.form-row label { min-width: 80px; font-size: 14px; color: #666; }
+.form-row input, .form-row select { flex: 1; min-width: 120px; padding: 8px 12px; border: 1px solid #d9d9d9; border-radius: 4px; font-size: 14px; outline: none; transition: border-color 0.3s; }
+.form-row input:focus, .form-row select:focus { border-color: #1a73e8; }
+.btn { padding: 8px 20px; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.3s; color: #fff; }
+.btn-primary { background: #1a73e8; }
+.btn-primary:hover { background: #1557b0; }
+.btn-primary:disabled { background: #a0c3ff; cursor: not-allowed; }
+.btn-danger { background: #e74c3c; }
+.btn-danger:hover { background: #c0392b; }
+.btn-danger:disabled { background: #f5a6a0; cursor: not-allowed; }
+.btn-success { background: #27ae60; }
+.btn-success:hover { background: #1e8449; }
+.status-bar { display: flex; gap: 20px; flex-wrap: wrap; padding: 12px; background: #fafafa; border-radius: 4px; margin-bottom: 10px; font-size: 14px; }
+.status-item { display: flex; align-items: center; gap: 6px; }
+.status-dot { width: 10px; height: 10px; border-radius: 50%; background: #ccc; }
+.status-dot.connected { background: #27ae60; box-shadow: 0 0 6px #27ae60; }
+.status-dot.disconnected { background: #e74c3c; }
+.status-dot.logged { background: #f39c12; box-shadow: 0 0 6px #f39c12; }
+.log-area { height: 350px; overflow-y: auto; background: #1e1e1e; color: #d4d4d4; padding: 12px; border-radius: 4px; font-family: "Consolas", "Monaco", monospace; font-size: 13px; line-height: 1.6; }
+.log-entry { margin-bottom: 4px; word-break: break-all; }
+.log-info { color: #569cd6; }
+.log-success { color: #4ec9b0; }
+.log-error { color: #f44747; }
+.log-warn { color: #ce9178; }
+.log-recv { color: #dcdcaa; }
+.log-send { color: #9cdcfe; }
+.tabs { display: flex; gap: 4px; margin-bottom: 12px; border-bottom: 2px solid #e8e8e8; }
+.tab { padding: 8px 16px; cursor: pointer; font-size: 14px; color: #666; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.3s; }
+.tab:hover { color: #1a73e8; }
+.tab.active { color: #1a73e8; border-bottom-color: #1a73e8; font-weight: 500; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.info-card { padding: 12px; background: #f8f9fa; border-radius: 4px; border-left: 3px solid #1a73e8; }
+.info-card .label { font-size: 12px; color: #999; margin-bottom: 4px; }
+.info-card .value { font-size: 16px; font-weight: 600; color: #333; word-break: break-all; }
+.checkbox-row { display: flex; align-items: center; gap: 6px; }
+.checkbox-row input[type=checkbox] { width: auto; min-width: auto; flex: 0 0 auto; }
+.checkbox-row label { min-width: auto; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>🔐 XEngine Authorize Web 客户端示例</h1>
+
+<div class="panel">
+<h2>服务器配置</h2>
+<div class="form-row">
+  <label>服务器地址:</label>
+  <input type="text" id="serverHost" value="127.0.0.1" placeholder="服务器IP或域名">
+  <label>WS端口:</label>
+  <input type="number" id="wsPort" value="5301" style="max-width:100px">
+  <label>HTTP端口:</label>
+  <input type="number" id="httpPort" value="5302" style="max-width:100px">
+</div>
+<div class="form-row">
+  <label>设备类型:</label>
+  <select id="deviceType" style="max-width:200px">
+    <option value="10">WEB_IE (10)</option>
+    <option value="11">WEB_EDGE (11)</option>
+    <option value="12" selected>WEB_CHROME (12)</option>
+    <option value="13">WEB_FIREFOX (13)</option>
+    <option value="14">WEB_SAFARI (14)</option>
+    <option value="15">WEB_OPERA (15)</option>
+    <option value="16">WEB_RESTFUL (16)</option>
+    <option value="17">WEB_LIKEGG (17)</option>
+  </select>
+  <div class="checkbox-row">
+    <input type="checkbox" id="passEncrypt">
+    <label for="passEncrypt">密码MD5加密</label>
+  </div>
+  <div class="checkbox-row">
+    <input type="checkbox" id="autoReconnect">
+    <label for="autoReconnect">断线重连</label>
+  </div>
+</div>
+</div>
+
+<div class="panel">
+<h2>连接状态</h2>
+<div class="status-bar">
+  <div class="status-item">
+    <span class="status-dot disconnected" id="wsStatusDot"></span>
+    <span>WebSocket: <strong id="wsStatus">未连接</strong></span>
+  </div>
+  <div class="status-item">
+    <span class="status-dot disconnected" id="loginStatusDot"></span>
+    <span>登录状态: <strong id="loginStatus">未登录</strong></span>
+  </div>
+  <div class="status-item">
+    <span>Token: <strong id="tokenDisplay">-</strong></span>
+  </div>
+  <div class="status-item">
+    <span>心跳间隔: <strong>2s</strong></span>
+  </div>
+  <div class="status-item">
+    <span>在线时长: <strong id="onlineTime">0s</strong></span>
+  </div>
+</div>
+<div class="form-row">
+  <button class="btn btn-primary" id="btnConnect" onclick="doConnect()">连接WebSocket</button>
+  <button class="btn btn-danger" id="btnDisconnect" onclick="doDisconnect()" disabled>断开连接</button>
+</div>
+</div>
+
+<div class="panel">
+<div class="tabs">
+  <div class="tab active" data-tab="login" onclick="switchTab('login')">登录认证</div>
+  <div class="tab" data-tab="register" onclick="switchTab('register')">用户注册</div>
+  <div class="tab" data-tab="api" onclick="switchTab('api')">HTTP API</div>
+  <div class="tab" data-tab="userinfo" onclick="switchTab('userinfo')">用户信息</div>
+</div>
+
+<div class="tab-content active" id="tab-login">
+  <div class="form-row">
+    <label>用户名:</label>
+    <input type="text" id="loginUser" value="admin" placeholder="用户名">
+    <label>密码:</label>
+    <input type="password" id="loginPass" value="123123aa" placeholder="密码">
+  </div>
+  <div class="form-row">
+    <label>硬件码:</label>
+    <input type="text" id="loginHWCode" value="" placeholder="硬件码（可选）">
+    <label>动态码:</label>
+    <input type="text" id="loginDCode" value="" placeholder="动态码（如果启用）">
+    <label>动态Token:</label>
+    <input type="text" id="loginDToken" value="" placeholder="动态码Token">
+  </div>
+  <div class="form-row">
+    <button class="btn btn-success" id="btnLogin" onclick="doLogin()" disabled>登录</button>
+    <button class="btn btn-danger" id="btnLogout" onclick="doLogout()" disabled>登出</button>
+    <button class="btn btn-primary" id="btnGetDCode" onclick="getDynamicCode()" style="background:#f39c12">获取动态码</button>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-register">
+  <div class="form-row">
+    <label>用户名:</label>
+    <input type="text" id="regUser" placeholder="用户名">
+    <label>密码:</label>
+    <input type="password" id="regPass" placeholder="密码">
+  </div>
+  <div class="form-row">
+    <label>邮箱:</label>
+    <input type="email" id="regEmail" placeholder="邮箱地址">
+    <label>手机号:</label>
+    <input type="text" id="regPhone" placeholder="手机号">
+  </div>
+  <div class="form-row">
+    <label>身份证:</label>
+    <input type="text" id="regID" placeholder="身份证号">
+    <label>硬件码:</label>
+    <input type="text" id="regHWCode" placeholder="硬件码（可选）">
+  </div>
+  <div class="form-row">
+    <button class="btn btn-primary" onclick="doRegister()">注册用户</button>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-api">
+  <div class="form-row">
+    <button class="btn btn-primary" onclick="httpGetTime()" id="btnGetTime" disabled>查询剩余时间</button>
+    <button class="btn btn-primary" onclick="httpGetNotice()" id="btnGetNotice" disabled>获取公告</button>
+    <button class="btn btn-primary" onclick="httpTokenUpdate()" id="btnTokenUpdate" disabled>续期Token</button>
+  </div>
+  <div class="form-row">
+    <label>充值卡号:</label>
+    <input type="text" id="paySerial" placeholder="充值卡序列号">
+    <button class="btn btn-success" onclick="httpPay()" id="btnPay" disabled>充值</button>
+  </div>
+</div>
+
+<div class="tab-content" id="tab-userinfo">
+  <div class="info-grid" id="userInfoGrid">
+    <div class="info-card"><div class="label">用户名</div><div class="value" id="infoUser">-</div></div>
+    <div class="info-card"><div class="label">Token</div><div class="value" id="infoToken">-</div></div>
+    <div class="info-card"><div class="label">设备类型</div><div class="value" id="infoDevice">-</div></div>
+    <div class="info-card"><div class="label">登录时间</div><div class="value" id="infoLoginTime">-</div></div>
+    <div class="info-card"><div class="label">在线时长</div><div class="value" id="infoOnline">-</div></div>
+    <div class="info-card"><div class="label">连接地址</div><div class="value" id="infoAddr">-</div></div>
+  </div>
+</div>
+</div>
+
+<div class="panel">
+<h2>运行日志</h2>
+<div class="log-area" id="logArea"></div>
+<div class="form-row" style="margin-top:10px">
+  <button class="btn btn-primary" onclick="clearLog()" style="background:#95a5a6">清空日志</button>
+</div>
+</div>
+</div>
+
+<script>
+// ============================================
+// 协议常量定义 (对应 XAuth_Protocol.h)
+// ============================================
+const PROTOCOL = {
+  AUTH_REQLOGIN: 0x1001,   // 4097 登录请求
+  AUTH_REPLOGIN: 0x1002,   // 4098 登录响应
+  AUTH_EXPIRED: 0x1006,    // 4102 过期通知
+  HB_SYN: 0x0001,          // 1    心跳
+  TYPE_HEARTBEAT: 1,
+  TYPE_AUTH: 3,
+  ERR_USER: 0x100, ERR_PASS: 0x101, ERR_CLOSED: 0x102,
+  ERR_DEVICE: 0x103, ERR_DYNAMICCODE: 0x104, ERR_BANNED: 0x106,
+  ERR_HARDCODE: 0x107, ERR_LOGINED: 0x108, ERR_TIMELEFT: 0x109,
+  ERR_REQUEST: 0x110, ERR_UNAUTHORIZE: 0x111, ERR_NOTFOUND: 0x112,
+  ERR_EXPIRED: 0x117, ERR_CDKEY: 0x118, ERR_PARSE: 0x119,
+};
+
+const ERROR_MSGS = {
+  [PROTOCOL.ERR_USER]: '用户名错误',
+  [PROTOCOL.ERR_PASS]: '密码错误',
+  [PROTOCOL.ERR_CLOSED]: '此功能已关闭',
+  [PROTOCOL.ERR_DEVICE]: '设备类型未知',
+  [PROTOCOL.ERR_DYNAMICCODE]: '动态验证码错误',
+  [PROTOCOL.ERR_BANNED]: '用户被禁用',
+  [PROTOCOL.ERR_HARDCODE]: '硬件码错误',
+  [PROTOCOL.ERR_LOGINED]: '已经登录',
+  [PROTOCOL.ERR_TIMELEFT]: '时间耗尽',
+  [PROTOCOL.ERR_REQUEST]: '请求内容错误',
+  [PROTOCOL.ERR_UNAUTHORIZE]: '未授权',
+  [PROTOCOL.ERR_NOTFOUND]: '未找到数据',
+  [PROTOCOL.ERR_EXPIRED]: '已过期',
+  [PROTOCOL.ERR_CDKEY]: 'CDKey错误',
+  [PROTOCOL.ERR_PARSE]: '协议解析错误',
+};
+
+// ============================================
+// 全局状态
+// ============================================
+let ws = null;
+let xhToken = 0;
+let hbTimer = null;
+let onlineTimer = null;
+let onlineSeconds = 0;
+let loginTime = null;
+let isExpired = false;
+let reconnectAttempts = 0;
+const MAX_RECONNECT = 5;
+
+// ============================================
+// 日志
+// ============================================
+function log(msg, type) {
+  type = type || 'info';
+  var area = document.getElementById('logArea');
+  var time = new Date().toLocaleTimeString();
+  var entry = document.createElement('div');
+  entry.className = 'log-entry log-' + type;
+  entry.textContent = '[' + time + '] ' + msg;
+  area.appendChild(entry);
+  area.scrollTop = area.scrollHeight;
+}
+function clearLog() { document.getElementById('logArea').innerHTML = ''; }
+
+// ============================================
+// MD5 (与C客户端的 Cryption_Api_Digest + StrToHex 一致)
+// ============================================
+function md5(s) {
+  function L(k,d){return(k<<d)|(k>>>(32-d));}
+  function K(G,k){var I,d,F,H,x;F=(G&2147483648);H=(k&2147483648);I=(G&1073741824);d=(k&1073741824);x=(G&1073741823)+(k&1073741823);if(I&d)return(x^2147483648^F^H);if(I|d){if(x&1073741824)return(x^3221225472^F^H);else return(x^1073741824^F^H);}else return(x^F^H);}
+  function r(d,F,k){return(d&F)|((~d)&k);}
+  function q(d,F,k){return(d&k)|(F&(~k));}
+  function p(d,F,k){return(d^F^k);}
+  function n(d,F,k){return(F^(d|(~k)));}
+  function u(G,F,k,H,I,d){return K(K(K(F,r(k,H,I)),G),d);}
+  function f(G,F,k,H,I,d){return K(K(K(F,q(k,H,I)),G),d);}
+  function D(G,F,k,H,I,d){return K(K(K(F,p(k,H,I)),G),d);}
+  function t(G,F,k,H,I,d){return K(K(K(F,n(k,H,I)),G),d);}
+  function e(G){var Z,V=G.length,X=V+8,Y=((X-(X%64))/64)+1,W=new Array(Y*16);for(Z=0;Z<V;Z++)W[Z>>2]|=(G.charCodeAt(Z))<<((Z%4)*8);W[Z>>2]|=128<<((Z%4)*8);W[Y*16-2]=V*8;return W;}
+  function B(w){var o='0123456789abcdef',x='';for(var k=0;k<w.length;k++)x+=o.charAt((w[k]>>4)&15)+o.charAt(w[k]&15);return x;}
+  function j(w){var x=new Array(w.length);for(var k=0;k<w.length;k++)x[k]=w[k];return x;}
+  var k,S,E=[7,12,17,22,7,12,17,22,7,12,17,22,7,12,17,22,5,9,14,20,5,9,14,20,5,9,14,20,5,9,14,20,4,11,16,23,4,11,16,23,4,11,16,23,4,11,16,23,6,10,15,21,6,10,15,21,6,10,15,21,6,10,15,21];
+  var h=[0xd76aa478,0xe8c7b756,0x242070db,0xc1bdceee,0xf57c0faf,0x4787c62a,0xa8304613,0xfd469501,0x698098d8,0x8b44f7af,0xffff5bb1,0x895cd7be,0x6b901122,0xfd987193,0xa679438e,0x49b40821,0xf61e2562,0xc040b340,0x265e5a51,0xe9b6c7aa,0xd62f105d,0x02441453,0xd8a1e681,0xe7d3fbc8,0x21e1cde6,0xc33707d6,0xf4d50d87,0x455a14ed,0xa9e3e905,0xfcefa3f8,0x676f02d9,0x8d2a4c8a,0xfffa3942,0x8771f681,0x6d9d6122,0xfde5380c,0xa4beea44,0x4bdecfa9,0xf6bb4b60,0xbebfbc70,0x289b7ec6,0xeaa127fa,0xd4ef3085,0x04881d05,0xd9d4d039,0xe6db99e5,0x1fa27cf8,0xc4ac5665,0xf4292244,0x432aff97,0xab9423a7,0xfc93a039,0x655b59c3,0x8f0ccc92,0xffeff47d,0x85845dd1,0x6fa87e4f,0xfe2ce6e0,0xa3014314,0x4e0811a1,0xf7537e82,0xbd3af235,0x2ad7d2bb,0xeb86d391];
+  S=e(s);var C=1732584193,P=-271733879,O=-1732584194,N=271733878;
+  for(k=0;k<S.length;k+=16){var M=j(S),c=C,v=P,g=O,b=N,z=0;
+    c=u(c,v,g,b,M[k+z],E[z],h[z]);b=u(b,c,v,g,M[k+((z+1)%16)],E[z+1],h[z+1]);g=u(g,b,c,v,M[k+((z+2)%16)],E[z+2],h[z+2]);v=u(v,g,b,c,M[k+((z+3)%16)],E[z+3],h[z+3]);
+    for(z=4;z<16;z+=4){c=u(c,v,g,b,M[k+((z+1)%16)],E[z],h[z]);b=u(b,c,v,g,M[k+((z+6)%16)],E[z+1],h[z+1]);g=u(g,b,c,v,M[k+((z+11)%16)],E[z+2],h[z+2]);v=u(v,g,b,c,M[k+z],E[z+3],h[z+3]);}
+    c=f(c,v,g,b,M[k+1],E[16],h[16]);b=f(b,c,v,g,M[k+6],E[17],h[17]);g=f(g,b,c,v,M[k+11],E[18],h[18]);v=f(v,g,b,c,M[k+0],E[19],h[19]);
+    for(z=20;z<32;z+=4){c=f(c,v,g,b,M[k+((z*5+1)%16)],E[z],h[z]);b=f(b,c,v,g,M[k+((z*5+6)%16)],E[z+1],h[z+1]);g=f(g,b,c,v,M[k+((z*5+11)%16)],E[z+2],h[z+2]);v=f(v,g,b,c,M[k+((z*5)%16)],E[z+3],h[z+3]);}
+    c=D(c,v,g,b,M[k+5],E[32],h[32]);b=D(b,c,v,g,M[k+8],E[33],h[33]);g=D(g,b,c,v,M[k+11],E[34],h[34]);v=D(v,g,b,c,M[k+14],E[35],h[35]);
+    for(z=36;z<48;z+=4){c=D(c,v,g,b,M[k+((z*3+5)%16)],E[z],h[z]);b=D(b,c,v,g,M[k+((z*3+8)%16)],E[z+1],h[z+1]);g=D(g,b,c,v,M[k+((z*3+11)%16)],E[z+2],h[z+2]);v=D(v,g,b,c,M[k+((z*3+14)%16)],E[z+3],h[z+3]);}
+    c=t(c,v,g,b,M[k+0],E[48],h[48]);b=t(b,c,v,g,M[k+7],E[49],h[49]);g=t(g,b,c,v,M[k+14],E[50],h[50]);v=t(v,g,b,c,M[k+5],E[51],h[51]);
+    for(z=52;z<64;z+=4){c=t(c,v,g,b,M[k+((z*7)%16)],E[z],h[z]);b=t(b,c,v,g,M[k+((z*7+7)%16)],E[z+1],h[z+1]);g=t(g,b,c,v,M[k+((z*7+14)%16)],E[z+2],h[z+2]);v=t(v,g,b,c,M[k+((z*7+5)%16)],E[z+3],h[z+3]);}
+    C=K(C,c);P=K(P,v);O=K(O,g);N=K(N,b);
+  }
+  return B([C,P,O,N]);
+}
+
+// ============================================
+// UI
+// ============================================
+function switchTab(name) {
+  var tabs = document.querySelectorAll('.tab');
+  var contents = document.querySelectorAll('.tab-content');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove('active');
+  for (var i = 0; i < contents.length; i++) contents[i].classList.remove('active');
+  document.querySelector('.tab[data-tab="' + name + '"]').classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+function getHttpBase() {
+  return 'http://' + document.getElementById('serverHost').value.trim() + ':' + document.getElementById('httpPort').value.trim();
+}
+function getWsUrl() {
+  return 'ws://' + document.getElementById('serverHost').value.trim() + ':' + document.getElementById('wsPort').value.trim() + '/';
+}
+function getErrorMsg(code) {
+  return ERROR_MSGS[code] || ('未知错误(0x' + code.toString(16) + ')');
+}
+
+// ============================================
+// WebSocket
+// ============================================
+function doConnect() {
+  var url = getWsUrl();
+  log('正在连接 WebSocket: ' + url, 'info');
+  try { ws = new WebSocket(url); } catch(e) { log('连接创建失败: ' + e.message, 'error'); return; }
+
+  ws.onopen = function() {
+    log('WebSocket 连接成功！', 'success');
+    document.getElementById('wsStatus').textContent = '已连接';
+    document.getElementById('wsStatusDot').className = 'status-dot connected';
+    document.getElementById('btnConnect').disabled = true;
+    document.getElementById('btnDisconnect').disabled = false;
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('infoAddr').textContent = url;
+    reconnectAttempts = 0;
+  };
+  ws.onmessage = function(event) { handleWsMessage(event.data); };
+  ws.onerror = function() { log('WebSocket 错误', 'error'); };
+  ws.onclose = function(event) {
+    log('WebSocket 连接已关闭 (code=' + event.code + ')', 'warn');
+    document.getElementById('wsStatus').textContent = '未连接';
+    document.getElementById('wsStatusDot').className = 'status-dot disconnected';
+    document.getElementById('btnConnect').disabled = false;
+    document.getElementById('btnDisconnect').disabled = true;
+    document.getElementById('btnLogin').disabled = true;
+    stopHeartbeat();
+    stopOnlineTimer();
+    if (!isExpired && document.getElementById('autoReconnect').checked && reconnectAttempts < MAX_RECONNECT) {
+      reconnectAttempts++;
+      log('尝试第 ' + reconnectAttempts + '/' + MAX_RECONNECT + ' 次重连...', 'warn');
+      setTimeout(doConnect, 3000);
+    } else if (reconnectAttempts >= MAX_RECONNECT) {
+      log('已达到最大重连次数，停止重连', 'error');
+    }
+  };
+}
+
+function doDisconnect() {
+  isExpired = false;
+  if (ws) { ws.close(); ws = null; }
+  resetLoginState();
+}
+
+function handleWsMessage(data) {
+  log('← 收到: ' + data, 'recv');
+  var msg;
+  try { msg = JSON.parse(data); } catch(e) { log('消息解析失败: ' + e.message, 'error'); return; }
+  var opCode = msg.unOperatorCode;
+  if (opCode === PROTOCOL.AUTH_REPLOGIN) handleLoginReply(msg);
+  else if (opCode === PROTOCOL.AUTH_EXPIRED) handleExpired(msg);
+  else log('未处理的消息类型: 0x' + opCode.toString(16), 'warn');
+}
+
+function handleLoginReply(msg) {
+  var result = msg.wReserve;
+  if (result === 0) {
+    xhToken = msg.xhToken || 0;
+    log('登录成功！Token: ' + xhToken, 'success');
+    document.getElementById('loginStatus').textContent = '已登录';
+    document.getElementById('loginStatusDot').className = 'status-dot logged';
+    document.getElementById('tokenDisplay').textContent = xhToken;
+    document.getElementById('btnLogin').disabled = true;
+    document.getElementById('btnLogout').disabled = false;
+    document.getElementById('btnGetTime').disabled = false;
+    document.getElementById('btnGetNotice').disabled = false;
+    document.getElementById('btnTokenUpdate').disabled = false;
+    document.getElementById('btnPay').disabled = false;
+    document.getElementById('infoUser').textContent = document.getElementById('loginUser').value;
+    document.getElementById('infoToken').textContent = xhToken;
+    var sel = document.getElementById('deviceType');
+    document.getElementById('infoDevice').textContent = sel.options[sel.selectedIndex].text;
+    loginTime = new Date();
+    document.getElementById('infoLoginTime').textContent = loginTime.toLocaleString();
+    startHeartbeat();
+    startOnlineTimer();
+    switchTab('userinfo');
+  } else {
+    log('登录失败: ' + getErrorMsg(result) + ' (代码: 0x' + result.toString(16) + ')', 'error');
+  }
+}
+
+function handleExpired(msg) {
+  isExpired = true;
+  log('⚠️ 收到服务器过期/超时通知！会话已过期，即将自动断开连接...', 'error');
+  stopHeartbeat();
+  stopOnlineTimer();
+  document.getElementById('loginStatus').textContent = '已过期';
+  document.getElementById('loginStatusDot').className = 'status-dot disconnected';
+  setTimeout(function() {
+    log('正在自动断开连接...', 'warn');
+    if (ws) { ws.close(); ws = null; }
+    resetLoginState();
+  }, 1000);
+}
+
+function resetLoginState() {
+  xhToken = 0; loginTime = null; onlineSeconds = 0;
+  document.getElementById('loginStatus').textContent = '未登录';
+  document.getElementById('loginStatusDot').className = 'status-dot disconnected';
+  document.getElementById('tokenDisplay').textContent = '-';
+  document.getElementById('btnLogin').disabled = !ws || ws.readyState !== WebSocket.OPEN;
+  document.getElementById('btnLogout').disabled = true;
+  document.getElementById('btnGetTime').disabled = true;
+  document.getElementById('btnGetNotice').disabled = true;
+  document.getElementById('btnTokenUpdate').disabled = true;
+  document.getElementById('btnPay').disabled = true;
+  document.getElementById('onlineTime').textContent = '0s';
+  document.getElementById('infoUser').textContent = '-';
+  document.getElementById('infoToken').textContent = '-';
+  document.getElementById('infoDevice').textContent = '-';
+  document.getElementById('infoLoginTime').textContent = '-';
+  document.getElementById('infoOnline').textContent = '-';
+}
+
+// ============================================
+// 登录/登出
+// ============================================
+function getPassword() {
+  var pass = document.getElementById('loginPass').value;
+  if (document.getElementById('passEncrypt').checked) return md5(pass);
+  return pass;
+}
+
+function doLogin() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) { log('请先连接 WebSocket 服务器！', 'error'); return; }
+  var user = document.getElementById('loginUser').value.trim();
+  var pass = getPassword();
+  var hwCode = document.getElementById('loginHWCode').value.trim();
+  var dCode = document.getElementById('loginDCode').value.trim();
+  var dToken = document.getElementById('loginDToken').value.trim();
+  var deviceType = parseInt(document.getElementById('deviceType').value);
+  if (!user || !pass) { log('请输入用户名和密码！', 'error'); return; }
+
+  var loginMsg = {
+    unOperatorType: PROTOCOL.TYPE_AUTH,
+    unOperatorCode: PROTOCOL.AUTH_REQLOGIN,
+    byIsReply: 0, wCrypto: 0,
+    xhToken: dToken ? parseInt(dToken) : 0,
+    st_UserAuth: {
+      tszUserName: user, tszUserPass: pass, tszHWCode: hwCode || '',
+      enDeviceType: deviceType, tszDCode: dCode || ''
+    }
+  };
+  log('→ 发送登录请求: 用户=' + user + ', 设备类型=' + deviceType, 'send');
+  ws.send(JSON.stringify(loginMsg));
+}
+
+function doLogout() {
+  log('正在登出...', 'info');
+  if (ws) { ws.close(); ws = null; }
+  resetLoginState();
+  log('已登出并断开连接', 'success');
+}
+
+// ============================================
+// 心跳 & 在线计时
+// ============================================
+function startHeartbeat() {
+  stopHeartbeat();
+  hbTimer = setInterval(function() {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      var hbMsg = {
+        unOperatorType: PROTOCOL.TYPE_HEARTBEAT,
+        unOperatorCode: PROTOCOL.HB_SYN,
+        byIsReply: 0, wCrypto: 0, xhToken: xhToken
+      };
+      log('→ 发送心跳包', 'send');
+      try { ws.send(JSON.stringify(hbMsg)); } catch(e) { log('心跳发送失败: ' + e.message, 'error'); }
+    }
+  }, 2000);
+  log('心跳已启动 (间隔2秒)', 'success');
+}
+function stopHeartbeat() { if (hbTimer) { clearInterval(hbTimer); hbTimer = null; } }
+
+function startOnlineTimer() {
+  stopOnlineTimer();
+  onlineSeconds = 0;
+  onlineTimer = setInterval(function() {
+    onlineSeconds++;
+    var h = Math.floor(onlineSeconds / 3600);
+    var m = Math.floor((onlineSeconds % 3600) / 60);
+    var s = onlineSeconds % 60;
+    var str = (h > 0 ? h + 'h ' : '') + (m > 0 ? m + 'm ' : '') + s + 's';
+    document.getElementById('onlineTime').textContent = str;
+    document.getElementById('infoOnline').textContent = str;
+  }, 1000);
+}
+function stopOnlineTimer() { if (onlineTimer) { clearInterval(onlineTimer); onlineTimer = null; } }
+
+// ============================================
+// HTTP API
+// ============================================
+function httpRequest(method, url, body) {
+  return fetch(url, {
+    method: method,
+    headers: { 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function(r) { return r.text(); }).then(function(text) {
+    try { return JSON.parse(text); } catch(e) { return { raw: text }; }
+  });
+}
+
+function doRegister() {
+  var user = document.getElementById('regUser').value.trim();
+  var pass = document.getElementById('regPass').value;
+  var email = document.getElementById('regEmail').value.trim();
+  var phone = document.getElementById('regPhone').value.trim();
+  var id = document.getElementById('regID').value.trim();
+  var hwCode = document.getElementById('regHWCode').value.trim();
+  if (!user || !pass) { log('注册: 用户名和密码不能为空！', 'error'); return; }
+  var finalPass = document.getElementById('passEncrypt').checked ? md5(pass) : pass;
+  var body = {
+    st_UserTable: {
+      tszHardCode: hwCode || '',
+      st_UserInfo: {
+        tszUserName: user, tszUserPass: finalPass, tszEMailAddr: email || '',
+        nPhoneNumber: phone ? parseInt(phone) : 0,
+        nIDNumber: id ? parseInt(id) : 0, nUserLevel: 20
+      }
+    }
+  };
+  log('→ 发送注册请求: ' + user, 'send');
+  httpRequest('POST', getHttpBase() + '/auth/user/register', body).then(function(res) {
+    if (res.code === 0) log('← 注册成功: ' + (res.msg || 'success'), 'success');
+    else log('← 注册失败: code=' + res.code + ', msg=' + (res.msg || getErrorMsg(res.code)), 'error');
+  }).catch(function(e) { log('注册请求失败: ' + e.message, 'error'); });
+}
+
+function httpGetTime() {
+  if (!xhToken) { log('请先登录！', 'error'); return; }
+  log('→ 查询剩余时间...', 'send');
+  httpRequest('GET', getHttpBase() + '/api?function=time&token=' + xhToken).then(function(res) {
+    log('← 剩余时间: ' + JSON.stringify(res), 'recv');
+  }).catch(function(e) { log('查询失败: ' + e.message, 'error'); });
+}
+
+function httpGetNotice() {
+  if (!xhToken) { log('请先登录！', 'error'); return; }
+  log('→ 获取公告...', 'send');
+  httpRequest('GET', getHttpBase() + '/api?function=notice&token=' + xhToken).then(function(res) {
+    log('← 公告: ' + JSON.stringify(res), 'recv');
+  }).catch(function(e) { log('获取失败: ' + e.message, 'error'); });
+}
+
+function httpTokenUpdate() {
+  if (!xhToken) { log('请先登录！', 'error'); return; }
+  log('→ 续期Token...', 'send');
+  httpRequest('GET', getHttpBase() + '/api?function=update&token=' + xhToken).then(function(res) {
+    if (res.code === 0) log('← Token续期成功: ' + JSON.stringify(res), 'success');
+    else log('← 续期失败: ' + JSON.stringify(res), 'error');
+  }).catch(function(e) { log('续期失败: ' + e.message, 'error'); });
+}
+
+function httpPay() {
+  if (!xhToken) { log('请先登录！', 'error'); return; }
+  var serial = document.getElementById('paySerial').value.trim();
+  if (!serial) { log('请输入充值卡号！', 'error'); return; }
+  var body = { st_UserPay: { tszUserName: document.getElementById('loginUser').value, tszSerialNumber: serial } };
+  log('→ 充值请求: ' + serial, 'send');
+  httpRequest('POST', getHttpBase() + '/auth/user/pay', body).then(function(res) {
+    if (res.code === 0) log('← 充值成功: ' + (res.msg || 'success'), 'success');
+    else log('← 充值失败: code=' + res.code + ', msg=' + (res.msg || getErrorMsg(res.code)), 'error');
+  }).catch(function(e) { log('充值失败: ' + e.message, 'error'); });
+}
+
+function getDynamicCode() {
+  log('→ 获取动态验证码...', 'send');
+  httpRequest('GET', getHttpBase() + '/api?function=dcode').then(function(res) {
+    log('← 动态码: ' + JSON.stringify(res), 'recv');
+    if (res.nDynamicCode !== undefined) {
+      document.getElementById('loginDCode').value = res.nDynamicCode;
+      document.getElementById('loginDToken').value = res.xhToken;
+      log('已自动填充动态码: ' + res.nDynamicCode + ', Token: ' + res.xhToken, 'info');
+    }
+  }).catch(function(e) { log('获取动态码失败: ' + e.message, 'error'); });
+}
+
+// ============================================
+// 初始化
+// ============================================
+log('XEngine Authorize Web 客户端已加载，请配置服务器地址后连接。', 'info');
+log('默认管理员账号: admin / 123123aa', 'info');
+log('默认端口: TCP=5300, WebSocket=5301, HTTP=5302', 'info');
+</script>
+</body>
+</html>
