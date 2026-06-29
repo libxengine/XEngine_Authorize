@@ -53,13 +53,14 @@ BOOL CDialog_Serial::OnInitDialog()
 	CDialogEx::OnInitDialog();
 
 	// TODO:  在此添加额外的初始化
-	m_ListSerial.InsertColumn(0, _T("使用者"), LVCFMT_LEFT, 100);
-	m_ListSerial.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 450);
+	m_ListSerial.InsertColumn(0, _T("使用者"), LVCFMT_LEFT, 60);
+	m_ListSerial.InsertColumn(1, _T("序列号"), LVCFMT_LEFT, 350);
 	m_ListSerial.InsertColumn(2, _T("时间/次数"), LVCFMT_LEFT, 90);
 	m_ListSerial.InsertColumn(3, _T("卡类型"), LVCFMT_LEFT, 80);
 	m_ListSerial.InsertColumn(4, _T("是否使用"), LVCFMT_LEFT, 80);
-	m_ListSerial.InsertColumn(5, _T("创建日期"), LVCFMT_LEFT, 120);
-	m_ListSerial.InsertColumn(6, _T("过期日期"), LVCFMT_LEFT, 120);
+	m_ListSerial.InsertColumn(5, _T("创建用户"), LVCFMT_LEFT, 60);
+	m_ListSerial.InsertColumn(6, _T("创建日期"), LVCFMT_LEFT, 120);
+	m_ListSerial.InsertColumn(7, _T("过期日期"), LVCFMT_LEFT, 120);
 	m_ListSerial.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	for (int i = 0; i < 5; i++)
@@ -165,8 +166,9 @@ void CDialog_Serial::OnBnClickedButton1()
 		{
 			m_ListSerial.SetItemText(i, 4, _T("未使用"));
 		}
-		m_ListSerial.SetItemText(i, 5, A2W(st_JsonArray["tszCreateTime"].asCString()));
-		m_ListSerial.SetItemText(i, 6, A2W(st_JsonArray["tszExpiredTime"].asCString()));
+		m_ListSerial.SetItemText(i, 5, A2W(st_JsonArray["tszCreateUser"].asCString()));
+		m_ListSerial.SetItemText(i, 6, A2W(st_JsonArray["tszCreateTime"].asCString()));
+		m_ListSerial.SetItemText(i, 7, A2W(st_JsonArray["tszExpiredTime"].asCString()));
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 }

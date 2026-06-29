@@ -62,6 +62,7 @@ BOOL CDialog_User::OnInitDialog()
 	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(9, _T("总在线时长"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText(_T("10"));
@@ -174,6 +175,7 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.SetItemText(i, 6, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
 		m_ListCtrlClient.SetItemText(i, 7, A2W(lpszXDevType[st_JsonArray["enDeviceType"].asInt()]));
 		m_ListCtrlClient.SetItemText(i, 8, lpszStuType[st_JsonObject["nUserState"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 9, std::to_wstring(st_JsonArray["nTimeCount"].asInt64()).c_str());
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	UpdateWindow();

@@ -9,7 +9,7 @@
 // - Database backend is selected by st_AuthConfig.st_XSql.nDBType.
 // - Response data is sent back through XEngine_Client_TaskSend.
 // - Dynamically allocated parse/query buffers must be released after use.
-bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
+bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszClientUser, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 0;
 	LPCXSTR lpszAPIList = _X("list");
@@ -104,6 +104,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			_tcsxcpy(st_SerialTable.tszCreateTime, tszCreateTime);
 			_tcsxcpy(st_SerialTable.tszExpiredTime, tszExpiredTime);
 			_tcsxcpy(st_SerialTable.tszMaxTime, tszMaxTime);
+			_tcsxcpy(st_SerialTable.tszCreateUser, lpszClientUser);
 			Verification_XAuthKey_KeySerial(st_SerialTable.tszSerialNumber, nFieldCount, 0);
 
 			if (0 == st_AuthConfig.st_XSql.nDBType)

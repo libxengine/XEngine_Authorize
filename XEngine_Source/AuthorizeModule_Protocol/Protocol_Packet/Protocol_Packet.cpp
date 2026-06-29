@@ -405,12 +405,14 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientInfo(XCHAR* ptszMsgBuffer, int*
 
 	st_JsonUser["tszUserName"] = pSt_UserTable->st_UserInfo.tszUserName;
 	st_JsonUser["tszUserPass"] = pSt_UserTable->st_UserInfo.tszUserPass;
+	st_JsonUser["xhToken"] = pSt_UserTable->st_UserInfo.xhToken;
 	st_JsonUser["tszEMailAddr"] = pSt_UserTable->st_UserInfo.tszEMailAddr;
 	st_JsonUser["tszLoginTime"] = pSt_UserTable->st_UserInfo.tszLoginTime;
 	st_JsonUser["tszCreateTime"] = pSt_UserTable->st_UserInfo.tszCreateTime;
 	st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)pSt_UserTable->st_UserInfo.nPhoneNumber;
 	st_JsonUser["nIDNumber"] = (Json::Value::UInt64)pSt_UserTable->st_UserInfo.nIDNumber;
 	st_JsonUser["nUserLevel"] = pSt_UserTable->st_UserInfo.nUserLevel;
+	st_JsonUser["nTimeCount"] = pSt_UserTable->nTimeCount;
 	st_JsonUser["nUserState"] = 0;
 
 	st_JsonObject["tszLeftTime"] = pSt_UserTable->tszLeftTime;
@@ -485,12 +487,14 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		
 		st_JsonUser["tszUserName"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserName;
 		st_JsonUser["tszUserPass"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszUserPass;
+		st_JsonUser["xhToken"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.xhToken;
 		st_JsonUser["tszEMailAddr"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszEMailAddr;
 		st_JsonUser["tszLoginTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszLoginTime;
 		st_JsonUser["tszCreateTime"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.tszCreateTime;
 		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nPhoneNumber;
 		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nUserLevel;
+		st_JsonUser["nTimeCount"] = (*pppSt_OnClient)[i]->st_UserTable.nTimeCount;
 		st_JsonUser["nUserState"] = 1;
 
 		st_JsonObject["tszClientAddr"] = (*pppSt_OnClient)[i]->tszClientAddr;
@@ -525,12 +529,14 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 
 		st_JsonUser["tszUserName"] = (*pppSt_OffClient)[i]->st_UserInfo.tszUserName;
 		st_JsonUser["tszUserPass"] = (*pppSt_OffClient)[i]->st_UserInfo.tszUserPass;
+		st_JsonUser["xhToken"] = (*pppSt_OffClient)[i]->st_UserInfo.xhToken;
 		st_JsonUser["tszEMailAddr"] = (*pppSt_OffClient)[i]->st_UserInfo.tszEMailAddr;
 		st_JsonUser["tszLoginTime"] = (*pppSt_OffClient)[i]->st_UserInfo.tszLoginTime;
 		st_JsonUser["tszCreateTime"] = (*pppSt_OffClient)[i]->st_UserInfo.tszCreateTime;
 		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nPhoneNumber;
 		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OffClient)[i]->st_UserInfo.nUserLevel;
+		st_JsonUser["nTimeCount"] = (*pppSt_OffClient)[i]->nTimeCount;
 		st_JsonUser["nUserState"] = 0;
 
 		st_JsonObject["tszLeftTime"] = (*pppSt_OffClient)[i]->tszLeftTime;
@@ -599,6 +605,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSerialList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["enSerialType"] = (*pppSt_SerialList)[i]->enSerialType;
 		st_JsonObject["bIsUsed"] = (*pppSt_SerialList)[i]->bIsUsed;
 		st_JsonObject["tszCreateTime"] = (*pppSt_SerialList)[i]->tszCreateTime;
+		st_JsonObject["tszCreateUser"] = (*pppSt_SerialList)[i]->tszCreateUser;
 		st_JsonObject["tszExpiredTime"] = (*pppSt_SerialList)[i]->tszExpiredTime;
 		st_JsonArray.append(st_JsonObject);
 	}

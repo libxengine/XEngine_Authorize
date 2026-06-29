@@ -739,7 +739,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(AUTHREG_SERIALTABLE* pSt_Seria
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return false;
 	}
-	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s',%d,%d,'%s','%s','%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszUserName, pSt_SerialTable->tszExpiredTime);
+	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s',%d,%d,'%s','%s','%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszCreateUser, pSt_SerialTable->tszExpiredTime);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{

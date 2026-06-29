@@ -238,7 +238,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求的API:%s 失败,因为TOKEN权限不足"), lpszClientAddr, pSt_HTTPParament->tszHttpUri);
 					return false;
 				}
-				XEngine_AuthorizeHTTP_Serial(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+				XEngine_AuthorizeHTTP_Serial(lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
 			else if (0 == _tcsxncmp(lpszAPIVerSwitch, tszAPIVer, _tcsxlen(lpszAPIVerSwitch)))
 			{
