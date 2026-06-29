@@ -250,8 +250,8 @@ void CDialog_Modify::OnBnClickedButton2()
 	st_JsonUser["nPhoneNumber"] = st_UserTable.st_UserInfo.nPhoneNumber;
 	st_JsonUser["nIDNumber"] = st_UserTable.st_UserInfo.nIDNumber;
 	st_JsonUser["nUserLevel"] = st_UserTable.st_UserInfo.nUserLevel;
+	st_JsonUser["nTimeCount"] = st_UserTable.nTimeCount;
 
-	st_JsonTable["xhToken"] = st_UserTable.nTimeCount;
 	st_JsonTable["tszLeftTime"] = st_UserTable.tszLeftTime;
 	st_JsonTable["tszHardCode"] = st_UserTable.tszHardCode;
 	st_JsonTable["enSerialType"] = st_UserTable.enSerialType;

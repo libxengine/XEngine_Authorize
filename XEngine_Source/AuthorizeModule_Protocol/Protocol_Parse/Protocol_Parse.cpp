@@ -491,6 +491,10 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
 	{
 		pSt_UserTable->st_UserInfo.xhToken = st_UserInfo["xhToken"].asInt64();
 	}
+	if (!st_UserInfo["nTimeCount"].isNull())
+	{
+		pSt_UserTable->nTimeCount = st_UserInfo["nTimeCount"].asInt();
+	}
 	if (!st_UserInfo["tszEMailAddr"].isNull())
 	{
 		_tcsxcpy(pSt_UserTable->st_UserInfo.tszEMailAddr, st_UserInfo["tszEMailAddr"].asCString());
@@ -519,10 +523,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
 	{
 		pSt_UserTable->st_UserInfo.nUserState = st_UserInfo["nUserState"].asInt();
 	}
-	if (!st_UserInfo["nTimeCount"].isNull())
-	{
-		pSt_UserTable->nTimeCount = st_UserInfo["nTimeCount"].asInt();
-	}
+	
 	return true;
 }
 /********************************************************************
