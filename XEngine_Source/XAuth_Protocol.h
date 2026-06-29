@@ -94,6 +94,7 @@ typedef struct tag_AuthReg_SerialTable
 	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;                        //充值卡类型
 	int bIsUsed;                                                           //是否已经使用
 	XCHAR tszCreateTime[64];                                               //创建时间
+	XCHAR tszCreateUser[64];                                               //创建用户
 	XCHAR tszExpiredTime[64];                                              //过期时间
 }AUTHREG_SERIALTABLE, * LPAUTHREG_SERIALTABLE;
 //网络临时验证表

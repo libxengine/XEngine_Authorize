@@ -123,7 +123,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInf
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,%d,0,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, Token, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','0','%s','%s','%s','%d',%lld,%lld,%d,0,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
     if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -739,7 +739,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialInsert(AUTHREG_SERIALTABLE* pSt_Seria
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
 		return false;
 	}
-	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
+	_xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_Serial` values(NULL,'NOT','%s','%s',%d,%d,'%s','%s','%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszUserName, pSt_SerialTable->tszExpiredTime);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
@@ -843,9 +843,12 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		//是否已经使用
 		nFliedValue++;
 		pSt_SerialTable->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
-		//超时时间
+		//创建时间
 		nFliedValue++;
 		_tcsxcpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
+		//创建用户
+		nFliedValue++;
+		_tcsxcpy(pSt_SerialTable->tszCreateUser, ppszResult[nFliedValue]);
 		//过期时间
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue])
@@ -940,6 +943,9 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		nFliedValue++;
 		//创建时间
 		_tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+		//创建用户
+		_tcsxcpy((*pppSt_SerialTable)[i]->tszCreateUser, ppszResult[nFliedValue]);
 		nFliedValue++;
 		//过期时间
 		if (NULL != ppszResult[nFliedValue])
