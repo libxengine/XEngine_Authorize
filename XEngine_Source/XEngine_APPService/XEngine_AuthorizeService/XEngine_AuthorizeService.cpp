@@ -469,6 +469,7 @@ int main(int argc, char** argv)
 		//一个简单的示例,没有验证硬件码
 		if (Verification_XAuthKey_FileRead(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
 		{
+			Verification_XAuthKey_KeyParse(&st_AuthLocal);
 			Verification_XAuthKey_FileWrite(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，授权文件验证成功，总可运行次数:%s,剩余可运行次数:%lld"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime);
 		}
