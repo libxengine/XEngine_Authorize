@@ -3,15 +3,15 @@
 
  Source Server         : QQCloud
  Source Server Type    : MySQL
- Source Server Version : 80043 (8.0.43-0ubuntu0.24.04.1)
+ Source Server Version : 80046 (8.0.46-0ubuntu0.24.04.2)
  Source Host           : 118.25.14.242:3306
  Source Schema         : authorize
 
  Target Server Type    : MySQL
- Target Server Version : 80043 (8.0.43-0ubuntu0.24.04.1)
+ Target Server Version : 80046 (8.0.46-0ubuntu0.24.04.2)
  File Encoding         : 65001
 
- Date: 20/08/2025 11:17:20
+ Date: 30/06/2026 10:05:45
 */
 
 SET NAMES utf8mb4;
@@ -86,13 +86,14 @@ CREATE TABLE `Authorize_Login`  (
 DROP TABLE IF EXISTS `Authorize_Serial`;
 CREATE TABLE `Authorize_Serial`  (
   `ID` int NOT NULL AUTO_INCREMENT,
-  `UserName` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
-  `SerialNumber` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
-  `MaxTime` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
-  `CardSerialType` int NULL DEFAULT NULL,
-  `bIsUsed` tinyint(1) NULL DEFAULT NULL,
-  `CreateTime` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ExpiredTime` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL,
+  `UserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '使用者',
+  `SerialNumber` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '序列号',
+  `MaxTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '最大时间',
+  `CardSerialType` int NOT NULL COMMENT '卡类型',
+  `bIsUsed` tinyint(1) NOT NULL COMMENT '是否使用',
+  `CreateTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `CreateUser` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '创建用户',
+  `ExpiredTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '过期时间',
   PRIMARY KEY (`ID`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
@@ -126,6 +127,7 @@ CREATE TABLE `Authorize_User`  (
   `ID` int NOT NULL AUTO_INCREMENT,
   `UserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
+  `Token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Token',
   `LeftTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '剩余时间',
   `EmailAddr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '电子邮件',
   `HardCode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '设备SN',
@@ -133,14 +135,15 @@ CREATE TABLE `Authorize_User`  (
   `PhoneNumber` bigint NOT NULL COMMENT '电话号码',
   `IDCard` bigint NOT NULL COMMENT '身份证',
   `nUserLevel` int NOT NULL COMMENT '用户等级,数字越小越高',
+  `CountTime` bigint NOT NULL COMMENT '时间统计',
   `UPTime` datetime NULL DEFAULT NULL COMMENT '登录时间',
   `CreateTime` datetime NOT NULL COMMENT '注册时间',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of Authorize_User
 -- ----------------------------
-INSERT INTO `Authorize_User` VALUES (1, 'admin', '123123aa', '0', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
+INSERT INTO `Authorize_User` VALUES (1, 'admin', '123123aa', '0', '0', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
 
 SET FOREIGN_KEY_CHECKS = 1;
