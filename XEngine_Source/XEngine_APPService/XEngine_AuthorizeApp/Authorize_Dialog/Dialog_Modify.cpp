@@ -35,6 +35,8 @@ void CDialog_Modify::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_EDIT7, m_EditHardCode);
 	DDX_Control(pDX, IDC_BUTTON2, m_BtnModify);
 	DDX_Control(pDX, IDC_DATETIMEPICKER1, m_DateTimeRegister);
+	DDX_Control(pDX, IDC_EDIT9, m_EditUserToken);
+	DDX_Control(pDX, IDC_EDIT11, m_EditCountTime);
 }
 
 
@@ -139,6 +141,8 @@ BOOL CDialog_Modify::OnInitDialog()
 		m_EditUser.SetWindowText(A2W(st_JsonObject["st_UserInfo"]["tszUserName"].asCString()));
 		m_EditPass.SetWindowText(A2W(st_JsonObject["st_UserInfo"]["tszUserPass"].asCString()));
 		m_EditEMail.SetWindowText(A2W(st_JsonObject["st_UserInfo"]["tszEMailAddr"].asCString()));
+		m_EditUserToken.SetWindowText(std::to_wstring(st_JsonObject["st_UserInfo"]["xhToken"].asInt64()).c_str());
+		m_EditCountTime.SetWindowText(std::to_wstring(st_JsonObject["st_UserInfo"]["nTimeCount"].asInt64()).c_str());
 		COleDateTime m_OleDTime;
 		if (m_OleDTime.ParseDateTime(A2W(st_JsonObject["st_UserInfo"]["tszCreateTime"].asCString())))
 		{
@@ -182,6 +186,12 @@ void CDialog_Modify::OnBnClickedButton2()
 	m_StrUserInfo.ReleaseBuffer();
 	m_EditPass.GetWindowText(m_StrUserInfo);
 	strcpy(st_UserTable.st_UserInfo.tszUserPass, W2A(m_StrUserInfo.GetBuffer()));
+	m_StrUserInfo.ReleaseBuffer();
+	m_EditUserToken.GetWindowText(m_StrUserInfo);
+	st_UserTable.st_UserInfo.xhToken = _ttxoll(W2A(m_StrUserInfo.GetBuffer()));
+	m_StrUserInfo.ReleaseBuffer();
+	m_EditCountTime.GetWindowText(m_StrUserInfo);
+	st_UserTable.nTimeCount = _ttxoll(W2A(m_StrUserInfo.GetBuffer()));
 	m_StrUserInfo.ReleaseBuffer();
 	m_EditEMail.GetWindowText(m_StrUserInfo);
 	strcpy(st_UserTable.st_UserInfo.tszEMailAddr, W2A(m_StrUserInfo.GetBuffer()));
@@ -234,11 +244,14 @@ void CDialog_Modify::OnBnClickedButton2()
 
 	st_JsonUser["tszUserName"] = st_UserTable.st_UserInfo.tszUserName;
 	st_JsonUser["tszUserPass"] = st_UserTable.st_UserInfo.tszUserPass;
+	st_JsonUser["xhToken"] = st_UserTable.st_UserInfo.xhToken;
 	st_JsonUser["tszEMailAddr"] = st_UserTable.st_UserInfo.tszEMailAddr;
 	st_JsonUser["tszCreateTime"] = st_UserTable.st_UserInfo.tszCreateTime;
 	st_JsonUser["nPhoneNumber"] = st_UserTable.st_UserInfo.nPhoneNumber;
 	st_JsonUser["nIDNumber"] = st_UserTable.st_UserInfo.nIDNumber;
 	st_JsonUser["nUserLevel"] = st_UserTable.st_UserInfo.nUserLevel;
+	st_JsonUser["nTimeCount"] = st_UserTable.nTimeCount;
+
 	st_JsonTable["tszLeftTime"] = st_UserTable.tszLeftTime;
 	st_JsonTable["tszHardCode"] = st_UserTable.tszHardCode;
 	st_JsonTable["enSerialType"] = st_UserTable.enSerialType;

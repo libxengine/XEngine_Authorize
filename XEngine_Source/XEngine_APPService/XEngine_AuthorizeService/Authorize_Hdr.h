@@ -52,6 +52,10 @@ using namespace std;
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport/InfoReport_Error.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_MSGNotify/MSGNotify_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_MSGNotify/MSGNotify_Error.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Token/Session_Define.h"
+#include "../../XEngine_DependLibrary/XEngine_Module/XEngine_Token/Session_Error.h"
 #include "../../XAuth_Protocol.h"
 #include "../../AuthorizeModule_Configure/Config_Define.h"
 #include "../../AuthorizeModule_Configure/Config_Error.h"
@@ -133,6 +137,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../x64/Debug/XEngine_Verification.lib")
+#pragma comment(lib,"../../x64/Debug/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../x64/Debug/XEngine_Token.lib")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Protocol.lib")
@@ -141,6 +147,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../ARM64/Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../ARM64/Debug/XEngine_Verification.lib")
+#pragma comment(lib,"../../ARM64/Debug/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../ARM64/Debug/XEngine_Token.lib")
 #elif _M_IX86
 #pragma comment(lib,"../../Debug/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Debug/AuthorizeModule_Protocol.lib")
@@ -149,6 +157,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Debug/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../Debug/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../Debug/XEngine_Verification.lib")
+#pragma comment(lib,"../../Debug/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../Debug/XEngine_Token.lib")
 #endif
 #else
 #ifdef _M_X64
@@ -159,6 +169,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../x64/Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../x64/Release/XEngine_Verification.lib")
+#pragma comment(lib,"../../x64/Release/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../x64/Release/XEngine_Token.lib")
 #elif _M_ARM64
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Protocol.lib")
@@ -167,6 +179,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../ARM64/Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../ARM64/Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../ARM64/Release/XEngine_Verification.lib")
+#pragma comment(lib,"../../ARM64/Release/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../ARM64/Release/XEngine_Token.lib")
 #elif _M_IX86
 #pragma comment(lib,"../../Release/AuthorizeModule_Configure.lib")
 #pragma comment(lib,"../../Release/AuthorizeModule_Protocol.lib")
@@ -175,6 +189,8 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"../../Release/AuthorizeModule_Help.lib")
 #pragma comment(lib,"../../Release/XEngine_InfoReport.lib")
 #pragma comment(lib,"../../Release/XEngine_Verification.lib")
+#pragma comment(lib,"../../Release/XEngine_MSGNotify.lib")
+#pragma comment(lib,"../../Release/XEngine_Token.lib")
 #endif
 #endif
 #endif

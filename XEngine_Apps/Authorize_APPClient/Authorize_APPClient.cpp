@@ -40,14 +40,14 @@ using namespace std;
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
-bool bEncrypto = false;
+bool bEncrypto = true;
 bool bHeart = true;
 XNETHANDLE xhToken = 0;
 int nDYCode = 0;
 
 XSOCKET m_Socket = 0;
 LPCXSTR lpszUser = _X("123123aa");
-LPCXSTR lpszPass = _X("123123");
+LPCXSTR lpszPass = _X("123123aa");
 LPCXSTR lpszHWCode = _X("2FDWAD02JD2091");
 LPCXSTR lpszSerial = _X("Y5V0Y-03O2L-E7G8Y-NX1DR-3EGVO-UDIRQ-GBBKO-FGX0C");
 LPCXSTR lpszEmail = _X("486179@qq.com");
@@ -66,13 +66,11 @@ XHTHREAD AuthClient_Thread()
 		memset(&st_ProtocolHdr, '\0', sizeof(XENGINE_PROTOCOLHDR));
 		if (XClient_TCPSelect_RecvPkt(m_Socket, &ptszMsgBuffer, &nMsgLen, &st_ProtocolHdr))
 		{
-			XCHAR tszMsgBuffer[4096];
-			memset(tszMsgBuffer, '\0', sizeof(tszMsgBuffer));
-
+			XCHAR tszMsgBuffer[4096] = {};
 			if (nMsgLen > 0 && bEncrypto)
 			{
 				//只有有后续数据的情况才需要解密
-				Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszMsgBuffer, lpszPass);
+				Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszMsgBuffer, &nMsgLen, lpszPass, ENUM_XENGINE_CRYPTION_SYMMETRIC_AES128);
 			}
 			else
 			{
@@ -161,10 +159,10 @@ int AuthClient_Register()
 		XCHAR tszDEBuffer[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszENBuffer, &nMsgLen, lpszPass);
 		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		printf("AuthClient_Register:\n%s\n", tszDEBuffer);
 		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}
@@ -197,10 +195,10 @@ int AuthClient_Pay()
 		XCHAR tszDEBuffer[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszENBuffer, &nMsgLen, lpszPass);
 		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		printf("AuthClient_Pay:\n%s\n", tszDEBuffer);
 		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}
@@ -228,7 +226,7 @@ int AuthClient_DynamicCode()
 	{
 		XCHAR tszDEBuffer[2048] = {};
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		if (!pSt_JsonReader->parse(tszDEBuffer, tszDEBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			return 0;
@@ -297,8 +295,7 @@ int AuthClient_Login()
 		memset(tszCodecBuffer, '\0', sizeof(tszCodecBuffer));
 
 		st_ProtocolHdr.wCrypto = ENUM_XENGINE_PROTOCOLHDR_CRYPTO_TYPE_XCRYPT;
-		Cryption_XCrypto_Encoder((LPCXSTR)&st_AuthUser, (int*)&st_ProtocolHdr.unPacketSize, (XBYTE*)tszCodecBuffer, lpszPass);
-
+		Cryption_Api_CryptEncodec((LPCXBTR)&st_AuthUser, (XBYTE*)tszCodecBuffer, (int*)&st_ProtocolHdr.unPacketSize, lpszPass);
 		memcpy(tszMsgBuffer, &st_ProtocolHdr, sizeof(XENGINE_PROTOCOLHDR));
 		memcpy(tszMsgBuffer + sizeof(XENGINE_PROTOCOLHDR), tszCodecBuffer, st_ProtocolHdr.unPacketSize);
 
@@ -341,7 +338,7 @@ int AuthClient_Notice()
 	{
 		XCHAR tszDEBuffer[2048] = {};
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		if (!pSt_JsonReader->parse(tszDEBuffer, tszDEBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
 		{
 			return 0;
@@ -406,10 +403,10 @@ int AuthClient_GetPass()
 		XCHAR tszDEBuffer[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszENBuffer, &nMsgLen, lpszPass);
 		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		printf("AuthClient_GetPass:\n%s\n", tszDEBuffer);
 		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}
@@ -453,10 +450,10 @@ int AuthClient_GetTime()
 		XCHAR tszDEBuffer[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszENBuffer, &nMsgLen, lpszPass);
 		APIClient_Http_Request(_X("GET"), tszURLStr, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		printf("AuthClient_GetTime:\n%s\n", tszDEBuffer);
 		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}
@@ -502,10 +499,10 @@ int AuthClient_Delete()
 		XCHAR tszDEBuffer[2048] = {};
 
 		nMsgLen = st_JsonRoot.toStyledString().length();
-		Cryption_XCrypto_Encoder(st_JsonRoot.toStyledString().c_str(), &nMsgLen, (XBYTE*)tszENBuffer, lpszPass);
+		Cryption_Api_CryptEncodec((LPCXBTR)st_JsonRoot.toStyledString().c_str(), (XBYTE*)tszENBuffer, &nMsgLen, lpszPass);
 		APIClient_Http_Request(_X("POST"), lpszUrl, tszENBuffer, NULL, &ptszMsgBuffer, &nMsgLen);
 
-		Cryption_XCrypto_Decoder(ptszMsgBuffer, &nMsgLen, tszDEBuffer, lpszPass);
+		Cryption_Api_CryptDecodec((LPCXBTR)ptszMsgBuffer, (XBYTE*)tszDEBuffer, &nMsgLen, lpszPass);
 		printf("AuthClient_Delete:\n%s\n", tszDEBuffer);
 		BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	}

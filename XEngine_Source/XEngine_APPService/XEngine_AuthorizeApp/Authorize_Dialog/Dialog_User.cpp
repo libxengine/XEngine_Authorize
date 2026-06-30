@@ -55,13 +55,15 @@ BOOL CDialog_User::OnInitDialog()
 	// TODO:  在此添加额外的初始化
 	m_ListCtrlClient.InsertColumn(0, _T("序号"), LVCFMT_LEFT, 40);
 	m_ListCtrlClient.InsertColumn(1, _T("用户名"), LVCFMT_LEFT, 120);
-	m_ListCtrlClient.InsertColumn(2, _T("IP地址"), LVCFMT_LEFT, 100);
-	m_ListCtrlClient.InsertColumn(3, _T("级别"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(4, _T("在线时间(秒钟)"), LVCFMT_LEFT, 150);
-	m_ListCtrlClient.InsertColumn(5, _T("剩余时间/过期时间"), LVCFMT_LEFT, 150);
-	m_ListCtrlClient.InsertColumn(6, _T("充值类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(7, _T("设备类型"), LVCFMT_LEFT, 80);
-	m_ListCtrlClient.InsertColumn(8, _T("是否在线"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(2, _T("TOKEN"), LVCFMT_LEFT, 60);
+	m_ListCtrlClient.InsertColumn(3, _T("IP地址"), LVCFMT_LEFT, 100);
+	m_ListCtrlClient.InsertColumn(4, _T("级别"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(5, _T("在线时间(秒钟)"), LVCFMT_LEFT, 150);
+	m_ListCtrlClient.InsertColumn(6, _T("剩余时间/过期时间"), LVCFMT_LEFT, 150);
+	m_ListCtrlClient.InsertColumn(7, _T("充值类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(8, _T("设备类型"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(9, _T("是否在线"), LVCFMT_LEFT, 80);
+	m_ListCtrlClient.InsertColumn(10, _T("总在线时长"), LVCFMT_LEFT, 80);
 	m_ListCtrlClient.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 
 	m_EditFlushTime.SetWindowText(_T("10"));
@@ -155,11 +157,12 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.InsertItem(i, _T(""));
 		m_ListCtrlClient.SetItemText(i, 0, tszIndex);
 		m_ListCtrlClient.SetItemText(i, 1, A2W(st_JsonObject["tszUserName"].asCString()));
+		m_ListCtrlClient.SetItemText(i, 2, std::to_wstring(st_JsonObject["xhToken"].asInt64()).c_str());
 		if (!st_JsonArray["tszClientAddr"].isNull())
 		{
-			m_ListCtrlClient.SetItemText(i, 2, A2W(st_JsonArray["tszClientAddr"].asCString()));
+			m_ListCtrlClient.SetItemText(i, 3, A2W(st_JsonArray["tszClientAddr"].asCString()));
 		}
-		m_ListCtrlClient.SetItemText(i, 3, A2W(lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]));
+		m_ListCtrlClient.SetItemText(i, 4, A2W(lpszXLevelType[st_JsonObject["nUserLevel"].asInt() + 1]));
 
 		if (1 == st_JsonObject["nUserState"].asInt())
 		{
@@ -168,12 +171,13 @@ void CDialog_User::OnBnClickedButton1()
 
 			__int64x nTime = st_JsonArray["nOnlineTime"].asUInt64();
 			_stprintf(tszTimeStr, _T("%lld"), nTime);
-			m_ListCtrlClient.SetItemText(i, 4, tszTimeStr);
+			m_ListCtrlClient.SetItemText(i, 5, tszTimeStr);
 		}
-		m_ListCtrlClient.SetItemText(i, 5, A2W(st_JsonArray["tszLeftTime"].asCString()));
-		m_ListCtrlClient.SetItemText(i, 6, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
-		m_ListCtrlClient.SetItemText(i, 7, A2W(lpszXDevType[st_JsonArray["enDeviceType"].asInt()]));
-		m_ListCtrlClient.SetItemText(i, 8, lpszStuType[st_JsonObject["nUserState"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 6, A2W(st_JsonArray["tszLeftTime"].asCString()));
+		m_ListCtrlClient.SetItemText(i, 7, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
+		m_ListCtrlClient.SetItemText(i, 8, A2W(lpszXDevType[st_JsonArray["enDeviceType"].asInt()]));
+		m_ListCtrlClient.SetItemText(i, 9, lpszStuType[st_JsonObject["nUserState"].asInt()]);
+		m_ListCtrlClient.SetItemText(i, 10, std::to_wstring(st_JsonObject["nTimeCount"].asInt64()).c_str());
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	UpdateWindow();

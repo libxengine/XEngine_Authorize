@@ -71,6 +71,10 @@ extern "C" bool DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUser
 {
 	return m_DBSQLite.DBModule_SQLite_UserLogin(lpszUserName, lpszUserAddr);
 }
+extern "C" bool DBModule_SQLite_UserTime(LPCXSTR lpszUserName, __int64x nTime)
+{
+	return m_DBSQLite.DBModule_SQLite_UserTime(lpszUserName, nTime);
+}
 extern "C" bool DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
 {
 	return m_DBSQLite.DBModule_SQLite_QueryLogin(lpszUserName, lpszUserAddr);
@@ -261,6 +265,10 @@ extern "C" bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_A
 extern "C" bool DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
 {
 	return m_DBMySQL.DBModule_MySQL_UserLogin(lpszUserName, lpszUserAddr);
+}
+extern "C" bool DBModule_MySQL_UserTime(LPCXSTR lpszUserName, __int64x nTime)
+{
+	return m_DBMySQL.DBModule_MySQL_UserTime(lpszUserName, nTime);
 }
 extern "C" bool DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
 {

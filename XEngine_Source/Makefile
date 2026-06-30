@@ -1,11 +1,14 @@
 RELEASE = 0
 UNICODE = 0
 PLATFORM=linux
+BUILDTYPE=0
 FLAGS= 
 
 DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
 DEPEND_REPORT_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport
 DEPEND_VERIFICATION_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_Verification
+DEPEND_MSGNOTIFY_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_MSGNotify
+DEPEND_TOKEN_PATH = ./XEngine_DependLibrary/XEngine_Module/XEngine_Token
 
 AUTH_SESSION_PATH = ./AuthorizeModule_Session
 AUTH_DATABASE_PATH = ./AuthorizeModule_Database
@@ -21,9 +24,20 @@ else ifeq ($(PLATFORM),mac)
 	FILEEXT = dylib
 endif
 
-XENGINE_MODULES = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so                                                                                \
-          libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
-	      XEngine_AuthorizeApp.exe 
+# 第三方库模块
+MODULES_THIRD = libjsoncpp.so libXEngine_InfoReport.so libXEngine_Verification.so  libXEngine_MSGNotify.so libXEngine_Token.so \
+# 业务模块 + 应用
+MODULES_APP = libAuthorizeModule_Session.so libAuthorizeModule_Database.so libAuthorizeModule_Protocol.so libAuthorizeModule_Configure.so libAuthorizeModule_Help.so   \
+    		XEngine_AuthorizeApp.exe 
+
+# 根据 BUILDTYPE 决定编译目标
+ifeq ($(BUILDTYPE),0)
+	XENGINE_MODULES = $(MODULES_THIRD) $(MODULES_APP)
+else ifeq ($(BUILDTYPE),1)
+	XENGINE_MODULES = $(MODULES_THIRD)
+else ifeq ($(BUILDTYPE),2)
+	XENGINE_MODULES = $(MODULES_APP)
+endif
 
 .PHONY:MakeAll 
 MakeAll:$(XENGINE_MODULES)
@@ -46,6 +60,18 @@ ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_VERIFICATION_PATH)/libXEngine_Verification.$(FILEEXT) ../XEngine_Release/
 else
 	make -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
+libXEngine_MSGNotify.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_MSGNOTIFY_PATH)/libXEngine_MSGNotify.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(DEPEND_MSGNOTIFY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+endif
+libXEngine_Token.so:
+ifeq ($(FLAGS), InstallAll)
+	cp $(DEPEND_TOKEN_PATH)/libXEngine_Token.$(FILEEXT) ../XEngine_Release/
+else
+	make -C $(DEPEND_TOKEN_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 
 libAuthorizeModule_Session.so:

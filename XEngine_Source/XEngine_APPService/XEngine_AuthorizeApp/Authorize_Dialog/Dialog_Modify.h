@@ -36,4 +36,6 @@ public:
 	CButton m_BtnModify;
 	afx_msg void OnBnClickedButton3();
 	CDateTimeCtrl m_DateTimeRegister;
+	CEdit m_EditUserToken;
+	CEdit m_EditCountTime;
 };

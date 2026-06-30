@@ -24,6 +24,11 @@ jobs:
           - arch: amd64
             runner: ubuntu-24.04
             platform: linux/amd64
+            fedora-version: 43
+            artifact: x86-64
+          - arch: amd64
+            runner: ubuntu-24.04
+            platform: linux/amd64
             fedora-version: 42
             artifact: x86-64
           - arch: amd64
@@ -82,7 +87,7 @@ jobs:
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-Fedora_${{ matrix.fedora-version }}_${{ matrix.artifact }}
           path: XEngine_Release/

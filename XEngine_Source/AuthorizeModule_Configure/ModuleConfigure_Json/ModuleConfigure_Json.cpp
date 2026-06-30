@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "ModuleConfigure_Json.h"
+#include <new>
 /********************************************************************
 //    Created:     2021/12/02  16:14:11
 //    File Name:   D:\XEngine_ServiceApp\XEngine_Source\XEngine_ModuleConfigure\ModuleConfigure_Json\ModuleConfigure_Json.cpp
@@ -204,6 +205,20 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.bLogStorage = st_JsonXLog["bLogStorage"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszKeyFile, st_JsonXLog["tszKeyFile"].asCString());
+	//信息通知
+	if (st_JsonRoot["XNotify"].empty())
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_NOTIFY;
+		return false;
+	}
+	Json::Value st_JsonXNotify = st_JsonRoot["XNotify"];
+	Json::Value st_JsonXEmail = st_JsonXNotify["XEmail"];
+	pSt_ServerConfig->st_XNotify.st_EMailNotify.bEnable = st_JsonXEmail["bEnable"].asBool();
+	_tcsxcpy(pSt_ServerConfig->st_XNotify.st_EMailNotify.tszServiceAddr, st_JsonXEmail["tszServiceAddr"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XNotify.st_EMailNotify.tszUser, st_JsonXEmail["tszUser"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XNotify.st_EMailNotify.tszPass, st_JsonXEmail["tszPass"].asCString());
+	_tcsxcpy(pSt_ServerConfig->st_XNotify.st_EMailNotify.tszSendAddr, st_JsonXEmail["tszSendAddr"].asCString());
 
 	if (st_JsonRoot["XReport"].empty() || (3 != st_JsonRoot["XReport"].size()))
 	{
@@ -284,7 +299,7 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Versions(LPCXSTR lpszConfigFile
 		return false;
 	}
 	Json::Value st_JsonXVer = st_JsonRoot["XVer"];
-	pSt_ServerConfig->st_XVer.pStl_ListVer = new list<string>;
+	pSt_ServerConfig->st_XVer.pStl_ListVer = new (std::nothrow) list<string>;
 	if (NULL == pSt_ServerConfig->st_XVer.pStl_ListVer)
 	{
 		Config_IsErrorOccur = true;

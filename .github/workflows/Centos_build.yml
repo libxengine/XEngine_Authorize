@@ -3,7 +3,7 @@ name: centos build workflows
 on:
   push:
     branches:
-      - 'develop'
+      - 'develop1'
     paths:
       - 'XEngine_Source/**'
       - 'XEngine_Release/**'
@@ -93,7 +93,7 @@ jobs:
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-CentOS_${{ matrix.version }}_${{ matrix.artifact }}
           path: XEngine_Release/

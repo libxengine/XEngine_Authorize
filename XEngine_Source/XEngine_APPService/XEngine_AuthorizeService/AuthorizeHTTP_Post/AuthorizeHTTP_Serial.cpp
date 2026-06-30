@@ -1,6 +1,15 @@
 ﻿#include "../Authorize_Hdr.h"
 
-bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
+// Handle HTTP serial-number related APIs.
+// Supported operations:
+// 1) list   : query serials by page/range and return packed HTTP response.
+// 2) delete : parse serial list from request and delete each entry.
+// 3) insert : parse and insert serial entries (handled in the insert branch below).
+// Notes:
+// - Database backend is selected by st_AuthConfig.st_XSql.nDBType.
+// - Response data is sent back through XEngine_Client_TaskSend.
+// - Dynamically allocated parse/query buffers must be released after use.
+bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszClientUser, LPCXSTR lpszAPIName, LPCXSTR lpszMsgBuffer, int nMsgLen)
 {
 	int nSDLen = 0;
 	LPCXSTR lpszAPIList = _X("list");
@@ -8,6 +17,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	LPCXSTR lpszAPIDelete = _X("delete");
 
 	CHttpMemory_PoolEx m_MemoryPool(XENGINE_MEMORY_SIZE_MAX);
+	// list: parse paging range, query DB, package list response, then return to client.
 	if (0 == _tcsxncmp(lpszAPIList, lpszAPIName, _tcsxlen(lpszAPIList)))
 	{
 		int nPosStart = 0;
@@ -20,6 +30,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		}
 		memset(ptszMsgBuffer, '\0', XENGINE_MEMORY_SIZE_MAX);
 
+		// Read list window from HTTP payload and limit single request size.
 		Protocol_Parse_HttpParsePos(lpszMsgBuffer, nMsgLen, &nPosStart, &nPosEnd);
 		if ((nPosEnd - nPosStart) > 100)
 		{
@@ -44,6 +55,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 		ptszMsgBuffer = NULL;
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求序列号列表成功,个数:%d"), lpszClientAddr, nListCount);
 	}
+	// delete: parse requested serials and delete one-by-one in configured DB backend.
 	else if (0 == _tcsxncmp(lpszAPIDelete, lpszAPIName, _tcsxlen(lpszAPIDelete)))
 	{
 		int nListCount = 0;
@@ -64,11 +76,13 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_SerialDelete(ppSt_SerialTable[i]->tszSerialNumber);
 			}
 		}
+		// Release parsed serial table and return common success response.
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_SerialTable, nListCount);
 		Protocol_Packet_HttpComm(m_MemoryPool.get(), &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, m_MemoryPool.get(), nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求删除序列号成功,删除个数:%d"), lpszClientAddr, nListCount);
 	}
+	// insert: parse and insert serial data, then reply to client (implementation below).
 	else if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		int nSerialCount = 0;
@@ -90,6 +104,7 @@ bool XEngine_AuthorizeHTTP_Serial(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 			_tcsxcpy(st_SerialTable.tszCreateTime, tszCreateTime);
 			_tcsxcpy(st_SerialTable.tszExpiredTime, tszExpiredTime);
 			_tcsxcpy(st_SerialTable.tszMaxTime, tszMaxTime);
+			_tcsxcpy(st_SerialTable.tszCreateUser, lpszClientUser);
 			Verification_XAuthKey_KeySerial(st_SerialTable.tszSerialNumber, nFieldCount, 0);
 
 			if (0 == st_AuthConfig.st_XSql.nDBType)

@@ -126,14 +126,31 @@ LONG WINAPI Coredump_ExceptionFilter(EXCEPTION_POINTERS* pExceptionPointers)
 	return EXCEPTION_EXECUTE_HANDLER;
 }
 #endif
+/**
+ * @brief Authorize service process entry point.
+ *
+ * This function coordinates the full service lifecycle:
+ * 1) platform/runtime bootstrap (network stack, locale, crash handler),
+ * 2) configuration and parameter handling,
+ * 3) initialization of logging, protocol stacks, and worker components,
+ * 4) service run loop and signal-controlled shutdown,
+ * 5) orderly release of all allocated resources.
+ *
+ * Notes:
+ * - Platform-specific startup paths are guarded by compile-time macros.
+ * - Error paths return early to avoid continuing in a partially initialized state.
+ */
 int main(int argc, char** argv)
 {
 #ifdef _WINDOWS
+	// Initialize Winsock for all subsequent socket-based modules.
 	WSADATA st_WSAData;
 	WSAStartup(MAKEWORD(2, 2), &st_WSAData);
 
+	// Register unhandled exception filter to generate a dump file on crash.
 	SetUnhandledExceptionFilter(Coredump_ExceptionFilter);
 #ifndef _DEBUG
+	// Ensure UTF-8 locale in release builds for consistent text processing/logging.
 	if (setlocale(LC_ALL, ".UTF8") == NULL)
 	{
 		fprintf(stderr, "Error setting locale.\n");
@@ -226,7 +243,7 @@ int main(int argc, char** argv)
 		goto XENGINE_EXITAPP;
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化会话客户端服务成功"));
-	if (!Session_Token_Init(st_AuthConfig.st_XVerification.nTokenTimeout, XEngine_TaskEvent_Token))
+	if (!Session_Token_Init(st_AuthConfig.st_XVerification.nTokenTimeout, true, XEngine_TaskEvent_Token))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化会话TOKEN服务失败，错误：%lX"), Session_GetLastError());
 		goto XENGINE_EXITAPP;
@@ -452,6 +469,7 @@ int main(int argc, char** argv)
 		//一个简单的示例,没有验证硬件码
 		if (Verification_XAuthKey_FileRead(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass))
 		{
+			Verification_XAuthKey_KeyParse(&st_AuthLocal);
 			Verification_XAuthKey_FileWrite(&st_AuthLocal, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, st_AuthConfig.st_XVerification.st_XCDKey.tszKeyPass);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，授权文件验证成功，总可运行次数:%s,剩余可运行次数:%lld"), st_AuthLocal.st_AuthRegInfo.tszLeftTime, st_AuthLocal.st_AuthRegInfo.nHasTime);
 		}

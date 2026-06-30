@@ -161,6 +161,15 @@ bool XEngine_CloseClient(LPCXSTR lpszClientAddr, int nLeaveType)
 		_tcsxcpy(st_AuthTime.tszLeftTime, st_NETClient.tszLeftTime);
 		_tcsxcpy(st_AuthTime.tszUserAddr, st_NETClient.tszClientAddr);
 
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_UserTime(st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.nOnlineTime);
+		}
+		else
+		{
+			DBModule_MySQL_UserTime(st_NETClient.st_UserTable.st_UserInfo.tszUserName, st_NETClient.nOnlineTime);
+		}
+
 		if (st_AuthConfig.st_XLogin.bPassAuth)
 		{
 			int nSDLen = 0;

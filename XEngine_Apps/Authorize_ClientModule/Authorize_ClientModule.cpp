@@ -14,6 +14,7 @@
 #include <thread>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
+#include <XEngine_Include/XEngine_ProtocolHdr.h>
 #include "../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Define.h"
 #include "../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/XEngine_Verification/Verification_Error.h"
 

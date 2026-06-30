@@ -61,19 +61,18 @@ void XCALLBACK XEngine_TaskEvent_Client(LPCXSTR lpszUserAddr, LPCXSTR lpszUserNa
 		DBModule_MySQL_UserLeave(&st_AuthTime);
 	}
 }
-void XCALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
+void XCALLBACK XEngine_TaskEvent_Token(LPCXSTR lpszTokenStr, int nTimeout, int nTimerenewal, XENGINE_LIBTIME* pSt_LibTime, XENGINE_PROTOCOL_USERINFO* pSt_UserInfo, XPVOID lParam)
 {
 	bool bRemove = true;
-	AUTHREG_USERTABLE st_UserTable;
-	memset(&st_UserTable, '\0', sizeof(AUTHREG_USERTABLE));
+	XENGINE_PROTOCOL_USERINFO st_UserInfo;
 
-	Session_Token_Get(xhToken, &st_UserTable);
+	Session_Token_GetStr(lpszTokenStr, &st_UserInfo);
 	//自动续期?
 	if (st_AuthConfig.st_XVerification.st_XToken.bAutoRenewal)
 	{
 		int nRenewalTime = 0;
-		Session_Token_RenewalTime(xhToken, &nRenewalTime);
-
+		Session_Token_UPDateStr(lpszTokenStr);
+		Session_Token_GetTimeRenewalStr(lpszTokenStr, &nRenewalTime);
 		if (-1 == st_AuthConfig.st_XVerification.st_XToken.nRenewalTime)
 		{
 			bRemove = false;
@@ -89,7 +88,7 @@ void XCALLBACK XEngine_TaskEvent_Token(XNETHANDLE xhToken, XPVOID lParam)
 
 	if (bRemove)
 	{
-		Session_Token_Delete(xhToken);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%lld,用户名：%s，已经超时,权限级别:%d,被移除服务器"), xhToken, st_UserTable.st_UserInfo.tszUserName, st_UserTable.st_UserInfo.nUserLevel);
+		Session_Token_DeleteStr(lpszTokenStr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%s,用户名：%s，已经超时,权限级别:%d,被移除服务器"), lpszTokenStr, st_UserInfo.tszUserName, st_UserInfo.nUserLevel);
 	}
 }

@@ -126,7 +126,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserRegister(AUTHREG_USERTABLE* pSt_UserI
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_User(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,%d,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_User(UserName, Password, Token, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','0','%s','%s','%s','%d',%lld,%lld,%d,0,datetime('now', 'localtime'))"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -201,6 +201,9 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
         //密码
         nFliedValue++;
         _tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
+        //TOKEN
+        nFliedValue++;
+        pSt_UserInfo->st_UserInfo.xhToken = _ttxoll(ppszResult[nFliedValue]);
         //过期时间
         nFliedValue++;
         _tcsxcpy(pSt_UserInfo->tszLeftTime, ppszResult[nFliedValue]);
@@ -222,6 +225,9 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
         //用户级别 -1表示封禁
         nFliedValue++;
         pSt_UserInfo->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
+        //总共时间
+        nFliedValue++;
+        pSt_UserInfo->nTimeCount = _ttxoll(ppszResult[nFliedValue]);
         //登录日期
         nFliedValue++;
         if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
@@ -257,6 +263,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
 bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
 {
     SQLPacket_IsErrorOccur = false;
+    const int nVipUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_VIP;
 
     AUTHREG_SERIALTABLE st_SerialTable;
     AUTHREG_USERTABLE st_UserTable;
@@ -321,6 +328,14 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTSUPPORT;
         return false;
     }
+    //充值成功后自动升级为可登录等级
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET nUserLevel = '%d' WHERE UserName = '%s'"), nVipUserLevel, lpszUserName);
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+        return false;
+    }
     _xstprintf(tszSQLStatement, _X("UPDATE Authorize_Serial SET UserName = '%s',bIsUsed = '1' WHERE SerialNumber = '%s'"), lpszUserName, lpszSerialName);
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -346,6 +361,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
 bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {
     SQLPacket_IsErrorOccur = false;
+    const int nNormalUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
@@ -385,6 +401,16 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_Time
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
         return false;
     }
+    if (pSt_TimeProtocol->nTimeLeft <= 0)
+    {
+        _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET nUserLevel = '%d' WHERE UserName = '%s'"), nNormalUserLevel, pSt_TimeProtocol->tszUserName);
+        if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+        {
+            SQLPacket_IsErrorOccur = true;
+            SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_UPDATA;
+            return false;
+        }
+    }
     return true;
 }
 /********************************************************************
@@ -407,7 +433,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
     XCHAR tszSQLStatement[1024];       //SQL语句
     memset(tszSQLStatement, '\0', 1024);
 
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',UPTime = '%s',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->st_UserInfo.tszLoginTime, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET Password = '%s',Token = '%lld',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CountTime = '%lld',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.xhToken, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->nTimeCount, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
     //更新用户剩余时间
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -480,6 +506,9 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
         //密码
         nFliedValue++;
         _tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
+        //TOKEN
+        nFliedValue++;
+        (*pppSt_UserInfo)[i]->st_UserInfo.xhToken = _ttxoll(ppszResult[nFliedValue]);
         //过期时间
         nFliedValue++;
         _tcsxcpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
@@ -501,6 +530,9 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
         //用户级别 -1表示封禁
         nFliedValue++;
         (*pppSt_UserInfo)[i]->st_UserInfo.nUserLevel = _ttxoi(ppszResult[nFliedValue]);
+        //总共时间
+        nFliedValue++;
+        (*pppSt_UserInfo)[i]->nTimeCount = _ttxoll(ppszResult[nFliedValue]);
         //登录日期
         nFliedValue++;
 		if (NULL != ppszResult[nFliedValue] && _tcsxlen(ppszResult[nFliedValue]) > 0)
@@ -549,6 +581,38 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR l
 		return false;
 	}
 	return true;
+}
+/********************************************************************
+函数名称：DBModule_SQLite_UserTime
+函数功能：增加用户在线时间
+ 参数.一：lpszUserName
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：用户名
+ 参数.二：nTime
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：增加的时间
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_SQLite::DBModule_SQLite_UserTime(LPCXSTR lpszUserName, __int64x nTime)
+{
+    SQLPacket_IsErrorOccur = false;
+
+    XCHAR tszSQLStatement[1024] = {};
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_Login SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_INSERT;
+        return false;
+    }
+    return true;
 }
 /********************************************************************
 函数名称：DBModule_SQLite_QueryLogin
@@ -623,7 +687,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialInsert(AUTHREG_SERIALTABLE *pSt_Ser
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'%s','%s','%s',%d,%d,'%s','%s')"), pSt_SerialTable->tszUserName, pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszExpiredTime);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO Authorize_Serial values(NULL,'NOT','%s','%s',%d,%d,'%s','%s','%s')"), pSt_SerialTable->tszSerialNumber, pSt_SerialTable->tszMaxTime, pSt_SerialTable->enSerialType, pSt_SerialTable->bIsUsed, pSt_SerialTable->tszCreateTime, pSt_SerialTable->tszCreateUser, pSt_SerialTable->tszExpiredTime);
 
     if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
     {
@@ -722,9 +786,12 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
         //是否已经使用
         nFliedValue++;
         pSt_SerialTable->bIsUsed = _ttxoi(ppszResult[nFliedValue]);
-        //超时时间
+        //创建时间
         nFliedValue++;
         _tcsxcpy(pSt_SerialTable->tszCreateTime, ppszResult[nFliedValue]);
+        //创建用户
+        nFliedValue++;
+        _tcsxcpy(pSt_SerialTable->tszCreateUser, ppszResult[nFliedValue]);
 		//过期时间
 		nFliedValue++;
 		if (NULL != ppszResult[nFliedValue])
@@ -813,6 +880,9 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
         nFliedValue++;
         //创建时间
         _tcsxcpy((*pppSt_SerialTable)[i]->tszCreateTime, ppszResult[nFliedValue]);
+        nFliedValue++;
+        //创建用户
+        _tcsxcpy((*pppSt_SerialTable)[i]->tszCreateUser, ppszResult[nFliedValue]);
         nFliedValue++;
 		//过期时间
         if (NULL != ppszResult[nFliedValue])

@@ -1,3 +1,29 @@
+XEngine_Authorize V3.23.0.1001
+
+ci:add agentic workflows for issue triage and auto fix
+ci:delete cppcheck.yml and issue-translator.yml
+added:email notify after user pay
+added:user online time of count
+added:insert create user name for serial created
+added:serial create user and user token and time count management app support
+update:vs to 2026
+modify:pay user auto adjust level
+modify:warning and scan code problem
+modify:token of session module instead depend session module
+delete:get notice of task code and modify notice permission
+
+ci:增加了新的issue问题分类和处理工作流
+ci:删除了多余的工作流
+增加:用户充值邮件通知
+增加:用户在线时间统计
+增加:序列号增加用户创建字段
+增加:用户列表用户时间字段和TOKEN字段
+更新:VS编译器支持2026
+修改:用户注册后自动调整等级
+修改:通过scan扫描的代码问题
+修改:使用依赖库的会话模块替代自身的TOKEN模块
+删除:多余的通知消息
+================================================================
 XEngine_Authorize V3.22.0.1001
 
 ci:更新库依赖环境

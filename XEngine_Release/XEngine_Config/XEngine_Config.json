@@ -82,6 +82,15 @@
         "nLogType": 17,
         "bLogStorage": true
     },
+    "XNotify": {
+        "XEmail": {
+            "bEnable": false,
+            "tszServiceAddr": "smtp://smtp.163.com",
+            "tszUser": "ggqytgodlove@163.com",
+            "tszPass": "1",
+            "tszSendAddr": "486179@qq.com"
+        }
+    },
     "XReport": {
         "bEnable": true,
         "tszServiceName": "XEngine_Authorize",
