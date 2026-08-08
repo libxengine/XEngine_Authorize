@@ -187,7 +187,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		return false;
 	}
 	XCHAR** pptszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
 
 	if (NULL != pSt_UserInfo)
 	{
@@ -547,8 +546,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 		//ID
 		int nFliedValue = 0;
 		nFliedValue++;
@@ -821,7 +818,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		return false;
 	}
 	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
 
 	if (NULL != pSt_SerialTable)
 	{
@@ -921,8 +917,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 	{
 		// 获取数据库结果
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 		int nFliedValue = 0;
 		//ID
 		nFliedValue++;
@@ -1051,8 +1045,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 		return false;
 	}
 	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 	//ID
 	int nFliedValue = 0;
 	nFliedValue++;
@@ -1168,8 +1160,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
+	
 		int nFliedValue = 0;
 		AUTHREG_TEMPVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
@@ -1315,8 +1306,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
+	
 		int nFliedValue = 0;
 		//ID
 		(*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
@@ -1496,7 +1486,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 
 		AUTHREG_BANNED st_Banned;
@@ -1543,7 +1533,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 
 		//ID
@@ -1927,7 +1917,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 		(*ppppSt_Announcement)[i]->nID = _ttxoll(ppszResult[nFliedValue]);
 		nFliedValue++;

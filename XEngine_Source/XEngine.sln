@@ -76,6 +76,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_Verification", "XEn
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_MSGNotify", "XEngine_DependLibrary\XEngine_Module\XEngine_MSGNotify\XEngine_MSGNotify.vcxproj", "{E1087BA3-1074-4C6A-B770-A53B7BA1F4EA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F1736B3F-03A2-4FC7-B045-A12BA8D724FB} = {F1736B3F-03A2-4FC7-B045-A12BA8D724FB}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "XEngine_Token", "XEngine_DependLibrary\XEngine_Module\XEngine_Token\XEngine_Token.vcxproj", "{E17E889F-D826-413F-854E-DBA6000B4DA7}"
 EndProject

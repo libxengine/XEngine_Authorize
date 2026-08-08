@@ -8,7 +8,6 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 	XCHAR tszURLValue[128] = {};
 	LPCXSTR lpszAPITime = _X("time");
 	LPCXSTR lpszAPIDCode = _X("dcode");
-	LPCXSTR lpszAPINotice = _X("notice");
 
 	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
 	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
@@ -27,19 +26,19 @@ bool XEngine_AuthorizeHTTP_GetTask(LPCXSTR lpszClientAddr, XCHAR** pptszList, in
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, Session_GetLastError());
 			return false;
 		}
-		int nListCount = 0;
+		int nClientCount = 0;
 		AUTHSESSION_NETCLIENT** ppSt_ListClient;
-		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nListCount, st_UserInfo.tszUserName))
+		if (!Session_Authorize_GetClient(&ppSt_ListClient, &nClientCount, st_UserInfo.tszUserName))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，获取时间失败，无法继续，错误：%X"), lpszClientAddr, st_UserInfo.tszUserName, Session_GetLastError());
 			return false;
 		}
-		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nListCount);
-		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nListCount);
+		Protocol_Packet_UserTime(tszSDBuffer, &nSDLen, &ppSt_ListClient, nClientCount);
+		BaseLib_Memory_Free((XPPPMEM)&ppSt_ListClient, nClientCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserInfo.tszUserName, nListCount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，获取时间成功，用户同时在线数：%d"), lpszClientAddr, st_UserInfo.tszUserName, nClientCount);
 	}
 	else if (0 == _tcsxncmp(lpszAPIDCode, tszURLValue, _tcsxlen(lpszAPIDCode)))
 	{

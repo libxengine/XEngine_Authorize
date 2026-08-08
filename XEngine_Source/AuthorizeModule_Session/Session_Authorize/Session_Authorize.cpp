@@ -477,9 +477,6 @@ XHTHREAD CSession_Authorize::Session_Authorize_ActiveThread(XPVOID lParam)
 					stl_ListIterator->nOnlineTime = nOnlineSpan;
 					_tcsxcpy(stl_ListIterator->tszLeftTime, stl_ListIterator->st_UserTable.tszLeftTime);
 					//计算时间是否超过！
-					AUTHREG_PROTOCOL_TIME st_ProtocolTimer;
-					memset(&st_ProtocolTimer, '\0', sizeof(AUTHREG_PROTOCOL_TIME));
-
 					st_ProtocolTimer.nTimeONLine = nOnlineSpan;
 					st_ProtocolTimer.nTimeLeft = nLeftTime;
 					st_ProtocolTimer.nNetType = stl_ListIterator->nNetType;
