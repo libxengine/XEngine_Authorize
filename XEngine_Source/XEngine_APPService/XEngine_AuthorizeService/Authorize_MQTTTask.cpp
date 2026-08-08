@@ -87,7 +87,7 @@ bool Authorize_MQTTTask_Handle(LPCXSTR lpszClientAddr, MQTTPROTOCOL_FIXEDHEADER*
 			//错误断开连接
 			MQTTProtocol_Packet_DisConnect(tszRVBuffer, &nRVLen);
 			MQTTProtocol_Packet_Header(tszSDBuffer, &nSDLen, XENGINE_RFCCOMPONENTS_MQTT_PROTOCOL_TYPE_DISCONN, tszRVBuffer, nRVLen);
-			//XEngine_MQXService_Send(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_MQAPP_NETTYPE_MQTT);
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_MQTT);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("MQTT客户端:%s,请求链接失败,错误码:%lX"), lpszClientAddr, MQTTProtocol_GetLastError());
 			return false;
 		}
