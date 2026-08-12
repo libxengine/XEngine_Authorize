@@ -39,6 +39,10 @@ EXPORTS
 	DBModule_SQLite_AnnouncementDelete
 	DBModule_SQLite_AnnouncementList
 
+	DBModule_SQLite_OAuthInsert
+	DBModule_SQLite_OAuthDelete
+	DBModule_SQLite_OAuthList
+
 	DBModule_MySQL_Init
 	DBModule_MySQL_Destroy
 
@@ -74,3 +78,7 @@ EXPORTS
 	DBModule_MySQL_AnnouncementInsert
 	DBModule_MySQL_AnnouncementDelete
 	DBModule_MySQL_AnnouncementList
+
+	DBModule_MySQL_OAuthInsert
+	DBModule_MySQL_OAuthDelete
+	DBModule_MySQL_OAuthList

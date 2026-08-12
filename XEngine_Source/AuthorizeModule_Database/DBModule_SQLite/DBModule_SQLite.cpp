@@ -1797,6 +1797,139 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 	DataBase_SQLite_FreeTable(ppszResult);
 	return true;
 }
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthInsert
+函数功能：OAuth插入
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_SQLite::DBModule_SQLite_OAuthInsert(AUTHREG_OAUTHINFO *pSt_OAuthInfo)
+{
+    SQLPacket_IsErrorOccur = false;
+
+    if (NULL == pSt_OAuthInfo)
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+        return false;
+    }
+    XCHAR tszSQLStr[8192] = {};
+
+    _xstprintf(tszSQLStr, _X("INSERT INTO Authorize_OAuth(tszUserName,tszTokenStr,tszClientID,tszClientKey,tszCreateTime,tszExpirationTime) VALUES('%s','%s','%s','%s','%s','%s')"), pSt_OAuthInfo->tszUserName, pSt_OAuthInfo->tszTokenStr, pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey, pSt_OAuthInfo->tszCreateTime, pSt_OAuthInfo->tszExpirationTime);
+    //插入数据库
+    if (!DataBase_SQLite_Exec(xhData, tszSQLStr))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return false;
+    }
+    return true;
+}
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthDelete
+函数功能：OAuth删除
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_SQLite::DBModule_SQLite_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_OAuthInfo)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+    XCHAR tszSQLStr[8192] = {};
+	if (_tcsxlen(pSt_OAuthInfo->tszTokenStr) > 0)
+	{
+		_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_OAuth` WHERE tszTokenStr = '%s'"), pSt_OAuthInfo->tszTokenStr);
+	}
+	else
+	{
+		_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_OAuth` WHERE tszClientID = '%s'"), pSt_OAuthInfo->tszClientID);
+	}
+	//插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStr))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthList
+函数功能：OAuth列举
+ 参数.一：ppppSt_OAuthInfo
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_SQLite::DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** ppppSt_OAuthInfo, int* pInt_ListCount)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	int nRow = 0;
+	int nColumn = 0;
+	XCHAR** ppszResult = NULL;
+    XCHAR tszSQLStr[1024] = {};
+
+	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_OAuth"));
+	if (!DataBase_SQLite_GetTable(xhData, tszSQLStr, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	*pInt_ListCount = nRow;
+
+	BaseLib_Memory_Malloc((XPPPMEM)ppppSt_OAuthInfo, nRow, sizeof(AUTHREG_OAUTHINFO));
+	int nFliedValue = nColumn;
+	//轮训所有内容
+	for (int i = 0; i < nRow; i++)
+	{
+		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszUserName, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszTokenStr, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszClientID, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszClientKey, ppszResult[nFliedValue]);
+        nFliedValue++;
+        _tcsxcpy((*ppppSt_OAuthInfo)[i]->tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszExpirationTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+	}
+	DataBase_SQLite_FreeTable(ppszResult);
+	return true;
+}
 //////////////////////////////////////////////////////////////////////////
 //                       保护函数
 //////////////////////////////////////////////////////////////////////////

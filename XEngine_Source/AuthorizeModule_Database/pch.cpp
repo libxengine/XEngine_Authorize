@@ -151,6 +151,18 @@ extern "C" bool DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT * **ppppSt
 {
 	return m_DBSQLite.DBModule_SQLite_AnnouncementList(ppppSt_Announcement, pInt_ListCount);
 }
+extern "C" bool DBModule_SQLite_OAuthInsert(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBSQLite.DBModule_SQLite_OAuthInsert(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_SQLite_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBSQLite.DBModule_SQLite_OAuthDelete(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount)
+{
+	return m_DBSQLite.DBModule_SQLite_OAuthList(pppSt_OAuthInfo, pInt_ListCount);
+}
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -273,4 +285,16 @@ extern "C" bool DBModule_MySQL_UserTime(LPCXSTR lpszUserName, __int64x nTime)
 extern "C" bool DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lpszUserAddr)
 {
 	return m_DBMySQL.DBModule_MySQL_QueryLogin(lpszUserName, lpszUserAddr);
+}
+extern "C" bool DBModule_MySQL_OAuthInsert(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBMySQL.DBModule_MySQL_OAuthInsert(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBMySQL.DBModule_MySQL_OAuthDelete(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount)
+{
+	return m_DBMySQL.DBModule_MySQL_OAuthList(pppSt_OAuthInfo, pInt_ListCount);
 }

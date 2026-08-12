@@ -55,6 +55,10 @@ public:
     bool DBModule_MySQL_AnnouncementInsert(AUTHREG_ANNOUNCEMENT* pSt_Announcement);  //公告插入
     bool DBModule_MySQL_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pSt_Announcement);  //公告删除
     bool DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount);  //列举所有公告
+public:
+	bool DBModule_MySQL_OAuthInsert(AUTHREG_OAUTHINFO* pSt_OAuthInfo);  //插入授权信息
+	bool DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo);  //删除授权信息
+    bool DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount);
 protected:
     bool DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType);  //日期方式充值方式
 private:

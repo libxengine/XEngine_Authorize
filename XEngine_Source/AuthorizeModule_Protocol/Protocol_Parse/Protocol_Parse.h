@@ -34,6 +34,7 @@ public:
 	bool Protocol_Parse_HttpParseBanned(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_BANNED* pSt_AuthBanned);
 	bool Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgLen, int* pInt_POSStart, int* pInt_POSEnd);
 	bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement);
+	bool Protocol_Parse_HttpParseOAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_OAUTHINFO* pSt_UserAuth);
 protected:
 private:
 };
