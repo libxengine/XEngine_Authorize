@@ -142,14 +142,12 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 	}
 	else if (0 == _tcsxncmp(lpszAPICreate, tszURLValue, _tcsxlen(lpszAPICreate)))
 	{
-		//http://app.xyry.org:5302/api?function=create&token=1000112345&type=0&timeout=3600
+		//http://127.0.0.1:5302/api?function=create&token=1000112345&timeout=3600
 		XCHAR tszTokenStr[128] = {};
-		XCHAR tszTokenType[128] = {};
 		XCHAR tszTimeout[128] = {};
 
 		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszTokenStr);
-		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszTokenType);
-		BaseLib_String_GetKeyValue(pptszList[3], "=", tszURLKey, tszTimeout);
+		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszTimeout);
 		
 		XENGINE_PROTOCOL_USERINFO st_UserInfo = {};
 		if (!Session_Token_GetStr(tszTokenStr, &st_UserInfo))
@@ -164,22 +162,16 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XENGINE_LIBTIME st_LibTime = {};
 		_tcsxcpy(st_OAuthInfo.tszUserName, st_UserInfo.tszUserName);
 
-		if (nListCount > 4)
+		if (nListCount > 2)
 		{
 			time_t nTime = time(NULL) + _ttxoi(tszTimeout);
 			BaseLib_Time_TTimeToStuTime(nTime, &st_LibTime);
 			BaseLib_Time_TimeToStr(st_OAuthInfo.tszExpirationTime, NULL, true, &st_LibTime);
 		}
 		
-		if (0 == _ttxoi(tszTokenType))
-		{
-			BaseLib_Handle_CreateStr(st_OAuthInfo.tszTokenStr);
-		}
-		else
-		{
-			BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientID, 16, 1);
-			BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientKey);
-		}
+		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientID, 16, 1);
+		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientKey);
+		BaseLib_Time_TimeToStr(st_OAuthInfo.tszCreateTime);
 
 		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{
@@ -189,7 +181,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		{
 			DBModule_MySQL_OAuthInsert(&st_OAuthInfo);
 		}
-		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		Protocol_Packet_HttpOAuth(tszSDBuffer, &nSDLen, &st_OAuthInfo);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszTokenStr);
 	}

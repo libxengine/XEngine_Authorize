@@ -961,3 +961,60 @@ bool CProtocol_Packet::Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pI
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	return true;
 }
+/********************************************************************
+函数名称：Protocol_Packet_HttpOAuth
+函数功能：打包创建的OAuth信息
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Packet::Protocol_Packet_HttpOAuth(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonOAuth;
+
+	st_JsonOAuth["tszClientID"] = pSt_OAuthInfo->tszClientID;
+	st_JsonOAuth["tszClientKey"] = pSt_OAuthInfo->tszClientKey;
+	st_JsonOAuth["tszUserName"] = pSt_OAuthInfo->tszUserName;
+	st_JsonOAuth["tszExpirationTime"] = pSt_OAuthInfo->tszExpirationTime;
+
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["st_OAuthInfo"] = st_JsonOAuth;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return true;
+}
