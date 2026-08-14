@@ -599,6 +599,34 @@ extern "C" bool DBModule_SQLite_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 备注：
 *********************************************************************/
 extern "C" bool DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount);
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthUPDate
+函数功能：更新OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthQuery
+函数功能：查询OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -1182,3 +1210,31 @@ extern "C" bool DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 备注：
 *********************************************************************/
 extern "C" bool DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount);
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthUPDate
+函数功能：更新OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthQuery
+函数功能：查询OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);

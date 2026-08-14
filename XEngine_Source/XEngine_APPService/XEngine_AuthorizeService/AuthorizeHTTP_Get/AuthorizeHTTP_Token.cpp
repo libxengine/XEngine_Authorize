@@ -162,13 +162,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		XENGINE_LIBTIME st_LibTime = {};
 		_tcsxcpy(st_OAuthInfo.tszUserName, st_UserInfo.tszUserName);
 
-		if (nListCount > 2)
-		{
-			time_t nTime = time(NULL) + _ttxoi(tszTimeout);
-			BaseLib_Time_TTimeToStuTime(nTime, &st_LibTime);
-			BaseLib_Time_TimeToStr(st_OAuthInfo.tszExpirationTime, NULL, true, &st_LibTime);
-		}
-		
+		st_OAuthInfo.nExpirationTime = _ttxoi(tszTimeout);
 		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientID, 16, 1);
 		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientKey);
 		BaseLib_Time_TimeToStr(st_OAuthInfo.tszCreateTime);

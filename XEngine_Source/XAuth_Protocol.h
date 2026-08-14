@@ -129,8 +129,9 @@ typedef struct
 {
 	XCHAR tszUserName[128];                                               //用户名
 	XCHAR tszTokenStr[128];                                               //Token
+	XCHAR tszUPToken[128];                                                //Token
 	XCHAR tszClientID[128];                                               //ID
 	XCHAR tszClientKey[128];                                              //秘钥
 	XCHAR tszCreateTime[64];                                              //创建时间
-	XCHAR tszExpirationTime[64];                                          //过期时间
+	int nExpirationTime;                                                  //过期时间
 }AUTHREG_OAUTHINFO;

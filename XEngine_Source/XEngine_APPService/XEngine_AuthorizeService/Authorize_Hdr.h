@@ -111,6 +111,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_CDKey.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Announcement.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Try.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_GetTask.h"
 

@@ -87,6 +87,10 @@ extern "C" bool Protocol_Packet_HttpOAuth(XCHAR* ptszMsgBuffer, int* pInt_MsgLen
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpOAuth(ptszMsgBuffer, pInt_MsgLen, pSt_OAuthInfo);
 }
+extern "C" bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpOAuth2(ptszMsgBuffer, pInt_MsgLen, pSt_OAuthInfo);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/

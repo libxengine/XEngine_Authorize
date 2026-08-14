@@ -163,6 +163,14 @@ extern "C" bool DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, 
 {
 	return m_DBSQLite.DBModule_SQLite_OAuthList(pppSt_OAuthInfo, pInt_ListCount);
 }
+extern "C" bool DBModule_SQLite_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBSQLite.DBModule_SQLite_OAuthUPDate(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBSQLite.DBModule_SQLite_OAuthQuery(pSt_OAuthInfo);
+}
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -297,4 +305,12 @@ extern "C" bool DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
 extern "C" bool DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount)
 {
 	return m_DBMySQL.DBModule_MySQL_OAuthList(pppSt_OAuthInfo, pInt_ListCount);
+}
+extern "C" bool DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBMySQL.DBModule_MySQL_OAuthUPDate(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	return m_DBMySQL.DBModule_MySQL_OAuthQuery(pSt_OAuthInfo);
 }

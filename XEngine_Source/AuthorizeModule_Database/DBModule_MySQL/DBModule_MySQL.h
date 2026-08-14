@@ -59,6 +59,8 @@ public:
 	bool DBModule_MySQL_OAuthInsert(AUTHREG_OAUTHINFO* pSt_OAuthInfo);  //插入授权信息
 	bool DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo);  //删除授权信息
     bool DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount);
+    bool DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+	bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 protected:
     bool DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType);  //日期方式充值方式
 private:
