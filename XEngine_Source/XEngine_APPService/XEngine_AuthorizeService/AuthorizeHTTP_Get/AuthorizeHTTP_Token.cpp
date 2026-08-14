@@ -15,14 +15,14 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 
 	if (0 == _tcsxncmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
 	{
-		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=1
+		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123
 		XCHAR tszUserName[128] = {};
 		XCHAR tszUserPass[128] = {};
 		XCHAR tszDeviceType[128] = {};
 		XNETHANDLE xhToken = 0;
 		AUTHREG_USERTABLE st_UserTable = {};
 
-		if (nListCount < 4)
+		if (nListCount < 3)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "request parament is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -31,7 +31,6 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		}
 		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
-		BaseLib_String_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
 		//是否启用了动态码
 		if (st_FunSwitch.bSwitchDCode)
 		{
