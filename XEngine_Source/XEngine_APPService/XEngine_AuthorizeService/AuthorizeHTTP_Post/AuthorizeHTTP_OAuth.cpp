@@ -15,10 +15,13 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		//http://127.0.0.1:5302/api/oauth/token
 		VERIFICATION_OAUTHINFO st_VerificationInfo = {};
 		AUTHREG_OAUTHINFO st_OAuthInfo = {};
+		XCHAR tszFreshToken[XPATH_MIN] = {};
 
 		Verification_OAuth_Parse(&st_VerificationInfo, NULL, lpszMSGBuffer);
 		_tcsxcpy(st_OAuthInfo.tszClientID, st_VerificationInfo.tszClientID);
 		_tcsxcpy(st_OAuthInfo.tszClientKey, st_VerificationInfo.tszClientSecert);
+
+		_tcsxcpy(tszFreshToken, st_VerificationInfo.tszClientRefresh);
 
 		bool bRet = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType)
@@ -35,6 +38,18 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建OAuth的TOKEN失败,查询用户信息id:%s key:%s失败：%lX"), lpszClientAddr, st_OAuthInfo.tszClientID, st_OAuthInfo.tszClientKey, DBModule_GetLastError());
 			return false;
+		}
+		//是否为刷新TOKEN
+		if (_tcsxlen(tszFreshToken) > 0)
+		{
+			//如果是
+			if (0 == _tcsxnicmp(tszFreshToken, st_VerificationInfo.tszClientRefresh, _tcsxlen(st_VerificationInfo.tszClientRefresh)))
+			{
+				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_UNAUTHORIZE, "token verification failure");
+				XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求刷新OAuth的TOKEN失败,查询用户fresh:%s token:%s 不匹配"), lpszClientAddr, tszFreshToken, st_VerificationInfo.tszClientRefresh);
+				return false;
+			}
 		}
 		BaseLib_Handle_CreateStr(st_OAuthInfo.tszTokenStr, 32);
 		BaseLib_Handle_CreateStr(st_OAuthInfo.tszUPToken, 32);
