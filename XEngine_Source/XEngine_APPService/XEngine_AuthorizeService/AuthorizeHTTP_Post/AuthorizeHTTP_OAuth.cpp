@@ -68,6 +68,18 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求创建OAuth的TOKEN失败,内部错误：%lX"), lpszClientAddr, DBModule_GetLastError());
 			return false;
 		}
+		
+		AUTHREG_USERTABLE st_UserTable = {};
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_UserQuery(st_OAuthInfo.tszUserName, &st_UserTable);
+		}
+		else
+		{
+			DBModule_SQLite_UserQuery(st_OAuthInfo.tszUserName, &st_UserTable);
+		}
+		Session_Token_InsertStr(st_OAuthInfo.tszUserName, &st_UserTable.st_UserInfo, st_OAuthInfo.nExpirationTime);
+
 		Protocol_Packet_HttpOAuth2(tszSDBuffer, &nSDLen, &st_OAuthInfo);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求创建OAuth Token:%s 成功"), lpszClientAddr, st_OAuthInfo.tszTokenStr);

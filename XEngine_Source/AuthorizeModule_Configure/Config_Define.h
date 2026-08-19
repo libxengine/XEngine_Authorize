@@ -161,6 +161,7 @@ typedef struct
 	bool bSwitchBanned;                                     //黑名单
 	bool bSwitchTokenLogin;                                 //TOKEN开关
 	bool bSwitchHCLogin;                                    //硬件码登录
+	bool bSwitchOAuth;                                      //是否启用OAuth
 	bool bSwitchHWBind;                                     //硬件码绑定
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////

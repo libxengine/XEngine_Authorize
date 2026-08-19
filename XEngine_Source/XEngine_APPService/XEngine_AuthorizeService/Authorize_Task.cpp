@@ -86,9 +86,13 @@ void XCALLBACK XEngine_TaskEvent_Token(LPCXSTR lpszTokenStr, int nTimeout, int n
 		}
 	}
 
-	if (bRemove)
+	AUTHREG_OAUTHINFO st_OAuthInfo = {};
+	_tcsxcpy(st_OAuthInfo.tszTokenStr, lpszTokenStr);
+	bool bRet = DBModule_SQLite_OAuthDelete(&st_OAuthInfo);
+	
+	if (bRemove || bRet)
 	{
 		Session_Token_DeleteStr(lpszTokenStr);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%s,用户名：%s，已经超时,权限级别:%d,被移除服务器"), lpszTokenStr, st_UserInfo.tszUserName, st_UserInfo.nUserLevel);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%s,用户名：%s，已经超时,权限级别:%d,被移除服务器,移除类型:%s"), lpszTokenStr, st_UserInfo.tszUserName, st_UserInfo.nUserLevel, bRet ? "普通" : "OAuth");
 	}
 }
