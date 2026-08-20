@@ -4,8 +4,6 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 {
 	int nSDLen = 4096;
 	XCHAR tszSDBuffer[4096] = {};
-	XCHAR tszURLKey[128] = {};
-	XCHAR tszURLValue[128] = {};
 	LPCXSTR lpszAPIToken = _X("token");   //更新，创建
 	LPCXSTR lpszAPIRevoke = _X("revoke");  //撤销
 	LPCXSTR lpszAPIIntrospect = _X("introspect");   //检查
@@ -111,8 +109,7 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 			return false;
 		}
 		
-		Protocol_Packet_HttpOAuth2(tszSDBuffer, &nSDLen, &st_OAuthInfo);
-		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XEngine_Client_TaskSend(lpszClientAddr, NULL, 0, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求撤销删除OAuth的token成功,撤销的token:%s"), lpszClientAddr, st_OAuthInfo.tszTokenStr);
 	}
 	

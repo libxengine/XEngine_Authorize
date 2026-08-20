@@ -18,7 +18,6 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123
 		XCHAR tszUserName[128] = {};
 		XCHAR tszUserPass[128] = {};
-		XCHAR tszDeviceType[128] = {};
 		XNETHANDLE xhToken = 0;
 		AUTHREG_USERTABLE st_UserTable = {};
 
@@ -157,9 +156,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取TOKEN失败，不存在的Token:%s"), lpszClientAddr, tszTokenStr);
 			return false;
 		}
-		XCHAR tszTimeStr[128] = {};
 		AUTHREG_OAUTHINFO st_OAuthInfo = {};
-		XENGINE_LIBTIME st_LibTime = {};
 		_tcsxcpy(st_OAuthInfo.tszUserName, st_UserInfo.tszUserName);
 
 		st_OAuthInfo.nExpirationTime = _ttxoi(tszTimeout);
