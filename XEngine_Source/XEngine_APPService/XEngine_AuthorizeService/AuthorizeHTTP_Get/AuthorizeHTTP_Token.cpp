@@ -177,7 +177,7 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		}
 		Protocol_Packet_HttpOAuth(tszSDBuffer, &nSDLen, &st_OAuthInfo);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszTokenStr);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求创建OAuth的TOKEN:%s 成功"), lpszClientAddr, tszTokenStr);
 	}
 	return true;
 }

@@ -78,7 +78,8 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		{
 			DBModule_SQLite_UserQuery(st_OAuthInfo.tszUserName, &st_UserTable);
 		}
-		Session_Token_InsertStr(st_OAuthInfo.tszUserName, &st_UserTable.st_UserInfo, st_OAuthInfo.nExpirationTime);
+		st_UserTable.st_UserInfo.xhToken = 1;
+		Session_Token_InsertStr(st_OAuthInfo.tszTokenStr, &st_UserTable.st_UserInfo, st_OAuthInfo.nExpirationTime);
 
 		Protocol_Packet_HttpOAuth2(tszSDBuffer, &nSDLen, &st_OAuthInfo);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
