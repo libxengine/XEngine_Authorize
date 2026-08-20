@@ -30,7 +30,7 @@
         "nTryMode": 1,
         "st_XCDKey": {
             "tszKeyFile": "./APPVer.key",
-            "tszKeyPass": "123123qa"
+            "tszKeyPass": "123123aa"
         },
         "st_XToken": {
             "bAutoRenewal": false,
@@ -54,7 +54,7 @@
         }
     },
     "XCrypto": {
-        "bEnable": true,
+        "bEnable": false,
         "nCryptionType": 1,
         "tszPassKey": "123123aa"
     },

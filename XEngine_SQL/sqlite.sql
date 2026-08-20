@@ -1,7 +1,7 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : auth
+ Source Server         : SQL_User
  Source Server Type    : SQLite
  Source Server Version : 3045000 (3.45.0)
  Source Schema         : main
@@ -10,7 +10,7 @@
  Target Server Version : 3045000 (3.45.0)
  File Encoding         : 65001
 
- Date: 30/06/2026 10:05:03
+ Date: 20/08/2026 10:18:57
 */
 
 PRAGMA foreign_keys = false;
@@ -77,6 +77,24 @@ CREATE TABLE "Authorize_Login" (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for Authorize_OAuth
+-- ----------------------------
+DROP TABLE IF EXISTS "Authorize_OAuth";
+CREATE TABLE "Authorize_OAuth" (
+  "tszUserName" TEXT NOT NULL,
+  "tszTokenStr" TEXT,
+  "tszUPToken" TEXT,
+  "tszClientID" text,
+  "tszClientKey" TEXT,
+  "nExpirationTime" integer,
+  "tszCreateTime" DATE NOT NULL
+);
+
+-- ----------------------------
+-- Records of Authorize_OAuth
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for Authorize_Serial
 -- ----------------------------
 DROP TABLE IF EXISTS "Authorize_Serial";
@@ -121,7 +139,6 @@ CREATE TABLE "Authorize_User" (
   "ID" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "UserName" TEXT NOT NULL,
   "Password" TEXT NOT NULL,
-  "Token" TEXT NOT NULL,
   "LeftTime" TEXT NOT NULL,
   "EmailAddr" TEXT NOT NULL,
   "HardCode" TEXT,
@@ -137,7 +154,7 @@ CREATE TABLE "Authorize_User" (
 -- ----------------------------
 -- Records of Authorize_User
 -- ----------------------------
-INSERT INTO "Authorize_User" VALUES (1, 'admin', '123123aa', '0', '5', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
+INSERT INTO "Authorize_User" VALUES (1, 'admin', '123123aa', '5', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
 
 -- ----------------------------
 -- Table structure for sqlite_sequence
@@ -175,7 +192,7 @@ UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_Serial';
 -- ----------------------------
 -- Auto increment value for Authorize_TempVer
 -- ----------------------------
-UPDATE "sqlite_sequence" SET seq = 41 WHERE name = 'Authorize_TempVer';
+UPDATE "sqlite_sequence" SET seq = 1 WHERE name = 'Authorize_TempVer';
 
 -- ----------------------------
 -- Auto increment value for Authorize_User

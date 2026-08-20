@@ -149,7 +149,6 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else
 		{
-			bool bSuccess = false;
 			//用户密码登录还是硬件吗登录
 			if (_tcsxlen(st_AuthProtocol.tszUserPass) > 0)
 			{
@@ -335,7 +334,6 @@ bool XEngine_Client_TCPTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int n
 		}
 		else if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_DAY == st_UserTable.enSerialType)
 		{
-			bool bSuccess = false;
 			XCHAR tszIPAddr[128] = {};
 
 			_tcsxcpy(tszIPAddr, lpszClientAddr);

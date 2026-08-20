@@ -3,28 +3,25 @@
 bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int nListCount)
 {
 	int nSDLen = 4096;
-	XCHAR tszSDBuffer[4096];
-	XCHAR tszURLKey[128];
-	XCHAR tszURLValue[128];
+	XCHAR tszSDBuffer[4096] = {};
+	XCHAR tszURLKey[128] = {};
+	XCHAR tszURLValue[128] = {};
 	LPCXSTR lpszAPILogin = _X("login");
 	LPCXSTR lpszAPIUPDate = _X("update");
 	LPCXSTR lpszAPIClose = _X("close");
+	LPCXSTR lpszAPICreate = _X("create");
 
-	memset(tszSDBuffer, '\0', sizeof(tszSDBuffer));
-	memset(tszURLKey, '\0', sizeof(tszURLKey));
-	memset(tszURLValue, '\0', sizeof(tszURLValue));
 	BaseLib_String_GetKeyValue(pptszList[0], "=", tszURLKey, tszURLValue);
 
 	if (0 == _tcsxncmp(lpszAPILogin, tszURLValue, _tcsxlen(lpszAPILogin)))
 	{
-		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123&device=1
+		//http://app.xyry.org:5302/api?function=login&user=123123aa&pass=123123
 		XCHAR tszUserName[128] = {};
 		XCHAR tszUserPass[128] = {};
-		XCHAR tszDeviceType[128] = {};
 		XNETHANDLE xhToken = 0;
 		AUTHREG_USERTABLE st_UserTable = {};
 
-		if (nListCount < 4)
+		if (nListCount < 3)
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "request parament is incorrent");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -33,7 +30,6 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		}
 		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszUserName);
 		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszUserPass);
-		BaseLib_String_GetKeyValue(pptszList[3], "=", tszURLKey, tszDeviceType);
 		//是否启用了动态码
 		if (st_FunSwitch.bSwitchDCode)
 		{
@@ -142,6 +138,43 @@ bool XEngine_AuthorizeHTTP_Token(LPCXSTR lpszClientAddr, XCHAR** pptszList, int 
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求关闭TOKEN:%s 成功"), lpszClientAddr, tszUserToken);
+	}
+	else if (0 == _tcsxncmp(lpszAPICreate, tszURLValue, _tcsxlen(lpszAPICreate)))
+	{
+		//http://127.0.0.1:5302/api?function=create&token=1000112345&timeout=3600
+		XCHAR tszTokenStr[128] = {};
+		XCHAR tszTimeout[128] = {};
+
+		BaseLib_String_GetKeyValue(pptszList[1], "=", tszURLKey, tszTokenStr);
+		BaseLib_String_GetKeyValue(pptszList[2], "=", tszURLKey, tszTimeout);
+		
+		XENGINE_PROTOCOL_USERINFO st_UserInfo = {};
+		if (!Session_Token_GetStr(tszTokenStr, &st_UserInfo))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_NOTFOUND, "user not found");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，获取TOKEN失败，不存在的Token:%s"), lpszClientAddr, tszTokenStr);
+			return false;
+		}
+		AUTHREG_OAUTHINFO st_OAuthInfo = {};
+		_tcsxcpy(st_OAuthInfo.tszUserName, st_UserInfo.tszUserName);
+
+		st_OAuthInfo.nExpirationTime = _ttxoi(tszTimeout);
+		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientID, 16, 1);
+		BaseLib_Handle_CreateStr(st_OAuthInfo.tszClientKey);
+		BaseLib_Time_TimeToStr(st_OAuthInfo.tszCreateTime);
+
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			DBModule_SQLite_OAuthInsert(&st_OAuthInfo);
+		}
+		else
+		{
+			DBModule_MySQL_OAuthInsert(&st_OAuthInfo);
+		}
+		Protocol_Packet_HttpOAuth(tszSDBuffer, &nSDLen, &st_OAuthInfo);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求创建OAuth的TOKEN:%s 成功"), lpszClientAddr, tszTokenStr);
 	}
 	return true;
 }

@@ -1136,3 +1136,38 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer
 	}
 	return true;
 }
+
+bool CProtocol_Parse::Protocol_Parse_HttpParseOAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_OAuthInfo))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return false;
+	}
+
+	Json::Value st_JsonObject = st_JsonRoot["st_OAuth"];
+
+	if (!st_JsonObject["tszClientID"].isNull())
+	{
+		_tcsxcpy(pSt_OAuthInfo->tszClientID, st_JsonObject["tszClientID"].asCString());
+	}
+	if (!st_JsonObject["tszClientKey"].isNull())
+	{
+		_tcsxcpy(pSt_OAuthInfo->tszClientKey, st_JsonObject["tszClientKey"].asCString());
+	}
+	
+	return true;
+}

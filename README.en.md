@@ -50,6 +50,7 @@ feature list:
 18. support dynamic verifaction code
 19. support mulit login and merge time
 20. user bind hardware code
+21. OAuth2.0 Verification Support
 
 ## install
 
@@ -119,7 +120,7 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 #### app packet service
 If you don't have software development capabilities, don't want to implement it yourself, or want to add authorization verification to other software, we also provide an authorization packaging service, which allows your program to directly package our verification.  
 Program Packaging Service is a paid service, and you can package and add verification to any program. You can integrate our verification service without requiring source code or modifying your program. After packaging is complete, when it is run next time, our verification client will run first, and then your provided program will run after verification is successful, which is very convenient to use.  
-This service is paid, priced at 200 per package. It supports both x86 and x64 programs, and only requires you to provide your server address, port, and verification mode. The process is as follows:  
+This service is paid, priced at $20 per package. It supports both x86 and x64 programs, and only requires you to provide your server address, port, and verification mode. The process is as follows:  
 Payment → Send the program to us → We package it → Verification testing → Send the packaged program to you → Completed  
 After packaging, when the program is launched, the following window will open first. Only after a successful login will your program start. As shown below, once launched, the main interface will be displayed. After login, the main interface will close and your program will then start.  
 ![Main Interface](./XEngine_Picture/packet_1.png "Main Interface")  
@@ -132,9 +133,10 @@ After packaging, when the program is launched, the following window will open fi
 The verification timer will automatically stop. Supported features include login, local CDKEY verification, registration, recharge, password recovery, and remaining time query.  
 Note: This feature is only a packaging replacement. If you require full encryption, shell protection, and higher security, you must implement it yourself through code development.  
 #### Packager
-We can also provide the original packager if you have more packaging needs. The packager is currently in a promotional campaign, 500 yuan.  
+We can also provide the original packager if you have more packaging needs. The packager is currently in a promotional campaign, $50 .  
 You can choose our verification program, then select the program you want to package. Then select the configuration file, and that's it. It supports automatically updating the program icon to your software icon.  
 Configuration file supports configuring encryption and decryption communication and authentication mode  
+The packer can provide source code. It is written in C++. Please contact us if you need it  
 ![Main Interface](./XEngine_Picture/packer_1.png "Main Interface")
 
 ## Participate in contribution

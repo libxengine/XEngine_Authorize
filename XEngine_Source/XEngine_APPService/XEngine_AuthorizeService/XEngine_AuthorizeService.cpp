@@ -160,16 +160,17 @@ int main(int argc, char** argv)
 #endif
 	bIsRun = true;
 	int nRet = -1;
-	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig;
+	int nListOAuth = 0;
+	AUTHREG_OAUTHINFO** ppSt_OAuthInfo;
 	THREADPOOL_PARAMENT** ppSt_ListTCPThread;
 	THREADPOOL_PARAMENT** ppSt_ListWSThread;
 	THREADPOOL_PARAMENT** ppSt_ListHttpThread;
 	THREADPOOL_PARAMENT** ppSt_ListMQTTParam;
+	HELPCOMPONENTS_XLOG_CONFIGURE st_XLogConfig = {};
 
 	LPCXSTR lpszHTTPMime = _X("./XEngine_Config/HttpMime.types");
 	LPCXSTR lpszHTTPCode = _X("./XEngine_Config/HttpCode.types");
 
-	memset(&st_XLogConfig, '\0', sizeof(HELPCOMPONENTS_XLOG_CONFIGURE));
 	memset(&st_AuthConfig, '\0', sizeof(XENGINE_SERVICECONFIG));
 	memset(&st_FunSwitch, '\0', sizeof(XENGINE_FUNCTIONSWITCH));
 
@@ -463,6 +464,53 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，加密传输设置为关闭,采用明文传输"));
 	}
 	
+	if (0 == st_AuthConfig.st_XSql.nDBType)
+	{
+		DBModule_SQLite_OAuthList(&ppSt_OAuthInfo, &nListOAuth);
+	}
+	else
+	{
+		DBModule_MySQL_OAuthList(&ppSt_OAuthInfo, &nListOAuth);
+	}
+	for (int i = 0; i < nListOAuth; i++)
+	{
+		//是否过期
+		time_t nTimeCreate = 0;
+		XENGINE_LIBTIME st_LibTime = {};
+		BaseLib_Time_StrToTime(ppSt_OAuthInfo[i]->tszCreateTime, &st_LibTime);
+		BaseLib_Time_StuTimeToTTime(&st_LibTime, &nTimeCreate);
+
+		time_t nTimeStop = time(NULL);
+		if ((ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate) - nTimeStop > 0)
+		{
+			AUTHREG_USERTABLE st_UserTable = {};
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				DBModule_SQLite_UserQuery(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable);
+			}
+			else
+			{
+				DBModule_SQLite_UserQuery(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable);
+			}
+			//剩余时间
+			int nTimeLeft = nTimeStop - (ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate);
+			Session_Token_InsertStr(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable.st_UserInfo, nTimeLeft);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中,用户:%s 绑定TOKEN:%s ,插入会话管理器"), st_UserTable.st_UserInfo.tszUserName, ppSt_OAuthInfo[i]->tszTokenStr);
+		}
+		else
+		{
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				DBModule_SQLite_OAuthDelete(ppSt_OAuthInfo[i]);
+			}
+			else
+			{
+				DBModule_MySQL_OAuthDelete(ppSt_OAuthInfo[i]);
+			}
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，检查用户:%s 绑定TOKEN:%s 过期,删除"), ppSt_OAuthInfo[i]->tszUserName, ppSt_OAuthInfo[i]->tszTokenStr);
+		}
+	}
+
 	if (0 == _xtaccess(st_AuthConfig.st_XVerification.st_XCDKey.tszKeyFile, 0))
 	{
 		VERIFICATION_XAUTHKEY st_AuthLocal = {};
@@ -482,6 +530,7 @@ int main(int argc, char** argv)
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，授权文件验证失败，授权文件没有找到"));
 	}
+	
 #ifndef _DEBUG
 	//发送信息报告
 	if (st_AuthConfig.st_XReport.bEnable && !bIsTest)
@@ -501,7 +550,8 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
 #endif
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,硬件码绑定:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchHWBind);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,OAuth登录支持:%d,硬件码绑定:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchOAuth, st_FunSwitch.bSwitchHWBind);
+
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
 	while (true)

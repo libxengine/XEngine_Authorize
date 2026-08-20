@@ -466,7 +466,6 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("HTTP客户端：%s，序列号：%s，临时验证插入失败，因为服务器关闭了此功能"), lpszClientAddr, st_VERTemp.tszVSerial);
 				return false;
 			}
-			bool bSuccess = false;
 			if (0 == st_AuthConfig.st_XSql.nDBType) 
 			{
 				bSuccess = DBModule_SQLite_TryInsert(&st_VERTemp);

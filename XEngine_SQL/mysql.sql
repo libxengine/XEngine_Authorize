@@ -3,15 +3,15 @@
 
  Source Server         : QQCloud
  Source Server Type    : MySQL
- Source Server Version : 80046 (8.0.46-0ubuntu0.24.04.2)
+ Source Server Version : 80046 (8.0.46-0ubuntu0.24.04.3)
  Source Host           : 118.25.14.242:3306
  Source Schema         : authorize
 
  Target Server Type    : MySQL
- Target Server Version : 80046 (8.0.46-0ubuntu0.24.04.2)
+ Target Server Version : 80046 (8.0.46-0ubuntu0.24.04.3)
  File Encoding         : 65001
 
- Date: 30/06/2026 10:05:45
+ Date: 20/08/2026 10:18:42
 */
 
 SET NAMES utf8mb4;
@@ -81,6 +81,24 @@ CREATE TABLE `Authorize_Login`  (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for Authorize_OAuth
+-- ----------------------------
+DROP TABLE IF EXISTS `Authorize_OAuth`;
+CREATE TABLE `Authorize_OAuth`  (
+  `tszUserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `tszTokenStr` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `tszUPToken` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL,
+  `tszClientID` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `tszClientKey` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `nExpirationTime` int NOT NULL,
+  `tszCreateTime` datetime NOT NULL
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of Authorize_OAuth
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for Authorize_Serial
 -- ----------------------------
 DROP TABLE IF EXISTS `Authorize_Serial`;
@@ -127,7 +145,6 @@ CREATE TABLE `Authorize_User`  (
   `ID` int NOT NULL AUTO_INCREMENT,
   `UserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `Password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
-  `Token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Token',
   `LeftTime` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '剩余时间',
   `EmailAddr` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '电子邮件',
   `HardCode` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '设备SN',
@@ -139,11 +156,11 @@ CREATE TABLE `Authorize_User`  (
   `UPTime` datetime NULL DEFAULT NULL COMMENT '登录时间',
   `CreateTime` datetime NOT NULL COMMENT '注册时间',
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of Authorize_User
 -- ----------------------------
-INSERT INTO `Authorize_User` VALUES (1, 'admin', '123123aa', '0', '0', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
+INSERT INTO `Authorize_User` VALUES (1, 'admin', '123123aa', '0', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
 
 SET FOREIGN_KEY_CHECKS = 1;

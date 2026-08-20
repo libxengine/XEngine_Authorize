@@ -191,7 +191,8 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		LPCXSTR lpszAPIVerCDKey = _X("cdkey");
 		LPCXSTR lpszAPIVerNotice = _X("notice");
 		LPCXSTR lpszAPIVerTry = _X("try");
-
+		LPCXSTR lpszAPIOAuth = _X("oauth");
+		
 		memset(tszAPIType, '\0', sizeof(tszAPIType));
 		memset(tszAPIVer, '\0', sizeof(tszAPIVer));
 		memset(tszAPIName, '\0', sizeof(tszAPIName));
@@ -313,6 +314,10 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 			{
 				XEngine_AuthorizeHTTP_User(xhToken, lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
 			}
+			else if (0 == _tcsxncmp(lpszAPIOAuth, tszAPIVer, _tcsxlen(lpszAPIOAuth)))
+			{
+				XEngine_AuthorizeHTTP_OAuth(lpszClientAddr, tszAPIName, lpszMsgBuffer, nMsgLen);
+			}
 			else
 			{
 				Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQUEST, "reqeust api is not support");
@@ -330,7 +335,7 @@ bool XEngine_Client_HttpTask(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 		LPCXSTR lpszFuncName = _X("api");
 		LPCXSTR lpszAPIVerDCode = _X("dcode");
 		LPCXSTR lpszAPIVerTime = _X("time");
-
+		
 		memset(tszUrlName, '\0', sizeof(tszUrlName));
 		HttpProtocol_ServerHelp_GetParament(pSt_HTTPParament->tszHttpUri, &pptszList, &nListCount, tszUrlName);
 		if ((nListCount < 1) || (0 != _tcsxncmp(lpszFuncName, tszUrlName, _tcsxlen(lpszFuncName))))

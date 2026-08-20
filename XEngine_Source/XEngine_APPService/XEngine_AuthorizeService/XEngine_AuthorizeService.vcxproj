@@ -154,6 +154,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -237,6 +238,7 @@
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.cpp" />
+    <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_OAuth.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.cpp" />
     <ClCompile Include="AuthorizeHTTP_Post\AuthorizeHTTP_Switch.cpp" />
@@ -258,6 +260,7 @@
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Banned.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_CDKey.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Client.h" />
+    <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_OAuth.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Pass.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Serial.h" />
     <ClInclude Include="AuthorizeHTTP_Post\AuthorizeHTTP_Switch.h" />

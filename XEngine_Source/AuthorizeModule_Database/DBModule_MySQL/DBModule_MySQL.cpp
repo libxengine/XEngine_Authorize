@@ -123,7 +123,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInf
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_EXIST;
         return false;
     }
-    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, Token, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','0','%s','%s','%s','%d',%lld,%lld,%d,0,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
+    _xstprintf(tszSQLStatement, _X("INSERT INTO `Authorize_User`(UserName, Password, LeftTime, EmailAddr, HardCode, CardSerialType, PhoneNumber, IDCard, nUserLevel, CountTime, CreateTime) values('%s','%s','%s','%s','%s','%d',%lld,%lld,%d,0,NOW())"), pSt_UserInfo->st_UserInfo.tszUserName, pSt_UserInfo->st_UserInfo.tszUserPass, pSt_UserInfo->tszLeftTime, pSt_UserInfo->st_UserInfo.tszEMailAddr, pSt_UserInfo->tszHardCode, pSt_UserInfo->enSerialType, pSt_UserInfo->st_UserInfo.nPhoneNumber, pSt_UserInfo->st_UserInfo.nIDNumber, pSt_UserInfo->st_UserInfo.nUserLevel);
     if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;
@@ -187,7 +187,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		return false;
 	}
 	XCHAR** pptszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
 
 	if (NULL != pSt_UserInfo)
 	{
@@ -207,12 +206,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		if (NULL != pptszResult[nFliedValue]) 
 		{
 			_tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserPass, pptszResult[nFliedValue]);
-		}
-		//TOKEN
-		nFliedValue++;
-		if (NULL != pptszResult[nFliedValue])
-		{
-			pSt_UserInfo->st_UserInfo.xhToken = _ttxoll(pptszResult[nFliedValue]);
 		}
 		//过期时间
 		nFliedValue++;
@@ -477,7 +470,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserSet(AUTHREG_USERTABLE* pSt_UserTable)
 	XCHAR tszSQLStatement[1024];       //SQL语句
 	memset(tszSQLStatement, '\0', 1024);
 
-	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET Password = '%s',Token = '%lld',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CountTime = '%lld',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->st_UserInfo.xhToken, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->nTimeCount, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
+	_xstprintf(tszSQLStatement, _X("UPDATE `Authorize_User` SET Password = '%s',LeftTime = '%s',EmailAddr = '%s',HardCode = '%s',CardSerialType = '%d',PhoneNumber = '%lld',IDCard = '%lld',nUserLevel = '%d',CountTime = '%lld',CreateTime = '%s' WHERE UserName = '%s'"), pSt_UserTable->st_UserInfo.tszUserPass, pSt_UserTable->tszLeftTime, pSt_UserTable->st_UserInfo.tszEMailAddr, pSt_UserTable->tszHardCode, pSt_UserTable->enSerialType, pSt_UserTable->st_UserInfo.nPhoneNumber, pSt_UserTable->st_UserInfo.nIDNumber, pSt_UserTable->st_UserInfo.nUserLevel, pSt_UserTable->nTimeCount, pSt_UserTable->st_UserInfo.tszCreateTime, pSt_UserTable->st_UserInfo.tszUserName);
 
 	//更新用户剩余时间
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
@@ -547,8 +540,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 		//ID
 		int nFliedValue = 0;
 		nFliedValue++;
@@ -557,9 +548,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		//密码
 		nFliedValue++;
 		_tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszUserPass, ppszResult[nFliedValue]);
-		//TOKEN
-		nFliedValue++;
-		(*pppSt_UserInfo)[i]->st_UserInfo.xhToken = _ttxoll(ppszResult[nFliedValue]);
 		//过期时间
 		nFliedValue++;
 		_tcsxcpy((*pppSt_UserInfo)[i]->tszLeftTime, ppszResult[nFliedValue]);
@@ -821,7 +809,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		return false;
 	}
 	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
 
 	if (NULL != pSt_SerialTable)
 	{
@@ -921,8 +908,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 	{
 		// 获取数据库结果
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 		int nFliedValue = 0;
 		//ID
 		nFliedValue++;
@@ -1051,8 +1036,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 		return false;
 	}
 	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
 	//ID
 	int nFliedValue = 0;
 	nFliedValue++;
@@ -1168,8 +1151,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
+	
 		int nFliedValue = 0;
 		AUTHREG_TEMPVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
@@ -1315,8 +1297,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
-
+	
 		int nFliedValue = 0;
 		//ID
 		(*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
@@ -1496,7 +1477,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 
 		AUTHREG_BANNED st_Banned;
@@ -1543,7 +1524,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
 
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 
 		//ID
@@ -1927,7 +1908,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-		//XLONG* pInt_Length = DataBase_MySQL_GetLength(xhData, xhTable);
+
 		int nFliedValue = 0;
 		(*ppppSt_Announcement)[i]->nID = _ttxoll(ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -1937,6 +1918,248 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 		nFliedValue++;
 
 	}
+	DataBase_MySQL_FreeResult(xhData, xhTable);
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthInsert
+函数功能：OAuth插入
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_OAuthInsert(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_OAuthInfo)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStr[8192] = {};
+
+	_xstprintf(tszSQLStr, _X("INSERT INTO `Authorize_OAuth`(tszUserName,tszTokenStr,tszUPToken,tszClientID,tszClientKey,nExpirationTime,tszCreateTime) VALUES('%s','%s','%s','%s','%s','%d','%s')"), pSt_OAuthInfo->tszUserName, pSt_OAuthInfo->tszTokenStr, pSt_OAuthInfo->tszUPToken, pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey, pSt_OAuthInfo->nExpirationTime, pSt_OAuthInfo->tszCreateTime);
+	//插入数据库
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStr))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_SQLite_OAuthDelete
+函数功能：OAuth删除
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_OAuthDelete(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_OAuthInfo)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStr[8192] = {};
+
+	if (_tcsxlen(pSt_OAuthInfo->tszTokenStr) > 0)
+	{
+		_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_OAuth` WHERE tszTokenStr = '%s'"), pSt_OAuthInfo->tszTokenStr);
+	}
+	else
+	{
+		_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_OAuth` WHERE tszClientID = '%s'"), pSt_OAuthInfo->tszClientID);
+	}
+	//插入数据库
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStr))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthList
+函数功能：OAuth列举
+ 参数.一：ppppSt_OAuthInfo
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	__int64u nRow = 0;
+	__int64u nColumn = 0;
+	XNETHANDLE xhTable = 0;
+	XCHAR** ppszResult = NULL;
+	XCHAR tszSQLStr[1024] = {};
+	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_OAuth"));
+
+	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStr, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	*pInt_ListCount = (int)nRow;
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_OAuthInfo, (int)nRow, sizeof(AUTHREG_OAUTHINFO));
+	//轮训所有内容
+	for (__int64u i = 0; i < nRow; i++)
+	{
+		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+
+		int nFliedValue = 0;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszUserName, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszTokenStr, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszUPToken, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszClientID, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszClientKey, ppszResult[nFliedValue]);
+		nFliedValue++;
+		(*pppSt_OAuthInfo)[i]->nExpirationTime = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+	}
+	DataBase_MySQL_FreeResult(xhData, xhTable);
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthUPDate
+函数功能：更新OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_OAuthInfo)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStatement[1024] = {};
+	//处理的类型
+	_xstprintf(tszSQLStatement, _X("UPDATE Authorize_OAuth SET tszTokenStr = '%s',tszUPToken = '%s' WHERE tszClientID = '%s' AND tszClientKey = '%s'"), pSt_OAuthInfo->tszTokenStr, pSt_OAuthInfo->tszUPToken, pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey);
+	//插入数据库
+	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_OAuthQuery
+函数功能：查询OAuth信息
+ 参数.一：pSt_OAuthInfo
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要操作的数据
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
+{
+	SQLPacket_IsErrorOccur = false;
+	if (NULL == pSt_OAuthInfo)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStatement[1024] = {};
+	XNETHANDLE xhTable = 0;
+	__int64u nColumn = 0;
+	__int64u nRow = 0;
+	XCHAR** ppszResult = NULL;
+
+	_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_OAuth WHERE tszClientID = '%s' AND tszClientKey = '%s'"), pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey);
+
+	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	if (nRow <= 0)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
+		return false;
+	}
+	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
+
+	int nFliedValue = 0;
+	_tcsxcpy(pSt_OAuthInfo->tszUserName, ppszResult[nFliedValue]);
+	nFliedValue++;
+	if (NULL != ppszResult[nFliedValue])
+	{
+		_tcsxcpy(pSt_OAuthInfo->tszTokenStr, ppszResult[nFliedValue]);
+	}
+	nFliedValue++;
+	if (NULL != ppszResult[nFliedValue])
+	{
+		_tcsxcpy(pSt_OAuthInfo->tszUPToken, ppszResult[nFliedValue]);
+	}
+	nFliedValue++;
+	_tcsxcpy(pSt_OAuthInfo->tszClientID, ppszResult[nFliedValue]);
+	nFliedValue++;
+	_tcsxcpy(pSt_OAuthInfo->tszClientKey, ppszResult[nFliedValue]);
+	nFliedValue++;
+	pSt_OAuthInfo->nExpirationTime = _ttxoi(ppszResult[nFliedValue]);
+	nFliedValue++;
+	_tcsxcpy(pSt_OAuthInfo->tszCreateTime, ppszResult[nFliedValue]);
+	nFliedValue++;
+
 	DataBase_MySQL_FreeResult(xhData, xhTable);
 	return true;
 }

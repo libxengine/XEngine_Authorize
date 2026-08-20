@@ -73,7 +73,7 @@ bool XCALLBACK XEngine_Client_HttpAccept(LPCXSTR lpszClientAddr, XSOCKET hSocket
 }
 void XCALLBACK XEngine_Client_HttpRecv(LPCXSTR lpszClientAddr, XSOCKET hSocket, LPCXSTR lpszRecvMsg, int nMsgLen, XPVOID lParam)
 {
-	if (!HttpProtocol_Server_InserQueueEx(xhHttpPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
+	if (!HttpProtocol_Server_InsertQueueEx(xhHttpPacket, lpszClientAddr, lpszRecvMsg, nMsgLen))
 	{
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，投递数据包失败,大小:%d,错误:%lX"), lpszClientAddr, nMsgLen, Packets_GetLastError());
 	}
@@ -230,15 +230,22 @@ bool XEngine_Client_TaskSend(LPCXSTR lpszClientAddr, LPCXSTR lpszMsgBuffer, int 
 
 		st_HDRParam.nHttpCode = 200;
 		st_HDRParam.bIsClose = true;
-		if (st_AuthConfig.st_XCrypto.bEnable)
+		if (nMsgLen > 0)
 		{
-			CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
-			Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
+			if (st_AuthConfig.st_XCrypto.bEnable)
+			{
+				CHttpMemory_PoolEx m_CodecMemory(XENGINE_MEMORY_SIZE_MAX);
+				Cryption_Api_CryptEncodec((LPCXBTR)lpszMsgBuffer, (XBYTE*)m_CodecMemory.get(), &nMsgLen, st_AuthConfig.st_XCrypto.tszCryptoKey, (ENUM_XENGINE_CRYPTION_SYMMETRIC)st_AuthConfig.st_XCrypto.nCryptionType);
+				HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, m_CodecMemory.get(), nMsgLen);
+			}
+			else
+			{
+				HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			}
 		}
 		else
 		{
-			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam, lpszMsgBuffer, nMsgLen);
+			HttpProtocol_Server_SendMsgEx(xhHttpPacket, m_HTTPMemory.get(), &nSDSize, &st_HDRParam);
 		}
 		NetCore_TCPXCore_SendEx(xhHttpSocket, lpszClientAddr, m_HTTPMemory.get(), nSDSize);
 		SocketOpt_HeartBeat_ActiveAddrEx(xhHTTPHeart, lpszClientAddr);
