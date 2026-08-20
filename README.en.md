@@ -50,6 +50,7 @@ feature list:
 18. support dynamic verifaction code
 19. support mulit login and merge time
 20. user bind hardware code
+21. OAuth2.0 Verification Support
 
 ## install
 

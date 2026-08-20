@@ -1,3 +1,25 @@
+XEngine_Authorize V3.24.0.1001
+
+增加:创建客户端ID和KEY支持
+增加:oauth 支持插入会话管理器
+增加:撤销,创建和更新auth2.0协议
+更新:依赖库
+修改:http 的token验证不需要需要传递设备类型
+修复:mqtt连接失败没有响应的问题
+修复:创建顺序问题
+修复:ql扫描问题
+删除:客户端用户表的token
+
+added:create client id and key support for token
+added:insert session management for oauth token
+added:revoke create fresh for auth 2.0
+update:depend library
+modify:does not need device type for token with http
+fixed:does not reply when mqtt connect failure
+fixed:generator order incorrect
+fixed:ql scan problem
+delete:client user token
+================================================================
 XEngine_Authorize V3.23.0.1001
 
 ci:add agentic workflows for issue triage and auto fix

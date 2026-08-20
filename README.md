@@ -50,6 +50,7 @@ c c++network Authorize service
 18. 支持动态验证码登录
 19. 支持多端登录和合并用时
 20. 用户绑定硬件码登录
+21. OAuth2.0 验证支持
 
 ## 架构预览
 XEngine_Authorize  
