@@ -5,17 +5,19 @@ on:
 
 engine:
   id: copilot
+  max-turns: 5
   env:
-    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_PROVIDER_BASE_URL: ${{ vars.MODEL_AI_AGENT_ADDR }}
     COPILOT_PROVIDER_BEARER_TOKEN: ${{ secrets.OPENAI_API_KEY }}
-    COPILOT_MODEL: doubao-seed-evolving
-    COPILOT_PROVIDER_TYPE: openai
-    COPILOT_PROVIDER_WIRE_API: responses
+    COPILOT_MODEL: ${{ vars.MODEL_AI_AGENT_NAME }}
+    COPILOT_PROVIDER_TYPE: ${{ vars.MODEL_AI_AGENT_TYPE }}
+    COPILOT_PROVIDER_WIRE_API: ${{ vars.MODEL_AI_AGENT_API }}
 
 features:
-  dangerously-disable-sandbox-agent: "controlled environment for issue triage automation"
+  dangerously-disable-sandbox-agent: true
 sandbox:
   agent: false
+
 strict: false
 
 network:
@@ -26,6 +28,7 @@ network:
 tools:
   github:
     min-integrity: none
+  bash: ["grep", "cat", "head"] 
 
 permissions:
   issues: read
@@ -51,6 +54,11 @@ safe-outputs:
 # Issue 自动分类与回复
 
 分析仓库 ${{ github.repository }} 中新开的 Issue。
+
+## 任务执行限制
+- 根据需求查找相对应的可能关联的代码文件
+- 尽量只读取相关代码文件和文档,不去操作无关代码和文件
+- 尽量减少操作时间和步骤,减少TOKEN和时间消耗
 
 ## 任务
 
