@@ -79,6 +79,15 @@ jobs:
           skip_unpack: true
           if_no_artifact_found: fail
           path: ./XRelease/
+      - name: Download opensuse Linux
+        uses: dawidd6/action-download-artifact@v24
+        with:
+          workflow: suse_build.yml
+          workflow_conclusion: success
+          check_artifacts: false
+          skip_unpack: true
+          if_no_artifact_found: fail
+          path: ./XRelease/
 
       - name: Display structure of downloaded files
         run: ls -al ./XRelease/
