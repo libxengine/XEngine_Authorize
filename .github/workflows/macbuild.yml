@@ -14,8 +14,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - os: macos-15-intel
-          - os: macos-15
+          - os: macos-26-intel
+          - os: macos-26
     runs-on: ${{ matrix.os }}
     
     steps:
@@ -23,13 +23,6 @@ jobs:
         uses: actions/checkout@v7
         with:
           ref: 'develop'
-        
-       # 检出依赖的xengine仓库到指定的xengine目录
-      - name: Checkout dependency repository (xengine)
-        uses: actions/checkout@v7
-        with:
-          repository: libxengine/libxengine
-          path: libxengine
 
       - name: sub module checkout (opensource)
         run: |
@@ -43,29 +36,25 @@ jobs:
         run: echo "TERM=xterm" >> $GITHUB_ENV
         
       - name: Set up Dependency x86_64 Environment 
-        if: matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-26-intel'
         run: |
-            cd libxengine
+            latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/libxengine/libxengine.git | awk '{print $2}' | sed 's/refs\/tags\///' | tail -n 1)
+            wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_Mac_x86-64.zip
+            unzip ./XEngine_Mac_x86-64.zip -d ./XEngine_Mac_x86-64
+            cd XEngine_Mac_x86-64
+
             chmod 777 *
             ./XEngine_LINEnv.sh -i 3
       - name: Set up Dependency Arm64 Environment 
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-26'
         run: |
-            cd libxengine
-            chmod 777 *
-            ./XEngine_LINEnv.sh -i 0
-
             latest_tag=$(git ls-remote --tags --sort="v:refname" https://github.com/libxengine/libxengine.git | awk '{print $2}' | sed 's/refs\/tags\///' | tail -n 1)
-            
             wget https://github.com/libxengine/libxengine/releases/download/$latest_tag/XEngine_Mac_Arm64.zip
             unzip ./XEngine_Mac_Arm64.zip -d ./XEngine_Mac_Arm64
             cd XEngine_Mac_Arm64
 
-            sudo mkdir -p /usr/local/include
-            sudo mkdir -p /usr/local/lib
-            sudo cp -rf ./XEngine_Include /usr/local/include
-            sudo find ./XEngine_Mac -name "*.dylib" -exec cp {} /usr/local/lib \;
-
+            chmod 777 *
+            ./XEngine_LINEnv.sh -i 3
       - name: make debug
         run: | 
             cd XEngine_Source
@@ -84,14 +73,14 @@ jobs:
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact with mac x64
-        if: matrix.os == 'macos-15-intel'
+        if: matrix.os == 'macos-26-intel'
         uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-Mac_x86-64
           path: XEngine_Release/
           retention-days: 1
       - name: Upload folder as artifact with mac arm
-        if: matrix.os == 'macos-15'
+        if: matrix.os == 'macos-26'
         uses: actions/upload-artifact@v7
         with:
           name: XEngine_AuthorizeService-Mac_Arm64
