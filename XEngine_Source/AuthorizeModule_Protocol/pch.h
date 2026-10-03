@@ -12,7 +12,6 @@
 #include "framework.h"
 #include <tchar.h>
 #endif
-#endif //PCH_H
 #include <string.h>
 #include <errno.h>
 #include <memory>
@@ -69,3 +68,4 @@ extern XLONG Protocol_dwErrorCode;
 #endif
 #endif
 #endif
+#endif //PCH_H

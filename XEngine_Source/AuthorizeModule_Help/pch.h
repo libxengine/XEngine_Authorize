@@ -14,7 +14,7 @@
 #include <tchar.h>
 #include <commctrl.h>
 #endif
-#endif //PCH_H
+
 #include <string.h>
 #include <thread>
 #include <memory>
@@ -54,3 +54,4 @@ extern XLONG Help_dwErrorCode;
 #pragma comment(lib,"XEngine_Core/XEngine_Cryption")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol")
 #endif
+#endif //PCH_H
