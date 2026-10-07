@@ -22,7 +22,8 @@ bool Authorize_Service_Parament(int argc, char** argv)
 		return false;
 	}
 
-    for (int i = 0;i < argc;i++)
+    int i = 0;
+    while (i < argc)
     {
 		if (0 == _tcsxcmp("-h", argv[i]))
 		{
@@ -69,6 +70,7 @@ bool Authorize_Service_Parament(int argc, char** argv)
 				st_AuthConfig.st_XLog.nLogLeave = XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO;
 			}
 		}
+		i++;
     }
 
     return true;
