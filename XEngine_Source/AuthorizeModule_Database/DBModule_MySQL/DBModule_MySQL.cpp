@@ -159,12 +159,10 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 {
 	SQLPacket_IsErrorOccur = false;
 	//查询
-	XNETHANDLE xhTable = 0;
 	__int64u nColumn = 0;
 	__int64u nRow = 0;
 
-	XCHAR tszSQLStatement[1024];    //SQL语句
-	memset(tszSQLStatement, '\0', 1024);
+	XCHAR tszSQLStatement[1024] = {};    //SQL语句
 	
 	if (bUser)
 	{
@@ -174,7 +172,8 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 	{
 		_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` WHERE HardCode = '%s'"), lpszUserName);
 	}
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	XCHAR** pptszResult;
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &pptszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -186,8 +185,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
 		return false;
 	}
-	XCHAR** pptszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 	if (NULL != pSt_UserInfo)
 	{
 		memset(pSt_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
@@ -275,7 +272,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
 		}
 
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -514,7 +511,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	SQLPacket_IsErrorOccur = false;
 
 	//查询
-	XNETHANDLE xhTable = 0;
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	char** ppszResult = NULL;
@@ -522,7 +518,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	memset(tszSQLStatement, '\0', 1024);
 
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_User` LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -539,7 +535,6 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		//ID
 		int nFliedValue = 0;
 		nFliedValue++;
@@ -583,7 +578,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 		_tcsxcpy((*pppSt_UserInfo)[i]->st_UserInfo.tszCreateTime, ppszResult[nFliedValue]);
 		nFliedValue++;
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -676,17 +671,16 @@ bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lp
 {
 	SQLPacket_IsErrorOccur = false;
 
-	XCHAR tszSQLStatement[1024];    //SQL语句
+	XCHAR tszSQLStatement[1024] = {};    //SQL语句
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
-	XNETHANDLE xhTable = 0;
-	memset(tszSQLStatement, '\0', 1024);
 
 	XCHAR tszTimeStr[128] = {};
 	BaseLib_Time_TimeToStr(tszTimeStr, NULL, false);
 
+	XCHAR** pptszDBResult;
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_Login` WHERE UserName = '%s' AND UserTime = '%s' AND UserAddr = '%s'"), lpszUserName, tszTimeStr, lpszUserAddr);
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &pptszDBResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -698,7 +692,7 @@ bool CDBModule_MySQL::DBModule_MySQL_QueryLogin(LPCXSTR lpszUserName, LPCXSTR lp
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTMATCH;
 		return false;
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -789,13 +783,12 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 	SQLPacket_IsErrorOccur = false;
 	XCHAR tszSQLStatement[1024];    //SQL语句
 	char** ppszResult = NULL;
-	XNETHANDLE xhTable = 0;
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	memset(tszSQLStatement, '\0', 1024);
 
 	_xstprintf(tszSQLStatement, _X("select * from `Authorize_Serial` where SerialNumber = '%s'"), lpszSerialNumber);
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn)) 
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -808,8 +801,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_SERIAL;
 		return false;
 	}
-	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 	if (NULL != pSt_SerialTable)
 	{
 		memset(pSt_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
@@ -844,7 +835,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQuery(LPCXSTR lpszSerialNumber, LPAUT
 		}
 	}
 
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -879,7 +870,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 {
 	SQLPacket_IsErrorOccur = false;
 
-	XNETHANDLE xhTable = 0;
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	char** ppszResult = NULL;
@@ -888,7 +878,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 	memset(tszSQLStatement, '\0', 1024);
 
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_Serial` LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_GETTABLE;
@@ -907,7 +897,6 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 	for (__int64u i = 0; i < nRow; i++)
 	{
 		// 获取数据库结果
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 		int nFliedValue = 0;
 		//ID
 		nFliedValue++;
@@ -939,7 +928,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 		}
 		nFliedValue++;
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -1012,7 +1001,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return false;
 	}
-	XNETHANDLE xhTable = 0;
 	__int64u nColumn = 0;
 	__int64u nRow = 0;
 	XCHAR** ppszResult = NULL;
@@ -1022,7 +1010,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_TempVer` WHERE tszVSerial = '%s'"), pSt_AuthVer->tszVSerial);
 
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1035,7 +1023,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
 		return false;
 	}
-	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 	//ID
 	int nFliedValue = 0;
 	nFliedValue++;
@@ -1069,7 +1056,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
 		_tcsxcpy(pSt_AuthVer->tszVDate, ppszResult[nFliedValue]);
 	}
 
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -1130,7 +1117,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 {
 	SQLPacket_IsErrorOccur = false;
 
-	XNETHANDLE xhTable = 0;
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	XCHAR** ppszResult = NULL;
@@ -1139,7 +1125,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 	memset(tszSQLStatement, '\0', 1024);
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_TempVer`"));
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1150,8 +1136,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	
 		int nFliedValue = 0;
 		AUTHREG_TEMPVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
@@ -1174,7 +1158,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 
 		stl_ListVer.push_back(st_AuthVer);
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	//清理
 	list<AUTHREG_TEMPVER>::const_iterator stl_ListIterator = stl_ListVer.begin();
 	for (; stl_ListIterator != stl_ListVer.end(); stl_ListIterator++)
@@ -1276,7 +1260,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 {
 	SQLPacket_IsErrorOccur = false;
 
-	XNETHANDLE xhTable = 0;
 	__int64u nColumn = 0;
 	__int64u nRow = 0;
 	XCHAR** ppszResult = NULL;
@@ -1285,7 +1268,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 	memset(tszSQLStr, '\0', 1024);
 	_xstprintf(tszSQLStr, _X("SELECT * FROM `Authorize_TempVer` LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStr, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStr, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1296,8 +1279,6 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-	
 		int nFliedValue = 0;
 		//ID
 		(*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
@@ -1319,7 +1300,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 		nFliedValue++;
 	}
 	*pInt_ListCount = (int)nRow;
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -1455,7 +1436,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 {
 	SQLPacket_IsErrorOccur = false;
 	//查询
-	XNETHANDLE xhTable = 0;
 	__int64u nColumn = 0;
 	__int64u nRow = 0;
 
@@ -1465,7 +1445,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	memset(tszSQLStatement, '\0', 1024);
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_BannedAddr` LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1476,8 +1456,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 		int nFliedValue = 0;
 
 		AUTHREG_BANNED st_Banned;
@@ -1500,16 +1478,15 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 
 		stl_ListAddr.push_back(st_Banned);
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	//用户列表
-	xhTable = 0;
 	nRow = 0;
 	nColumn = 0;
 	ppszResult = NULL;
 	memset(tszSQLStatement, '\0', 1024);
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_BannedUser` LIMIT %d,%d"), nPosStart, nPosEnd - nPosStart);
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1520,13 +1497,8 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		AUTHREG_BANNED st_Banned;
-		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
+		AUTHREG_BANNED st_Banned = {};
 		int nFliedValue = 0;
-
 		//ID
 		st_Banned.nID = _ttxoll(ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -1545,7 +1517,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 
 		stl_ListUser.push_back(st_Banned);
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	//导出
 	*pInt_AddrCount = stl_ListAddr.size();
 	*pInt_UserCount = stl_ListUser.size();
@@ -1597,14 +1569,12 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 	{
 		__int64u nRow = 0;
 		__int64u nColumn = 0;
-		XNETHANDLE xhTable = 0;
-
-		XCHAR tszSQLStatement[1024];
-		memset(tszSQLStatement, '\0', 1024);
+		XCHAR** ppszResult;
+		XCHAR tszSQLStatement[1024] = {};
 
 		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedUser WHERE tszUserName = '%s'"), pSt_Banned->tszUserName);
 
-		if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+		if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 		{
 			SQLPacket_IsErrorOccur = true;
 			SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1613,7 +1583,6 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 
 		if (nRow > 0)
 		{
-			XCHAR** ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 			//ID
 			int nFliedValue = 0;
 			if (NULL != ppszResult[nFliedValue])
@@ -1666,31 +1635,27 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 				}
 			}
 		}
-		DataBase_MySQL_FreeResult(xhData, xhTable);
+		DataBase_MySQL_FreeResult(xhData);
 	}
 	//判断IP地址是否存在
 	if (_tcsxlen(pSt_Banned->tszIPAddr) > 0)
 	{
-		XNETHANDLE xhTable = 0;
 		__int64u nRow = 0;
 		__int64u nColumn = 0;
-
-		XCHAR tszSQLStatement[1024];
-		memset(tszSQLStatement, '\0', 1024);
+		XCHAR** ppszResult;
+		XCHAR tszSQLStatement[1024] = {};
 
 		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_BannedAddr WHERE tszIPAddr = '%s'"), pSt_Banned->tszIPAddr);
 
-		if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+		if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 		{
 			SQLPacket_IsErrorOccur = true;
 			SQLPacket_dwErrorCode = DataBase_GetLastError();
-			DataBase_MySQL_FreeResult(xhData, xhTable);
 			return false;
 		}
 
 		if (nRow > 0)
 		{
-			XCHAR** ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
 			//ID
 			int nFliedValue = 0;
 			if (NULL != ppszResult[nFliedValue])
@@ -1742,7 +1707,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedExist(AUTHREG_BANNED* pSt_Banned)
 				}
 			}
 		}
-		DataBase_MySQL_FreeResult(xhData, xhTable);
+		DataBase_MySQL_FreeResult(xhData);
 	}
 	return true;
 }
@@ -1883,15 +1848,14 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementDelete(AUTHREG_ANNOUNCEMENT* pS
 bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** ppppSt_Announcement, int* pInt_ListCount)
 {
 	SQLPacket_IsErrorOccur = false;
-	XNETHANDLE xhTable = 0;
+
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
 	XCHAR** ppszResult = NULL;
-	XCHAR tszSQLStatement[1024];    //SQL语句
-	memset(tszSQLStatement, '\0', 1024);
+	XCHAR tszSQLStatement[1024] = {};
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM `Authorize_Announcement`"));
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -1907,8 +1871,6 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 		int nFliedValue = 0;
 		(*ppppSt_Announcement)[i]->nID = _ttxoll(ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -1918,7 +1880,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 		nFliedValue++;
 
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -2022,12 +1984,11 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthI
 
 	__int64u nRow = 0;
 	__int64u nColumn = 0;
-	XNETHANDLE xhTable = 0;
 	XCHAR** ppszResult = NULL;
 	XCHAR tszSQLStr[1024] = {};
 	_xstprintf(tszSQLStr, _X("SELECT * FROM Authorize_OAuth"));
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStr, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStr, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -2038,8 +1999,6 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthI
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
-		ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 		int nFliedValue = 0;
 		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszUserName, ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -2056,7 +2015,7 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthI
 		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszCreateTime, ppszResult[nFliedValue]);
 		nFliedValue++;
 	}
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
 	return true;
 }
 /********************************************************************
@@ -2086,7 +2045,7 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInf
 	//处理的类型
 	_xstprintf(tszSQLStatement, _X("UPDATE Authorize_OAuth SET tszTokenStr = '%s',tszUPToken = '%s' WHERE tszClientID = '%s' AND tszClientKey = '%s'"), pSt_OAuthInfo->tszTokenStr, pSt_OAuthInfo->tszUPToken, pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey);
 	//插入数据库
-	if (!DataBase_SQLite_Exec(xhData, tszSQLStatement))
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -2117,14 +2076,13 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo
 		return false;
 	}
 	XCHAR tszSQLStatement[1024] = {};
-	XNETHANDLE xhTable = 0;
 	__int64u nColumn = 0;
 	__int64u nRow = 0;
 	XCHAR** ppszResult = NULL;
 
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_OAuth WHERE tszClientID = '%s' AND tszClientKey = '%s'"), pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey);
 
-	if (!DataBase_MySQL_ExecuteQuery(xhData, &xhTable, tszSQLStatement, &nRow, &nColumn))
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
 		SQLPacket_IsErrorOccur = true;
 		SQLPacket_dwErrorCode = DataBase_GetLastError();
@@ -2136,8 +2094,6 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NONE;
 		return false;
 	}
-	ppszResult = DataBase_MySQL_GetResult(xhData, xhTable);
-
 	int nFliedValue = 0;
 	_tcsxcpy(pSt_OAuthInfo->tszUserName, ppszResult[nFliedValue]);
 	nFliedValue++;
@@ -2160,7 +2116,152 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo
 	_tcsxcpy(pSt_OAuthInfo->tszCreateTime, ppszResult[nFliedValue]);
 	nFliedValue++;
 
-	DataBase_MySQL_FreeResult(xhData, xhTable);
+	DataBase_MySQL_FreeResult(xhData);
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_RewardInsert
+函数功能：奖励系统插入
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_RewardInsert(AUTHREG_REWARD* pSt_Reward)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_Reward)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStr[8192] = {};
+
+	_xstprintf(tszSQLStr, _X("INSERT INTO `Authorize_Reward`(tszUserName,tszUserReferrer,nRewardType,nRewardOff,tszCreateTime) VALUES('%s','%s','%d','%d','%s')"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer, pSt_Reward->nRewardType, pSt_Reward->nRewardOff, pSt_Reward->tszCreateTime);
+	//插入数据库
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStr))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_RewardList
+函数功能：奖励系统列举
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：要查询的数据
+ 参数.二：ppppSt_Reward
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.三：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_RewardList(AUTHREG_REWARD* pSt_Reward, AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_Reward)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStatement[1024] = {};
+	__int64u nColumn = 0;
+	__int64u nRow = 0;
+	XCHAR** ppszResult = NULL;
+
+	if (_tcsxlen(pSt_Reward->tszUserName) > 0 && 0 == _tcsxlen(pSt_Reward->tszReferrer))
+	{
+		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+	}
+	else if (_tcsxlen(pSt_Reward->tszReferrer) > 0 && 0 == _tcsxlen(pSt_Reward->tszUserName))
+	{
+		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszReferrer = '%s'"), pSt_Reward->tszReferrer);
+	}
+	else
+	{
+		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s' AND tszReferrer = '%s'"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer);
+	}
+
+	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
+	*pInt_ListCount = (int)nRow;
+	BaseLib_Memory_Malloc((XPPPMEM)pppSt_Reward, (int)nRow, sizeof(AUTHREG_REWARD));
+	//轮训所有内容
+	for (__int64u i = 0; i < nRow; i++)
+	{
+		int nFliedValue = 0;
+		_tcsxcpy((*pppSt_Reward)[i]->tszUserName, ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_Reward)[i]->tszReferrer, ppszResult[nFliedValue]);
+		nFliedValue++;
+		(*pppSt_Reward)[i]->nRewardType = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		(*pppSt_Reward)[i]->nRewardOff = _ttxoi(ppszResult[nFliedValue]);
+		nFliedValue++;
+		_tcsxcpy((*pppSt_Reward)[i]->tszCreateTime, ppszResult[nFliedValue]);
+		nFliedValue++;
+	}
+	DataBase_MySQL_FreeResult(xhData);
+	return true;
+}
+/********************************************************************
+函数名称：DBModule_MySQL_RewardDelete
+函数功能：奖励系统删除
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_MySQL::DBModule_MySQL_RewardDelete(AUTHREG_REWARD* pSt_Reward)
+{
+	SQLPacket_IsErrorOccur = false;
+
+	if (NULL == pSt_Reward)
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+		return false;
+	}
+	XCHAR tszSQLStr[8192] = {};
+	_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_Reward` WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStr))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = DataBase_GetLastError();
+		return false;
+	}
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////

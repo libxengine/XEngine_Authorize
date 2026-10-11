@@ -61,6 +61,10 @@ public:
     bool DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthInfo, int* pInt_ListCount);
     bool DBModule_SQLite_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
     bool DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+public:
+	bool DBModule_SQLite_RewardInsert(AUTHREG_REWARD* pSt_Reward);
+	bool DBModule_SQLite_RewardDelete(AUTHREG_REWARD* pSt_Reward);
+	bool DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount);
 protected:
     bool DBModule_SQLite_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType);
 private:
