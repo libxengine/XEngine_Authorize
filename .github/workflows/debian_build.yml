@@ -33,6 +33,18 @@ jobs:
             artifact: x86-64
             name: trixie
             version: 13
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+            artifact: Arm64
+            name: bookworm
+            version: 12
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+            artifact: Arm64
+            name: trixie
+            version: 13
 
     steps:
       - name: Checkout main repository code
@@ -77,6 +89,6 @@ jobs:
       - name: Upload folder as artifact
         uses: actions/upload-artifact@v7
         with:
-          name: XEngine_AuthorizeService-Debian_${{ matrix.version }}_x86-64
+          name: XEngine_AuthorizeService-Debian_${{ matrix.version }}_${{ matrix.artifact }}
           path: XEngine_Release/
           retention-days: 1
