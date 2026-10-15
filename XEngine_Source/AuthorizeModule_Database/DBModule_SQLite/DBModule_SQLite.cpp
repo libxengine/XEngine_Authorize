@@ -164,8 +164,8 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
 
     XCHAR tszSQLStatement[1024];    //SQL语句
     char** ppszResult = NULL;
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     memset(tszSQLStatement, '\0', 1024);
 
     if (bUser)
@@ -194,7 +194,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
     {
         memset(pSt_UserInfo, '\0', sizeof(AUTHREG_USERTABLE));
         //ID
-        __int64u nFliedValue = nColumn;
+        int nFliedValue = nColumn;
         //用户名
         nFliedValue++;
         _tcsxcpy(pSt_UserInfo->st_UserInfo.tszUserName, ppszResult[nFliedValue]);
@@ -472,8 +472,8 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
 {
     SQLPacket_IsErrorOccur = false;
 
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     char** ppszResult = NULL;
     XCHAR tszSQLStatement[1024];    //SQL语句
     memset(tszSQLStatement, '\0', 1024);
@@ -494,7 +494,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
     *pInt_ListCount = (int)nRow;
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_UserInfo, (int)nRow, sizeof(AUTHREG_USERTABLE));
     //ID
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     for (__int64u i = 0; i < nRow; i++)
     {
         nFliedValue++;          //ID
@@ -633,8 +633,8 @@ bool CDBModule_SQLite::DBModule_SQLite_QueryLogin(LPCXSTR lpszUserName, LPCXSTR 
 
 	XCHAR tszSQLStatement[1024];    //SQL语句
 	char** ppszResult = NULL;
-	__int64u nRow = 0;
-	__int64u nColumn = 0;
+	int nRow = 0;
+	int nColumn = 0;
 	memset(tszSQLStatement, '\0', 1024);
 
     XCHAR tszTimeStr[128] = {};
@@ -744,8 +744,8 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
     SQLPacket_IsErrorOccur = false;
     XCHAR tszSQLStatement[1024];    //SQL语句
     char** ppszResult = NULL;
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     memset(tszSQLStatement, '\0', 1024);
 
     _xstprintf(tszSQLStatement, _X("select * from Authorize_Serial where SerialNumber = '%s'"), lpszSerialNumber);
@@ -765,7 +765,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQuery(LPCXSTR lpszSerialNumber, LPA
     {
         memset(pSt_SerialTable, '\0', sizeof(AUTHREG_SERIALTABLE));
         //ID
-        __int64u nFliedValue = nColumn;
+        int nFliedValue = nColumn;
         //使用者
         nFliedValue++;
         _tcsxcpy(pSt_SerialTable->tszUserName, ppszResult[nFliedValue]);
@@ -830,8 +830,8 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
 {
     SQLPacket_IsErrorOccur = false;
 
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     char** ppszResult = NULL;
     XCHAR tszSQLStatement[1024];    //SQL语句
 
@@ -853,7 +853,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_SerialTable, (int)nRow, sizeof(AUTHREG_SERIALTABLE));
 
     *pInt_ListCount = (int)nRow;
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     for (__int64u i = 0; i < nRow; i++)
     {
         //ID
@@ -959,8 +959,8 @@ bool CDBModule_SQLite::DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
         SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
         return false;
     }
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     XCHAR** ppszResult = NULL;
     XCHAR tszSQLStatement[1024];    //SQL语句
 
@@ -980,7 +980,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryQuery(AUTHREG_TEMPVER* pSt_AuthVer)
         return false;
     }
     //ID
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     nFliedValue++;
     //序列号
     nFliedValue++;
@@ -1056,8 +1056,8 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
 {
     SQLPacket_IsErrorOccur = false;
 
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     XCHAR** ppszResult = NULL;
     XCHAR tszSQLStatement[1024];    //SQL语句
 
@@ -1070,7 +1070,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
         SQLPacket_dwErrorCode = DataBase_GetLastError();
         return false;
     }
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     list<AUTHREG_TEMPVER> stl_ListVer;
     //轮训所有内容
     for (__int64u i = 0; i < nRow; i++)
@@ -1198,8 +1198,8 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
 {
 	SQLPacket_IsErrorOccur = false;
 
-	__int64u nRow = 0;
-	__int64u nColumn = 0;
+	int nRow = 0;
+	int nColumn = 0;
 	XCHAR** ppszResult = NULL;
 	XCHAR tszSQLStr[1024];    //SQL语句
 
@@ -1213,7 +1213,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
 		return false;
 	}
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_AuthVer, (int)nRow, sizeof(AUTHREG_TEMPVER));
-	__int64u nFliedValue = nColumn;
+	int nFliedValue = nColumn;
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
@@ -1373,8 +1373,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
 {
     SQLPacket_IsErrorOccur = false;
 
-    __int64u nRow = 0;
-    __int64u nColumn = 0;
+    int nRow = 0;
+    int nColumn = 0;
     XCHAR** ppszResult = NULL;
     XCHAR tszSQLStatement[1024];    //SQL语句
 
@@ -1387,7 +1387,7 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedList(AUTHREG_BANNED*** pppSt_Banned
         SQLPacket_dwErrorCode = DataBase_GetLastError();
         return false;
     }
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     list<AUTHREG_BANNED> stl_ListAddr;
     //轮训所有内容
     for (int i = 0; i < nRow; i++)
@@ -1499,8 +1499,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     //判断用户名是否存在
     if (_tcsxlen(pSt_Banned->tszUserName) > 0)
     {
-        __int64u nRow = 0;
-        __int64u nColumn = 0;
+        int nRow = 0;
+        int nColumn = 0;
         XCHAR** ppszResult = NULL;
         XCHAR tszSQLStatement[1024];
         memset(tszSQLStatement, '\0', 1024);
@@ -1514,7 +1514,7 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
         }
 		if (nRow > 0)
 		{
-            __int64u nFliedValue = nColumn;
+            int nFliedValue = nColumn;
             //ID
             pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
             nFliedValue++;
@@ -1559,8 +1559,8 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
     //判断IP地址是否存在
     if (_tcsxlen(pSt_Banned->tszIPAddr) > 0)
     {
-        __int64u nRow = 0;
-        __int64u nColumn = 0;
+        int nRow = 0;
+        int nColumn = 0;
         XCHAR** ppszResult = NULL;
         XCHAR tszSQLStatement[1024];
         memset(tszSQLStatement, '\0', 1024);
@@ -1574,7 +1574,7 @@ bool CDBModule_SQLite::DBModule_SQLite_BannedExist(AUTHREG_BANNED* pSt_Banned)
         }
         if (nRow > 0)
         {
-			__int64u nFliedValue = nColumn;
+			int nFliedValue = nColumn;
 			//ID
 			pSt_Banned->nID = _ttxoll(ppszResult[nFliedValue]);
 			nFliedValue++;
@@ -1756,8 +1756,8 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 {
 	SQLPacket_IsErrorOccur = false;
 
-	__int64u nRow = 0;
-	__int64u nColumn = 0;
+	int nRow = 0;
+	int nColumn = 0;
 	XCHAR** ppszResult = NULL;
 	XCHAR tszSQLStatement[1024];    //SQL语句
 
@@ -1778,7 +1778,7 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
    
     BaseLib_Memory_Malloc((XPPPMEM)ppppSt_Announcement, (int)nRow, sizeof(AUTHREG_ANNOUNCEMENT));
 
-	__int64u nFliedValue = nColumn;
+	int nFliedValue = nColumn;
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
@@ -1890,8 +1890,8 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** ppppSt_OAu
 {
 	SQLPacket_IsErrorOccur = false;
 
-	__int64u nRow = 0;
-	__int64u nColumn = 0;
+	int nRow = 0;
+	int nColumn = 0;
 	XCHAR** ppszResult = NULL;
     XCHAR tszSQLStr[1024] = {};
 
@@ -1905,7 +1905,7 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** ppppSt_OAu
 	*pInt_ListCount = (int)nRow;
 
 	BaseLib_Memory_Malloc((XPPPMEM)ppppSt_OAuthInfo, (int)nRow, sizeof(AUTHREG_OAUTHINFO));
-	__int64u nFliedValue = nColumn;
+	int nFliedValue = nColumn;
 	//轮训所有内容
 	for (__int64u i = 0; i < nRow; i++)
 	{
@@ -1987,8 +1987,8 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthIn
 	}
 	XCHAR tszSQLStatement[1024] = {};
 	_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_OAuth WHERE tszClientID = '%s' AND tszClientKey = '%s'"), pSt_OAuthInfo->tszClientID, pSt_OAuthInfo->tszClientKey);
-	__int64u nRow = 0;
-	__int64u nColumn = 0;
+	int nRow = 0;
+	int nColumn = 0;
 	XCHAR** ppszResult = NULL;
 	if (!DataBase_SQLite_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
 	{
@@ -2003,7 +2003,7 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthIn
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_NOTFOUND;
 		return false;
 	}
-    __int64u nFliedValue = nColumn;
+    int nFliedValue = nColumn;
     _tcsxcpy(pSt_OAuthInfo->tszUserName, ppszResult[nFliedValue]);
     nFliedValue++;
     if (NULL != ppszResult[nFliedValue])
