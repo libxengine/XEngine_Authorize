@@ -532,7 +532,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserList(AUTHREG_USERTABLE*** pppSt_UserInf
 	BaseLib_Memory_Malloc((XPPPMEM)pppSt_UserInfo, (int)(nRow * nColumn), sizeof(AUTHREG_USERTABLE));
 
 	int nFliedValue = nColumn;
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		//ID
 		nFliedValue++;
@@ -892,7 +892,7 @@ bool CDBModule_MySQL::DBModule_MySQL_SerialQueryAll(AUTHREG_SERIALTABLE*** pppSt
 
 	*pInt_ListCount = (int)(nRow * nColumn);
 	int nFliedValue = nColumn;
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		//ID
 		nFliedValue++;
@@ -1123,7 +1123,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryClear(int nThanValue, ENUM_VERIFICATION_
 	int nFliedValue = nColumn;
 	list<AUTHREG_TEMPVER> stl_ListVer;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		AUTHREG_TEMPVER st_AuthVer;
 		memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
@@ -1266,7 +1266,7 @@ bool CDBModule_MySQL::DBModule_MySQL_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer, i
 
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		//ID
 		(*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
@@ -1442,7 +1442,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	int nFliedValue = nColumn;
 	list<AUTHREG_BANNED> stl_ListAddr;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		AUTHREG_BANNED st_Banned;
 		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
@@ -1852,7 +1852,7 @@ bool CDBModule_MySQL::DBModule_MySQL_AnnouncementList(AUTHREG_ANNOUNCEMENT*** pp
 
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		(*ppppSt_Announcement)[i]->nID = _ttxoll(ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -1980,7 +1980,7 @@ bool CDBModule_MySQL::DBModule_MySQL_OAuthList(AUTHREG_OAUTHINFO*** pppSt_OAuthI
 	BaseLib_Memory_Malloc((XPPPMEM)pppSt_OAuthInfo, (int)(nRow * nColumn), sizeof(AUTHREG_OAUTHINFO));
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		_tcsxcpy((*pppSt_OAuthInfo)[i]->tszUserName, ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -2204,7 +2204,7 @@ bool CDBModule_MySQL::DBModule_MySQL_RewardList(AUTHREG_REWARD*** pppSt_Reward, 
 	BaseLib_Memory_Malloc((XPPPMEM)pppSt_Reward, (int)(nRow * nColumn), sizeof(AUTHREG_REWARD));
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		_tcsxcpy((*pppSt_Reward)[i]->tszUserName, ppszResult[nFliedValue]);
 		nFliedValue++;

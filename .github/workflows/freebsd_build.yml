@@ -66,6 +66,10 @@ jobs:
 
             cd XEngine_Release
             ldd ./XEngine_AuthorizeService
+            readelf -d ./XEngine_AuthorizeService | grep -E "RPATH|RUNPATH|NEEDED"
+            ls /usr/local/lib/gcc14/ | grep libgcc_s
+            readelf -V /lib/libgcc_s.so.1 | grep -i GCC_
+
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact

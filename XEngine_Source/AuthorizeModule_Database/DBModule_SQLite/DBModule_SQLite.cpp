@@ -495,7 +495,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserI
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_UserInfo, (int)nRow, sizeof(AUTHREG_USERTABLE));
     //ID
     int nFliedValue = nColumn;
-    for (__int64u i = 0; i < nRow; i++)
+    for (int i = 0; i < nRow; i++)
     {
         nFliedValue++;          //ID
         //用户名
@@ -854,7 +854,7 @@ bool CDBModule_SQLite::DBModule_SQLite_SerialQueryAll(AUTHREG_SERIALTABLE*** ppp
 
     *pInt_ListCount = (int)nRow;
     int nFliedValue = nColumn;
-    for (__int64u i = 0; i < nRow; i++)
+    for (int i = 0; i < nRow; i++)
     {
         //ID
         nFliedValue++;
@@ -1073,7 +1073,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryClear(int nThanValue, ENUM_VERIFICATIO
     int nFliedValue = nColumn;
     list<AUTHREG_TEMPVER> stl_ListVer;
     //轮训所有内容
-    for (__int64u i = 0; i < nRow; i++)
+    for (int i = 0; i < nRow; i++)
     {
         AUTHREG_TEMPVER st_AuthVer;
         memset(&st_AuthVer, '\0', sizeof(AUTHREG_TEMPVER));
@@ -1215,7 +1215,7 @@ bool CDBModule_SQLite::DBModule_SQLite_TryList(AUTHREG_TEMPVER*** pppSt_AuthVer,
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_AuthVer, (int)nRow, sizeof(AUTHREG_TEMPVER));
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		//ID
         (*pppSt_AuthVer)[i]->nID = _ttxoi(ppszResult[nFliedValue]);
@@ -1780,7 +1780,7 @@ bool CDBModule_SQLite::DBModule_SQLite_AnnouncementList(AUTHREG_ANNOUNCEMENT*** 
 
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		(*ppppSt_Announcement)[i]->nID = _ttxoll(ppszResult[nFliedValue]);
         nFliedValue++;
@@ -1907,7 +1907,7 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthList(AUTHREG_OAUTHINFO*** ppppSt_OAu
 	BaseLib_Memory_Malloc((XPPPMEM)ppppSt_OAuthInfo, (int)nRow, sizeof(AUTHREG_OAUTHINFO));
 	int nFliedValue = nColumn;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		_tcsxcpy((*ppppSt_OAuthInfo)[i]->tszUserName, ppszResult[nFliedValue]);
 		nFliedValue++;
@@ -2158,7 +2158,7 @@ bool CDBModule_SQLite::DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward
     BaseLib_Memory_Malloc((XPPPMEM)pppSt_Reward, (int)(nRow * nColumn), sizeof(AUTHREG_REWARD));
     int nFliedValue = nColumn;
     //轮训所有内容
-    for (__int64u i = 0; i < nRow; i++)
+    for (int i = 0; i < nRow; i++)
     {
         _tcsxcpy((*pppSt_Reward)[i]->tszUserName, ppszResult[nFliedValue]);
         nFliedValue++;
