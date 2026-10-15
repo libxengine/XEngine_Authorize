@@ -91,6 +91,10 @@ extern "C" bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpOAuth2(ptszMsgBuffer, pInt_MsgLen, pSt_OAuthInfo);
 }
+extern "C" bool Protocol_Packet_HttpParseReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpParseReward(ptszMsgBuffer, pInt_MsgLen, pppSt_Reward, nListCount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -157,4 +161,8 @@ extern "C" bool Protocol_Parse_HttpParseBanned2(LPCXSTR lpszMsgBuffer, int nMsgL
 extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT * pSt_Announcement)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseAnnouncement(lpszMsgBuffer, nMsgLen, pSt_Announcement);
+}
+extern "C" bool Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_REWARD* pSt_Reward)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseReward(lpszMsgBuffer, nMsgLen, pSt_Reward);
 }

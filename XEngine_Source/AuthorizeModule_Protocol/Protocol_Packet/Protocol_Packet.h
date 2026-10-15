@@ -33,6 +33,7 @@ public:
 	bool Protocol_Packet_HttpTryList(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_TEMPVER*** pppSt_TryList, int nListCount);
 	bool Protocol_Packet_HttpOAuth(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 	bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+	bool Protocol_Packet_HttpParseReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount);
 protected:
 private:
 };

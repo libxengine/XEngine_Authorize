@@ -1071,3 +1071,63 @@ bool CProtocol_Packet::Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pIn
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
 	return true;
 }
+/********************************************************************
+函数名称：Protocol_Packet_HttpParseReward
+函数功能：打包奖励系统列表
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_Reward
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的列表
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Packet::Protocol_Packet_HttpParseReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nRewardType"] = (Json::Value::Int64)(*pppSt_Reward)[i]->nRewardType;
+		st_JsonObject["nRewardType"] = (*pppSt_Reward)[i]->nRewardType;
+		st_JsonObject["tszCreateTime"] = (*pppSt_Reward)[i]->tszCreateTime;
+		st_JsonObject["tszReferrer"] = (*pppSt_Reward)[i]->tszReferrer;
+		st_JsonObject["tszUserName"] = (*pppSt_Reward)[i]->tszUserName;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["Count"] = st_JsonArray.size();
+	st_JsonRoot["Array"] = st_JsonArray;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return true;
+}

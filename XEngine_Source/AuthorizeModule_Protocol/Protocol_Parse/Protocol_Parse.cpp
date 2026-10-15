@@ -1141,7 +1141,29 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer
 	}
 	return true;
 }
-
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseOAuth
+函数功能：解析OAuth协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入缓冲区大小
+ 参数.三：pSt_OAuthInfo
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析后的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
 bool CProtocol_Parse::Protocol_Parse_HttpParseOAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo)
 {
 	Protocol_IsErrorOccur = false;
@@ -1174,5 +1196,69 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseOAuth(LPCXSTR lpszMsgBuffer, int n
 		_tcsxcpy(pSt_OAuthInfo->tszClientKey, st_JsonObject["tszClientKey"].asCString());
 	}
 	
+	return true;
+}
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseReward
+函数功能：解析奖励系统协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入缓冲区大小
+ 参数.三：pSt_Reward
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析后的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Parse::Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_REWARD* pSt_Reward)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == lpszMsgBuffer) || (NULL == pSt_Reward))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	JSONCPP_STRING st_JsonError;
+	Json::CharReaderBuilder st_ReaderBuilder;
+	std::unique_ptr<Json::CharReader> const pSt_JsonReader(st_ReaderBuilder.newCharReader());
+	if (!pSt_JsonReader->parse(lpszMsgBuffer, lpszMsgBuffer + nMsgLen, &st_JsonRoot, &st_JsonError))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARSE;
+		return false;
+	}
+
+	Json::Value st_JsonObject = st_JsonRoot["st_OAuth"];
+
+	if (!st_JsonObject["tszUserName"].isNull())
+	{
+		_tcsxcpy(pSt_Reward->tszUserName, st_JsonObject["tszUserName"].asCString());
+	}
+	if (!st_JsonObject["tszReferrer"].isNull())
+	{
+		_tcsxcpy(pSt_Reward->tszReferrer, st_JsonObject["tszReferrer"].asCString());
+	}
+	if (!st_JsonObject["nRewardOff"].isNull())
+	{
+		pSt_Reward->nRewardOff = st_JsonObject["nRewardOff"].asInt();
+	}
+	if (!st_JsonObject["nRewardType"].isNull())
+	{
+		pSt_Reward->nRewardType = st_JsonObject["nRewardType"].asInt();
+	}
 	return true;
 }

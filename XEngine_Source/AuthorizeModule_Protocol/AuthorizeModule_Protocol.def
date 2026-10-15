@@ -18,6 +18,7 @@ EXPORTS
 	Protocol_Packet_HttpTryList
 	Protocol_Packet_HttpOAuth
 	Protocol_Packet_HttpOAuth2
+	Protocol_Packet_HttpParseReward
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_HttpParseToken
