@@ -2,8 +2,12 @@ name: freebsd build workflows
 
 on:
   push:
-    branches: 
-      - master
+    branches:
+      - 'develop'
+    paths:
+      - 'XEngine_Source/**'
+      - 'XEngine_Release/**'
+      - '.github/**'
   
 jobs:
   build:

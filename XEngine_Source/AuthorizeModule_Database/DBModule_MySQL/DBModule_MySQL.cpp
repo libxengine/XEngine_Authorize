@@ -2139,27 +2139,27 @@ bool CDBModule_MySQL::DBModule_MySQL_RewardInsert(AUTHREG_REWARD* pSt_Reward)
 /********************************************************************
 函数名称：DBModule_MySQL_RewardList
 函数功能：奖励系统列举
- 参数.一：pSt_Reward
-  In/Out：In
-  类型：数据结构指针
-  可空：N
-  意思：要查询的数据
- 参数.二：ppppSt_Reward
+ 参数.一：ppppSt_Reward
   In/Out：Out
   类型：三级指针
   可空：N
   意思：输出列举数据
- 参数.三：pInt_ListCount
+ 参数.二：pInt_ListCount
   In/Out：Out
   类型：整数型指针
   可空：N
   意思：导出数据个数
+ 参数.三：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：Y
+  意思：要查询的数据,默认查询所有
 返回值
   类型：逻辑型
   意思：是否成功
 备注：
 *********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_RewardList(AUTHREG_REWARD* pSt_Reward, AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount)
+bool CDBModule_MySQL::DBModule_MySQL_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward)
 {
 	SQLPacket_IsErrorOccur = false;
 
@@ -2174,17 +2174,24 @@ bool CDBModule_MySQL::DBModule_MySQL_RewardList(AUTHREG_REWARD* pSt_Reward, AUTH
 	int nRow = 0;
 	XCHAR** ppszResult = NULL;
 
-	if (_tcsxlen(pSt_Reward->tszUserName) > 0 && 0 == _tcsxlen(pSt_Reward->tszReferrer))
+	if (NULL == pSt_Reward)
 	{
-		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
-	}
-	else if (_tcsxlen(pSt_Reward->tszReferrer) > 0 && 0 == _tcsxlen(pSt_Reward->tszUserName))
-	{
-		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszReferrer = '%s'"), pSt_Reward->tszReferrer);
+		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward"));
 	}
 	else
 	{
-		_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s' AND tszReferrer = '%s'"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer);
+		if (_tcsxlen(pSt_Reward->tszUserName) > 0 && 0 == _tcsxlen(pSt_Reward->tszReferrer))
+		{
+			_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+		}
+		else if (_tcsxlen(pSt_Reward->tszReferrer) > 0 && 0 == _tcsxlen(pSt_Reward->tszUserName))
+		{
+			_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszReferrer = '%s'"), pSt_Reward->tszReferrer);
+		}
+		else
+		{
+			_xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s' AND tszReferrer = '%s'"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer);
+		}
 	}
 
 	if (!DataBase_MySQL_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))

@@ -45,6 +45,10 @@ EXPORTS
 	DBModule_SQLite_OAuthUPDate
 	DBModule_SQLite_OAuthQuery
 
+	DBModule_SQLite_RewardInsert
+	DBModule_SQLite_RewardDelete
+	DBModule_SQLite_RewardList
+
 	DBModule_MySQL_Init
 	DBModule_MySQL_Destroy
 
@@ -86,3 +90,7 @@ EXPORTS
 	DBModule_MySQL_OAuthList
 	DBModule_MySQL_OAuthUPDate
 	DBModule_MySQL_OAuthQuery
+
+	DBModule_MySQL_RewardInsert
+	DBModule_MySQL_RewardList
+	DBModule_MySQL_RewardDelete

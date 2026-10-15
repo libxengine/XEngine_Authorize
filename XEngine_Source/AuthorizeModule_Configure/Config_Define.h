@@ -88,6 +88,12 @@ typedef struct
 		int nCryptionType;									//加密传输类型,参考:ENUM_XENGINE_CRYPTION_SYMMETRIC
 		bool bEnable;                                       //是否启用加密传输 
 	}st_XCrypto;
+	struct
+	{
+		int nType;                                          //奖励类型
+		int nValue;									        //奖励值
+		bool bEnable;                                       //是否启用
+	}st_XReferrer;
 	struct  
 	{
 		XCHAR tszAPIUrl[XPATH_MID];                         //验证API地址

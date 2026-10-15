@@ -63,7 +63,7 @@ public:
 	bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 public:
 	bool DBModule_MySQL_RewardInsert(AUTHREG_REWARD* pSt_Reward);  //插入奖励信息
-    bool DBModule_MySQL_RewardList(AUTHREG_REWARD* pSt_Reward, AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount);
+    bool DBModule_MySQL_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward = NULL);
     bool DBModule_MySQL_RewardDelete(AUTHREG_REWARD* pSt_Reward);
 protected:
     bool DBModule_MySQL_UserPayTime(LPCXSTR lpszUserName, LPCXSTR lpszUserTime, LPCXSTR lpszCardTime, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthSerialType, ENUM_VERIFICATION_MODULE_SERIAL_TYPE en_AuthUserType);  //日期方式充值方式

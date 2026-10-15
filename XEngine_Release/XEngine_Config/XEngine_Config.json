@@ -58,6 +58,11 @@
         "nCryptionType": 1,
         "tszPassKey": "123123aa"
     },
+    "XReferrer": {
+        "bEnable": true,
+        "nType": 0,
+        "nValue": 0
+    },
     "XApiVer": {
         "bEnable": false,
         "tszUser": "xengine",

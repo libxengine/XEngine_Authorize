@@ -2028,16 +2028,150 @@ bool CDBModule_SQLite::DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthIn
 	DataBase_SQLite_FreeResult(ppszResult);
 	return true;
 }
+/********************************************************************
+函数名称：DBModule_SQLite_RewardInsert
+函数功能：奖励系统插入
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
 bool CDBModule_SQLite::DBModule_SQLite_RewardInsert(AUTHREG_REWARD* pSt_Reward)
 {
+    SQLPacket_IsErrorOccur = false;
+
+    if (NULL == pSt_Reward)
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+        return false;
+    }
+    XCHAR tszSQLStr[8192] = {};
+
+    _xstprintf(tszSQLStr, _X("INSERT INTO `Authorize_Reward`(tszUserName,tszUserReferrer,nRewardType,nRewardOff,tszCreateTime) VALUES('%s','%s','%d','%d','%s')"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer, pSt_Reward->nRewardType, pSt_Reward->nRewardOff, pSt_Reward->tszCreateTime);
+    //插入数据库
+    if (!DataBase_SQLite_Execute(xhData, tszSQLStr))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return false;
+    }
     return true;
 }
+/********************************************************************
+函数名称：DBModule_SQLite_RewardDelete
+函数功能：奖励系统删除
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
 bool CDBModule_SQLite::DBModule_SQLite_RewardDelete(AUTHREG_REWARD* pSt_Reward)
 {
+    SQLPacket_IsErrorOccur = false;
+
+    if (NULL == pSt_Reward)
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
+        return false;
+    }
+    XCHAR tszSQLStr[8192] = {};
+    _xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_Reward` WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+    if (!DataBase_SQLite_Execute(xhData, tszSQLStr))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return false;
+    }
     return true;
 }
-bool CDBModule_SQLite::DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount)
+/********************************************************************
+函数名称：DBModule_SQLite_RewardList
+函数功能：奖励系统列举
+ 参数.一：ppppSt_Reward
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+ 参数.三：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：Y
+  意思：要查询的数据,默认查询所有
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CDBModule_SQLite::DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward)
 {
+    SQLPacket_IsErrorOccur = false;
+
+    XCHAR tszSQLStatement[1024] = {};
+    int nColumn = 0;
+    int nRow = 0;
+    XCHAR** ppszResult = NULL;
+
+    if (NULL == pSt_Reward)
+    {
+        _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward"));
+    }
+    else
+    {
+        if (_tcsxlen(pSt_Reward->tszUserName) > 0 && 0 == _tcsxlen(pSt_Reward->tszReferrer))
+        {
+            _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+        }
+        else if (_tcsxlen(pSt_Reward->tszReferrer) > 0 && 0 == _tcsxlen(pSt_Reward->tszUserName))
+        {
+            _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszReferrer = '%s'"), pSt_Reward->tszReferrer);
+        }
+        else
+        {
+            _xstprintf(tszSQLStatement, _X("SELECT * FROM Authorize_Reward WHERE tszUserName = '%s' AND tszReferrer = '%s'"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer);
+        }
+    }
+
+    if (!DataBase_SQLite_ExecQuery(xhData, tszSQLStatement, &ppszResult, &nRow, &nColumn))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = DataBase_GetLastError();
+        return false;
+    }
+    *pInt_ListCount = (int)(nRow * nColumn);
+    BaseLib_Memory_Malloc((XPPPMEM)pppSt_Reward, (int)(nRow * nColumn), sizeof(AUTHREG_REWARD));
+    int nFliedValue = nColumn;
+    //轮训所有内容
+    for (__int64u i = 0; i < nRow; i++)
+    {
+        _tcsxcpy((*pppSt_Reward)[i]->tszUserName, ppszResult[nFliedValue]);
+        nFliedValue++;
+        _tcsxcpy((*pppSt_Reward)[i]->tszReferrer, ppszResult[nFliedValue]);
+        nFliedValue++;
+        (*pppSt_Reward)[i]->nRewardType = _ttxoi(ppszResult[nFliedValue]);
+        nFliedValue++;
+        (*pppSt_Reward)[i]->nRewardOff = _ttxoi(ppszResult[nFliedValue]);
+        nFliedValue++;
+        _tcsxcpy((*pppSt_Reward)[i]->tszCreateTime, ppszResult[nFliedValue]);
+        nFliedValue++;
+    }
+    DataBase_SQLite_FreeResult(ppszResult);
     return true;
 }
 //////////////////////////////////////////////////////////////////////////

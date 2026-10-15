@@ -478,7 +478,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseTable(LPCXSTR lpszMsgBuffer, int n
 	{
 		_tcsxcpy(pSt_UserTable->tszLeftTime, st_UserTable["tszLeftTime"].asCString());
 	}
-	
+	if (!st_UserTable["tszReferrer"].isNull())
+	{
+		_tcsxcpy(pSt_UserTable->tszReferrer, st_UserTable["tszReferrer"].asCString());
+	}
+
 	if (!st_UserInfo["tszUserName"].isNull())
 	{
 		_tcsxcpy(pSt_UserTable->st_UserInfo.tszUserName, st_UserInfo["tszUserName"].asCString());
