@@ -2,7 +2,7 @@ RELEASE = 0
 UNICODE = 0
 PLATFORM=linux
 BUILDTYPE=0
-MAKEFILE = $(MAKENAME)
+MAKENAME = make
 FLAGS= 
 
 DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
