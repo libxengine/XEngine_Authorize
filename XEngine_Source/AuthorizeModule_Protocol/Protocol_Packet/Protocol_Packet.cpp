@@ -1072,7 +1072,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pIn
 	return true;
 }
 /********************************************************************
-函数名称：Protocol_Packet_HttpParseReward
+函数名称：Protocol_Packet_HttpReward
 函数功能：打包奖励系统列表
  参数.一：ptszMsgBuffer
   In/Out：Out
@@ -1099,7 +1099,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pIn
   意思：是否成功
 备注：
 *********************************************************************/
-bool CProtocol_Packet::Protocol_Packet_HttpParseReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
+bool CProtocol_Packet::Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
 {
 	Protocol_IsErrorOccur = false;
 

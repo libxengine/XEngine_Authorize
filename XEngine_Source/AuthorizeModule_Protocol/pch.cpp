@@ -91,9 +91,9 @@ extern "C" bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpOAuth2(ptszMsgBuffer, pInt_MsgLen, pSt_OAuthInfo);
 }
-extern "C" bool Protocol_Packet_HttpParseReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
+extern "C" bool Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
 {
-	return m_ProtocolPacket.Protocol_Packet_HttpParseReward(ptszMsgBuffer, pInt_MsgLen, pppSt_Reward, nListCount);
+	return m_ProtocolPacket.Protocol_Packet_HttpReward(ptszMsgBuffer, pInt_MsgLen, pppSt_Reward, nListCount);
 }
 /************************************************************************/
 /*                          解析类协议                                  */

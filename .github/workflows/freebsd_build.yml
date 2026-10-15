@@ -65,6 +65,7 @@ jobs:
             cd ..
 
             cd XEngine_Release
+            ldd ./XEngine_AuthorizeService
             ./XEngine_AuthorizeService -t
 
       - name: Upload folder as artifact

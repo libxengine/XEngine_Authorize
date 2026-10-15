@@ -107,7 +107,7 @@ bool XEngine_AuthorizeHTTP_Reward(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 				DBModule_MySQL_RewardList(&ppSt_Reward, &nListCount, &st_AuthReward);
 			}
 		}
-		Protocol_Packet_HttpParseReward(tszSDBuffer, &nSDLen, &ppSt_Reward, nListCount);
+		Protocol_Packet_HttpReward(tszSDBuffer, &nSDLen, &ppSt_Reward, nListCount);
 		BaseLib_Memory_Free((XPPPMEM)&ppSt_Reward, nListCount);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求列举奖励系统成功,列表个数:%d"), lpszClientAddr, nListCount);
