@@ -2,6 +2,7 @@ RELEASE = 0
 UNICODE = 0
 PLATFORM=linux
 BUILDTYPE=0
+MAKEFILE = $(MAKENAME)
 FLAGS= 
 
 DEPEND_JSONCPP_PATH = ./XEngine_DependLibrary/XEngine_Module/jsoncpp
@@ -22,6 +23,9 @@ ifeq ($(PLATFORM),linux)
 	FILEEXT = so
 else ifeq ($(PLATFORM),mac)
 	FILEEXT = dylib
+else ifeq ($(PLATFORM), freebsd)
+	MAKENAME = gmake
+	FILEEXT = so
 endif
 
 # 第三方库模块
@@ -47,43 +51,43 @@ libjsoncpp.so:
 ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_JSONCPP_PATH)/libjsoncpp.$(FILEEXT) ../XEngine_Release/
 else
-	make -C $(DEPEND_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	$(MAKENAME) -C $(DEPEND_JSONCPP_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 libXEngine_InfoReport.so:
 ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_REPORT_PATH)/libXEngine_InfoReport.$(FILEEXT) ../XEngine_Release/
 else
-	make -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	$(MAKENAME) -C $(DEPEND_REPORT_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 libXEngine_Verification.so:
 ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_VERIFICATION_PATH)/libXEngine_Verification.$(FILEEXT) ../XEngine_Release/
 else
-	make -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	$(MAKENAME) -C $(DEPEND_VERIFICATION_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 libXEngine_MSGNotify.so:
 ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_MSGNOTIFY_PATH)/libXEngine_MSGNotify.$(FILEEXT) ../XEngine_Release/
 else
-	make -C $(DEPEND_MSGNOTIFY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	$(MAKENAME) -C $(DEPEND_MSGNOTIFY_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 libXEngine_Token.so:
 ifeq ($(FLAGS), InstallAll)
 	cp $(DEPEND_TOKEN_PATH)/libXEngine_Token.$(FILEEXT) ../XEngine_Release/
 else
-	make -C $(DEPEND_TOKEN_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
+	$(MAKENAME) -C $(DEPEND_TOKEN_PATH) PLATFORM=$(PLATFORM) $(FLAGS)
 endif
 
 libAuthorizeModule_Session.so:
-	make -C $(AUTH_SESSION_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_SESSION_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Database.so:
-	make -C $(AUTH_DATABASE_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_DATABASE_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Protocol.so:
-	make -C $(AUTH_PROTOCOL_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_PROTOCOL_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Configure.so:
-	make -C $(AUTH_CONFIGURE_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_CONFIGURE_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 libAuthorizeModule_Help.so:
-	make -C $(AUTH_HELP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_HELP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
 
 XEngine_AuthorizeApp.exe:
-	make -C $(AUTH_APP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
+	$(MAKENAME) -C $(AUTH_APP_PATH) PLATFORM=$(PLATFORM) UNICODE=$(UNICODE) $(FLAGS)
