@@ -891,6 +891,7 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseSwitch(LPCXSTR lpszMsgBuffer, int 
 	pSt_FunSwitch->bSwitchTokenLogin = st_JsonObject["bSwitchTokenLogin"].asBool();
 	pSt_FunSwitch->bSwitchHCLogin = st_JsonObject["bSwitchHCLogin"].asBool();
 	pSt_FunSwitch->bSwitchHWBind = st_JsonObject["bSwitchHWBind"].asBool();
+	pSt_FunSwitch->bSwitchReward = st_JsonObject["bSwitchReward"].asBool();
 	return true;
 }
 /********************************************************************

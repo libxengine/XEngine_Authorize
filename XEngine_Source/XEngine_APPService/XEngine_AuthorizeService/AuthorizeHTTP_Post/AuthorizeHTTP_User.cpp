@@ -110,7 +110,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		//是否有奖励人
-		if (_tcsxlen(st_UserTable.tszReferrer) > 0 && st_AuthConfig.st_XReferrer.bEnable)
+		if (_tcsxlen(st_UserTable.tszReferrer) > 0 && st_AuthConfig.st_XReferrer.bEnable && st_FunSwitch.bSwitchReward)
 		{
 			AUTHREG_USERTABLE st_ReferTable = {};
 			if (0 == st_AuthConfig.st_XSql.nDBType)

@@ -12,9 +12,11 @@
 #include "framework.h"
 #include <tchar.h>
 #endif
+#include <time.h>
 #include <string.h>
 #include <list>
 #include <string>
+#include <cstdint>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
