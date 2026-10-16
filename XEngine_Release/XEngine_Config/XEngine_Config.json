@@ -58,7 +58,7 @@
         "nCryptionType": 1,
         "tszPassKey": "123123aa"
     },
-    "XReferrer": {
+    "XReward": {
         "bEnable": true,
         "nType": 0,
         "nValue": 10

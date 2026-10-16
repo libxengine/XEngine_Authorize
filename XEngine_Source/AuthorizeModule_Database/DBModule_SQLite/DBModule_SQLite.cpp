@@ -608,7 +608,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserTime(LPCXSTR lpszUserName, __int64x n
     SQLPacket_IsErrorOccur = false;
 
     XCHAR tszSQLStatement[1024] = {};
-    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_Login SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
+    _xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
     if (!DataBase_SQLite_Execute(xhData, tszSQLStatement))
     {
         SQLPacket_IsErrorOccur = true;

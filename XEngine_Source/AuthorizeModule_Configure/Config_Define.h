@@ -93,7 +93,7 @@ typedef struct
 		int nType;                                          //奖励类型
 		int nValue;									        //奖励值
 		bool bEnable;                                       //是否启用
-	}st_XReferrer;
+	}st_XReward;
 	struct  
 	{
 		XCHAR tszAPIUrl[XPATH_MID];                         //验证API地址

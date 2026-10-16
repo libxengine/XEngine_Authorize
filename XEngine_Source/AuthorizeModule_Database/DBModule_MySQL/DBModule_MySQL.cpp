@@ -613,6 +613,14 @@ bool CDBModule_MySQL::DBModule_MySQL_UserLogin(LPCXSTR lpszUserName, LPCXSTR lps
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_ISFAILED;
 		return false;
 	}
+	//清理
+	_xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_Login WHERE UserName = '%s' AND ID NOT IN (SELECT ID FROM (SELECT ID FROM Authorize_Login WHERE UserName = '%s' ORDER BY ID DESC LIMIT 100) AS t)"), lpszUserName, lpszUserName);
+	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
+	{
+		SQLPacket_IsErrorOccur = true;
+		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_INSERT;
+		return false;
+	}
 	return true;
 }
 /********************************************************************
@@ -637,7 +645,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserTime(LPCXSTR lpszUserName, __int64x nTi
 {
 	SQLPacket_IsErrorOccur = false;
 	XCHAR tszSQLStatement[1024] = {};
-	_xstprintf(tszSQLStatement, _X("UPDATE Authorize_Login SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
+	_xstprintf(tszSQLStatement, _X("UPDATE Authorize_User SET CountTime = CountTime + %lld WHERE UserName = '%s'"), nTime, lpszUserName);
 
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStatement))
 	{

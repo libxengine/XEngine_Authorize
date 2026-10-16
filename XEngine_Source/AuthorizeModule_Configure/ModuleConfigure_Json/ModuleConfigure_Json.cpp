@@ -161,16 +161,16 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XCrypto.nCryptionType = st_JsonXCrypto["nCryptionType"].asInt();
 	_tcsxcpy(pSt_ServerConfig->st_XCrypto.tszCryptoKey, st_JsonXCrypto["tszPassKey"].asCString());
 	//奖励配置
-	if (st_JsonRoot["XReferrer"].empty() || (3 != st_JsonRoot["XReferrer"].size()))
+	if (st_JsonRoot["XReward"].empty() || (3 != st_JsonRoot["XReward"].size()))
 	{
 		Config_IsErrorOccur = true;
-		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XREFERRER;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_XREWARD;
 		return false;
 	}
-	Json::Value st_JsonXReferrer = st_JsonRoot["XReferrer"];
-	pSt_ServerConfig->st_XReferrer.bEnable = st_JsonXReferrer["bEnable"].asBool();
-	pSt_ServerConfig->st_XReferrer.nType = st_JsonXReferrer["nType"].asInt();
-	pSt_ServerConfig->st_XReferrer.nValue = st_JsonXReferrer["nValue"].asInt();
+	Json::Value st_JsonXReward = st_JsonRoot["XReward"];
+	pSt_ServerConfig->st_XReward.bEnable = st_JsonXReward["bEnable"].asBool();
+	pSt_ServerConfig->st_XReward.nType = st_JsonXReward["nType"].asInt();
+	pSt_ServerConfig->st_XReward.nValue = st_JsonXReward["nValue"].asInt();
 	//接口验证
 	if (st_JsonRoot["XApiVer"].empty() || (5 != st_JsonRoot["XApiVer"].size()))
 	{

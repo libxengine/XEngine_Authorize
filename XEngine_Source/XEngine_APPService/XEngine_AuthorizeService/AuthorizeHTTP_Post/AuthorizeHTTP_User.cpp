@@ -110,7 +110,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		//是否有奖励人
-		if (_tcsxlen(st_UserTable.tszReferrer) > 0 && st_AuthConfig.st_XReferrer.bEnable && st_FunSwitch.bSwitchReward)
+		if (_tcsxlen(st_UserTable.tszReferrer) > 0 && st_AuthConfig.st_XReward.bEnable && st_FunSwitch.bSwitchReward)
 		{
 			AUTHREG_USERTABLE st_ReferTable = {};
 			if (0 == st_AuthConfig.st_XSql.nDBType)
@@ -123,15 +123,15 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			}
 			if (bSuccess)
 			{
-				if (0 == st_AuthConfig.st_XReferrer.nType)
+				if (0 == st_AuthConfig.st_XReward.nType)
 				{
 					__int64x nLeftTime = _ttxoll(st_ReferTable.tszLeftTime);
-					nLeftTime += st_AuthConfig.st_XReferrer.nValue;
+					nLeftTime += st_AuthConfig.st_XReward.nValue;
 					_xstprintf(st_ReferTable.tszLeftTime, _X("%lld"), nLeftTime);
 
 					AUTHREG_REWARD st_UserReward = {};
-					st_UserReward.nRewardType = st_AuthConfig.st_XReferrer.nType;
-					st_UserReward.nRewardOff = st_AuthConfig.st_XReferrer.nValue;
+					st_UserReward.nRewardType = st_AuthConfig.st_XReward.nType;
+					st_UserReward.nRewardOff = st_AuthConfig.st_XReward.nValue;
 					_tcsxcpy(st_UserReward.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 					_tcsxcpy(st_UserReward.tszReferrer, st_UserTable.tszReferrer);
 
