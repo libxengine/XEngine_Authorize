@@ -61,7 +61,7 @@
     "XReferrer": {
         "bEnable": true,
         "nType": 0,
-        "nValue": 0
+        "nValue": 10
     },
     "XApiVer": {
         "bEnable": false,
