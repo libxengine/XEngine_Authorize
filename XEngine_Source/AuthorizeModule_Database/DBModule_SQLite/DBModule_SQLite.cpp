@@ -574,6 +574,14 @@ bool CDBModule_SQLite::DBModule_SQLite_UserLogin(LPCXSTR lpszUserName, LPCXSTR l
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_INSERT;
 		return false;
 	}
+    //清理
+    _xstprintf(tszSQLStatement, _X("DELETE FROM Authorize_Login WHERE UserName = '%s' AND ID NOT IN (SELECT ID FROM (SELECT ID FROM Authorize_Login WHERE UserName = '%s' ORDER BY ID DESC LIMIT 100) AS t)"), lpszUserName, lpszUserName);
+    if (!DataBase_SQLite_Execute(xhData, tszSQLStatement))
+    {
+        SQLPacket_IsErrorOccur = true;
+        SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_INSERT;
+        return false;
+    }
 
 	return true;
 }
