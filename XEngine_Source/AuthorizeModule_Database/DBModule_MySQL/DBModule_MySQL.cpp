@@ -2252,7 +2252,7 @@ bool CDBModule_MySQL::DBModule_MySQL_RewardDelete(AUTHREG_REWARD* pSt_Reward)
 		return false;
 	}
 	XCHAR tszSQLStr[8192] = {};
-	_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_Reward` WHERE tszUserName = '%s'"), pSt_Reward->tszUserName);
+	_xstprintf(tszSQLStr, _X("DELETE FROM `Authorize_Reward` WHERE tszUserName = '%s' AND tszReferrer = '%s'"), pSt_Reward->tszUserName, pSt_Reward->tszReferrer);
 	if (!DataBase_MySQL_Execute(xhData, tszSQLStr))
 	{
 		SQLPacket_IsErrorOccur = true;

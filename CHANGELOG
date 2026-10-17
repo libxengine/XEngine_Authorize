@@ -15,6 +15,7 @@ ci:调整fedora构建
 修正:错误的头处理
 修正:启动参数循环问题
 修正:写入数据库用户在线时间统计问题
+修正:客户端查询没有时间统计和推荐人的问题
 
 ci:update workflow to last version
 ci:delete unused step and Centos_build
@@ -31,6 +32,7 @@ fixed:The Problem of Incorrect Data Processing When Enumerating Multiple Rows in
 fixed:Missing header guard
 fixed:for loop variable changed in body
 fixed:write database user online time count incorrect
+fixed:client query have no time count and referrer 
 ================================================================
 XEngine_Authorize V3.24.0.1001
 
