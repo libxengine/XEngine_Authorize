@@ -51,6 +51,7 @@ feature list:
 19. support mulit login and merge time
 20. user bind hardware code
 21. OAuth2.0 Verification Support
+22. referrer reward system support
 
 ## install
 
@@ -120,6 +121,7 @@ port :tcp port 5300,websocket port 5301,http management port 5302,Transmission v
 #### app packet service
 If you don't have software development capabilities, don't want to implement it yourself, or want to add authorization verification to other software, we also provide an authorization packaging service, which allows your program to directly package our verification.  
 Program Packaging Service is a paid service, and you can package and add verification to any program. You can integrate our verification service without requiring source code or modifying your program. After packaging is complete, when it is run next time, our verification client will run first, and then your provided program will run after verification is successful, which is very convenient to use.  
+This packaging service is developed based on QT and theoretically supports Linux, Windows, and macOS systems.  
 This service is paid, priced at $20 per package. It supports both x86 and x64 programs, and only requires you to provide your server address, port, and verification mode. The process is as follows:  
 Payment → Send the program to us → We package it → Verification testing → Send the packaged program to you → Completed  
 After packaging, when the program is launched, the following window will open first. Only after a successful login will your program start. As shown below, once launched, the main interface will be displayed. After login, the main interface will close and your program will then start.  
