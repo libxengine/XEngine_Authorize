@@ -504,7 +504,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->st_UserTable.enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->st_UserTable.enDeviceType;
 		st_JsonObject["nTimeCount"] = (Json::Value::Int64)(*pppSt_OnClient)[i]->st_UserTable.nTimeCount;
-		st_JsonObject["tszReferrer"] = (Json::Value::Int64)(*pppSt_OnClient)[i]->st_UserTable.tszReferrer;
+		st_JsonObject["tszReferrer"] = (*pppSt_OnClient)[i]->st_UserTable.tszReferrer;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
@@ -544,7 +544,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["enSerialType"] = (*pppSt_OffClient)[i]->enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OffClient)[i]->enDeviceType;
 		st_JsonObject["nTimeCount"] = (Json::Value::Int64)(*pppSt_OffClient)[i]->nTimeCount;
-		st_JsonObject["tszReferrer"] = (Json::Value::Int64)(*pppSt_OffClient)[i]->tszReferrer;
+		st_JsonObject["tszReferrer"] = (*pppSt_OffClient)[i]->tszReferrer;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
