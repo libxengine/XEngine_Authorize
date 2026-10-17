@@ -12,11 +12,11 @@
 #include "framework.h"
 #include <tchar.h>
 #endif
-
-#endif //PCH_H
+#include <time.h>
 #include <string.h>
 #include <list>
 #include <string>
+#include <cstdint>
 using namespace std;
 #include <XEngine_Include/XEngine_CommHdr.h>
 #include <XEngine_Include/XEngine_Types.h>
@@ -48,3 +48,4 @@ extern XLONG SQLPacket_dwErrorCode;
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_DataBase.lib")
 #endif
+#endif //PCH_H

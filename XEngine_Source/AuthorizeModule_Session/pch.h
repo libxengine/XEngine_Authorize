@@ -12,8 +12,6 @@
 #include "framework.h"
 #include <tchar.h>
 #endif
-
-#endif //PCH_H
 #include <string.h>
 #include <list>
 #include <vector>
@@ -50,3 +48,4 @@ typedef std::string xstring;
 #ifdef _WINDOWS
 #pragma comment(lib,"XEngine_BaseLib/XEngine_BaseLib.lib")
 #endif
+#endif //PCH_H

@@ -96,7 +96,7 @@ extern "C" bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE * pSt_UserInfo);
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo, bool bUser = true);
+extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE *pSt_UserInfo = NULL, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_SQLite_UserPay
 函数功能：用户充值函数
@@ -627,6 +627,58 @@ extern "C" bool DBModule_SQLite_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 备注：
 *********************************************************************/
 extern "C" bool DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+/********************************************************************
+函数名称：DBModule_SQLite_RewardInsert
+函数功能：奖励系统插入
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_RewardInsert(AUTHREG_REWARD* pSt_Reward);
+/********************************************************************
+函数名称：DBModule_SQLite_RewardDelete
+函数功能：奖励系统删除
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_RewardDelete(AUTHREG_REWARD* pSt_Reward);
+/********************************************************************
+函数名称：DBModule_SQLite_RewardList
+函数功能：奖励系统列举
+ 参数.一：ppppSt_Reward
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+ 参数.三：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：Y
+  意思：要查询的数据,默认查询所有
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward = NULL);
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -707,7 +759,7 @@ extern "C" bool DBModule_MySQL_UserRegister(AUTHREG_USERTABLE* pSt_UserInfo);
   意思：是否查询成功
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo, bool bUser = true);
+extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo = NULL, bool bUser = true);
 /********************************************************************
 函数名称：DBModule_MySQL_UserPay
 函数功能：用户充值函数
@@ -1238,3 +1290,55 @@ extern "C" bool DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 备注：
 *********************************************************************/
 extern "C" bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo);
+/********************************************************************
+函数名称：DBModule_MySQL_RewardInsert
+函数功能：奖励系统插入
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要插入的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_RewardInsert(AUTHREG_REWARD* pSt_Reward);  //插入奖励信息
+/********************************************************************
+函数名称：DBModule_MySQL_RewardList
+函数功能：奖励系统列举
+ 参数.一：ppppSt_Reward
+  In/Out：Out
+  类型：三级指针
+  可空：N
+  意思：输出列举数据
+ 参数.二：pInt_ListCount
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：导出数据个数
+ 参数.三：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：Y
+  意思：要查询的数据,默认查询所有
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward = NULL);
+/********************************************************************
+函数名称：DBModule_MySQL_RewardDelete
+函数功能：奖励系统删除
+ 参数.一：pSt_Reward
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要删除的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool DBModule_MySQL_RewardDelete(AUTHREG_REWARD* pSt_Reward);

@@ -33,19 +33,25 @@ jobs:
             artifact: x86-64
             name: trixie
             version: 13
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+            artifact: Arm64
+            name: bookworm
+            version: 12
+          - arch: arm64
+            runner: ubuntu-24.04-arm
+            platform: linux/arm64
+            artifact: Arm64
+            name: trixie
+            version: 13
 
     steps:
       - name: Checkout main repository code
-        uses: actions/checkout@v6
-
-      - name: Checkout dependency repository (xengine)
-        uses: actions/checkout@v6
-        with:
-          repository: libxengine/libxengine
-          path: libxengine
+        uses: actions/checkout@v7
 
       - name: sub module checkout (opensource)
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: libxengine/XEngine_OPenSource
           path: XEngine_Source/XEngine_DependLibrary
@@ -83,6 +89,6 @@ jobs:
       - name: Upload folder as artifact
         uses: actions/upload-artifact@v7
         with:
-          name: XEngine_AuthorizeService-Debian_${{ matrix.version }}_x86-64
+          name: XEngine_AuthorizeService-Debian_${{ matrix.version }}_${{ matrix.artifact }}
           path: XEngine_Release/
           retention-days: 1

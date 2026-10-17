@@ -10,7 +10,7 @@
  Target Server Version : 3045000 (3.45.0)
  File Encoding         : 65001
 
- Date: 20/08/2026 10:18:57
+ Date: 16/10/2026 12:12:48
 */
 
 PRAGMA foreign_keys = false;
@@ -95,6 +95,22 @@ CREATE TABLE "Authorize_OAuth" (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for Authorize_Reward
+-- ----------------------------
+DROP TABLE IF EXISTS "Authorize_Reward";
+CREATE TABLE "Authorize_Reward" (
+  "tszUserName" TEXT,
+  "tszUserReferrer" TEXT,
+  "nRewardType" integer,
+  "nRewardOff" integer,
+  "tszCreateTime" DATE
+);
+
+-- ----------------------------
+-- Records of Authorize_Reward
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for Authorize_Serial
 -- ----------------------------
 DROP TABLE IF EXISTS "Authorize_Serial";
@@ -154,7 +170,7 @@ CREATE TABLE "Authorize_User" (
 -- ----------------------------
 -- Records of Authorize_User
 -- ----------------------------
-INSERT INTO "Authorize_User" VALUES (1, 'admin', '123123aa', '5', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
+INSERT INTO "Authorize_User" VALUES (1, 'admin', '123123aa', '99690', '486179@qq.com', 'DAFD2A2DAD', 1, 13699430000, 511025198881118888, 0, 0, '2022-09-21 15:06:45', '2022-09-21 15:06:45');
 
 -- ----------------------------
 -- Table structure for sqlite_sequence
@@ -170,9 +186,9 @@ CREATE TABLE "sqlite_sequence" (
 -- ----------------------------
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedUser', 1);
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_BannedAddr', 1);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_TempVer', 1);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_TempVer', 41);
 INSERT INTO "sqlite_sequence" VALUES ('Authorize_Serial', 1);
-INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 1);
+INSERT INTO "sqlite_sequence" VALUES ('Authorize_User', 6);
 
 -- ----------------------------
 -- Auto increment value for Authorize_BannedAddr

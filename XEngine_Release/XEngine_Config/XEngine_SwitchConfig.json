@@ -13,5 +13,6 @@
     "bSwitchBanned": true,
     "bSwitchTokenLogin": true,
     "bSwitchHCLogin": true,
-    "bSwitchHWBind": false
+    "bSwitchHWBind": false,
+    "bSwitchReward": true
 }

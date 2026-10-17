@@ -55,4 +55,6 @@ public:
 	CButton m_RadioHCLoginClose;
 	CButton m_RadioHWBindOPen;
 	CButton m_RadioHWBindClose;
+	CButton m_RadioRewardOPen;
+	CButton m_RadioRewardClose;
 };

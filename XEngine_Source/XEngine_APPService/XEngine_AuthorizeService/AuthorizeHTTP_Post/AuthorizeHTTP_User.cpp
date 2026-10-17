@@ -109,6 +109,47 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，用户名或IP地址已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
 			return false;
 		}
+		//是否有奖励人
+		if (_tcsxlen(st_UserTable.tszReferrer) > 0 && st_AuthConfig.st_XReward.bEnable && st_FunSwitch.bSwitchReward)
+		{
+			AUTHREG_USERTABLE st_ReferTable = {};
+			if (0 == st_AuthConfig.st_XSql.nDBType)
+			{
+				bSuccess = DBModule_SQLite_UserQuery(st_UserTable.tszReferrer, &st_ReferTable);
+			}
+			else
+			{
+				bSuccess = DBModule_MySQL_UserQuery(st_UserTable.tszReferrer, &st_ReferTable);
+			}
+			if (bSuccess)
+			{
+				if (0 == st_AuthConfig.st_XReward.nType)
+				{
+					__int64x nLeftTime = _ttxoll(st_ReferTable.tszLeftTime);
+					nLeftTime += st_AuthConfig.st_XReward.nValue;
+					_xstprintf(st_ReferTable.tszLeftTime, _X("%lld"), nLeftTime);
+
+					AUTHREG_REWARD st_UserReward = {};
+					st_UserReward.nRewardType = st_AuthConfig.st_XReward.nType;
+					st_UserReward.nRewardOff = st_AuthConfig.st_XReward.nValue;
+					_tcsxcpy(st_UserReward.tszUserName, st_UserTable.st_UserInfo.tszUserName);
+					_tcsxcpy(st_UserReward.tszReferrer, st_UserTable.tszReferrer);
+
+					if (0 == st_AuthConfig.st_XSql.nDBType)
+					{
+						DBModule_SQLite_UserSet(&st_ReferTable);
+						DBModule_SQLite_RewardInsert(&st_UserReward);
+					}
+					else
+					{
+						DBModule_MySQL_UserSet(&st_ReferTable);
+						DBModule_MySQL_RewardInsert(&st_UserReward);
+					}
+					XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，推荐人奖励:%s 成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, st_UserTable.tszReferrer);
+				}
+			}
+		}
+		
 		//填充写入数据
 		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{

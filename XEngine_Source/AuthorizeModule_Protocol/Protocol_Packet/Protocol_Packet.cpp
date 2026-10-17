@@ -493,7 +493,6 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OnClient)[i]->st_UserTable.st_UserInfo.nUserLevel;
 		st_JsonUser["nUserState"] = 1;
-		st_JsonUser["nTimeCount"] = (Json::Value::Int64)(*pppSt_OnClient)[i]->st_UserTable.nTimeCount;
 
 		st_JsonObject["tszClientAddr"] = (*pppSt_OnClient)[i]->tszClientAddr;
 		st_JsonObject["tszLeftTime"] = (*pppSt_OnClient)[i]->tszLeftTime;
@@ -503,6 +502,8 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		st_JsonObject["tszHardCode"] = (*pppSt_OnClient)[i]->st_UserTable.tszHardCode;
 		st_JsonObject["enSerialType"] = (*pppSt_OnClient)[i]->st_UserTable.enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OnClient)[i]->st_UserTable.enDeviceType;
+		st_JsonObject["nTimeCount"] = (Json::Value::Int64)(*pppSt_OnClient)[i]->st_UserTable.nTimeCount;
+		st_JsonObject["tszReferrer"] = (*pppSt_OnClient)[i]->st_UserTable.tszReferrer;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
@@ -534,13 +535,14 @@ bool CProtocol_Packet::Protocol_Packet_HttpClientList(XCHAR* ptszMsgBuffer, int*
 		st_JsonUser["nPhoneNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nPhoneNumber;
 		st_JsonUser["nIDNumber"] = (Json::Value::UInt64)(*pppSt_OffClient)[i]->st_UserInfo.nIDNumber;
 		st_JsonUser["nUserLevel"] = (*pppSt_OffClient)[i]->st_UserInfo.nUserLevel;
-		st_JsonUser["nTimeCount"] = (Json::Value::Int64)(*pppSt_OffClient)[i]->nTimeCount;
 		st_JsonUser["nUserState"] = 0;
 
 		st_JsonObject["tszLeftTime"] = (*pppSt_OffClient)[i]->tszLeftTime;
 		st_JsonObject["tszHardCode"] = (*pppSt_OffClient)[i]->tszHardCode;
 		st_JsonObject["enSerialType"] = (*pppSt_OffClient)[i]->enSerialType;
 		st_JsonObject["enDeviceType"] = (*pppSt_OffClient)[i]->enDeviceType;
+		st_JsonObject["nTimeCount"] = (Json::Value::Int64)(*pppSt_OffClient)[i]->nTimeCount;
+		st_JsonObject["tszReferrer"] = (*pppSt_OffClient)[i]->tszReferrer;
 		st_JsonObject["st_UserInfo"] = st_JsonUser;
 		st_JsonArray.append(st_JsonObject);
 	}
@@ -738,6 +740,7 @@ bool CProtocol_Packet::Protocol_Packet_HttpSwitch(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["bSwitchTokenLogin"] = pSt_FunSwitch->bSwitchTokenLogin;
 	st_JsonRoot["bSwitchHCLogin"] = pSt_FunSwitch->bSwitchHCLogin;
 	st_JsonRoot["bSwitchHWBind"] = pSt_FunSwitch->bSwitchHWBind;
+	st_JsonRoot["bSwitchReward"] = pSt_FunSwitch->bSwitchReward;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
@@ -1065,6 +1068,66 @@ bool CProtocol_Packet::Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pIn
 	st_JsonRoot["refresh_token"] = pSt_OAuthInfo->tszUPToken;
 	st_JsonRoot["token_type"] = "Bearer";
 	st_JsonRoot["expires_in"] = pSt_OAuthInfo->nExpirationTime;
+
+	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
+	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);
+	return true;
+}
+/********************************************************************
+函数名称：Protocol_Packet_HttpReward
+函数功能：打包奖励系统列表
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pppSt_Reward
+  In/Out：In
+  类型：三级指针
+  可空：N
+  意思：输入要处理的列表
+ 参数.四：nListCount
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入个数
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+bool CProtocol_Packet::Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount)
+{
+	Protocol_IsErrorOccur = false;
+
+	if ((NULL == ptszMsgBuffer) || (NULL == pInt_MsgLen))
+	{
+		Protocol_IsErrorOccur = true;
+		Protocol_dwErrorCode = ERROR_AUTHORIZE_MODULE_PROTOCOL_PARAMENT;
+		return false;
+	}
+	Json::Value st_JsonRoot;
+	Json::Value st_JsonArray;
+
+	for (int i = 0; i < nListCount; i++)
+	{
+		Json::Value st_JsonObject;
+		st_JsonObject["nRewardType"] = (Json::Value::Int64)(*pppSt_Reward)[i]->nRewardType;
+		st_JsonObject["nRewardType"] = (*pppSt_Reward)[i]->nRewardType;
+		st_JsonObject["tszCreateTime"] = (*pppSt_Reward)[i]->tszCreateTime;
+		st_JsonObject["tszReferrer"] = (*pppSt_Reward)[i]->tszReferrer;
+		st_JsonObject["tszUserName"] = (*pppSt_Reward)[i]->tszUserName;
+		st_JsonArray.append(st_JsonObject);
+	}
+	st_JsonRoot["msg"] = "success";
+	st_JsonRoot["code"] = 0;
+	st_JsonRoot["Count"] = st_JsonArray.size();
+	st_JsonRoot["Array"] = st_JsonArray;
 
 	*pInt_MsgLen = st_JsonRoot.toStyledString().length();
 	memcpy(ptszMsgBuffer, st_JsonRoot.toStyledString().c_str(), *pInt_MsgLen);

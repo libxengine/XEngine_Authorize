@@ -1,17 +1,17 @@
 /*
  Navicat Premium Dump SQL
 
- Source Server         : QQCloud
+ Source Server         : Azero
  Source Server Type    : MySQL
- Source Server Version : 80046 (8.0.46-0ubuntu0.24.04.3)
- Source Host           : 118.25.14.242:3306
- Source Schema         : authorize
+ Source Server Version : 80411 (8.4.11-0ubuntu0.26.04.1)
+ Source Host           : 192.168.31.66:3306
+ Source Schema         : XEngine_Authorize
 
  Target Server Type    : MySQL
- Target Server Version : 80046 (8.0.46-0ubuntu0.24.04.3)
+ Target Server Version : 80411 (8.4.11-0ubuntu0.26.04.1)
  File Encoding         : 65001
 
- Date: 20/08/2026 10:18:42
+ Date: 16/10/2026 12:17:48
 */
 
 SET NAMES utf8mb4;
@@ -43,7 +43,7 @@ CREATE TABLE `Authorize_BannedAddr`  (
   `tszLeftTime` datetime NULL DEFAULT NULL,
   `tszCreateTime` datetime NOT NULL,
   PRIMARY KEY (`ID`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of Authorize_BannedAddr
@@ -92,10 +92,28 @@ CREATE TABLE `Authorize_OAuth`  (
   `tszClientKey` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `nExpirationTime` int NOT NULL,
   `tszCreateTime` datetime NOT NULL
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of Authorize_OAuth
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for Authorize_Reward
+-- ----------------------------
+DROP TABLE IF EXISTS `Authorize_Reward`;
+CREATE TABLE `Authorize_Reward`  (
+  `tszUserName` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `tszUserReferrer` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `nRewardType` int NULL DEFAULT NULL,
+  `nRewardOff` int NULL DEFAULT NULL,
+  `tszCreateTime` datetime NULL DEFAULT NULL,
+  INDEX `idx_UserName`(`tszUserName` ASC) USING BTREE,
+  INDEX `idx_UserReferrer`(`tszUserReferrer` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of Authorize_Reward
 -- ----------------------------
 
 -- ----------------------------

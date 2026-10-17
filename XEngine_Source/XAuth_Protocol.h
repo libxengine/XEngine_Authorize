@@ -81,6 +81,7 @@ typedef struct tag_AuthReg_UserTable
 	XCHAR tszADDInfo[2048];                                                //附加信息
 	XCHAR tszLeftTime[64];                                                 //剩余日期
 	XCHAR tszHardCode[32];                                                 //硬件码
+	XCHAR tszReferrer[XENGINE_AUTHREG_SERVICE_SQL_MAX_USERNAME];           //推荐人
 	__int64u nTimeCount;											       //在线时间
 	ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType;                     //充值卡类型
 	ENUM_PROTOCOLDEVICE_TYPE enDeviceType;                                 //设备类型
@@ -135,3 +136,12 @@ typedef struct
 	XCHAR tszCreateTime[64];                                              //创建时间
 	int nExpirationTime;                                                  //过期时间
 }AUTHREG_OAUTHINFO;
+//奖励系统
+typedef struct
+{
+	XCHAR tszUserName[64];                                               //用户名
+	XCHAR tszReferrer[64];                                               //推荐人
+	XCHAR tszCreateTime[64];                                              //创建时间
+	int nRewardType;                                                      //奖励类型
+	int nRewardOff;                                                       //奖励折扣
+}AUTHREG_REWARD;

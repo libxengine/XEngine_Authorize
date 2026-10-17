@@ -54,6 +54,8 @@ void CDialog_Switch::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_RADIO26, m_RadioHCLoginClose);
 	DDX_Control(pDX, IDC_RADIO27, m_RadioHWBindOPen);
 	DDX_Control(pDX, IDC_RADIO28, m_RadioHWBindClose);
+	DDX_Control(pDX, IDC_RADIO29, m_RadioRewardOPen);
+	DDX_Control(pDX, IDC_RADIO30, m_RadioRewardClose);
 }
 
 
@@ -270,6 +272,16 @@ void CDialog_Switch::OnBnClickedButton1()
 			m_RadioHWBindOPen.SetCheck(BST_UNCHECKED);
 			m_RadioHWBindClose.SetCheck(BST_CHECKED);
 		}
+		if (st_JsonRoot["bSwitchReward"].asBool())
+		{
+			m_RadioRewardOPen.SetCheck(BST_CHECKED);
+			m_RadioRewardClose.SetCheck(BST_UNCHECKED);
+		}
+		else
+		{
+			m_RadioRewardOPen.SetCheck(BST_UNCHECKED);
+			m_RadioRewardClose.SetCheck(BST_CHECKED);
+		}
 		m_BtnSetConfigure.EnableWindow(true);
 	}
 	else
@@ -419,6 +431,14 @@ void CDialog_Switch::OnBnClickedButton2()
 	else
 	{
 		st_JsonObject["bSwitchHWBind"] = false;
+	}
+	if (BST_CHECKED == m_RadioRewardOPen.GetCheck())
+	{
+		st_JsonObject["bSwitchReward"] = true;
+	}
+	else
+	{
+		st_JsonObject["bSwitchReward"] = false;
 	}
 	st_JsonRoot["st_SwitchInfo"] = st_JsonObject;
 	st_JsonRoot["xhToken"] = _ttoll(m_StrToken.GetBuffer());

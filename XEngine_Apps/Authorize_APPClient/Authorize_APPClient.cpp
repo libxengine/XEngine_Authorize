@@ -36,21 +36,22 @@ using namespace std;
 //Linux::g++ -std=c++17 -Wall -g Authorize_APPClient.cpp -o Authorize_APPClient.exe -I ../../XEngine_Source/XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../../XEngine_Release -lXEngine_Cryption -lXClient_Socket  -lXEngine_BaseLib -lXClient_APIHelp -lpthread -ljsoncpp -Wl,-rpath=../../XEngine_Release
 
 //#define _DYNAMIC_CODE
-#define _PASS_ENCRYPT
+//#define _PASS_ENCRYPT
 bool bRun = true;
 bool bLogin = true;
 bool bTimeOut = true;
-bool bEncrypto = true;
+bool bEncrypto = false;
 bool bHeart = true;
 XNETHANDLE xhToken = 0;
 int nDYCode = 0;
 
 XSOCKET m_Socket = 0;
-LPCXSTR lpszUser = _X("123123aa");
+LPCXSTR lpszUser = _X("aaadddzxc");
 LPCXSTR lpszPass = _X("123123aa");
 LPCXSTR lpszHWCode = _X("2FDWAD02JD2091");
 LPCXSTR lpszSerial = _X("Y5V0Y-03O2L-E7G8Y-NX1DR-3EGVO-UDIRQ-GBBKO-FGX0C");
 LPCXSTR lpszEmail = _X("486179@qq.com");
+LPCXSTR lpszReferrer = _X("123123aa");
 __int64x nPhoneNumber = 1366666666;
 __int64x nIDNumber = 511025111111111111;
 
@@ -146,6 +147,7 @@ int AuthClient_Register()
 	st_JsonUserInfo["nUserLevel"] = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_USER;
 
 	st_JsonUserTable["tszHardCode"] = lpszHWCode;
+	st_JsonUserTable["tszReferrer"] = lpszReferrer;
 	st_JsonUserTable["st_UserInfo"] = st_JsonUserInfo;
 
 	st_JsonRoot["st_UserTable"] = st_JsonUserTable;

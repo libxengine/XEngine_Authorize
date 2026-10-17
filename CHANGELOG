@@ -1,3 +1,39 @@
+XEngine_Authorize V3.25.0.1001
+
+ci:更新了流程版本库为最新版本
+ci:删除了无用的步骤和centos构建
+ci:修改了内部构建拉取框架方法
+ci:增加了opensuse和freebsd以及debian arm64支持
+ci:调整fedora构建
+增加:推荐奖励系统并且支持开关和推荐人奖励
+增加:自动清理登录时间记录
+更新:依赖库
+修改:oauth 验证协议支持
+修改:使用新的sql函数
+修改:数据库类型错误
+修正:在处理多查询的时候数据库mysql查询处理数据库不正确
+修正:错误的头处理
+修正:启动参数循环问题
+修正:写入数据库用户在线时间统计问题
+修正:客户端查询没有时间统计和推荐人的问题
+
+ci:update workflow to last version
+ci:delete unused step and Centos_build
+ci:modify xengine framework use download file instead git clone
+ci:added opensuse and freebsd and debian arm64 build
+ci:adjust fedora build
+added:reward management and switch and referrer support
+added:auto clear login time record
+update:depend library
+modify:introspect for oauth support
+modify:use new function names for xengine of sql
+modify:type is incorrect for database module
+fixed:The Problem of Incorrect Data Processing When Enumerating Multiple Rows in MySQL
+fixed:Missing header guard
+fixed:for loop variable changed in body
+fixed:write database user online time count incorrect
+fixed:client query have no time count and referrer 
+================================================================
 XEngine_Authorize V3.24.0.1001
 
 增加:创建客户端ID和KEY支持

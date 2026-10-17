@@ -6,16 +6,17 @@ on:
 engine:
   id: copilot
   env:
-    COPILOT_PROVIDER_BASE_URL: "https://ark.cn-beijing.volces.com/api/v3"
+    COPILOT_PROVIDER_BASE_URL: ${{ vars.MODEL_AI_AGENT_ADDR }}
     COPILOT_PROVIDER_BEARER_TOKEN: ${{ secrets.OPENAI_API_KEY }}
-    COPILOT_MODEL: doubao-seed-evolving
-    COPILOT_PROVIDER_TYPE: openai
-    COPILOT_PROVIDER_WIRE_API: responses
+    COPILOT_MODEL: ${{ vars.MODEL_AI_AGENT_NAME }}
+    COPILOT_PROVIDER_TYPE: ${{ vars.MODEL_AI_AGENT_TYPE }}
+    COPILOT_PROVIDER_WIRE_API: ${{ vars.MODEL_AI_AGENT_API }}
 
 features:
-  dangerously-disable-sandbox-agent: "controlled environment for issue triage automation"
+  dangerously-disable-sandbox-agent: true
 sandbox:
   agent: false
+  
 strict: false
 
 network:
@@ -25,7 +26,7 @@ network:
 
 tools:
   github:
-    min-integrity: none
+    min-integrity: approved
 
 permissions:
   contents: read
@@ -44,14 +45,14 @@ safe-outputs:
 
 # 自动处理 Issue
 
-当 Issue 被打上 `bug` 或 `enhancement` 或 `feature` 标签时触发。其他标签直接退出，不做任何操作。
+当 Issue type 被打上 `bug` 或 `feature` 或 `task` 标签时触发。其他标签直接退出，不做任何操作。
 
 ## 判断任务类型
 
 读取 Issue #${{ github.event.issue.number }} 当前的标签：
 - 如果包含 `bug` 标签 → 执行【Bug 修复流程】
 - 如果包含 `feature` 标签 → 执行【新功能开发流程】
-- 如果包含 `enhancement` 标签 → 执行【功能改进开发流程】
+- 如果包含 `task` 标签 → 执行【功能改进开发流程】
 - 其他情况 → 直接退出
 
 ## 任务执行限制

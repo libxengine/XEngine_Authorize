@@ -10,7 +10,7 @@ LIB = -lXEngine_InfoReport -ljsoncpp -lXEngine_Verification -lXEngine_MSGNotify 
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help
 LIBEX = 
 OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o Authorize_MQTTTask.o XEngine_AuthorizeService.o \
-          AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o AuthorizeHTTP_OAuth.o \
+          AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o AuthorizeHTTP_OAuth.o AuthorizeHTTP_Reward.o \
           AuthorizeHTTP_Token.o AuthorizeHTTP_GetTask.o
 
 ifeq ($(RELEASE),1)
@@ -18,6 +18,9 @@ FLAGS = -c -D _RELEASE
 DEBUG = -O2
 else
 	ifeq ($(PLATFORM),mac)
+		FLAGS = -c
+		DEBUG = -g -D _DEBUG
+	else ifeq ($(PLATFORM),freebsd)
 		FLAGS = -c
 		DEBUG = -g -D _DEBUG
 	else
@@ -49,6 +52,12 @@ else ifeq ($(PLATFORM),mac)
 	LIBFLAG = -dynamiclib
 	LIBEX = -lpthread -ldl
 	LOADBIN = -Wl,-rpath,@loader_path/./
+else ifeq ($(PLATFORM),freebsd)
+	PLATVER = -D __FREEBSD__
+	FILEEXT = so
+	LIBFLAG = -shared
+	LIBEX += -lrt -ldl -lpthread
+	LOADBIN = -Wl,-rpath=./,--disable-new-dtags
 endif
 
 all:$(OBJECTS)
@@ -89,6 +98,8 @@ AuthorizeHTTP_Try.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Try.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_Try.cpp
 AuthorizeHTTP_OAuth.o:./AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.cpp
+AuthorizeHTTP_Reward.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Reward.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_Reward.cpp
 
 AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp

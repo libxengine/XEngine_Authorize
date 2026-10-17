@@ -175,7 +175,7 @@ void CDialog_User::OnBnClickedButton1()
 		m_ListCtrlClient.SetItemText(i, 6, A2W(lpszXSerialType[st_JsonArray["enSerialType"].asInt()]));
 		m_ListCtrlClient.SetItemText(i, 7, A2W(lpszXDevType[st_JsonArray["enDeviceType"].asInt()]));
 		m_ListCtrlClient.SetItemText(i, 8, lpszStuType[st_JsonObject["nUserState"].asInt()]);
-		m_ListCtrlClient.SetItemText(i, 9, std::to_wstring(st_JsonObject["nTimeCount"].asInt64()).c_str());
+		m_ListCtrlClient.SetItemText(i, 9, std::to_wstring(st_JsonArray["nTimeCount"].asInt64()).c_str());
 	}
 	BaseLib_Memory_FreeCStyle((XPPMEM)&ptszMsgBuffer);
 	UpdateWindow();

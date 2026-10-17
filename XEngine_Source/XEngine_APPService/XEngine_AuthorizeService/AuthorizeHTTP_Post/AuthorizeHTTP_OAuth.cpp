@@ -112,6 +112,35 @@ bool XEngine_AuthorizeHTTP_OAuth(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, LP
 		XEngine_Client_TaskSend(lpszClientAddr, NULL, 0, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求撤销删除OAuth的token成功,撤销的token:%s"), lpszClientAddr, st_OAuthInfo.tszTokenStr);
 	}
-	
+	else if (0 == _tcsxncmp(lpszAPIIntrospect, lpszAPIName, _tcsxlen(lpszAPIIntrospect)))
+	{
+		//http://127.0.0.1:5302/api/oauth/introspect  检查
+		AUTHREG_OAUTHINFO st_OAuthInfo = {};
+		VERIFICATION_OAUTHINFO st_VerificationInfo = {};
+		Verification_OAuth_Parse(&st_VerificationInfo, NULL, lpszMSGBuffer);
+
+		_tcsxcpy(st_OAuthInfo.tszClientID, st_VerificationInfo.tszClientID);
+		_tcsxcpy(st_OAuthInfo.tszClientKey, st_VerificationInfo.tszClientSecert);
+
+		bool bRet = false;
+		if (0 == st_AuthConfig.st_XSql.nDBType)
+		{
+			bRet = DBModule_SQLite_OAuthQuery(&st_OAuthInfo);
+		}
+		else
+		{
+			bRet = DBModule_MySQL_OAuthQuery(&st_OAuthInfo);
+		}
+		if (!bRet)
+		{
+			LPCXSTR lpszTokenFailure = _X("{\"active\": false}");
+			XEngine_Client_TaskSend(lpszClientAddr, lpszTokenFailure, _tcsxlen(lpszTokenFailure), XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端:%s,请求验证OAuth的秘钥失败,可能秘钥ID:%s Key:%s 错误：%lX"), lpszClientAddr, st_OAuthInfo.tszClientID, st_OAuthInfo.tszClientKey, DBModule_GetLastError());
+			return false;
+		}
+		LPCXSTR lpszTokenSuccess = _X("{\"active\": true}");
+		XEngine_Client_TaskSend(lpszClientAddr, lpszTokenSuccess, _tcsxlen(lpszTokenSuccess), XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求验证OAuth的秘钥成功,验证的秘钥ID:%s Key:%s"), lpszClientAddr, st_OAuthInfo.tszClientID, st_OAuthInfo.tszClientKey);
+	}
 	return true;
 }

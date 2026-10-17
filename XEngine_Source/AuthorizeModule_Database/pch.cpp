@@ -171,6 +171,18 @@ extern "C" bool DBModule_SQLite_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
 {
 	return m_DBSQLite.DBModule_SQLite_OAuthQuery(pSt_OAuthInfo);
 }
+extern "C" bool DBModule_SQLite_RewardInsert(AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBSQLite.DBModule_SQLite_RewardInsert(pSt_Reward);
+}
+extern "C" bool DBModule_SQLite_RewardDelete(AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBSQLite.DBModule_SQLite_RewardDelete(pSt_Reward);
+}
+extern "C" bool DBModule_SQLite_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBSQLite.DBModule_SQLite_RewardList(pppSt_Reward, pInt_ListCount, pSt_Reward);
+}
 /************************************************************************/
 /*                      MYSQL数据库服务导出函数                         */
 /************************************************************************/
@@ -313,4 +325,16 @@ extern "C" bool DBModule_MySQL_OAuthUPDate(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
 extern "C" bool DBModule_MySQL_OAuthQuery(AUTHREG_OAUTHINFO* pSt_OAuthInfo)
 {
 	return m_DBMySQL.DBModule_MySQL_OAuthQuery(pSt_OAuthInfo);
+}
+extern "C" bool DBModule_MySQL_RewardInsert(AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBMySQL.DBModule_MySQL_RewardInsert(pSt_Reward);
+}
+extern "C" bool DBModule_MySQL_RewardList(AUTHREG_REWARD*** pppSt_Reward, int* pInt_ListCount, AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBMySQL.DBModule_MySQL_RewardList(pppSt_Reward, pInt_ListCount, pSt_Reward);
+}
+extern "C" bool DBModule_MySQL_RewardDelete(AUTHREG_REWARD* pSt_Reward)
+{
+	return m_DBMySQL.DBModule_MySQL_RewardDelete(pSt_Reward);
 }
