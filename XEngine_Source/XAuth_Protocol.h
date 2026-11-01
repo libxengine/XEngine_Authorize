@@ -50,6 +50,7 @@
 #define ERROR_AUTHORIZE_PROTOCOL_EXPIRED 0x117                            //已经过期
 #define ERROR_AUTHORIZE_PROTOCOL_CDKEY 0x118                              //CDKEY错误
 #define ERROR_AUTHORIZE_PROTOCOL_PARSE 0x119                              //协议解析错误
+#define ERROR_AUTHORIZE_PROTOCOL_REQLIMIT 0x120                              //请求被限制
 //////////////////////////////////////////////////////////////////////////
 #define ERROR_AUTHORIZE_PROTOCOL_SERVER 0x201                             //服务端内部错误
 #define ERROR_AUTHORIZE_PROTOCOL_LIMIT 0x202                              //服务端内部限制,数据过大后者过小

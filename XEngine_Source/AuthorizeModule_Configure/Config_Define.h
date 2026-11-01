@@ -127,7 +127,15 @@ typedef struct
 		int nLogLeave;                                      //日志级别
 		int nLogType;                                      //日志类型
 		bool bLogStorage;                                   //强日志
-	}st_XLog;         
+	}st_XLog;        
+	struct 
+	{
+		struct 
+		{
+			bool bEnable;
+			int nLimitValue;
+		}st_RegisterLimit;
+	}st_XLimit;
 	struct
 	{
 		struct 

@@ -19,6 +19,12 @@
     <Filter Include="源文件\Session_Authorize">
       <UniqueIdentifier>{98019e80-6680-48fa-a755-702b5b3aab78}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\Session_IPAddress">
+      <UniqueIdentifier>{c8fa1749-53c1-4256-8893-a19501085725}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\Session_IPAddress">
+      <UniqueIdentifier>{d5cd9309-70fb-430a-addd-cb745b322e44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -36,6 +42,9 @@
     <ClInclude Include="Session_Authorize\Session_Authorize.h">
       <Filter>头文件\Session_Authorize</Filter>
     </ClInclude>
+    <ClInclude Include="Session_IPAddress\Session_IPAddress.h">
+      <Filter>头文件\Session_IPAddress</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -46,6 +55,9 @@
     </ClCompile>
     <ClCompile Include="Session_Authorize\Session_Authorize.cpp">
       <Filter>源文件\Session_Authorize</Filter>
+    </ClCompile>
+    <ClCompile Include="Session_IPAddress\Session_IPAddress.cpp">
+      <Filter>源文件\Session_IPAddress</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

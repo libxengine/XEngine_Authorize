@@ -38,7 +38,7 @@ void ServiceApp_Stop(int signo)
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
 		MQTTProtocol_Parse_Destory();
-
+		
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
@@ -59,6 +59,8 @@ void ServiceApp_Stop(int signo)
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		Session_IPAddress_Destroy();
+
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
@@ -219,6 +221,16 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化内存池成功"));
 
+	//限制配置
+	if (st_AuthConfig.st_XLimit.st_RegisterLimit.bEnable)
+	{
+		if (!Session_IPAddress_Init(XEngine_TaskEvent_LimitIPAddr, st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化注册限制配置失败，错误：%lX"), Session_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化注册限制配置成功,时间限制:%d 秒"), st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue);
+	}
 	/***********  初始化 MySql/DB数据库  ***********/
 	if (0 == st_AuthConfig.st_XSql.nDBType)
 	{ //SQLite数据库
@@ -603,6 +615,8 @@ XENGINE_EXITAPP:
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		Session_IPAddress_Destroy();
+
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{

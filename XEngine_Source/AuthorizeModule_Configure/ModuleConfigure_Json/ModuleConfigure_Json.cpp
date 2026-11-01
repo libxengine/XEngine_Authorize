@@ -216,6 +216,17 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.bLogStorage = st_JsonXLog["bLogStorage"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszKeyFile, st_JsonXLog["tszKeyFile"].asCString());
+	//限制配置
+	if (st_JsonRoot["XLimit"].empty())
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_LIMIT;
+		return false;
+	}
+	Json::Value st_JsonXLimit = st_JsonRoot["XLimit"];
+	Json::Value st_JsonXLimitRegister = st_JsonXLimit["st_RegisterLimit"];
+	pSt_ServerConfig->st_XLimit.st_RegisterLimit.bEnable = st_JsonXLimitRegister["bEnable"].asBool();
+	pSt_ServerConfig->st_XLimit.st_RegisterLimit.nLimitValue = st_JsonXLimitRegister["nLimitValue"].asInt();
 	//信息通知
 	if (st_JsonRoot["XNotify"].empty())
 	{

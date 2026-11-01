@@ -26,7 +26,7 @@ typedef struct
 //////////////////////////////////////////////////////////////////////////
 //用户在线时间事件回调处理函数，用户名 在线时间 剩余时间（分,天） 注册的卡类型 自定义参数
 typedef void(XCALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_CLIENT_EVENTS)(LPCXSTR lpszUserAddr, LPCXSTR lpszUserName, __int64x nOnlineTimer, __int64x nLeftTimer, LPCXSTR lpszLeftDate, ENUM_VERIFICATION_MODULE_SERIAL_TYPE enSerialType, ENUM_PROTOCOLDEVICE_TYPE enDeviceType, int nNetType, XPVOID lParam);
-typedef void(XCALLBACK* CALLBACK_XENGIEN_AUTHORIZE_SESSION_TOKEN_EVENTS)(XNETHANDLE xhToken, XPVOID lParam);
+typedef void(XCALLBACK* CALLBACK_AUTHORIZE_MODULE_SESSION_IPADDR_EVENTS)(LPCXSTR lpszClientAddr, XPVOID lParam);
 //////////////////////////////////////////////////////////////////////////
 //                         导出的函数
 //////////////////////////////////////////////////////////////////////////
@@ -162,3 +162,81 @@ extern "C" bool Session_Authorize_Insert(LPCXSTR lpszClientAddr, AUTHREG_USERTAB
 备注：
 *********************************************************************/
 extern "C" bool Session_Authorize_SetUser(AUTHREG_USERTABLE* pSt_UserTable);
+/************************************************************************/
+/*                         IP地址会话导出函数                           */
+/************************************************************************/
+/********************************************************************
+函数名称：Session_IPAddress_Init
+函数功能：初始化会话
+ 参数.一：fpCall_IPAddrEvent
+  In/Out：In/Out
+  类型：回调函数
+  可空：N
+  意思：IP地址超出事件
+ 参数.二：nTimeout
+  In/Out：In
+  类型：整数型
+  可空：Y
+  意思：超时时间,单位秒
+ 参数.三：lParam
+  In/Out：In/Out
+  类型：无类型指针
+  可空：Y
+  意思：回调函数自定义参数
+返回值
+  类型：逻辑型
+  意思：是否初始化成功
+备注：
+*********************************************************************/
+extern "C" bool Session_IPAddress_Init(CALLBACK_AUTHORIZE_MODULE_SESSION_IPADDR_EVENTS fpCall_IPAddrEvent, int nTimeout = 10, XPVOID lParam = NULL);
+/********************************************************************
+函数名称：Session_IPAddress_Get
+函数功能：获取IP是否存在
+ 参数.一：lpszIPAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入判断的IP地址
+返回值
+  类型：逻辑型
+  意思：是否存在
+备注：
+*********************************************************************/
+extern "C" bool Session_IPAddress_Get(LPCXSTR lpszIPAddr);
+/********************************************************************
+函数名称：Session_IPAddress_Insert
+函数功能：插入IP地址到IP限定管理器
+ 参数.一：lpszClientAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入IP地址端口
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Session_IPAddress_Insert(LPCXSTR lpszClientAddr);
+/********************************************************************
+函数名称：Session_IPAddress_Close
+函数功能：移除一个客户端
+ 参数.一：lpszClientAddr
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：要移除的地址
+返回值
+  类型：逻辑型
+  意思：是否移除成功
+备注：
+*********************************************************************/
+extern "C" bool Session_IPAddress_Close(LPCXSTR lpszClientAddr);
+/********************************************************************
+函数名称：Session_IPAddress_Destroy
+函数功能：销毁服务
+返回值
+  类型：逻辑型
+  意思：是否销毁成功
+备注：
+*********************************************************************/
+extern "C" bool Session_IPAddress_Destroy();
