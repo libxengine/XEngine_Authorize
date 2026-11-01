@@ -24,8 +24,9 @@ XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
 XHANDLE xhMQTTPool = NULL;
 
-XENGINE_SERVICECONFIG st_AuthConfig;
-XENGINE_FUNCTIONSWITCH st_FunSwitch;
+XENGINE_SERVICECONFIG st_AuthConfig = {};
+XENGINE_FUNCTIONSWITCH st_FunSwitch = {};
+AUTHREG_DISCOUNT st_AuthDiscount = {};
 
 void ServiceApp_Stop(int signo)
 {
@@ -173,9 +174,7 @@ int main(int argc, char** argv)
 	LPCXSTR lpszHTTPMime = _X("./XEngine_Config/HttpMime.types");
 	LPCXSTR lpszHTTPCode = _X("./XEngine_Config/HttpCode.types");
 
-	memset(&st_AuthConfig, '\0', sizeof(XENGINE_SERVICECONFIG));
-	memset(&st_FunSwitch, '\0', sizeof(XENGINE_FUNCTIONSWITCH));
-
+	st_AuthDiscount.dlDiscount = 0.0f;
 	if (!Authorize_Service_Parament(argc, argv))
 	{
 		return -1;
@@ -505,7 +504,7 @@ int main(int argc, char** argv)
 				DBModule_SQLite_UserQuery(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable);
 			}
 			//剩余时间
-			int nTimeLeft = nTimeStop - (ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate);
+			int nTimeLeft = int(nTimeStop - (ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate));
 			Session_Token_InsertStr(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable.st_UserInfo, nTimeLeft);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中,用户:%s 绑定TOKEN:%s ,插入会话管理器"), st_UserTable.st_UserInfo.tszUserName, ppSt_OAuthInfo[i]->tszTokenStr);
 		}

@@ -286,23 +286,19 @@ bool CDBModule_MySQL::DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USE
   类型：常量字符指针
   可空：N
   意思：充值使用的序列号
+ 参数.三：dlDiscount
+  In/Out：In
+  类型：浮点型
+  可空：Y
+  意思：dlDiscount > 0.0f 表示使用折扣充值，dlDiscount = 0.0f 表示不使用折扣
 返回值
   类型：逻辑型
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
+bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount)
 {
 	SQLPacket_IsErrorOccur = false;
-	const int nVipUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_VIP;
-
-	AUTHREG_SERIALTABLE st_SerialTable;
-	AUTHREG_USERTABLE st_UserTable;
-	XCHAR tszSQLStatement[1024];    //SQL语句
-
-	memset(tszSQLStatement, '\0', 1024);
-	memset(&st_SerialTable, '\0', sizeof(st_SerialTable));
-	memset(&st_UserTable, '\0', sizeof(st_UserTable));
 	//参数检查
 	if ((NULL == lpszUserName) || (NULL == lpszSerialName))
 	{
@@ -310,6 +306,12 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 		SQLPacket_dwErrorCode = ERROR_AUTHORIZE_MODULE_DATABASE_PARAMENT;
 		return false;
 	}
+	const int nVipUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_VIP;
+
+	AUTHREG_SERIALTABLE st_SerialTable = {};
+	AUTHREG_USERTABLE st_UserTable = {};
+	XCHAR tszSQLStatement[1024] = {};    //SQL语句
+
 	//查询充值卡是否存在
 	if (!DBModule_MySQL_SerialQuery(lpszSerialName, &st_SerialTable))
 	{
@@ -326,6 +328,14 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 	if (!DBModule_MySQL_UserQuery(lpszUserName, &st_UserTable))
 	{
 		return false;
+	}
+	//折扣信息
+	if (dlDiscount > 0.0f)
+	{
+		double dlMaxTime = _ttxof(st_SerialTable.tszMaxTime);
+		dlMaxTime *= dlDiscount;
+
+		_xstprintf(st_SerialTable.tszMaxTime, _X("%lf"), dlMaxTime);
 	}
 	//分析插入方式
 	switch (st_SerialTable.enSerialType)

@@ -93,6 +93,7 @@ extern XHANDLE xhMQTTPool;
 
 extern XENGINE_SERVICECONFIG st_AuthConfig;
 extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
+extern AUTHREG_DISCOUNT st_AuthDiscount;
 
 #include "Authorize_HttpMemory.h"
 #include "Authorize_Config.h"

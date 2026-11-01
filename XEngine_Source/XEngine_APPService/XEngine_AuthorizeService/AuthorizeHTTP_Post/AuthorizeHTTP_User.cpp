@@ -241,11 +241,11 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
 		}
 		else 
 		{
-			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
 		}
 		if (!bSuccess) 
 		{

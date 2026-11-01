@@ -185,7 +185,6 @@ bool CSession_IPAddress::Session_IPAddress_Destroy()
 {
     Session_IsErrorOccur = false;
 
-    bIsRun = false;
     //结束线程
     if (bIsRun)
     {

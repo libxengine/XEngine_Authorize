@@ -140,9 +140,15 @@ typedef struct
 //奖励系统
 typedef struct
 {
-	XCHAR tszUserName[64];                                               //用户名
-	XCHAR tszReferrer[64];                                               //推荐人
+	XCHAR tszUserName[64];                                                //用户名
+	XCHAR tszReferrer[64];                                                //推荐人
 	XCHAR tszCreateTime[64];                                              //创建时间
 	int nRewardType;                                                      //奖励类型
 	int nRewardOff;                                                       //奖励折扣
 }AUTHREG_REWARD;
+//折扣系统
+typedef struct
+{
+	int nType;                                                             //折扣类型
+	double dlDiscount;                                                     //折扣
+}AUTHREG_DISCOUNT;

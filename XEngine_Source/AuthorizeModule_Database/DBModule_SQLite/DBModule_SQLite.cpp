@@ -252,12 +252,17 @@ bool CDBModule_SQLite::DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_U
   类型：常量字符指针
   可空：N
   意思：充值使用的序列号
+ 参数.三：dlDiscount
+  In/Out：In
+  类型：浮点型
+  可空：Y
+  意思：dlDiscount > 0.0f 表示使用折扣充值，dlDiscount = 0.0f 表示不使用折扣
 返回值
   类型：逻辑型
   意思：是否成功充值
 备注：
 *********************************************************************/
-bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
+bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount)
 {
     SQLPacket_IsErrorOccur = false;
     const int nVipUserLevel = ENUM_XENGINE_PROTOCOLHDR_LEVEL_TYPE_VIP;
@@ -292,6 +297,14 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
     if (!DBModule_SQLite_UserQuery(lpszUserName, &st_UserTable))
     {
         return false;
+    }
+    //折扣信息
+    if (dlDiscount > 0.0f)
+    {
+		double dlMaxTime = _ttxof(st_SerialTable.tszMaxTime);
+        dlMaxTime *= dlDiscount;
+
+		_xstprintf(st_SerialTable.tszMaxTime, _X("%lf"), dlMaxTime);
     }
     //分析插入方式
     switch (st_SerialTable.enSerialType)
