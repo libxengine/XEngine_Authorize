@@ -130,7 +130,11 @@ typedef struct
 	}st_XLog;        
 	struct 
 	{
-		struct 
+		double dlPayDiscount;
+	}st_XDiscount;
+	struct
+	{
+		struct
 		{
 			bool bEnable;
 			int nLimitValue;

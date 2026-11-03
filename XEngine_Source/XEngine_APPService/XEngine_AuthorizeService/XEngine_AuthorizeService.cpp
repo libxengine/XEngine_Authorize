@@ -28,7 +28,6 @@ XNETHANDLE xhLimitIPAddr = 0;
 
 XENGINE_SERVICECONFIG st_AuthConfig = {};
 XENGINE_FUNCTIONSWITCH st_FunSwitch = {};
-AUTHREG_DISCOUNT st_AuthDiscount = {};
 
 void ServiceApp_Stop(int signo)
 {
@@ -176,7 +175,6 @@ int main(int argc, char** argv)
 	LPCXSTR lpszHTTPMime = _X("./XEngine_Config/HttpMime.types");
 	LPCXSTR lpszHTTPCode = _X("./XEngine_Config/HttpCode.types");
 
-	st_AuthDiscount.dlDiscount = 0.0f;
 	if (!Authorize_Service_Parament(argc, argv))
 	{
 		return -1;
@@ -564,6 +562,8 @@ int main(int argc, char** argv)
 	}
 #endif
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,OAuth登录支持:%d,硬件码绑定:%d,奖励系统:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchOAuth, st_FunSwitch.bSwitchHWBind, st_FunSwitch.bSwitchReward);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，限制系统,注册:%d"), st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，折扣系统,充值:%lf"), st_AuthConfig.st_XDiscount.dlPayDiscount);
 
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 

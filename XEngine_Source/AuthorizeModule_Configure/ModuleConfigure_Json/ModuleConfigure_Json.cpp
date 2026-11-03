@@ -227,6 +227,15 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	Json::Value st_JsonXLimitRegister = st_JsonXLimit["st_RegisterLimit"];
 	pSt_ServerConfig->st_XLimit.st_RegisterLimit.bEnable = st_JsonXLimitRegister["bEnable"].asBool();
 	pSt_ServerConfig->st_XLimit.st_RegisterLimit.nLimitValue = st_JsonXLimitRegister["nLimitValue"].asInt();
+	//折扣配置
+	if (st_JsonRoot["XDiscount"].empty())
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_DISCOUNT;
+		return false;
+	}
+	Json::Value st_JsonXDiscount = st_JsonRoot["XDiscount"];
+	pSt_ServerConfig->st_XDiscount.dlPayDiscount = st_JsonXDiscount["dlDiscount"].asDouble();
 	//信息通知
 	if (st_JsonRoot["XNotify"].empty())
 	{

@@ -241,11 +241,11 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
+			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 		}
 		else 
 		{
-			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
+			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 		}
 		if (!bSuccess) 
 		{
@@ -282,7 +282,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，消息通知发送失败，错误：%lX"), lpszClientAddr, MSGNotify_GetLastError());
 			}
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s,折扣:%lf"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s,折扣:%lf"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 	}
 	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIPass, _tcsxlen(lpszAPIName)))
 	{
