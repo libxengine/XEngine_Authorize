@@ -24,6 +24,8 @@ XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
 XHANDLE xhMQTTPool = NULL;
 
+XNETHANDLE xhLimitIPAddr = 0;
+
 XENGINE_SERVICECONFIG st_AuthConfig = {};
 XENGINE_FUNCTIONSWITCH st_FunSwitch = {};
 AUTHREG_DISCOUNT st_AuthDiscount = {};
@@ -60,7 +62,7 @@ void ServiceApp_Stop(int signo)
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
-		Session_IPAddress_Destroy();
+		WBlackList_IPV4Addr_Destory(xhLimitIPAddr);
 
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -223,7 +225,7 @@ int main(int argc, char** argv)
 	//限制配置
 	if (st_AuthConfig.st_XLimit.st_RegisterLimit.bEnable)
 	{
-		if (!Session_IPAddress_Init(XEngine_TaskEvent_LimitIPAddr, st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue))
+		if (!WBlackList_IPV4Addr_Init(&xhLimitIPAddr, st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue))
 		{
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化注册限制配置失败，错误：%lX"), Session_GetLastError());
 			goto XENGINE_EXITAPP;
@@ -614,7 +616,7 @@ XENGINE_EXITAPP:
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
-		Session_IPAddress_Destroy();
+		WBlackList_IPV4Addr_Destory(xhLimitIPAddr);
 
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType)

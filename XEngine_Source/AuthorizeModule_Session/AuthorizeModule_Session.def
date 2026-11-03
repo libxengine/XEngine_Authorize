@@ -10,9 +10,3 @@ EXPORTS
 	Session_Authorize_Destroy
 	Session_Authorize_Insert
 	Session_Authorize_SetUser
-
-	Session_IPAddress_Init
-	Session_IPAddress_Get
-	Session_IPAddress_Insert
-	Session_IPAddress_Close
-	Session_IPAddress_Destroy

@@ -149,6 +149,7 @@ typedef struct
 //折扣系统
 typedef struct
 {
+	XCHAR tszUserName[XPATH_MIN];
 	int nType;                                                             //折扣类型
 	double dlDiscount;                                                     //折扣
 }AUTHREG_DISCOUNT;

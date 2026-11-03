@@ -36,6 +36,7 @@ public:
 	bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_ANNOUNCEMENT* pSt_Announcement);
 	bool Protocol_Parse_HttpParseOAuth(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_OAUTHINFO* pSt_UserAuth);
 	bool Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_REWARD* pSt_Reward);
+	bool Protocol_Parse_HttpParseDiscount(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_DISCOUNT* pSt_Discount);
 protected:
 private:
 };

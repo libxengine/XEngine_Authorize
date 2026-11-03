@@ -37,3 +37,4 @@ EXPORTS
 	Protocol_Parse_HttpParseBanned2
 	Protocol_Parse_HttpParseAnnouncement
 	Protocol_Parse_HttpParseReward
+	Protocol_Parse_HttpParseDiscount

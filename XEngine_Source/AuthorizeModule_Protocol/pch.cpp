@@ -166,3 +166,7 @@ extern "C" bool Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLe
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseReward(lpszMsgBuffer, nMsgLen, pSt_Reward);
 }
+extern "C" bool Protocol_Parse_HttpParseDiscount(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_DISCOUNT* pSt_Discount)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseDiscount(lpszMsgBuffer, nMsgLen, pSt_Discount);
+}

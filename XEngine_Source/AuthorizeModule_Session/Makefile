@@ -6,7 +6,7 @@ LOADHDR = -I ./
 LOADSO =
 LIB = -lXEngine_BaseLib -lNetHelp_APIAddr
 LIBEX = 
-OBJECTS = Session_Authorize.o Session_IPAddress.o pch.o
+OBJECTS = Session_Authorize.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE 
@@ -61,8 +61,6 @@ all:$(OBJECTS)
 
 Session_Authorize.o:./Session_Authorize/Session_Authorize.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./Session_Authorize/Session_Authorize.cpp
-Session_IPAddress.o:./Session_IPAddress/Session_IPAddress.cpp
-	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./Session_IPAddress/Session_IPAddress.cpp
 
 pch.o:pch.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) pch.cpp

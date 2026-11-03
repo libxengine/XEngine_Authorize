@@ -108,7 +108,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			return false;
 		}
 		//IP地址是否被限制
-		if (Session_IPAddress_Get(lpszClientAddr))
+		if (WBlackList_IPV4Addr_IsExistBlack(xhLimitIPAddr, lpszClientAddr))
 		{
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQLIMIT, "request is limited");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
@@ -196,7 +196,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;
 		}
-		Session_IPAddress_Insert(lpszClientAddr);
+		WBlackList_IPV4Addr_Add(xhLimitIPAddr, lpszClientAddr);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
@@ -282,7 +282,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，消息通知发送失败，错误：%lX"), lpszClientAddr, MSGNotify_GetLastError());
 			}
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s,折扣:%lf"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthDiscount.dlDiscount);
 	}
 	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIPass, _tcsxlen(lpszAPIName)))
 	{
