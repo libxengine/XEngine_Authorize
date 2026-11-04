@@ -410,5 +410,8 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchOAuth = st_JsonRoot["bSwitchOAuth"].asBool();
 	pSt_ServerConfig->bSwitchHWBind = st_JsonRoot["bSwitchHWBind"].asBool();
 	pSt_ServerConfig->bSwitchReward = st_JsonRoot["bSwitchReward"].asBool();
+	pSt_ServerConfig->bSwitchLimit = st_JsonRoot["bSwitchLimit"].asBool();
+	pSt_ServerConfig->bSwitchDiscount = st_JsonRoot["bSwitchDiscount"].asBool();
+
 	return true;
 }
