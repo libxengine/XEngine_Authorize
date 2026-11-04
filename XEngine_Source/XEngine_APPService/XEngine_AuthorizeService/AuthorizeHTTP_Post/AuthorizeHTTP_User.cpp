@@ -196,7 +196,12 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;
 		}
-		WBlackList_IPV4Addr_Add(xhLimitIPAddr, lpszClientAddr);
+
+		if (st_AuthConfig.st_XLimit.st_RegisterLimit.bEnable)
+		{
+			WBlackList_IPV4Addr_Add(xhLimitIPAddr, lpszClientAddr);
+		}
+		
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);

@@ -1314,11 +1314,11 @@ bool CProtocol_Parse::Protocol_Parse_HttpParseDiscount(LPCXSTR lpszMsgBuffer, in
 	{
 		_tcsxcpy(pSt_Discount->tszUserName, st_JsonObject["tszUserName"].asCString());
 	}
-	if (!st_JsonObject["tszReferrer"].isNull())
+	if (!st_JsonObject["dlDiscount"].isNull())
 	{
 		pSt_Discount->dlDiscount = st_JsonObject["dlDiscount"].asDouble();
 	}
-	if (!st_JsonObject["nRewardOff"].isNull())
+	if (!st_JsonObject["nType"].isNull())
 	{
 		pSt_Discount->nType = st_JsonObject["nType"].asInt();
 	}

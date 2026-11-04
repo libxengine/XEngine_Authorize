@@ -6,6 +6,13 @@ bool XEngine_AuthorizeHTTP_Discount(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName,
 	XCHAR tszSDBuffer[4096] = {};
 	LPCXSTR lpszAPIInsert = _X("set");   
 
+	if (!st_FunSwitch.bSwitchDiscount)
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，设置失败，设置功能已经被服务器关闭!"), lpszClientAddr);
+		return false;
+	}
 	if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		//http://127.0.0.1:5302/api/discount/set
