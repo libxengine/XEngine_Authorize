@@ -182,6 +182,8 @@ typedef struct
 	bool bSwitchOAuth;                                      //是否启用OAuth
 	bool bSwitchHWBind;                                     //硬件码绑定
 	bool bSwitchReward;                                     //奖励系统
+	bool bSwitchLimit;                                      //限制系统
+	bool bSwitchDiscount;                                   //折扣系统
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

@@ -100,6 +100,11 @@
 #define IDC_RADIO28                     1042
 #define IDC_RADIO29                     1043
 #define IDC_RADIO30                     1044
+#define IDC_RADIO31                     1045
+#define IDC_RADIO32                     1046
+#define IDC_RADIO33                     1047
+#define IDC_RADIO34                     1048
+#define IDC_RADIO35                     1049
 
 // Next default values for new objects
 // 
