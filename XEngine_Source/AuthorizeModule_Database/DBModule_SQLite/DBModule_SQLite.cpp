@@ -304,7 +304,7 @@ bool CDBModule_SQLite::DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lps
 		double dlMaxTime = _ttxof(st_SerialTable.tszMaxTime);
         dlMaxTime *= dlDiscount;
 
-		_xstprintf(st_SerialTable.tszMaxTime, _X("%lf"), dlMaxTime);
+		_xstprintf_s(st_SerialTable.tszMaxTime, _countof(st_SerialTable.tszMaxTime), _X("%g"), dlMaxTime);
     }
     //分析插入方式
     switch (st_SerialTable.enSerialType)
