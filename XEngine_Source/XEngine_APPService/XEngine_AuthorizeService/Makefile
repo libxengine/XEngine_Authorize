@@ -1,4 +1,4 @@
-CC = g++ -Wall -std=c++20
+CC = g++ -Wall -std=c++20 
 PLATVER = 
 FILEEXT = 
 LIBFLAG = 
@@ -15,7 +15,7 @@ OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE
-DEBUG = -O2
+DEBUG = -O2 
 else
 	ifeq ($(PLATFORM),mac)
 		FLAGS = -c

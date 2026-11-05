@@ -304,7 +304,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，找回重置密码失败，密码找回重置功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
-		XCHAR tszNewPass[128] = {};
+		XCHAR tszNewPass[64] = {};
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 		if (_tcsxlen(st_UserInfo.tszUserPass) > 0)
 		{

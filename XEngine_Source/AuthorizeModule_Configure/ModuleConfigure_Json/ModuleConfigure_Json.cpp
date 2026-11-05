@@ -303,10 +303,12 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Versions(LPCXSTR lpszConfigFile
 		return false;
 	}
 	size_t nCount = 0;
-	XCHAR tszMsgBuffer[4096];
+	XCHAR tszMsgBuffer[4096] = {};
+	size_t nMaxCount = sizeof(tszMsgBuffer);
 	while (1)
 	{
-		size_t nRet = fread(tszMsgBuffer + nCount, 1, 2048, pSt_File);
+		nMaxCount -= nCount;
+		size_t nRet = fread(tszMsgBuffer + nCount, 1, nMaxCount, pSt_File);
 		if (nRet <= 0)
 		{
 			break;

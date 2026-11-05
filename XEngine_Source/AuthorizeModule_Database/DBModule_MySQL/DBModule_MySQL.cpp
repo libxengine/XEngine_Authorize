@@ -1499,7 +1499,7 @@ bool CDBModule_MySQL::DBModule_MySQL_BannedList(AUTHREG_BANNED*** pppSt_BannedUs
 	nFliedValue = nColumn;
 	list<AUTHREG_BANNED> stl_ListUser;
 	//轮训所有内容
-	for (__int64u i = 0; i < nRow; i++)
+	for (int i = 0; i < nRow; i++)
 	{
 		AUTHREG_BANNED st_Banned = {};
 		//ID

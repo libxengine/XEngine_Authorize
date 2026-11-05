@@ -10,7 +10,7 @@ OBJECTS = Protocol_Packet.o Protocol_Parse.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE 
-DEBUG = -O2
+DEBUG = -O2 
 else
 	ifeq ($(PLATFORM),mac)
 		FLAGS = -c
