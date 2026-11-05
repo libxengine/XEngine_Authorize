@@ -19,6 +19,7 @@ EXPORTS
 	Protocol_Packet_HttpOAuth
 	Protocol_Packet_HttpOAuth2
 	Protocol_Packet_HttpReward
+	Protocol_Packet_HttpDiscount
 
 	Protocol_Parse_WSHdr
 	Protocol_Parse_HttpParseToken
@@ -37,3 +38,4 @@ EXPORTS
 	Protocol_Parse_HttpParseBanned2
 	Protocol_Parse_HttpParseAnnouncement
 	Protocol_Parse_HttpParseReward
+	Protocol_Parse_HttpParseDiscount

@@ -14,5 +14,7 @@
     "bSwitchTokenLogin": true,
     "bSwitchHCLogin": true,
     "bSwitchHWBind": false,
-    "bSwitchReward": true
+    "bSwitchReward": true,
+    "bSwitchLimit": true,
+    "bSwitchDiscount": true
 }

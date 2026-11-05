@@ -34,6 +34,7 @@ public:
 	bool Protocol_Packet_HttpOAuth(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 	bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_OAUTHINFO* pSt_OAuthInfo);
 	bool Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount);
+	bool Protocol_Packet_HttpDiscount(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_DISCOUNT* pSt_Discount);
 protected:
 private:
 };

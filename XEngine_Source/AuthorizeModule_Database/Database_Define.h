@@ -110,12 +110,17 @@ extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName,AUTHREG_USERTABLE
   类型：常量字符指针
   可空：N
   意思：充值使用的序列号
+ 参数.三：dlDiscount
+  In/Out：In
+  类型：浮点型
+  可空：Y
+  意思：dlDiscount > 0.0f 表示使用折扣充值，dlDiscount = 0.0f 表示不使用折扣
 返回值
   类型：逻辑型
   意思：是否成功充值
 备注：
 *********************************************************************/
-extern "C" bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName,LPCXSTR lpszSerialName);
+extern "C" bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount = 0.0f);
 /********************************************************************
 函数名称：DBModule_SQLite_UserLeave
 函数功能：用户离开处理事件
@@ -773,12 +778,17 @@ extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE
   类型：常量字符指针
   可空：N
   意思：充值使用的序列号
+ 参数.三：dlDiscount
+  In/Out：In
+  类型：浮点型
+  可空：Y
+  意思：dlDiscount > 0.0f 表示使用折扣充值，dlDiscount = 0.0f 表示不使用折扣
 返回值
   类型：逻辑型
   意思：是否成功充值
 备注：
 *********************************************************************/
-extern "C" bool DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName);
+extern "C" bool DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount = 0.0f);
 /********************************************************************
 函数名称：DBModule_MySQL_UserLeave
 函数功能：用户离开处理事件

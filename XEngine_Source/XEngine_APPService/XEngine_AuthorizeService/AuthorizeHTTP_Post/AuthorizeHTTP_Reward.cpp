@@ -8,6 +8,14 @@ bool XEngine_AuthorizeHTTP_Reward(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName, L
 	LPCXSTR lpszAPIDelete = _X("delete");  
 	LPCXSTR lpszAPIList = _X("list");  
 
+	if (!st_FunSwitch.bSwitchReward)
+	{
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_CLOSED, "the function is closed");
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，推荐系统功能已经被服务器关闭!"), lpszClientAddr);
+		return false;
+	}
+
 	if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
 	{
 		//http://127.0.0.1:5302/api/reward/insert

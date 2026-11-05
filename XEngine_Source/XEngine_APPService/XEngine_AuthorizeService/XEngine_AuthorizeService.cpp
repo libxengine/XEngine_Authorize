@@ -24,8 +24,10 @@ XHANDLE xhWSPool = NULL;
 XHANDLE xhHttpPool = NULL;
 XHANDLE xhMQTTPool = NULL;
 
-XENGINE_SERVICECONFIG st_AuthConfig;
-XENGINE_FUNCTIONSWITCH st_FunSwitch;
+XNETHANDLE xhLimitIPAddr = 0;
+
+XENGINE_SERVICECONFIG st_AuthConfig = {};
+XENGINE_FUNCTIONSWITCH st_FunSwitch = {};
 
 void ServiceApp_Stop(int signo)
 {
@@ -38,7 +40,7 @@ void ServiceApp_Stop(int signo)
 		RfcComponents_WSPacket_DestoryEx(xhWSPacket);
 		HttpProtocol_Server_DestroyEx(xhHttpPacket);
 		MQTTProtocol_Parse_Destory();
-
+		
 		NetCore_TCPXCore_DestroyEx(xhTCPSocket);
 		NetCore_TCPXCore_DestroyEx(xhWSSocket);
 		NetCore_TCPXCore_DestroyEx(xhHttpSocket);
@@ -59,6 +61,8 @@ void ServiceApp_Stop(int signo)
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		WBlackList_IPV4Addr_Destory(xhLimitIPAddr);
+
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
@@ -171,9 +175,6 @@ int main(int argc, char** argv)
 	LPCXSTR lpszHTTPMime = _X("./XEngine_Config/HttpMime.types");
 	LPCXSTR lpszHTTPCode = _X("./XEngine_Config/HttpCode.types");
 
-	memset(&st_AuthConfig, '\0', sizeof(XENGINE_SERVICECONFIG));
-	memset(&st_FunSwitch, '\0', sizeof(XENGINE_FUNCTIONSWITCH));
-
 	if (!Authorize_Service_Parament(argc, argv))
 	{
 		return -1;
@@ -219,6 +220,16 @@ int main(int argc, char** argv)
 	}
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化内存池成功"));
 
+	//限制配置
+	if (st_AuthConfig.st_XLimit.st_RegisterLimit.bEnable)
+	{
+		if (!WBlackList_IPV4Addr_Init(&xhLimitIPAddr, st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue))
+		{
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("启动服务中，初始化注册限制配置失败，错误：%lX"), Session_GetLastError());
+			goto XENGINE_EXITAPP;
+		}
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，初始化注册限制配置成功,时间限制:%d 秒"), st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue);
+	}
 	/***********  初始化 MySql/DB数据库  ***********/
 	if (0 == st_AuthConfig.st_XSql.nDBType)
 	{ //SQLite数据库
@@ -493,7 +504,7 @@ int main(int argc, char** argv)
 				DBModule_SQLite_UserQuery(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable);
 			}
 			//剩余时间
-			int nTimeLeft = nTimeStop - (ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate);
+			int nTimeLeft = int(nTimeStop - (ppSt_OAuthInfo[i]->nExpirationTime + nTimeCreate));
 			Session_Token_InsertStr(ppSt_OAuthInfo[i]->tszUserName, &st_UserTable.st_UserInfo, nTimeLeft);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中,用户:%s 绑定TOKEN:%s ,插入会话管理器"), st_UserTable.st_UserInfo.tszUserName, ppSt_OAuthInfo[i]->tszTokenStr);
 		}
@@ -550,7 +561,9 @@ int main(int argc, char** argv)
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_WARN, _X("启动服务中，信息报告给API服务器没有启用"));
 	}
 #endif
-	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,OAuth登录支持:%d,硬件码绑定:%d,奖励系统:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchOAuth, st_FunSwitch.bSwitchHWBind, st_FunSwitch.bSwitchReward);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，功能开关选项,删除功能:%d,登录功能:%d,找回密码:%d,充值功能:%d,注册功能:%d,CDKey功能:%d,公告系统:%d,动态验证:%d,多端登录:%d,临时试用:%d,黑名单功能:%d,普通TOKEN:%d,硬件码登录:%d,OAuth登录支持:%d,硬件码绑定:%d,奖励系统:%d，限制系统:%d,折扣系统:%d"), st_FunSwitch.bSwitchDelete, st_FunSwitch.bSwitchLogin, st_FunSwitch.bSwitchPass, st_FunSwitch.bSwitchPay, st_FunSwitch.bSwitchRegister, st_FunSwitch.bSwitchCDKey, st_FunSwitch.bSwitchNotice, st_FunSwitch.bSwitchDCode, st_FunSwitch.bSwitchMulti, st_FunSwitch.bSwitchTry, st_FunSwitch.bSwitchBanned, st_FunSwitch.bSwitchTokenLogin, st_FunSwitch.bSwitchHCLogin, st_FunSwitch.bSwitchOAuth, st_FunSwitch.bSwitchHWBind, st_FunSwitch.bSwitchReward, st_FunSwitch.bSwitchLimit, st_FunSwitch.bSwitchDiscount);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，限制系统,注册:%d"), st_AuthConfig.st_XLimit.st_RegisterLimit.nLimitValue);
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("启动服务中，折扣系统,充值:%lf"), st_AuthConfig.st_XDiscount.dlPayDiscount);
 
 	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("所有服务成功启动，网络验证服务运行中,XEngien版本:%s%s,发行版本次数:%d,当前运行版本：%s。。。"), BaseLib_Version_XNumberStr(), BaseLib_Version_XTypeStr(), st_AuthConfig.st_XVer.pStl_ListVer->size(), st_AuthConfig.st_XVer.pStl_ListVer->front().c_str());
 
@@ -603,6 +616,8 @@ XENGINE_EXITAPP:
 		HelpComponents_XLog_Destroy(xhLog);
 		Session_Authorize_Destroy();
 		Session_Token_Destroy();
+		WBlackList_IPV4Addr_Destory(xhLimitIPAddr);
+
 		AuthHelp_DynamicCode_Destory();
 		if (0 == st_AuthConfig.st_XSql.nDBType)
 		{

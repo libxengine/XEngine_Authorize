@@ -10,7 +10,7 @@ OBJECTS = Protocol_Packet.o Protocol_Parse.o pch.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE 
-DEBUG = -O2
+DEBUG = -O2 
 else
 	ifeq ($(PLATFORM),mac)
 		FLAGS = -c
@@ -53,6 +53,7 @@ else ifeq ($(PLATFORM),freebsd)
 	LIBFLAG = -shared
 	LIBEX += -lrt -ldl -lpthread
 	LOADBIN = -Wl,-rpath=./,--disable-new-dtags
+	CC = clang++ -Wall -std=c++20 -fPIC
 endif
 
 all:$(OBJECTS)

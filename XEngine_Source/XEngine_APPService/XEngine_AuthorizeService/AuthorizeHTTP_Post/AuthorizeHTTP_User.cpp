@@ -89,9 +89,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		}
 		Protocol_Parse_HttpParseTable(lpszMsgBuffer, nMsgLen, &st_UserTable);
 		//是否在黑名单
-		AUTHREG_BANNED st_Banned;
-		memset(&st_Banned, '\0', sizeof(AUTHREG_BANNED));
-
+		AUTHREG_BANNED st_Banned = {};
 		_tcsxcpy(st_Banned.tszUserName, st_UserTable.st_UserInfo.tszUserName);
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
@@ -107,6 +105,14 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_BANNED, "user name is banned");
 			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，用户名或IP地址已经被禁用!"), lpszClientAddr, st_Banned.tszUserName);
+			return false;
+		}
+		//IP地址是否被限制
+		if (WBlackList_IPV4Addr_IsExistBlack(xhLimitIPAddr, lpszClientAddr))
+		{
+			Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen, ERROR_AUTHORIZE_PROTOCOL_REQLIMIT, "request is limited");
+			XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，请求被限制,过于频繁!"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
 			return false;
 		}
 		//是否有奖励人
@@ -149,7 +155,6 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				}
 			}
 		}
-		
 		//填充写入数据
 		if (ENUM_VERIFICATION_MODULE_SERIAL_TYPE_UNKNOW == st_UserTable.enSerialType)
 		{
@@ -191,6 +196,12 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，用户名：%s，注册失败，无法继续，错误：%X"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName, DBModule_GetLastError());
 			return false;
 		}
+
+		if (st_AuthConfig.st_XLimit.st_RegisterLimit.bEnable)
+		{
+			WBlackList_IPV4Addr_Add(xhLimitIPAddr, lpszClientAddr);
+		}
+		
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端：%s，用户名：%s，注册成功"), lpszClientAddr, st_UserTable.st_UserInfo.tszUserName);
@@ -235,11 +246,11 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 		bool bSuccess = false;
 		if (0 == st_AuthConfig.st_XSql.nDBType) 
 		{
-			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+			bSuccess = DBModule_SQLite_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 		}
 		else 
 		{
-			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+			bSuccess = DBModule_MySQL_UserPay(st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 		}
 		if (!bSuccess) 
 		{
@@ -276,7 +287,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 				XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，消息通知发送失败，错误：%lX"), lpszClientAddr, MSGNotify_GetLastError());
 			}
 		}
-		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_NOTICE, _X("HTTP客户端：%s，用户名：%s，充值成功，序列号：%s,折扣:%lf"), lpszClientAddr, st_UserPay.tszUserName, st_UserPay.tszSerialNumber, st_AuthConfig.st_XDiscount.dlPayDiscount);
 	}
 	else if (0 == _tcsxncmp(lpszAPIName, lpszAPIPass, _tcsxlen(lpszAPIName)))
 	{
@@ -293,7 +304,7 @@ bool XEngine_AuthorizeHTTP_User(XNETHANDLE xhToken, LPCXSTR lpszClientAddr, LPCX
 			XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，找回重置密码失败，密码找回重置功能已经被服务器关闭!"), lpszClientAddr);
 			return false;
 		}
-		XCHAR tszNewPass[128] = {};
+		XCHAR tszNewPass[64] = {};
 		Protocol_Parse_HttpParseUser(lpszMsgBuffer, nMsgLen, &st_UserInfo);
 		if (_tcsxlen(st_UserInfo.tszUserPass) > 0)
 		{

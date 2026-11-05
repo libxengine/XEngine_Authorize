@@ -26,7 +26,7 @@ public:
     bool DBModule_SQLite_UserDelete(XENGINE_PROTOCOL_USERINFO* pSt_UserInfo);                                           //删除用户
     bool DBModule_SQLite_UserRegister(AUTHREG_USERTABLE*pSt_UserInfo);                               //用户注册
     bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE* pSt_UserInfo = NULL, bool bUser = true);
-    bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName,LPCXSTR lpszSerialName);                       //充值卡充值
+    bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount = 0.0f);                       //充值卡充值
     bool DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol);            //用户离开更新表
     bool DBModule_SQLite_UserSet(AUTHREG_USERTABLE* pSt_UserTable);
     bool DBModule_SQLite_UserList(AUTHREG_USERTABLE*** pppSt_UserInfo, int* pInt_ListCount, int nPosStart, int nPosEnd);

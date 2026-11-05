@@ -476,6 +476,30 @@ extern "C" bool Protocol_Packet_HttpOAuth2(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
 备注：
 *********************************************************************/
 extern "C" bool Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_REWARD*** pppSt_Reward, int nListCount);
+/********************************************************************
+函数名称：Protocol_Packet_HttpDiscount
+函数功能：打包折扣系统
+ 参数.一：ptszMsgBuffer
+  In/Out：Out
+  类型：字符指针
+  可空：N
+  意思：导出包装好的缓冲区
+ 参数.二：pInt_MsgLen
+  In/Out：Out
+  类型：整数型指针
+  可空：N
+  意思：输出包装大小
+ 参数.三：pSt_Discount
+  In/Out：In
+  类型：数据结构指针
+  可空：N
+  意思：输入要打包的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Protocol_Packet_HttpDiscount(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_DISCOUNT* pSt_Discount);
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -922,3 +946,27 @@ extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int 
 备注：
 *********************************************************************/
 extern "C" bool Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_REWARD* pSt_Reward);
+/********************************************************************
+函数名称：Protocol_Parse_HttpParseDiscount
+函数功能：解析折扣系统协议
+ 参数.一：lpszMsgBuffer
+  In/Out：In
+  类型：常量字符指针
+  可空：N
+  意思：输入要解析的缓冲区
+ 参数.二：nMsgLen
+  In/Out：In
+  类型：整数型
+  可空：N
+  意思：输入缓冲区大小
+ 参数.三：pSt_Discount
+  In/Out：Out
+  类型：数据结构指针
+  可空：N
+  意思：输出解析后的信息
+返回值
+  类型：逻辑型
+  意思：是否成功
+备注：
+*********************************************************************/
+extern "C" bool Protocol_Parse_HttpParseDiscount(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_DISCOUNT* pSt_Discount);

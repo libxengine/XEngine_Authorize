@@ -1,4 +1,4 @@
-CC = g++ -Wall -std=c++20
+CC = g++ -Wall -std=c++20 
 PLATVER = 
 FILEEXT = 
 LIBFLAG = 
@@ -6,16 +6,16 @@ LOADHDR = -I ./
 LOADSO = -L ../../XEngine_DependLibrary/XEngine_Module/jsoncpp -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_InfoReport -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_Verification -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_MSGNotify -L ../../XEngine_DependLibrary/XEngine_Module/XEngine_Token \
          -L ../../AuthorizeModule_Session -L ../../AuthorizeModule_Database -L ../../AuthorizeModule_Protocol -L ../../AuthorizeModule_Configure -L ../../AuthorizeModule_Help -L ../../AuthorizeModule_CDKey 
 LIB = -lXEngine_InfoReport -ljsoncpp -lXEngine_Verification -lXEngine_MSGNotify -lXEngine_Token  \
-      -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lNetHelp_APIAddr -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lRfcComponents_MQTTProtocol -lXEngine_SystemApi  \
+      -lXEngine_BaseLib -lXEngine_Algorithm -lXEngine_Core -lXEngine_ManagePool -lXEngine_Cryption -lXClient_APIHelp -lNetHelp_APIAddr -lHelpComponents_Packets -lHelpComponents_DataBase -lHelpComponents_XLog -lHelpComponents_WBlackList -lRfcComponents_WSProtocol -lRfcComponents_HttpProtocol -lRfcComponents_MQTTProtocol -lXEngine_SystemApi  \
       -lAuthorizeModule_Session -lAuthorizeModule_Database -lAuthorizeModule_Protocol -lAuthorizeModule_Configure -lAuthorizeModule_Help
 LIBEX = 
 OBJECTS = Authorize_Config.o Authorize_Net.o Authorize_Task.o Authorize_TCPTask.o Authorize_WSTask.o Authorize_HttpTask.o Authorize_MQTTTask.o XEngine_AuthorizeService.o \
-          AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o AuthorizeHTTP_OAuth.o AuthorizeHTTP_Reward.o \
+          AuthorizeHTTP_Client.o AuthorizeHTTP_Serial.o AuthorizeHTTP_User.o AuthorizeHTTP_Pass.o AuthorizeHTTP_Switch.o AuthorizeHTTP_Banned.o AuthorizeHTTP_CDKey.o AuthorizeHTTP_Announcement.o AuthorizeHTTP_Try.o AuthorizeHTTP_OAuth.o AuthorizeHTTP_Reward.o AuthorizeHTTP_Discount.o \
           AuthorizeHTTP_Token.o AuthorizeHTTP_GetTask.o
 
 ifeq ($(RELEASE),1)
 FLAGS = -c -D _RELEASE
-DEBUG = -O2
+DEBUG = -O2 
 else
 	ifeq ($(PLATFORM),mac)
 		FLAGS = -c
@@ -58,6 +58,7 @@ else ifeq ($(PLATFORM),freebsd)
 	LIBFLAG = -shared
 	LIBEX += -lrt -ldl -lpthread
 	LOADBIN = -Wl,-rpath=./,--disable-new-dtags
+	CC = clang++ -Wall -std=c++20 -fPIC
 endif
 
 all:$(OBJECTS)
@@ -100,6 +101,8 @@ AuthorizeHTTP_OAuth.o:./AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.cpp
 AuthorizeHTTP_Reward.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Reward.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_Reward.cpp
+AuthorizeHTTP_Discount.o:./AuthorizeHTTP_Post/AuthorizeHTTP_Discount.cpp
+	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Post/AuthorizeHTTP_Discount.cpp
 
 AuthorizeHTTP_Token.o:./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp
 	$(CC) $(DEBUG) $(FLAGS) $(UNICODE) $(PLATVER) $(LOADHDR) ./AuthorizeHTTP_Get/AuthorizeHTTP_Token.cpp

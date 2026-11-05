@@ -42,6 +42,8 @@ using namespace std;
 #include <XEngine_Include/XEngine_HelpComponents/Packets_Error.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Define.h>
 #include <XEngine_Include/XEngine_HelpComponents/DataBase_Error.h>
+#include <XEngine_Include/XEngine_HelpComponents/WBlackList_Define.h>
+#include <XEngine_Include/XEngine_HelpComponents/WBlackList_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Define.h>
 #include <XEngine_Include/XEngine_RfcComponents/WSProtocol_Error.h>
 #include <XEngine_Include/XEngine_RfcComponents/HttpProtocol_Define.h>
@@ -91,6 +93,8 @@ extern XHANDLE xhWSPool;
 extern XHANDLE xhHttpPool;
 extern XHANDLE xhMQTTPool;
 
+extern XNETHANDLE xhLimitIPAddr;
+
 extern XENGINE_SERVICECONFIG st_AuthConfig;
 extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 
@@ -113,6 +117,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Try.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_OAuth.h"
 #include "AuthorizeHTTP_Post/AuthorizeHTTP_Reward.h"
+#include "AuthorizeHTTP_Post/AuthorizeHTTP_Discount.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_Token.h"
 #include "AuthorizeHTTP_Get/AuthorizeHTTP_GetTask.h"
 
@@ -127,6 +132,7 @@ extern XENGINE_FUNCTIONSWITCH st_FunSwitch;
 #pragma comment(lib,"XEngine_NetHelp/NetHelp_APIAddr.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_XLog.lib")
 #pragma comment(lib,"XEngine_HelpComponents/HelpComponents_Packets.lib")
+#pragma comment(lib,"XEngine_HelpComponents/HelpComponents_WBlackList.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_WSProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_HttpProtocol.lib")
 #pragma comment(lib,"XEngine_RfcComponents/RfcComponents_MQTTProtocol.lib")

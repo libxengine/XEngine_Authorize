@@ -127,7 +127,19 @@ typedef struct
 		int nLogLeave;                                      //日志级别
 		int nLogType;                                      //日志类型
 		bool bLogStorage;                                   //强日志
-	}st_XLog;         
+	}st_XLog;        
+	struct 
+	{
+		double dlPayDiscount;
+	}st_XDiscount;
+	struct
+	{
+		struct
+		{
+			bool bEnable;
+			int nLimitValue;
+		}st_RegisterLimit;
+	}st_XLimit;
 	struct
 	{
 		struct 
@@ -170,6 +182,8 @@ typedef struct
 	bool bSwitchOAuth;                                      //是否启用OAuth
 	bool bSwitchHWBind;                                     //硬件码绑定
 	bool bSwitchReward;                                     //奖励系统
+	bool bSwitchLimit;                                      //限制系统
+	bool bSwitchDiscount;                                   //折扣系统
 }XENGINE_FUNCTIONSWITCH;
 //////////////////////////////////////////////////////////////////////////
 //                              导出的函数

@@ -87,6 +87,15 @@
         "nLogType": 17,
         "bLogStorage": true
     },
+    "XLimit": {
+        "st_RegisterLimit": {
+            "bEnable": true,
+            "nLimitValue": 3600
+        }
+    },
+    "XDiscount": {
+        "dlDiscount": 1.0
+    },
     "XNotify": {
         "XEmail": {
             "bEnable": false,

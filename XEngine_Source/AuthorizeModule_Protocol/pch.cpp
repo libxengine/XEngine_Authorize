@@ -95,6 +95,10 @@ extern "C" bool Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpReward(ptszMsgBuffer, pInt_MsgLen, pppSt_Reward, nListCount);
 }
+extern "C" bool Protocol_Packet_HttpDiscount(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_DISCOUNT* pSt_Discount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpDiscount(ptszMsgBuffer, pInt_MsgLen, pSt_Discount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
@@ -165,4 +169,8 @@ extern "C" bool Protocol_Parse_HttpParseAnnouncement(LPCXSTR lpszMsgBuffer, int 
 extern "C" bool Protocol_Parse_HttpParseReward(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_REWARD* pSt_Reward)
 {
 	return m_ProtocolParse.Protocol_Parse_HttpParseReward(lpszMsgBuffer, nMsgLen, pSt_Reward);
+}
+extern "C" bool Protocol_Parse_HttpParseDiscount(LPCXSTR lpszMsgBuffer, int nMsgLen, AUTHREG_DISCOUNT* pSt_Discount)
+{
+	return m_ProtocolParse.Protocol_Parse_HttpParseDiscount(lpszMsgBuffer, nMsgLen, pSt_Discount);
 }

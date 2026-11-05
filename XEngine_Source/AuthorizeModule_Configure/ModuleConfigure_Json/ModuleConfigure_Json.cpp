@@ -216,6 +216,26 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_File(LPCXSTR lpszConfigFile, XE
 	pSt_ServerConfig->st_XLog.bLogStorage = st_JsonXLog["bLogStorage"].asBool();
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszLogFile, st_JsonXLog["tszLogFile"].asCString());
 	_tcsxcpy(pSt_ServerConfig->st_XLog.tszKeyFile, st_JsonXLog["tszKeyFile"].asCString());
+	//限制配置
+	if (st_JsonRoot["XLimit"].empty())
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_LIMIT;
+		return false;
+	}
+	Json::Value st_JsonXLimit = st_JsonRoot["XLimit"];
+	Json::Value st_JsonXLimitRegister = st_JsonXLimit["st_RegisterLimit"];
+	pSt_ServerConfig->st_XLimit.st_RegisterLimit.bEnable = st_JsonXLimitRegister["bEnable"].asBool();
+	pSt_ServerConfig->st_XLimit.st_RegisterLimit.nLimitValue = st_JsonXLimitRegister["nLimitValue"].asInt();
+	//折扣配置
+	if (st_JsonRoot["XDiscount"].empty())
+	{
+		Config_IsErrorOccur = true;
+		Config_dwErrorCode = ERROR_AUTHORIZE_MODULE_CONFIGURE_DISCOUNT;
+		return false;
+	}
+	Json::Value st_JsonXDiscount = st_JsonRoot["XDiscount"];
+	pSt_ServerConfig->st_XDiscount.dlPayDiscount = st_JsonXDiscount["dlDiscount"].asDouble();
 	//信息通知
 	if (st_JsonRoot["XNotify"].empty())
 	{
@@ -283,10 +303,12 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Versions(LPCXSTR lpszConfigFile
 		return false;
 	}
 	size_t nCount = 0;
-	XCHAR tszMsgBuffer[4096];
+	XCHAR tszMsgBuffer[4096] = {};
+	size_t nMaxCount = sizeof(tszMsgBuffer);
 	while (1)
 	{
-		size_t nRet = fread(tszMsgBuffer + nCount, 1, 2048, pSt_File);
+		nMaxCount -= nCount;
+		size_t nRet = fread(tszMsgBuffer + nCount, 1, nMaxCount, pSt_File);
 		if (nRet <= 0)
 		{
 			break;
@@ -390,5 +412,8 @@ bool CModuleConfigure_Json::ModuleConfigure_Json_Switch(LPCXSTR lpszConfigFile, 
 	pSt_ServerConfig->bSwitchOAuth = st_JsonRoot["bSwitchOAuth"].asBool();
 	pSt_ServerConfig->bSwitchHWBind = st_JsonRoot["bSwitchHWBind"].asBool();
 	pSt_ServerConfig->bSwitchReward = st_JsonRoot["bSwitchReward"].asBool();
+	pSt_ServerConfig->bSwitchLimit = st_JsonRoot["bSwitchLimit"].asBool();
+	pSt_ServerConfig->bSwitchDiscount = st_JsonRoot["bSwitchDiscount"].asBool();
+
 	return true;
 }

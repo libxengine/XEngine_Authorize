@@ -51,9 +51,9 @@ extern "C" bool DBModule_SQLite_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABL
 {
 	return m_DBSQLite.DBModule_SQLite_UserQuery(lpszUserName, pSt_UserInfo, bUser);
 }
-extern "C" bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
+extern "C" bool DBModule_SQLite_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount)
 {
-	return m_DBSQLite.DBModule_SQLite_UserPay(lpszUserName, lpszSerialName);
+	return m_DBSQLite.DBModule_SQLite_UserPay(lpszUserName, lpszSerialName, dlDiscount);
 }
 extern "C" bool DBModule_SQLite_UserLeave(AUTHREG_PROTOCOL_TIME * pSt_TimeProtocol)
 {
@@ -206,9 +206,9 @@ extern "C" bool DBModule_MySQL_UserQuery(LPCXSTR lpszUserName, AUTHREG_USERTABLE
 {
 	return m_DBMySQL.DBModule_MySQL_UserQuery(lpszUserName, pSt_UserInfo, bUser);
 }
-extern "C" bool DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName)
+extern "C" bool DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszSerialName, double dlDiscount)
 {
-	return m_DBMySQL.DBModule_MySQL_UserPay(lpszUserName, lpszSerialName);
+	return m_DBMySQL.DBModule_MySQL_UserPay(lpszUserName, lpszSerialName, dlDiscount);
 }
 extern "C" bool DBModule_MySQL_UserLeave(AUTHREG_PROTOCOL_TIME* pSt_TimeProtocol)
 {

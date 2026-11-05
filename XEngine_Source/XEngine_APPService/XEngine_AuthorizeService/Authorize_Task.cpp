@@ -95,3 +95,8 @@ void XCALLBACK XEngine_TaskEvent_Token(LPCXSTR lpszTokenStr, int nTimeout, int n
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("Token:%s,用户名：%s，已经超时,权限级别:%d,被移除服务器,移除类型:%s"), lpszTokenStr, pSt_UserInfo->tszUserName, pSt_UserInfo->nUserLevel, 1 == pSt_UserInfo->xhToken ? "OAuth" : "Token");
 	}
 }
+
+void XCALLBACK XEngine_TaskEvent_LimitIPAddr(LPCXSTR lpszClientAddr, XPVOID lParam)
+{
+	XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("IP地址:%s,已经被移除访问限制"), lpszClientAddr);
+}
