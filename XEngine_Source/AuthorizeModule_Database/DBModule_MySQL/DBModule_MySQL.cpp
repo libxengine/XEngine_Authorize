@@ -330,12 +330,12 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 		return false;
 	}
 	//折扣信息
-	if (dlDiscount > 0.0f)
+	if (dlDiscount > 0.0f && dlDiscount != 1.0f)
 	{
 		double dlMaxTime = _ttxof(st_SerialTable.tszMaxTime);
 		dlMaxTime *= dlDiscount;
 
-		_xstprintf(st_SerialTable.tszMaxTime, _X("%lf"), dlMaxTime);
+		_xsntprintf(st_SerialTable.tszMaxTime, _countof(st_SerialTable.tszMaxTime), _X("%lf"), dlMaxTime);
 	}
 	//分析插入方式
 	switch (st_SerialTable.enSerialType)
