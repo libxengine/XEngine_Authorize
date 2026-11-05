@@ -1,3 +1,21 @@
+XEngine_Authorize V3.26.0.1001
+
+ci:增加了ubuntu26.04 构建支持
+增加:注册限制请求功能
+增加:充值折扣功能
+增加:获取和设置折扣接口功能
+增加:折扣和限制功能开关
+修改:使用clang 作为编译器在freebsd
+修正:某些开关不生效问题
+
+ci:add ubuntu 26.04
+added:request limit for register
+added:discount system support
+added:get and set for discount with restful api
+added:switch support fur limit and discount system
+modify:use clang instead c++ for freebsd
+fixed:some switch function not work
+================================================================
 XEngine_Authorize V3.25.0.1001
 
 ci:更新了流程版本库为最新版本
