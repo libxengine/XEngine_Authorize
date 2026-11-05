@@ -35,7 +35,8 @@ bool XEngine_AuthorizeHTTP_Discount(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName,
 		//http://127.0.0.1:5302/api/discount/get
 		AUTHREG_DISCOUNT st_AuthDiscount = {};
 
-		Protocol_Parse_HttpPacketDiscount(&st_AuthConfig.st_XDiscount, &st_AuthDiscount);
+		st_AuthDiscount.dlDiscount = st_AuthConfig.st_XDiscount.dlPayDiscount;
+		Protocol_Packet_HttpDiscount(tszSDBuffer, &nSDLen, &st_AuthDiscount);
 		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获取折扣系统数据成功"), lpszClientAddr);
