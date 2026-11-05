@@ -4,7 +4,8 @@ bool XEngine_AuthorizeHTTP_Discount(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName,
 {
 	int nSDLen = 4096;
 	XCHAR tszSDBuffer[4096] = {};
-	LPCXSTR lpszAPIInsert = _X("set");   
+	LPCXSTR lpszAPISet = _X("set");
+	LPCXSTR lpszAPIGet = _X("get");
 
 	if (!st_FunSwitch.bSwitchDiscount)
 	{
@@ -13,7 +14,7 @@ bool XEngine_AuthorizeHTTP_Discount(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName,
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_ERROR, _X("HTTP客户端：%s，设置失败，设置功能已经被服务器关闭!"), lpszClientAddr);
 		return false;
 	}
-	if (0 == _tcsxncmp(lpszAPIInsert, lpszAPIName, _tcsxlen(lpszAPIInsert)))
+	if (0 == _tcsxncmp(lpszAPISet, lpszAPIName, _tcsxlen(lpszAPISet)))
 	{
 		//http://127.0.0.1:5302/api/discount/set
 		AUTHREG_DISCOUNT st_AuthDiscount = {};
@@ -29,5 +30,16 @@ bool XEngine_AuthorizeHTTP_Discount(LPCXSTR lpszClientAddr, LPCXSTR lpszAPIName,
 		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
 		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求设置折扣系统数据成功, 用户:%s, 类型:%d, 折扣:%lf"), lpszClientAddr, st_AuthDiscount.tszUserName, st_AuthDiscount.nType, st_AuthDiscount.dlDiscount);
 	}
+	else if (0 == _tcsxncmp(lpszAPIGet, lpszAPIName, _tcsxlen(lpszAPIGet)))
+	{
+		//http://127.0.0.1:5302/api/discount/get
+		AUTHREG_DISCOUNT st_AuthDiscount = {};
+
+		Protocol_Parse_HttpPacketDiscount(&st_AuthConfig.st_XDiscount, &st_AuthDiscount);
+		Protocol_Packet_HttpComm(tszSDBuffer, &nSDLen);
+		XEngine_Client_TaskSend(lpszClientAddr, tszSDBuffer, nSDLen, XENGINE_AUTH_APP_NETTYPE_HTTP);
+		XLOG_PRINT(xhLog, XENGINE_HELPCOMPONENTS_XLOG_IN_LOGLEVEL_INFO, _X("HTTP客户端:%s,请求获取折扣系统数据成功"), lpszClientAddr);
+	}
+
 	return true;
 }

@@ -95,6 +95,10 @@ extern "C" bool Protocol_Packet_HttpReward(XCHAR* ptszMsgBuffer, int* pInt_MsgLe
 {
 	return m_ProtocolPacket.Protocol_Packet_HttpReward(ptszMsgBuffer, pInt_MsgLen, pppSt_Reward, nListCount);
 }
+extern "C" bool Protocol_Packet_HttpDiscount(XCHAR* ptszMsgBuffer, int* pInt_MsgLen, AUTHREG_DISCOUNT* pSt_Discount)
+{
+	return m_ProtocolPacket.Protocol_Packet_HttpDiscount(ptszMsgBuffer, pInt_MsgLen, pSt_Discount);
+}
 /************************************************************************/
 /*                          解析类协议                                  */
 /************************************************************************/
