@@ -335,7 +335,7 @@ bool CDBModule_MySQL::DBModule_MySQL_UserPay(LPCXSTR lpszUserName, LPCXSTR lpszS
 		double dlMaxTime = _ttxof(st_SerialTable.tszMaxTime);
 		dlMaxTime *= dlDiscount;
 
-		_xsntprintf(st_SerialTable.tszMaxTime, _countof(st_SerialTable.tszMaxTime), _X("%lf"), dlMaxTime);
+		_xsntprintf(st_SerialTable.tszMaxTime, sizeof(st_SerialTable.tszMaxTime), _X("%lf"), dlMaxTime);
 	}
 	//分析插入方式
 	switch (st_SerialTable.enSerialType)
