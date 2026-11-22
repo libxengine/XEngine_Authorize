@@ -24,12 +24,12 @@ jobs:
           - arch: amd64
             runner: ubuntu-24.04
             platform: linux/amd64
-            version: 16.0
+            version: "16.0"
             artifact: x86-64
           - arch: arm64
             runner: ubuntu-24.04-arm
             platform: linux/arm64
-            version: 16.0
+            version: "16.0"
             artifact: Arm64
 
     steps:

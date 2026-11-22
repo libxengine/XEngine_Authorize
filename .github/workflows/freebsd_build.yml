@@ -47,6 +47,18 @@ jobs:
           arch: ${{ matrix.freebsd-arch }}
           usesh: true
           prepare: |
+            mkdir -p /usr/local/etc/pkg/repos
+            cat > /usr/local/etc/pkg/repos/FreeBSD.conf <<'EOF'
+            FreeBSD: { enabled: no }
+            FreeBSD-ports: {
+              url: "pkg+https://pkg.FreeBSD.org/${ABI}/quarterly",
+              mirror_type: "srv",
+              signature_type: "fingerprints",
+              fingerprints: "/usr/share/keys/pkg",
+              enabled: yes
+            }
+            EOF
+            pkg update -f
             pkg install -y gcc cmake gmake git pkgconf jq unzip curl wget bash
           run: |
             latest_tag=$(curl -s -H "Authorization: Bearer ${{ github.token }}" https://api.github.com/repos/libxengine/libxengine/releases/latest | jq -r .tag_name)
